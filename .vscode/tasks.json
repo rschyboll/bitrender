@@ -1,0 +1,23 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Build bpy",
+            "type": "shell",
+            "command": "./scripts/build_bpy.sh",
+            "args" : ["${input:version}"],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            }
+        },
+    ],
+    "inputs" : [
+        {
+            "id" : "version",
+            "type": "pickString",
+            "description" : "Blender version",
+            "options" : ["v2.90.1"],
+            "default" : "v2.90.1"
+        }
+    ]
+}
