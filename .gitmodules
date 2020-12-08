@@ -1,0 +1,3 @@
+[submodule "Blender-Rendering-Api"]
+	path = Blender-Rendering-Api
+	url = https://github.com/Hoodrobinrs/Blender-Rendering-Api.git
