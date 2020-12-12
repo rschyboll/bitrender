@@ -89,5 +89,3 @@ checkoutToVersion
 
 update
 build
-
-cp "./downloads/build_linux_bpy/bin/bpy.so" "./build/bpy/$version.so"

@@ -1,3 +1,4 @@
 {
-    "python.pythonPath": "lib/python/bin/python3.7m"
+    "editor.rulers": [80,100],
+    "python.pythonPath":"${workspaceFolder}/venv/bin/python3.7"
 }

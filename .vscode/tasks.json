@@ -10,6 +10,23 @@
                 "cwd": "${workspaceFolder}"
             }
         },
+        {
+            "label": "Run Client",
+            "type": "shell",
+            "command": "${config:python.pythonPath} ${workspaceFolder}/client/src/main.py",
+            "options": {
+                "cwd": "${workspaceFolder}"
+            }
+        },
+        {
+            "label": "Install bpy into python",
+            "type": "shell",
+            "command": "./scripts/install_bpy_venv.sh",
+            "args": ["${input:pythonFolder}"],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            }
+        }
     ],
     "inputs" : [
         {
@@ -18,6 +35,11 @@
             "description" : "Blender version",
             "options" : ["v2.90.1"],
             "default" : "v2.90.1"
+        },
+        {
+            "id" : "pythonFolder",
+            "type" :"promptString",
+            "description": "Input python site-packages location."
         }
     ]
 }
