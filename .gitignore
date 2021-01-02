@@ -2,3 +2,5 @@ downloads
 build
 __pycache__
 venv
+.pytest_cache
+*.egg-info

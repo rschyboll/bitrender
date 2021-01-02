@@ -2,31 +2,142 @@
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "Build bpy",
+            "label": "$(gear) Build bpy",
             "type": "shell",
             "command": "./scripts/build_bpy.sh",
             "args" : ["${input:version}"],
             "options": {
+                "statusbar": {
+                    "color": "#ffcfb9"
+                },
                 "cwd": "${workspaceFolder}"
             }
         },
         {
-            "label": "Run Client",
-            "type": "shell",
-            "command": "${config:python.pythonPath} ${workspaceFolder}/client/src/main.py",
-            "options": {
-                "cwd": "${workspaceFolder}"
-            }
-        },
-        {
-            "label": "Install bpy into python",
+            "label": "$(terminal-view-icon) Install bpy",
             "type": "shell",
             "command": "./scripts/install_bpy_venv.sh",
             "args": ["${input:pythonFolder}"],
             "options": {
+                "statusbar": {
+                    "color": "#ffb9b9"
+                },
                 "cwd": "${workspaceFolder}"
             }
-        }
+        },
+        {
+            "label": "||",
+            "command": "./scripts/pass.sh",
+            "args": ["0"]
+        },
+        {
+            "label": "$(notebook-execute) Run client",
+            "type": "shell",
+            "command": "${config:python.pythonPath} main.py",
+            "options": {
+                "statusbar": {
+                    "color": "#b9beff"
+                },
+                "cwd": "${workspaceFolder}/client/backend/src/"
+            },
+        },
+        {
+            "label": "$(test-view-icon) Test client",
+            "type": "shell",
+            "command": "${config:python.pythonPath} -m pytest",
+            "options": {
+                "statusbar": {
+                    "color": "#b9ffb9"
+                },
+                "cwd": "${workspaceFolder}/client/backend"
+            },
+        },
+        {
+            "label": "||",
+            "command": "./scripts/pass.sh",
+            "args": ["1"]
+        },
+        {
+            "label": "$(terminal-view-icon) Install server",
+            "type": "shell",
+            "command": "${config:python.pythonPath} -m pip install -e \".[dev]\"",
+            "options": {
+                "statusbar": {
+                    "color": "#ffb9b9"
+                },
+                "cwd": "${workspaceFolder}/server/backend/"
+            },
+        },
+        {
+            "label": "$(notebook-execute) Run",
+            "type": "shell",
+            "command": "${config:python.pservePath} development.ini --reload",
+            "options": {
+                "statusbar": {
+                    "color": "#b9beff"
+                },
+                "cwd": "${workspaceFolder}/server/backend/"
+            },
+        },
+        {
+            "label": "$(test-view-icon) Test",
+            "type": "shell",
+            "command": "${config:python.pythonPath} -m pytest",
+            "options": {
+                "statusbar": {
+                    "color": "#b9ffb9"
+                },
+                "cwd": "${workspaceFolder}/server/backend"
+            },
+        },
+        {
+            "label": "$(database) Db model",
+            "type": "shell",
+            "command": "pgmodeler ${workspaceRoot}/server/database/server_model.dbm",
+            "options": {
+                "statusbar": {
+                    "color": "#fffeb9"
+                },
+            },
+        },
+        {
+            "label": "$(refresh) Db reload",
+            "type": "shell",
+            "command": "../../scripts/server_db_reload.sh",
+            "options": {
+                "statusbar": {
+                    "color": "#fffeb9"
+                },
+                "cwd": "${workspaceFolder}/server/database"
+            },
+        },
+        {
+            "label": "$(preview) Db view",
+            "type": "shell",
+            "command": "pgadmin4",
+            "options": {
+                "statusbar": {
+                    "color": "#fffeb9"
+                },
+                "cwd": "${workspaceFolder}/server/database"
+            },
+        },
+        {
+            "label": "$(references) Db init",
+            "type": "shell",
+            "command": "source ../../venv/bin/activate.fish; rendering_server_init_db development.ini",
+            "options": {
+                "statusbar": {
+                    "color": "#fffeb9"
+                },
+                "cwd": "${workspaceFolder}/server/backend"
+            },
+        },
+        {
+            "label": "||",
+            "command": "./scripts/pass.sh",
+            "args": ["2"]
+        },
     ],
     "inputs" : [
         {
