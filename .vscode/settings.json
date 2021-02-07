@@ -1,5 +1,5 @@
 {
-    "python.pythonPath":"${workspaceFolder}/venv/bin/python",
+    "python.pythonPath":"venv/bin/python",
     "python.pservePath":"${workspaceFolder}/venv/bin/pserve",
     "files.exclude": {
         "**/.git": true,
@@ -10,11 +10,15 @@
         "**/*.pyc": true,
         "**/__pycache__": true,
         "**/venv": true,
-        "**/.pytest_cache": true
+        "**/.pytest_cache": true,
+        "**/.mypy_cache": true,
+        "**/*.egg-info": true
     },
     "workbench.colorCustomizations": {
         "statusBar.background" : "#333333",
         "statusBar.border": "#333333",
         "statusBarItem.hoverBackground": "#444444",
     },
+    "python.linting.pylintEnabled": true,
+    "python.linting.enabled": true,
 }

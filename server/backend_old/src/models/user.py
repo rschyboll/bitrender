@@ -1,5 +1,5 @@
 # coding: utf-8
-from sqlalchemy import Column, DateTime, ForeignKey, Integer, SmallInteger, String, Text, text
+from sqlalchemy import Column, DateTime, ForeignKey, Integer, LargeBinary, SmallInteger, String, Text, text
 from sqlalchemy.orm import relationship
 
 from . import Base
@@ -10,7 +10,7 @@ class User(Base):
 
     id = Column(Integer, primary_key=True, server_default=text("nextval('\"user\".users_id_seq'::regclass)"))
     login = Column(String(32), nullable=False, unique=True)
-    password = Column(String(64), nullable=False)
+    password = Column(LargeBinary, nullable=False)
     email = Column(String(64), nullable=False, unique=True)
     register_date = Column(DateTime, nullable=False)
 
@@ -45,7 +45,7 @@ class Role(Base):
     __table_args__ = {'schema': 'user'}
 
     id = Column(Integer, primary_key=True, server_default=text("nextval('\"user\".roles_id_seq'::regclass)"))
-    role = Column(String(64), nullable=False, unique=True)
+    role = Column(String(64), nullable=False)
     id_users = Column(ForeignKey('user.users.id', ondelete='SET NULL', onupdate='CASCADE', match='FULL'))
 
     user = relationship('User')

@@ -2,6 +2,7 @@
 source ../../venv/bin/activate
 
 pgmodeler-cli -if server_model.dbm -ed -dd --conn-alias local-db
+pgmodeler-cli -if server_model.dbm -ef -dd -of server_model.sql
 
 schemas=("user" "worker" "task")
 

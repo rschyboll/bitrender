@@ -3,7 +3,7 @@
 CAUTION: Do not modify this file unless you know what you are doing.
          Unexpected results may occur if the code is changed deliberately.
 -->
-<dbmodel pgmodeler-ver="0.9.2" author="Robin Schyboll" last-position="0,0" last-zoom="0.85" max-obj-count="15"
+<dbmodel pgmodeler-ver="0.9.3-beta1" use-changelog="false" author="Robin Schyboll" last-position="0,0" last-zoom="0.85" max-obj-count="15"
 	 default-schema="public" default-owner="postgres">
 <database name="rendering_server" is-template="false" allow-conns="true">
 	<role name="postgres"/>
@@ -16,7 +16,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	<role name="postgres"/>
 </schema>
 
-<table name="users" layer="0" collapse-mode="2" pagination="true" attribs-page="0" ext-attribs-page="0" max-obj-count="6">
+<table name="users" layer="0" collapse-mode="2" pagination="true" attribs-page="0" ext-attribs-page="0" max-obj-count="6" z-value="0">
 	<schema name="&quot;user&quot;"/>
 	<role name="postgres"/>
 	<position x="520" y="280"/>
@@ -27,7 +27,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 		<type name="varchar" length="32"/>
 	</column>
 	<column name="password" not-null="true">
-		<type name="varchar" length="64"/>
+		<type name="bytea" length="64"/>
 	</column>
 	<column name="email" not-null="true">
 		<type name="varchar" length="64"/>
@@ -46,7 +46,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	</constraint>
 </table>
 
-<table name="logs" layer="0" collapse-mode="2" max-obj-count="4">
+<table name="logs" layer="0" collapse-mode="2" max-obj-count="4" z-value="0">
 	<schema name="&quot;user&quot;"/>
 	<role name="postgres"/>
 	<position x="160" y="300"/>
@@ -81,7 +81,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	 dst-table="&quot;user&quot;.logs"
 	 src-required="false" dst-required="false"/>
 
-<table name="sessions" layer="0" collapse-mode="1" max-obj-count="6">
+<table name="sessions" layer="0" collapse-mode="1" max-obj-count="6" z-value="0">
 	<schema name="&quot;user&quot;"/>
 	<role name="postgres"/>
 	<position x="180" y="740"/>
@@ -119,7 +119,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	 dst-table="&quot;user&quot;.sessions"
 	 src-required="false" dst-required="false"/>
 
-<table name="roles" layer="0" collapse-mode="2" max-obj-count="3">
+<table name="roles" layer="0" collapse-mode="2" max-obj-count="3" z-value="0">
 	<schema name="&quot;user&quot;"/>
 	<role name="postgres"/>
 	<position x="500" y="740"/>
@@ -129,9 +129,6 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	<column name="role" not-null="true">
 		<type name="varchar" length="64"/>
 	</column>
-	<constraint name="roles_unique" type="uq-constr" table="&quot;user&quot;.roles">
-		<columns names="role" ref-type="src-columns"/>
-	</constraint>
 	<constraint name="roles_pk" type="pk-constr" table="&quot;user&quot;.roles">
 		<columns names="id" ref-type="src-columns"/>
 	</constraint>
@@ -141,7 +138,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	</customidxs>
 
 	<customidxs object-type="constraint">
-		<object name="users_fk" index="1"/>
+		<object name="users_fk" index="0"/>
 	</customidxs>
 </table>
 
@@ -158,7 +155,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	<role name="postgres"/>
 </schema>
 
-<table name="workers" layer="0" collapse-mode="2" max-obj-count="7">
+<table name="workers" layer="0" collapse-mode="2" max-obj-count="7" z-value="0">
 	<schema name="worker"/>
 	<role name="postgres"/>
 	<position x="1200" y="340"/>
@@ -187,7 +184,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	</customidxs>
 </table>
 
-<table name="logs" layer="0" collapse-mode="2" max-obj-count="7">
+<table name="logs" layer="0" collapse-mode="2" max-obj-count="7" z-value="0">
 	<schema name="worker"/>
 	<role name="postgres"/>
 	<position x="1740" y="40"/>
@@ -232,7 +229,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	<role name="postgres"/>
 </schema>
 
-<table name="tasks" layer="0" collapse-mode="2" max-obj-count="3">
+<table name="tasks" layer="0" collapse-mode="2" max-obj-count="3" z-value="0">
 	<schema name="task"/>
 	<role name="postgres"/>
 	<position x="1200" y="700"/>
@@ -247,7 +244,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	</constraint>
 </table>
 
-<table name="status" layer="0" collapse-mode="2" max-obj-count="4">
+<table name="status" layer="0" collapse-mode="2" max-obj-count="4" z-value="0">
 	<schema name="task"/>
 	<role name="postgres"/>
 	<position x="1600" y="680"/>
@@ -283,7 +280,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	 dst-table="task.status"
 	 src-required="false" dst-required="false"/>
 
-<table name="settings" layer="0" collapse-mode="2" max-obj-count="3">
+<table name="settings" layer="0" collapse-mode="2" max-obj-count="3" z-value="0">
 	<schema name="task"/>
 	<role name="postgres"/>
 	<position x="1200" y="960"/>
@@ -304,7 +301,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	 dst-table="task.settings"
 	 src-required="false" dst-required="false"/>
 
-<table name="custom_settings" layer="0" collapse-mode="2" max-obj-count="3">
+<table name="custom_settings" layer="0" collapse-mode="2" max-obj-count="3" z-value="0">
 	<schema name="task"/>
 	<role name="postgres"/>
 	<position x="1540" y="960"/>
@@ -325,7 +322,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	 dst-table="task.custom_settings"
 	 src-required="false" dst-required="false"/>
 
-<table name="notifications" layer="0" collapse-mode="2" max-obj-count="6">
+<table name="notifications" layer="0" collapse-mode="2" max-obj-count="6" z-value="0">
 	<schema name="&quot;user&quot;"/>
 	<role name="postgres"/>
 	<position x="800" y="740"/>
@@ -355,7 +352,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	 dst-table="&quot;user&quot;.notifications"
 	 src-required="false" dst-required="false"/>
 
-<table name="graphic_cards" layer="0" collapse-mode="2" max-obj-count="6">
+<table name="graphic_cards" layer="0" collapse-mode="2" max-obj-count="6" z-value="0">
 	<schema name="worker"/>
 	<role name="postgres"/>
 	<position x="1260" y="40"/>
@@ -388,7 +385,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	 dst-table="worker.workers"
 	 src-required="false" dst-required="false"/>
 
-<table name="status" layer="0" collapse-mode="2" max-obj-count="4">
+<table name="status" layer="0" collapse-mode="2" max-obj-count="4" z-value="0">
 	<schema name="worker"/>
 	<role name="postgres"/>
 	<position x="1740" y="420"/>

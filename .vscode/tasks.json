@@ -91,6 +91,17 @@
             },
         },
         {
+            "label": "$(tasklist) Type check",
+            "type": "shell",
+            "command": "${config:python.pythonPath} -m mypy",
+            "options": {
+                "statusbar": {
+                    "color": "#b9ffb9"
+                },
+                "cwd": "${workspaceFolder}/server/backend"
+            },
+        },
+        {
             "label": "$(database) Db model",
             "type": "shell",
             "command": "pgmodeler ${workspaceRoot}/server/database/server_model.dbm",
