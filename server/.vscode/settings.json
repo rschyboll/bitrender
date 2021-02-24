@@ -1,5 +1,6 @@
 {
     "python.pythonPath":"/home/hoodrobinrs/Documents/Rendering_Server/venv/bin/python",
+    "python.analysis.extraPaths": ["./backend/src"],
     "files.exclude": {
         "**/.git": true,
         "**/.svn": true,
@@ -20,4 +21,13 @@
     },
     "python.linting.pylintEnabled": true,
     "python.linting.enabled": true,
+    "python.linting.pylintArgs": ["--extension-pkg-whitelist=pydantic"],
+    "editor.semanticTokenColorCustomizations": {
+        "rules": {
+            "variable:python": "#d4d4d4", // One Dark Pro's default text color
+            "variable.readonly:python": "#D19A66", // edit: "*.readonly" may be more comprehensive here actually...
+            "selfParameter": "#6090f1",
+            "property": "#d4d4d4"
+        }
+    }
 }

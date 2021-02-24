@@ -58,42 +58,20 @@
             "args": ["1"]
         },
         {
-            "label": "$(terminal-view-icon) Install server",
-            "type": "shell",
-            "command": "${config:python.pythonPath} -m pip install -e \".[dev]\"",
-            "options": {
-                "statusbar": {
-                    "color": "#ffb9b9"
-                },
-                "cwd": "${workspaceFolder}/server/backend/"
-            },
-        },
-        {
             "label": "$(notebook-execute) Run",
             "type": "shell",
-            "command": "${config:python.pservePath} development.ini --reload",
+            "command": "${config:python.pythonPath} -m uvicorn main:app --reload",
             "options": {
                 "statusbar": {
                     "color": "#b9beff"
                 },
-                "cwd": "${workspaceFolder}/server/backend/"
+                "cwd": "${workspaceFolder}/server/backend/src"
             },
         },
         {
             "label": "$(test-view-icon) Test",
             "type": "shell",
             "command": "${config:python.pythonPath} -m pytest",
-            "options": {
-                "statusbar": {
-                    "color": "#b9ffb9"
-                },
-                "cwd": "${workspaceFolder}/server/backend"
-            },
-        },
-        {
-            "label": "$(tasklist) Type check",
-            "type": "shell",
-            "command": "${config:python.pythonPath} -m mypy",
             "options": {
                 "statusbar": {
                     "color": "#b9ffb9"

@@ -3,7 +3,7 @@
 CAUTION: Do not modify this file unless you know what you are doing.
          Unexpected results may occur if the code is changed deliberately.
 -->
-<dbmodel pgmodeler-ver="0.9.3-beta1" use-changelog="false" author="Robin Schyboll" last-position="0,0" last-zoom="0.85" max-obj-count="15"
+<dbmodel pgmodeler-ver="0.9.3" use-changelog="false" author="Robin Schyboll" last-position="0,0" last-zoom="0.85" max-obj-count="15"
 	 default-schema="public" default-owner="postgres">
 <database name="rendering_server" is-template="false" allow-conns="true">
 	<role name="postgres"/>
@@ -26,7 +26,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	<column name="login" not-null="true">
 		<type name="varchar" length="32"/>
 	</column>
-	<column name="password" not-null="true">
+	<column name="password_hash" not-null="true">
 		<type name="bytea" length="64"/>
 	</column>
 	<column name="email" not-null="true">
