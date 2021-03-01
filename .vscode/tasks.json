@@ -112,17 +112,6 @@
             },
         },
         {
-            "label": "$(references) Db init",
-            "type": "shell",
-            "command": "source ../../venv/bin/activate.fish; rendering_server_init_db development.ini",
-            "options": {
-                "statusbar": {
-                    "color": "#fffeb9"
-                },
-                "cwd": "${workspaceFolder}/server/backend"
-            },
-        },
-        {
             "label": "||",
             "command": "./scripts/pass.sh",
             "args": ["2"]

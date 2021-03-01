@@ -1,5 +1,8 @@
 from fastapi import APIRouter
 
+from schema.user import UserView
+from storage import users as UserStorage
+
 user_resources = APIRouter(
     prefix='/user',
     tags=['users']
@@ -11,11 +14,11 @@ async def get_user():
 
 @user_resources.get('/{login}')
 async def get_user_by_login(login: str):
-    return "Test2"
+    return await UserStorage.get_by_login(login)
 
-@user_resources.get('/id/{id}')
-async def get_user_by_id(id: int):
-    return "Test3"
+@user_resources.get('/id/{user_id}', response_model=UserView)
+async def get_user_by_id(user_id: int):
+    return await UserStorage.get(user_id)
 
 @user_resources.get('s')
 async def get_users():
