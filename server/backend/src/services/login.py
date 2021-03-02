@@ -1,11 +1,9 @@
-"""Module containing services for users"""
-from fastapi import APIRouter
-from fastapi.security import OAuth2PasswordBearer
+from fastapi import APIRouter, HTTPException
+from fastapi.param_functions import Depends
+from fastapi.security import OAuth2PasswordRequestForm
 
-from controllers import login as loginController
+from controllers import login as LoginController
 from schema.user import UserCreate, UserLogin
-
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl='token')
 
 user_services = APIRouter(
     prefix='/user',
@@ -14,13 +12,16 @@ user_services = APIRouter(
 
 @user_services.post('/register')
 async def register(user: UserCreate):
-    """Endpoint used for creating/registering an user"""
-    await loginController.register(user)
+    await LoginController.register(user)
 
 @user_services.post('/login')
-async def login(user: UserLogin):
-    """Endpoint used for logging in"""
+async def login(form_data: OAuth2PasswordRequestForm = Depends()):
+    user = UserLogin(login=form_data.username, password=form_data.password)
+    token = await LoginController.login(user)
+    if not token:
+        raise HTTPException(status_code=400, detail="Incorrect username or password")
+    return {"access_token": token, "token_type": "bearer"}
 
 @user_services.post('/logout')
 async def logout():
-    """Endpoint used for logging out"""
+    pass
