@@ -7,13 +7,17 @@ from jose.exceptions import JWTError
 
 from config import get_settings
 from schema.user import UserCreate, UserLogin, UserView
-from storage import users as UserStorage
+from storage import users as UserStorage, NotFoundException
 
 settings = get_settings()
 
 async def authenticate_user(user_login: str, password: str) -> bool:
     password_hash = __hash_password(password)
-    print(await UserStorage.authenticate(user_login, password_hash))
+    try:
+        user_password_hash = UserStorage.get_user_password_hash(user_login)
+    except NotFoundException:
+        return False
+
     return await UserStorage.authenticate(user_login, password_hash)
 
 async def register(user: UserCreate):
@@ -30,13 +34,10 @@ async def get_current_user(token: str) -> Optional[UserView]:
     return None
 
 async def login(user: UserLogin) -> Optional[str]:
-    print(user)
     if await authenticate_user(user.login, user.password):
         user_view = await UserStorage.get_by_login(user.login)
-        print(user_view)
         token_expires = timedelta(minutes=settings.token_lifetime)
         token = __create_access_token({'login': user_view.login}, token_expires)
-        print(token)
         return token
     return None
 

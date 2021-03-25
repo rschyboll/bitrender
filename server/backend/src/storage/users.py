@@ -1,12 +1,9 @@
 from datetime import datetime
 from tortoise.transactions import atomic
 
-
 from models.user import User
 from schema.user import UserCreate, UserView
-from . import NotFoundException
 
-@atomic()
 async def create(user_data: UserCreate, password_hash: bytes, register_date: datetime) -> UserView:
     user: User = User(**user_data.dict(), password_hash = password_hash, register_date = register_date)
     await user.save()

@@ -38,7 +38,7 @@
                 "statusbar": {
                     "color": "#b9beff"
                 },
-                "cwd": "${workspaceFolder}/client/backend/src/"
+                "cwd": "${workspaceFolder}/client/src/"
             },
         },
         {
@@ -49,7 +49,7 @@
                 "statusbar": {
                     "color": "#b9ffb9"
                 },
-                "cwd": "${workspaceFolder}/client/backend"
+                "cwd": "${workspaceFolder}/client"
             },
         },
         {
