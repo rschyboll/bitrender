@@ -1,5 +1,6 @@
 {
-    "python.pythonPath":"/home/hoodrobinrs/Documents/Rendering_Server/venv/bin/python",
+    "python.pythonPath":"/home/hoodrobinrs/Documents/Rendering_Server/.venv/bin/python3.7",
+    "python.analysis.extraPaths": ["./client/src"],
     "files.exclude": {
         "**/.git": true,
         "**/.svn": true,
@@ -20,4 +21,13 @@
     },
     "python.linting.pylintEnabled": true,
     "python.linting.enabled": true,
+    "python.linting.pylintArgs": ["--extension-pkg-whitelist=pydantic", "--max-line-length=140", "--disable=C0111", "--extension-pkg-allow-list=bpy"],
+    "editor.semanticTokenColorCustomizations": {
+        "rules": {
+            "variable:python": "#d4d4d4",
+            "variable.readonly:python": "#D19A66",
+            "selfParameter": "#6090f1",
+            "property": "#d4d4d4"
+        }
+    }
 }

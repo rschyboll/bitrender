@@ -17,7 +17,7 @@ then
             #echo /home/hoodrobinrs/Dokumenty/Rendering_Server/venv/lib/python3.7/site-packages
             cmake ../blender \
                     -DCMAKE_INSTALL_PREFIX=$sitePackages \
-                    -DWITH_INSTALL_PORTABLE=ON
+                    -DWITH_INSTALL_PORTABLE=ON 
             make install
         else
             echo "Build bpy first"
