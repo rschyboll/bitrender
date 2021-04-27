@@ -1,0 +1,31 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "$(device-desktop) Client",
+            "type": "shell",
+            "command": "./scripts/choose_tasks.sh",
+            "args" : ["CLIENT"],
+            "options": {
+                "statusbar": {
+                    "color": "#e1e3ff"
+                },
+            }
+        },        {
+            "label": "$(server) SERVER",
+            "type": "shell",
+            "command": "./scripts/choose_tasks.sh",
+            "args" : ["SERVER"],
+            "options": {
+                "statusbar": {
+                    "color": "#e1e3ff"
+                },
+            }
+        },
+        {
+            "label": "||",
+            "command": "./scripts/pass.sh",
+            "args": ["0"]
+        }
+    ]
+}

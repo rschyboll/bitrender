@@ -1,0 +1,33 @@
+{
+    "python.pythonPath":"/home/hoodrobinrs/Documents/Rendering_Server/.venv/bin/python3.9",
+    "python.analysis.extraPaths": ["./client/src"],
+    "files.exclude": {
+        "**/.git": true,
+        "**/.svn": true,
+        "**/.hg": true,
+        "**/CVS": true,
+        "**/.DS_Store": true,
+        "**/*.pyc": true,
+        "**/__pycache__": true,
+        "**/venv": true,
+        "**/.pytest_cache": true,
+        "**/.mypy_cache": true,
+        "**/*.egg-info": true
+    },
+    "workbench.colorCustomizations": {
+        "statusBar.background" : "#333333",
+        "statusBar.border": "#333333",
+        "statusBarItem.hoverBackground": "#444444",
+    },
+    "python.linting.pylintEnabled": true,
+    "python.linting.enabled": true,
+    "python.linting.pylintArgs": ["--extension-pkg-whitelist=pydantic", "--max-line-length=120", "--disable=C0111", "--extension-pkg-allow-list=bpy"],
+    "editor.semanticTokenColorCustomizations": {
+        "rules": {
+            "variable:python": "#d4d4d4",
+            "variable.readonly:python": "#D19A66",
+            "selfParameter": "#6090f1",
+            "property": "#d4d4d4"
+        }
+    }
+}
