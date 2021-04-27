@@ -26,6 +26,39 @@
             "label": "||",
             "command": "./scripts/pass.sh",
             "args": ["0"]
-        }
+        },
+        {
+            "label": "Frontend:",
+            "command": "./scripts/pass.sh",
+            "options": {
+                "statusbar": {
+                    "color": "#e1e3ff"
+                },
+            }
+        },
+        {
+            "label": "$(testing-debug-icon) Run",
+            "type": "shell",
+            "command": "yarn",
+            "args" : ["start"],
+            "options": {
+                "statusbar": {
+                    "color": "#b4b9ff"
+                },
+                "cwd": "${workspaceFolder}/server/frontend/"
+            }
+        },
+        {
+            "label": "$(test-view-icon) Test",
+            "type": "shell",
+            "command": "yarn",
+            "args" : ["test"],
+            "options": {
+                "statusbar": {
+                    "color": "#b4ffbe"
+                },
+                "cwd": "${workspaceFolder}/server/frontend/"
+            }
+        },
     ]
 }

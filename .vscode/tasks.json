@@ -9,7 +9,7 @@
             "options": {
                 "statusbar": {
                     "color": "#e1e3ff"
-                }
+                },
             }
         },        {
             "label": "$(server) SERVER",
@@ -19,7 +19,7 @@
             "options": {
                 "statusbar": {
                     "color": "#e1e3ff"
-                }
+                },
             }
         },
         {
@@ -28,15 +28,37 @@
             "args": ["0"]
         },
         {
-            "label": "$(notebook-execute) Run client",
-            "type": "shell",
-            "command": "${config:python.pythonPath} main.py",
+            "label": "Frontend:",
+            "command": "./scripts/pass.sh",
             "options": {
                 "statusbar": {
-                    "color": "#b9beff"
+                    "color": "#e1e3ff"
                 },
-                "cwd": "${workspaceFolder}/client/src/"
             }
-        }
+        },
+        {
+            "label": "$(testing-debug-icon) Run",
+            "type": "shell",
+            "command": "yarn",
+            "args" : ["start"],
+            "options": {
+                "statusbar": {
+                    "color": "#b4b9ff"
+                },
+                "cwd": "${workspaceFolder}/server/frontend/"
+            }
+        },
+        {
+            "label": "$(test-view-icon) Test",
+            "type": "shell",
+            "command": "yarn",
+            "args" : ["test"],
+            "options": {
+                "statusbar": {
+                    "color": "#b4ffbe"
+                },
+                "cwd": "${workspaceFolder}/server/frontend/"
+            }
+        },
     ]
 }
