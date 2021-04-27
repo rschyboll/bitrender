@@ -1,0 +1,81 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "BPY",
+            "type": "shell",
+            "command": "./scripts/choose_tasks.sh",
+            "args" : ["BPY"]
+        },
+        {
+            "label": "CLIENT",
+            "type": "shell",
+            "command": "./scripts/choose_tasks.sh",
+            "args" : ["CLIENT"]
+        },        {
+            "label": "SERVER",
+            "type": "shell",
+            "command": "./scripts/choose_tasks.sh",
+            "args" : ["SERVER"]
+        },
+        {
+            "label": "||",
+            "command": "./scripts/pass.sh",
+            "args": ["0"]
+        },
+        {
+            "label": "$(notebook-execute) Run",
+            "type": "shell",
+            "command": "${config:python.pythonPath} -m uvicorn main:app --reload",
+            "options": {
+                "statusbar": {
+                    "color": "#b9beff"
+                },
+                "cwd": "${workspaceFolder}/server/backend/src"
+            }
+        },
+        {
+            "label": "$(test-view-icon) Test",
+            "type": "shell",
+            "command": "${config:python.pythonPath} -m pytest",
+            "options": {
+                "statusbar": {
+                    "color": "#b9ffb9"
+                },
+                "cwd": "${workspaceFolder}/server/backend"
+            }
+        },
+        {
+            "label": "$(database) Db model",
+            "type": "shell",
+            "command": "pgmodeler ${workspaceRoot}/server/database/server_model.dbm",
+            "options": {
+                "statusbar": {
+                    "color": "#fffeb9"
+                }
+            }
+        },
+        {
+            "label": "$(refresh) Db reload",
+            "type": "shell",
+            "command": "../../scripts/server_db_reload.sh",
+            "options": {
+                "statusbar": {
+                    "color": "#fffeb9"
+                },
+                "cwd": "${workspaceFolder}/server/database"
+            }
+        },
+        {
+            "label": "$(preview) Db view",
+            "type": "shell",
+            "command": "pgadmin4",
+            "options": {
+                "statusbar": {
+                    "color": "#fffeb9"
+                },
+                "cwd": "${workspaceFolder}/server/database"
+            }
+        }
+    ]
+}

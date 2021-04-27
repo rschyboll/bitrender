@@ -2,80 +2,30 @@
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "BPY",
+            "label": "$(device-desktop) Client",
             "type": "shell",
             "command": "./scripts/choose_tasks.sh",
-            "args" : ["BPY"]
-        },
-        {
-            "label": "CLIENT",
-            "type": "shell",
-            "command": "./scripts/choose_tasks.sh",
-            "args" : ["CLIENT"]
+            "args" : ["CLIENT"],
+            "options": {
+                "statusbar": {
+                    "color": "#e1e3ff"
+                },
+            }
         },        {
-            "label": "SERVER",
+            "label": "$(server) SERVER",
             "type": "shell",
             "command": "./scripts/choose_tasks.sh",
-            "args" : ["SERVER"]
+            "args" : ["SERVER"],
+            "options": {
+                "statusbar": {
+                    "color": "#e1e3ff"
+                },
+            }
         },
         {
             "label": "||",
             "command": "./scripts/pass.sh",
             "args": ["0"]
-        },
-        {
-            "label": "$(notebook-execute) Run",
-            "type": "shell",
-            "command": "${config:python.pythonPath} -m uvicorn main:app --reload",
-            "options": {
-                "statusbar": {
-                    "color": "#b9beff"
-                },
-                "cwd": "${workspaceFolder}/server/backend/src"
-            }
-        },
-        {
-            "label": "$(test-view-icon) Test",
-            "type": "shell",
-            "command": "${config:python.pythonPath} -m pytest",
-            "options": {
-                "statusbar": {
-                    "color": "#b9ffb9"
-                },
-                "cwd": "${workspaceFolder}/server/backend"
-            }
-        },
-        {
-            "label": "$(database) Db model",
-            "type": "shell",
-            "command": "pgmodeler ${workspaceRoot}/server/database/server_model.dbm",
-            "options": {
-                "statusbar": {
-                    "color": "#fffeb9"
-                }
-            }
-        },
-        {
-            "label": "$(refresh) Db reload",
-            "type": "shell",
-            "command": "../../scripts/server_db_reload.sh",
-            "options": {
-                "statusbar": {
-                    "color": "#fffeb9"
-                },
-                "cwd": "${workspaceFolder}/server/database"
-            }
-        },
-        {
-            "label": "$(preview) Db view",
-            "type": "shell",
-            "command": "pgadmin4",
-            "options": {
-                "statusbar": {
-                    "color": "#fffeb9"
-                },
-                "cwd": "${workspaceFolder}/server/database"
-            }
         }
     ]
 }

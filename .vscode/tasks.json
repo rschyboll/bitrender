@@ -2,21 +2,25 @@
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "BPY",
+            "label": "$(device-desktop) Client",
             "type": "shell",
             "command": "./scripts/choose_tasks.sh",
-            "args" : ["BPY"]
-        },
-        {
-            "label": "CLIENT",
-            "type": "shell",
-            "command": "./scripts/choose_tasks.sh",
-            "args" : ["CLIENT"]
+            "args" : ["CLIENT"],
+            "options": {
+                "statusbar": {
+                    "color": "#e1e3ff"
+                }
+            }
         },        {
-            "label": "SERVER",
+            "label": "$(server) SERVER",
             "type": "shell",
             "command": "./scripts/choose_tasks.sh",
-            "args" : ["SERVER"]
+            "args" : ["SERVER"],
+            "options": {
+                "statusbar": {
+                    "color": "#e1e3ff"
+                }
+            }
         },
         {
             "label": "||",
