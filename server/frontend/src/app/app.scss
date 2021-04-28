@@ -1,3 +1,19 @@
-#content {
+$sidebar-width: 6rem;
+
+#layout-base {
     min-height: 100vh;
+}
+
+#layout-sidebar {
+    height: 100vh;
+    width: $sidebar-width;
+    position: fixed;
+    top: 0;
+    left: 0;
+}
+
+#layout-content {
+    min-height: 100vh;
+    margin-left: $sidebar-width;
+    background-color: var(--surface-b);
 }

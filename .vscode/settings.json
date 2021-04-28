@@ -45,7 +45,7 @@
       "variable:python": "#d4d4d4",
       "variable.readonly:python": "#D19A66",
       "selfParameter": "#6090f1",
-      "property": "#d4d4d4"
+      "property:python": "#d4d4d4"
     }
   },
   "prettier.printWidth": 120

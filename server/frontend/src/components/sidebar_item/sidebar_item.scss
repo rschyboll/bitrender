@@ -1,0 +1,32 @@
+.sidebar-item {
+    border-radius: 4px;
+    position:relative;
+}
+
+.sidebar-item .p-button{
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    border-radius: 4px;
+    padding: 0.585rem 0;
+    cursor: pointer;
+    outline: none;
+    transition: background-color 0.2s;
+    width: 100%;
+}
+
+.sidebar-item .p-button:focus {
+    box-shadow: 0 0 0 1px #bbdefb;
+}
+
+.sidebar-item .p-button .p-button-icon{
+    margin-right: 0px;
+    font-size: 1.25rem;
+    color: var(--text-color);
+}
+
+.sidebar-item .p-button .p-button-label{
+    margin-top: 0.55rem;
+    font-size: 0.75rem;
+    color: var(--text-color);
+}
