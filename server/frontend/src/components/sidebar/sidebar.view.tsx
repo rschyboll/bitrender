@@ -2,7 +2,7 @@ import { FunctionComponent } from "react";
 import "./sidebar.scss";
 
 import { Logo } from "../logo/logo";
-import { SidebarItem, SidebarItemProps } from "../sidebar_item/sidebar_item.container";
+import { SidebarItem, SidebarItemProps } from "../sidebar_item";
 
 export const SidebarView: FunctionComponent<{ items: SidebarItemProps[] }> = (props) => {
   return (
