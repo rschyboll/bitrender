@@ -3,6 +3,7 @@ import { BrowserRouter, Route, Switch } from "react-router-dom";
 
 import { Sidebar } from "../components/sidebar";
 import { Topbar } from "../components/topbar";
+import { Tasks } from "../screens/tasks";
 
 export const AppView: FunctionComponent = () => {
   return (
@@ -18,7 +19,9 @@ export const AppView: FunctionComponent = () => {
           <div id="layout-content">
             <Switch>
               <Route path="/machines">Hello3</Route>
-              <Route path="/tasks">Hello2</Route>
+              <Route path="/tasks">
+                <Tasks />
+              </Route>
               <Route path="/">Hello</Route>
             </Switch>
           </div>

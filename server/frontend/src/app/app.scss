@@ -25,6 +25,7 @@ $layout-shadow: 0 2px 4px -1px rgb(0 0 0 / 20%), 0 4px 5px 0 rgb(0 0 0 / 14%), 0
     margin-left: $sidebar-width;
     background-color: var(--surface-b);
     flex: 1 1 auto;
+    padding: 2rem;
 }
 
 #layout-topbar {

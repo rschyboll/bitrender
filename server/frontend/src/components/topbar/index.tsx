@@ -4,7 +4,9 @@ import { useLocation } from "react-router";
 import { TopbarView } from "./view";
 import "./style.scss";
 
-export const Topbar: FunctionComponent<{}> = () => {
+export type TopbarProps = {};
+
+export const Topbar: FunctionComponent<TopbarProps> = () => {
   let location = useLocation().pathname.replace("/", "");
 
   if (location === "") {
