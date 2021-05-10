@@ -1,6 +1,6 @@
 import { render, screen } from "@testing-library/react";
 
-import { Logo } from "../../../components/logo/logo";
+import { Logo } from "../../../components/logo";
 
 test("Renders without errors", () => {
   render(<Logo />);

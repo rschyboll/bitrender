@@ -1,5 +1,7 @@
 import { FunctionComponent } from "react";
-import { SidebarItemView } from "./sidebar_item.view";
+
+import { SidebarItemView } from "./view";
+import "./style.scss";
 
 export type SidebarItemProps = {
   label: string;

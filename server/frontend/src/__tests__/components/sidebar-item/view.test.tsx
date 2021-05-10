@@ -3,7 +3,7 @@ import { fireEvent, render, screen } from "@testing-library/react";
 import { BrowserRouter, Router } from "react-router-dom";
 import { createMemoryHistory } from "history";
 
-import { SidebarItemView } from "../../../components/sidebar_item/sidebar_item.view";
+import { SidebarItemView } from "../../../components/sidebar-item/view";
 
 jest.mock("primereact/button", () => {
   return {
@@ -51,4 +51,12 @@ test("Has correct output", () => {
   );
   const buttonElement = screen.getByRole("button");
   expect(buttonElement).toHaveTextContent(label + " " + icon);
+});
+
+test("Throws exception when not in router", () => {
+  const label = "test_label";
+  const icon = "test_icon";
+  const path = "/";
+  console.error = () => {};
+  expect(() => render(<SidebarItemView path={path} label={label} icon={icon} />)).toThrow();
 });

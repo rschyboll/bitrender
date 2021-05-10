@@ -1,17 +1,14 @@
 import { FunctionComponent } from "react";
-import { BrowserRouter, Switch, Route } from "react-router-dom";
+import { BrowserRouter } from "react-router-dom";
 
-import { Sidebar } from "../components/sidebar/sidebar.container";
+import { Sidebar } from "../components/sidebar";
 
 export const AppView: FunctionComponent = () => {
   return (
     <div id="layout-base">
       <div id="layout-sidebar">
-        <Sidebar />
         <BrowserRouter>
-          <Switch>
-            <Route path="/" />
-          </Switch>
+          <Sidebar />
         </BrowserRouter>
       </div>
       <div id="layout-content"></div>

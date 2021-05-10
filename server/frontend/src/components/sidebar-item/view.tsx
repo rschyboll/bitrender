@@ -1,5 +1,4 @@
 import { FunctionComponent } from "react";
-import "./sidebar_item.scss";
 import { Link } from "react-router-dom";
 import { Button } from "primereact/button";
 

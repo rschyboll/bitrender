@@ -1,7 +1,8 @@
 import { FunctionComponent, useState } from "react";
 
-import { SidebarView } from "./sidebar.view";
-import { SidebarItemProps } from "../sidebar_item";
+import { SidebarView } from "./view";
+import { SidebarItemProps } from "../sidebar-item";
+import "./style.scss";
 
 export const Sidebar: FunctionComponent = () => {
   const items = useState<SidebarItemProps[]>([
