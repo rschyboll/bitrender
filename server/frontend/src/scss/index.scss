@@ -15,6 +15,7 @@ html {
     --font-family: Nunito !important;
 }
 
-body .p-component {
+
+body .p-component, body {
     font-family: var(--font-family);
 }

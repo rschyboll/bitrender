@@ -1,4 +1,6 @@
 $sidebar-width: 6rem;
+$topbar-height: 4rem;
+$layout-shadow: 0 2px 4px -1px rgb(0 0 0 / 20%), 0 4px 5px 0 rgb(0 0 0 / 14%), 0 1px 10px 0 rgb(0 0 0 / 12%);
 
 #layout-base {
     min-height: 100vh;
@@ -10,10 +12,23 @@ $sidebar-width: 6rem;
     position: fixed;
     top: 0;
     left: 0;
+    box-shadow: $layout-shadow;
+}
+
+#layout-content-wrapper{
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
 }
 
 #layout-content {
-    min-height: 100vh;
     margin-left: $sidebar-width;
     background-color: var(--surface-b);
+    flex: 1 1 auto;
+}
+
+#layout-topbar {
+    flex: 0 0 $topbar-height;
+    height: $topbar-height;
+    margin-left: $sidebar-width;
 }
