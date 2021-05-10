@@ -6,9 +6,9 @@ import "./style.scss";
 
 export const Sidebar: FunctionComponent = () => {
   const items = useState<SidebarItemProps[]>([
-    { label: "Dashboard", icon: "pi pi-fw pi-home", path: "/" },
-    { label: "Tasks", icon: "pi pi-fw pi-images", path: "/tasks" },
-    { label: "Machines", icon: "pi pi-fw pi-desktop", path: "/machines" },
+    { label: "navigation.dashboard", icon: "pi pi-fw pi-home", path: "/" },
+    { label: "navigation.tasks", icon: "pi pi-fw pi-images", path: "/tasks" },
+    { label: "navigation.machines", icon: "pi pi-fw pi-desktop", path: "/machines" },
   ])[0];
 
   return <SidebarView items={items} />;

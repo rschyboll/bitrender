@@ -1,0 +1,7 @@
+{
+    "navigation": {
+        "dashboard": "Dashboard",
+        "tasks": "Tasks",
+        "machines": "Machines"
+    }
+}
