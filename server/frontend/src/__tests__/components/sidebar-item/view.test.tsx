@@ -13,6 +13,14 @@ jest.mock("primereact/button", () => {
   };
 });
 
+jest.mock("react-i18next", () => ({
+  useTranslation: () => {
+    return {
+      t: (str: string) => str,
+    };
+  },
+}));
+
 test("Renders without errors", () => {
   const label = "test_label";
   const icon = "test_icon";
