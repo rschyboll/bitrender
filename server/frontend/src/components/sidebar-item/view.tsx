@@ -9,7 +9,7 @@ export const SidebarItemView: FunctionComponent<SidebarItemProps> = (props) => {
   const { t } = useTranslation();
 
   return (
-    <Link id="test" className="sidebar-item" to={props.path}>
+    <Link className={`sidebar-item ${props.highlighted ? "sidebar-item-highlighted" : null}`} to={props.path}>
       <Button className="p-button-text p-button-plain" label={t(props.label)} icon={props.icon} />
     </Link>
   );

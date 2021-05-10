@@ -67,3 +67,16 @@ test("Throws exception when not in router", () => {
   console.error = () => {};
   expect(() => render(<SidebarItemView path={path} label={label} icon={icon} />)).toThrow();
 });
+
+test("Changes color on right path", () => {
+  const label = "test_label";
+  const icon = "test_icon";
+  const path = "/";
+  render(
+    <BrowserRouter>
+      <SidebarItemView path={path} label={label} icon={icon} highlighted={true} />
+    </BrowserRouter>
+  );
+  const linkElement = screen.getByRole("button").parentElement;
+  expect(linkElement).toHaveClass("sidebar-item-highlighted");
+});

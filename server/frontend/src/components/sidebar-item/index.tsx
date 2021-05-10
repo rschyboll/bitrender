@@ -7,6 +7,7 @@ export type SidebarItemProps = {
   label: string;
   icon: string;
   path: string;
+  highlighted?: boolean;
 };
 
 export const SidebarItem: FunctionComponent<SidebarItemProps> = (props) => {
