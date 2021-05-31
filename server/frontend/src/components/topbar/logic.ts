@@ -1,5 +1,3 @@
-import { Location } from "history";
-
 export function getPathName(location: { pathname: string }) {
   const pathName = location.pathname.replace("/", "");
 

@@ -2,6 +2,10 @@
     "navigation": {
         "dashboard": "Pulpit",
         "tasks": "Zadania",
-        "machines": "Maszyny"
+        "machines": "Maszyny",
+        "addTask": "Dodaj zadanie"
+    },
+    "tasks" : {
+        "new": "Nowe zadanie"
     }
 }

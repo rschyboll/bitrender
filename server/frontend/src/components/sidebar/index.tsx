@@ -2,9 +2,9 @@ import { FunctionComponent, useState, useEffect } from "react";
 import { useLocation } from "react-router";
 
 import { SidebarView } from "./view";
+import { highlightCurrentPath } from "./logic";
 import { SidebarItemProps } from "../sidebar-item";
 import "./style.scss";
-import { highlightCurrentPath } from "./logic";
 
 const sidebarItems = [
   { label: "navigation.dashboard", icon: "pi pi-fw pi-home", path: "/" },

@@ -1,9 +1,10 @@
 import { FunctionComponent } from "react";
 import { BrowserRouter, Route, Switch } from "react-router-dom";
 
-import { Sidebar } from "../components/sidebar";
-import { Topbar } from "../components/topbar";
-import { Tasks } from "../screens/tasks";
+import { Sidebar } from "components/sidebar";
+import { Topbar } from "components/topbar";
+import { Tasks } from "screens/tasks";
+import { AddTask } from "screens/addTask";
 
 export const AppView: FunctionComponent = () => {
   return (
@@ -21,6 +22,10 @@ export const AppView: FunctionComponent = () => {
               <Route path="/machines">Hello3</Route>
               <Route path="/tasks">
                 <Tasks />
+              </Route>
+
+              <Route path="/addTask">
+                <AddTask />
               </Route>
               <Route path="/">Hello</Route>
             </Switch>
