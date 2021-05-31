@@ -25,7 +25,10 @@
     "**/venv": true,
     "**/.pytest_cache": true,
     "**/.mypy_cache": true,
-    "**/*.egg-info": true
+    "**/*.egg-info": true,
+    "**/yarn*": true,
+    "**/node_modules": true,
+    "**/coverage": true
   },
   "workbench.colorCustomizations": {
     "statusBar.background": "#333333",

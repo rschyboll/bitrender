@@ -52,7 +52,7 @@
             "label": "$(test-view-icon) Test",
             "type": "shell",
             "command": "yarn",
-            "args" : ["test"],
+            "args" : ["test", "--verbose"],
             "options": {
                 "statusbar": {
                     "color": "#b4ffbe"
@@ -60,5 +60,17 @@
                 "cwd": "${workspaceFolder}/server/frontend/"
             }
         },
+        {
+            "label": "$(testing-show-as-list-icon) Coverage",
+            "type": "shell",
+            "command": "yarn",
+            "args" : ["test", "--coverage", "--watchAll=false"],
+            "options": {
+                "statusbar": {
+                    "color": "#58D260"
+                },
+                "cwd": "${workspaceFolder}/server/frontend/"
+            }
+        }
     ]
 }

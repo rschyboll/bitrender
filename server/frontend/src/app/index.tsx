@@ -1,5 +1,5 @@
 import { FunctionComponent } from "react";
-import "./app.scss";
+import "./style.scss";
 
 import { AppView } from "./view";
 

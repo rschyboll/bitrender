@@ -18,6 +18,7 @@
     "@testing-library/jest-dom": "^5.12.0",
     "@testing-library/react": "^11.2.6",
     "@testing-library/user-event": "^13.1.5",
+    "@types/enzyme": "^3.10.8",
     "@types/jest": "^26.0.23",
     "@types/node": "^15.0.1",
     "@types/react": "^17.0.4",
@@ -25,7 +26,11 @@
     "@types/react-router-dom": "^5.1.7",
     "@typescript-eslint/eslint-plugin": "^4.22.0",
     "@typescript-eslint/parser": "^4.22.0",
+    "@wojtekmaj/enzyme-adapter-react-17": "^0.6.1",
+    "enzyme": "^3.11.0",
     "eslint": "^7.25.0",
+    "eslint-plugin-jest-dom": "^3.9.0",
+    "eslint-plugin-testing-library": "^4.4.0",
     "prettier": "^2.2.1",
     "react-scripts": "^4.0.3",
     "typescript": "^4.2.4"
@@ -39,16 +44,10 @@
   "jest": {
     "testMatch": [
       "**/__tests__/**/*.test.tsx"
-    ]
-  },
-  "eslintConfig": {
-    "parser": "@typescript-eslint/parser",
-    "plugins": [
-      "@typescript-eslint"
     ],
-    "extends": [
-      "react-app",
-      "react-app/jest"
+    "coveragePathIgnorePatterns": [
+      "src/i18n.ts",
+      "src/index.tsx"
     ]
   },
   "browserslist": {

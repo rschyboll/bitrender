@@ -8,9 +8,12 @@ import { SidebarItemProps } from ".";
 export const SidebarItemView: FunctionComponent<SidebarItemProps> = (props) => {
   const { t } = useTranslation();
 
+  const linkClassName = `sidebar-item ${props.highlighted ? "sidebar-item-highlighted" : null}`;
+  const buttonClassName = `p-button-text p-button-plain`;
+
   return (
-    <Link className={`sidebar-item ${props.highlighted ? "sidebar-item-highlighted" : null}`} to={props.path}>
-      <Button className="p-button-text p-button-plain" label={t(props.label)} icon={props.icon} />
+    <Link className={linkClassName} to={props.path}>
+      <Button className={buttonClassName} label={t(props.label)} icon={props.icon} />
     </Link>
   );
 };
