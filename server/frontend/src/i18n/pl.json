@@ -7,5 +7,10 @@
     },
     "tasks" : {
         "new": "Nowe zadanie"
+    },
+    "addTask": {
+        "drop": "Upuść plik tutaj lub wyszukaj",
+        "browse": "Przeglądaj",
+        "wrongFile": "Plik {{file}} nie jest akceptowalnym plikiem zadania"
     }
 }

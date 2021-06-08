@@ -1,0 +1,32 @@
+.fileDropImage {
+    border-radius: 50%;
+    border: 0px;
+    background-color: var(--surface-b);
+    width: 9rem;
+    height: 9rem;
+    margin-bottom: 1rem;
+    overflow: visible;
+}
+
+.fileDropText {
+    vertical-align: super;
+    font-size: 1.2em; 
+    color: var(--text-color-secondary); 
+}
+
+.fileDrop  {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 1rem;
+}
+
+.fileDropCard.p-card .p-card-body {
+    padding: 0px;
+}
+
+.fileDrop:focus, .fileDrop.focus {
+    padding: 0.9rem;
+    border-radius: 3px;
+    border: 0.1rem dashed var(--blue-500);
+}
