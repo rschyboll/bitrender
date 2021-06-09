@@ -1,7 +1,9 @@
-import { FunctionComponent } from "react";
+import { FunctionComponent, useState } from "react";
 
 import { AddTaskView } from "./view";
 
 export const AddTask: FunctionComponent = () => {
-  return <AddTaskView />;
+  const [file, setFile] = useState<File>();
+
+  return <AddTaskView file={file} setFile={setFile} />;
 };
