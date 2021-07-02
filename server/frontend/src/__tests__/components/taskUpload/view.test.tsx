@@ -41,15 +41,15 @@ jest.mock("react-i18next", () => ({
 describe("Functional tests", () => {
   test("Renders without errors", () => {
     const messagesRef = { current: null };
-    const onDropAccepted = () => {};
-    const onDropRejected = () => {};
+    const onDropAccepted = jest.fn();
+    const onDropRejected = jest.fn();
     render(
       <TaskUploadView messagesRef={messagesRef} onDropAccepted={onDropAccepted} onDropRejected={onDropRejected} />
     );
   });
   test("Calls onDropAccepted when dropping .blend file", async () => {
     const messagesRef = { current: null };
-    const onDropRejected = () => {};
+    const onDropRejected = jest.fn();
     const onDropAccepted = jest.fn();
 
     const file = new File(["test"], "test.blend");
@@ -69,7 +69,7 @@ describe("Functional tests", () => {
   });
   test("Calls onDropRejected when dropping wrong file", async () => {
     const messagesRef = { current: null };
-    const onDropAccepted = () => {};
+    const onDropAccepted = jest.fn();
     const onDropRejected = jest.fn();
 
     const file = new File(["test"], "test.png");
@@ -87,13 +87,14 @@ describe("Functional tests", () => {
 
     expect(onDropRejected).toHaveBeenCalledWith([{ file: file, errors: expect.any(Object) }], expect.any(Object));
   });
+
   test("Accepts only one file", async () => {
     const messagesRef = { current: null };
-    const onDropAccepted = () => {};
+    const onDropAccepted = jest.fn();
     const onDropRejected = jest.fn();
 
-    const files = [new File(["test"], "test.blend"), new File(["test2"], "test2.blend")];
-    const data = mockData(files);
+    let files = [new File(["test"], "test.blend"), new File(["test2"], "test2.blend")];
+    let data = mockData(files);
 
     const ui = (
       <TaskUploadView messagesRef={messagesRef} onDropAccepted={onDropAccepted} onDropRejected={onDropRejected} />
@@ -103,24 +104,34 @@ describe("Functional tests", () => {
 
     dispatchEvt(section, "drop", data);
     await flushPromises(rerender, ui);
+
+    expect(onDropRejected).toHaveBeenCalled();
+
+    files = [new File(["test"], "test.blend")];
+    data = mockData(files);
+
+    dispatchEvt(section, "drop", data);
+    await flushPromises(rerender, ui);
+
+    expect(onDropAccepted).toHaveBeenCalled();
   });
 });
 
 describe("Presentational tests", () => {
   test("Renders svg logo", () => {
     const messagesRef = { current: null };
-    const onDropAccepted = () => {};
-    const onDropRejected = () => {};
+    const onDropAccepted = jest.fn();
+    const onDropRejected = jest.fn();
     render(
       <TaskUploadView messagesRef={messagesRef} onDropAccepted={onDropAccepted} onDropRejected={onDropRejected} />
     );
     const img = screen.getByRole("img");
     expect(img).toBeInTheDocument();
   });
-  test("Renders outile when dropping file", async () => {
+  test("Renders outline when dropping file", async () => {
     const messagesRef = { current: null };
-    const onDropAccepted = () => {};
-    const onDropRejected = () => {};
+    const onDropAccepted = jest.fn();
+    const onDropRejected = jest.fn();
 
     const file = new File(["test"], "test.blend");
     const data = mockData([file]);

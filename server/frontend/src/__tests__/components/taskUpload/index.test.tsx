@@ -18,3 +18,5 @@ describe("Functional tests", () => {
     render(<TaskUpload setFile={setFile} file={file} />);
   });
 });
+
+describe("Presentational tests", () => {});

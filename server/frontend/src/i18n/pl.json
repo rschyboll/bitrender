@@ -11,6 +11,18 @@
     "addTask": {
         "drop": "Upuść plik tutaj lub wyszukaj",
         "browse": "Przeglądaj",
-        "wrongFile": "Plik {{file}} nie jest akceptowalnym plikiem zadania"
+        "wrongFile": "Plik {{file}} nie jest akceptowalnym plikiem zadania",
+        "config": {
+            "projectSettings": "Dane zadania",
+            "projectSize": "Rozmiar pliku",
+            "projectName": "Nazwa pliku",
+
+            "renderSettings": "Ustawienia renderowania",
+            "renderEngine": "Silnik renderujący",
+            "cycles": "Cycles",
+            "eevee": "Eevee",
+            "sampleAmount": "Ilość próbek",
+            "upload": "Wyślij"
+        }
     }
 }
