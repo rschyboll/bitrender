@@ -1,0 +1,23 @@
+#topbar {
+    background-color: var(--surface-a);
+    height: 100%;
+    justify-content: space-between;
+    display: flex;
+    align-items: center;
+}
+
+#topbar-left {
+    align-items: center;
+}
+
+#topbar-right {
+
+}
+
+#topbar-viewname {
+    font-size: 1.25rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    color: var(--text-color);
+    padding-left: 2rem;
+}

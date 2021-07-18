@@ -1,0 +1,16 @@
+#sidebar {
+    height: 100%;
+    width: 100%;
+    padding:1rem;
+    background-color: var(--surface-a);
+    border-right: 1px solid var(--surface-d);
+}
+
+.sidebar-logo {
+    width: 100%;
+}
+
+.sidebar-separator {
+    border-top: 1px solid var(--surface-d);
+    margin: 1rem 0;
+}
