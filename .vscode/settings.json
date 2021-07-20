@@ -1,9 +1,4 @@
 {
-  "[python]": {},
-  "[javascript]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode",
-    "editor.formatOnSave": true,
-  },
   "[typescript]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode",
     "editor.formatOnSave": true,
@@ -12,8 +7,8 @@
     "editor.defaultFormatter": "esbenp.prettier-vscode",
     "editor.formatOnSave": true,
   },
-  "python.pythonPath": "/home/hoodrobinrs/Documents/Rendering_Server/.venv/bin/python3.9",
-  "python.analysis.extraPaths": ["./client/src"],
+  "python.defaultInterpreterPath": "/home/hoodrobinrs/Documents/Rendering_Server/.venv/bin/python3.9",
+  "python.analysis.extraPaths": ["./server/backend/src"],
   "files.exclude": {
     "**/.git": true,
     "**/.svn": true,
