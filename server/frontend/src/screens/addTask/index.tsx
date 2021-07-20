@@ -1,5 +1,6 @@
-import { FormEvent, FunctionComponent, useState } from "react";
+import { FunctionComponent, useState } from "react";
 
+import axios from "axiosInstance";
 import { AddTaskView } from "./view";
 import "./style.scss";
 
@@ -22,6 +23,23 @@ export const AddTask: FunctionComponent = () => {
     setSampleAmount(100);
   };
 
+  const uploadFile = async () => {
+    if (file != null) {
+      const data = new FormData();
+      data.append("file", file);
+      data.append("sampleAmount", sampleAmount.toString());
+
+      try {
+        const promise = await axios({ method: "post", url: "/task/new", data: data });
+        if (promise.status === 200) {
+          console.log("ok");
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    }
+  };
+
   return (
     <AddTaskView
       renderingEngine={renderingEngine}
@@ -31,6 +49,7 @@ export const AddTask: FunctionComponent = () => {
       sampleAmount={sampleAmount}
       setSampleAmount={changeSampleAmount}
       abortTask={abortTask}
+      uploadFile={uploadFile}
     />
   );
 };

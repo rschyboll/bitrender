@@ -21,6 +21,7 @@ export type AddTaskViewProps = {
   sampleAmount: number;
   setSampleAmount: (event: React.FormEvent<HTMLInputElement>) => void;
   abortTask: () => void;
+  uploadFile: () => void;
 };
 
 export const AddTaskView: FunctionComponent<AddTaskViewProps> = (props) => {
@@ -60,7 +61,7 @@ export const AddTaskView: FunctionComponent<AddTaskViewProps> = (props) => {
           <InputText type="number" value={props.sampleAmount} onChange={props.setSampleAmount} />
         </div>
       </div>
-      <Button label={t("addTask.config.upload")} />
+      <Button label={t("addTask.config.upload")} onClick={props.uploadFile} />
     </Card>
   );
 };

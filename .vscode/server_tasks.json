@@ -71,6 +71,55 @@
                 },
                 "cwd": "${workspaceFolder}/server/frontend/"
             }
-        }
+        }, 
+        {
+            "label": "||",
+            "command": "./scripts/pass.sh",
+            "args": ["1"]
+        },
+        {
+            "label": "Backend:",
+            "command": "./scripts/pass.sh",
+            "options": {
+                "statusbar": {
+                    "color": "#e1e3ff"
+                },
+            }
+        },
+        {
+            "label": "$(testing-debug-icon) Run ",
+            "type": "shell",
+            "command": "${config:python.defaultInterpreterPath}",
+            "args" : ["-m", "uvicorn", "main:app", "--reload"],
+            "options": {
+                "statusbar": {
+                    "color": "#b4b9ff"
+                },
+                "cwd": "${workspaceFolder}/server/backend/src"
+            }
+        },
+        {
+            "label": "$(test-view-icon) Test ",
+            "type": "shell",
+            "command": "${config:python.defaultInterpreterPath}",
+            "args" : ["-m", "pytest"],
+            "options": {
+                "statusbar": {
+                    "color": "#b4ffbe"
+                },
+                "cwd": "${workspaceFolder}/server/backend/"
+            }
+        },
+        {
+            "label": "$(testing-show-as-list-icon) Coverage ",
+            "type": "shell",
+            "command": "../../scripts/coverage_python.sh",
+            "options": {
+                "statusbar": {
+                    "color": "#58D260"
+                },
+                "cwd": "${workspaceFolder}/server/backend/"
+            }
+        }, 
     ]
 }
