@@ -121,5 +121,39 @@
                 "cwd": "${workspaceFolder}/server/backend/"
             }
         }, 
+        {
+            "label": "||",
+            "command": "./scripts/pass.sh",
+            "args": ["3"]
+        },
+        {
+            "label": "Database:",
+            "command": "./scripts/pass.sh",
+            "options": {
+                "statusbar": {
+                    "color": "#e1e3ff"
+                },
+            }
+        },
+        {
+            "label": "$(testing-debug-icon)  Run",
+            "command": "sudo",
+            "args": ["systemctl", "start", "postgresql"],
+            "options": {
+                "statusbar": {
+                    "color": "#b4b9ff"
+                },
+            }
+        },
+        {
+            "label": "$(preview)  View",
+            "command": "dbeaver",
+            "options": {
+                "statusbar": {
+                    "color": "#fffbb4"
+                },
+            }
+        }, 
+
     ]
 }

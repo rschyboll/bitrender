@@ -31,13 +31,18 @@
     "statusBarItem.hoverBackground": "#444444"
   },
   "python.linting.pylintEnabled": true,
+  "python.linting.mypyEnabled": true,
   "python.linting.enabled": true,
   "python.linting.pylintArgs": [
     "--extension-pkg-whitelist=pydantic",
     "--max-line-length=120",
     "--disable=C0111",
-    "--extension-pkg-allow-list=bpy"
+    "--load-plugins=tortoise.contrib.pylint"
   ],
+  "python.linting.mypyArgs": [
+    "--follow-imports=silent",
+    "--strict"
+],
   "editor.semanticTokenColorCustomizations": {
     "rules": {
       "variable:python": "#d4d4d4",
@@ -46,5 +51,5 @@
       "property:python": "#d4d4d4"
     }
   },
-  "prettier.printWidth": 120
+  "customWindowZoom.zoomLevelChangeValue": 0.1,
 }
