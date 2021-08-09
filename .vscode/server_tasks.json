@@ -102,23 +102,25 @@
             "label": "$(test-view-icon) Test ",
             "type": "shell",
             "command": "${config:python.defaultInterpreterPath}",
-            "args" : ["-m", "pytest"],
+            "args" : ["-m", "pytest", "-W", "ignore::DeprecationWarning"],
             "options": {
+                "env": {"task_files_path": "tasks_test/"},
                 "statusbar": {
                     "color": "#b4ffbe"
                 },
-                "cwd": "${workspaceFolder}/server/backend/"
+                "cwd": "${workspaceFolder}/server/backend/src"
             }
         },
         {
             "label": "$(testing-show-as-list-icon) Coverage ",
             "type": "shell",
-            "command": "../../scripts/coverage_python.sh",
+            "command": "../../../scripts/coverage_python.sh",
             "options": {
+                "env": {"task_files_path": "tasks_test/"},
                 "statusbar": {
                     "color": "#58D260"
                 },
-                "cwd": "${workspaceFolder}/server/backend/"
+                "cwd": "${workspaceFolder}/server/backend/src"
             }
         }, 
         {

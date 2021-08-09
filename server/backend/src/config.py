@@ -15,8 +15,9 @@ tortoise_orm = {
 class Settings(BaseSettings):
     app_name = "Rendering API"
     postgres_database_url = "postgres://postgres:@localhost/rendering_server"
+    postgres_test_database_url = "postgres://postgres:@localhost/test_{}"
     models = ["models.tasks", "aerich.models"]
-    task_files_path = "tasks/"
+    task_files_path = "../tasks/"
 
 
 @lru_cache()

@@ -1,12 +1,11 @@
-from typing import Type, TypeVar
+from uuid import UUID
+from typing import Optional, Type, TypeVar
 from enum import Enum
 
 from fastapi import Form, File, UploadFile
-from pydantic import BaseModel, UUID4
+from pydantic import BaseModel
 
-# pylint: disable=invalid-name
-T = TypeVar("T", bound="TaskIn")
-# pylint: enable=invalid-name
+TASKCREATE = TypeVar("TASKCREATE", bound="TaskCreate")
 
 
 class Engines(str, Enum):
@@ -14,25 +13,25 @@ class Engines(str, Enum):
     EEVEE = "eevee"
 
 
-class TaskIn(BaseModel):
+class TaskCreate(BaseModel):
     file: UploadFile
     engine: Engines
     samples: int
 
     @classmethod
     def as_form(
-        cls: Type[T],
+        cls: Type[TASKCREATE],
         file: UploadFile = File(...),
         engine: Engines = Form(...),
         samples: int = Form(...),
-    ) -> T:
+    ) -> TASKCREATE:
         return cls(file=file, engine=engine, samples=samples)
 
 
 class TaskView(BaseModel):
-    id: UUID4
+    id: UUID
     name: str
-    engine: str
+    engine: Engines
     samples: int
 
     class Config:

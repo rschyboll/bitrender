@@ -1,0 +1,13 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Python: Server",
+            "type": "python",
+            "request": "launch",
+            "program": "server/backend/src/main.py",
+            "console": "integratedTerminal",
+            "host": "127.0.0.1"
+        }
+    ]
+}
