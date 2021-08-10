@@ -27,10 +27,11 @@ export const AddTask: FunctionComponent = () => {
     if (file != null) {
       const data = new FormData();
       data.append("file", file);
-      data.append("sampleAmount", sampleAmount.toString());
+      data.append("data", JSON.stringify({ name: "asd", rendering_engine: "", sample_amount: "1" }));
 
       try {
-        const promise = await axios({ method: "post", url: "/task/new", data: data });
+        const promise = await axios({ method: "post", url: "/tasks/new", data: data });
+        console.log(promise);
         if (promise.status === 200) {
           console.log("ok");
         }

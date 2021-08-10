@@ -102,24 +102,60 @@
             "label": "$(test-view-icon) Test ",
             "type": "shell",
             "command": "${config:python.defaultInterpreterPath}",
-            "args" : ["-m", "pytest"],
+            "args" : ["-m", "pytest", "-W", "ignore::DeprecationWarning"],
             "options": {
+                "env": {"task_files_path": "../tasks_test/"},
                 "statusbar": {
                     "color": "#b4ffbe"
                 },
-                "cwd": "${workspaceFolder}/server/backend/"
+                "cwd": "${workspaceFolder}/server/backend/src"
             }
         },
         {
             "label": "$(testing-show-as-list-icon) Coverage ",
             "type": "shell",
-            "command": "../../scripts/coverage_python.sh",
+            "command": "../../../scripts/coverage_python.sh",
             "options": {
+                "env": {"task_files_path": "../tasks_test/"},
                 "statusbar": {
                     "color": "#58D260"
                 },
-                "cwd": "${workspaceFolder}/server/backend/"
+                "cwd": "${workspaceFolder}/server/backend/src"
             }
         }, 
+        {
+            "label": "||",
+            "command": "./scripts/pass.sh",
+            "args": ["3"]
+        },
+        {
+            "label": "Database:",
+            "command": "./scripts/pass.sh",
+            "options": {
+                "statusbar": {
+                    "color": "#e1e3ff"
+                },
+            }
+        },
+        {
+            "label": "$(testing-debug-icon)  Run",
+            "command": "sudo",
+            "args": ["systemctl", "start", "postgresql"],
+            "options": {
+                "statusbar": {
+                    "color": "#b4b9ff"
+                },
+            }
+        },
+        {
+            "label": "$(preview)  View",
+            "command": "dbeaver",
+            "options": {
+                "statusbar": {
+                    "color": "#fffbb4"
+                },
+            }
+        }, 
+
     ]
 }
