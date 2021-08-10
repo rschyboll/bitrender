@@ -27,8 +27,6 @@ async def __write_file_to_disk(file: UploadFile, uuid: UUID) -> None:
         while content := await file.read(1024):
             if isinstance(content, bytes):
                 await out_file.write(content)
-            elif isinstance(content, str):
-                await out_file.write(content.encode())
 
 
 async def get() -> List[TaskView]:
@@ -41,4 +39,10 @@ async def get() -> List[TaskView]:
 
 async def get_by_id(task_id: UUID) -> TaskView:
     task_db = await Task.get(id=task_id)
+    return TaskView.from_orm(task_db)
+
+
+async def delete(task_id: UUID) -> TaskView:
+    task_db = await Task.get(id=task_id)
+    await task_db.delete()
     return TaskView.from_orm(task_db)

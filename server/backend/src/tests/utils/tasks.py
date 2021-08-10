@@ -6,7 +6,7 @@ from typing import List, Tuple
 from fastapi import UploadFile
 
 from models.tasks import Task
-from schemas.tasks import TaskCreate, TaskUpdate, Engines
+from schemas.tasks import TaskCreate, Engines
 from tests.utils import random_lower_string
 
 
