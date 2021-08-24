@@ -1,8 +1,7 @@
-from sqlalchemy import engine_from_config
-from sqlalchemy.orm import sessionmaker
-from sqlalchemy.orm import configure_mappers
-from sqlalchemy.ext.declarative import declarative_base
 import zope.sqlalchemy
+from sqlalchemy import engine_from_config
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import configure_mappers, sessionmaker
 
 Base = declarative_base()
 

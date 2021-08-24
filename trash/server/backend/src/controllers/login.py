@@ -2,12 +2,12 @@ from datetime import datetime, timedelta
 from typing import Optional
 
 import bcrypt
+from config import get_settings
 from jose import jwt
 from jose.exceptions import JWTError
-
-from config import get_settings
 from schema.user import UserCreate, UserLogin, UserView
-from storage import users as UserStorage, NotFoundException
+from storage import NotFoundException
+from storage import users as UserStorage
 
 settings = get_settings()
 

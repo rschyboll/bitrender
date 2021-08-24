@@ -1,18 +1,17 @@
 # pylint: disable=invalid-overridden-method
 import os
+from typing import Any, List, Optional, Tuple
 from uuid import UUID
-from typing import Optional, Any, List, Tuple
 
-import pytest
 import aiofiles
-from tortoise.contrib.test import TruncationTestCase
-from tortoise.exceptions import DoesNotExist
-
-from tests.utils.tasks import random_task_data, init_random_task_data
-from storage import tasks
+import pytest
+from config import get_settings
 from models.tasks import Task
 from schemas.tasks import TaskCreate
-from config import get_settings
+from storage import tasks
+from tests.utils.tasks import init_random_task_data, random_task_data
+from tortoise.contrib.test import TruncationTestCase
+from tortoise.exceptions import DoesNotExist
 
 settings = get_settings()
 
@@ -51,7 +50,7 @@ class TestWithData(TruncationTestCase):
     async def test_delete(self) -> None:
         if self.test_data is None:
             raise Exception()
-        for test_id, test_task in self.test_data:
+        for test_id, _ in self.test_data:
             await Task.get(id=test_id)
             await tasks.delete(test_id)
             with pytest.raises(DoesNotExist):

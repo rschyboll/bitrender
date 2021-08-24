@@ -1,5 +1,6 @@
 from enum import Enum
 
+
 def includeme(config):
     config.scan('.')
 

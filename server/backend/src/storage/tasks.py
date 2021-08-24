@@ -1,14 +1,13 @@
 import os
-from uuid import UUID
 from typing import List
+from uuid import UUID
 
 import aiofiles
-from fastapi import UploadFile
-from tortoise.transactions import atomic
-
 from config import get_settings
-from schemas.tasks import TaskCreate, TaskView
+from fastapi import UploadFile
 from models.tasks import Task
+from schemas.tasks import TaskCreate, TaskView
+from tortoise.transactions import atomic
 
 settings = get_settings()
 

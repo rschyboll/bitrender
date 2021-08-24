@@ -1,9 +1,11 @@
+from typing import Any, Dict, List, Tuple
+
 import bcrypt
-from typing import Tuple, List, Dict, Any
 from pyramid.request import Request
 
-from ..storage import user as UserStorage
 from ..models.user import User
+from ..storage import user as UserStorage
+
 
 def __hashPassword(password: str) -> bytes:
     salt: bytes = bcrypt.gensalt()

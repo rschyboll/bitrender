@@ -1,31 +1,41 @@
-import os
 import json
-from typing import Any, Optional
-from dataclasses import dataclass, field
-from enum import Enum, IntEnum
+import os
 from asyncio import CancelledError
 from asyncio.queues import PriorityQueue
+from asyncio.subprocess import PIPE, Process, create_subprocess_exec
 from asyncio.tasks import Task, create_task
-from asyncio.subprocess import Process, PIPE, create_subprocess_exec
+from dataclasses import dataclass, field
+from enum import Enum, IntEnum
+from typing import Any, Optional
+
 
 class MessagePriority(IntEnum):
     STDOUT = 1
     STDERR = 2
     STATE = 3
 
+
 class MessageType(Enum):
-    STDERR = 'stderr'
-    STDOUT = 'stdout'
-    STATE = 'state'
+    STDERR = "stderr"
+    STDOUT = "stdout"
+    STATE = "state"
+
 
 @dataclass(order=True)
-class ProcessMessage():
+class ProcessMessage:
     priority: MessagePriority
     message: str = field(compare=False)
     type: MessageType = field(compare=False)
 
-class BlenderSubprocess():
-    def __init__(self, blender_bin_path: str, script_path: str, config_path: str, **kwargs: dict[str, Any]) -> None:
+
+class BlenderSubprocess:
+    def __init__(
+        self,
+        blender_bin_path: str,
+        script_path: str,
+        config_path: str,
+        **kwargs: dict[str, Any]
+    ) -> None:
         self.blender_bin_path: str = blender_bin_path
         self.script_path: str = script_path
         self.config_path: str = config_path
@@ -33,19 +43,28 @@ class BlenderSubprocess():
         self.__process: Optional[Process] = None
         self.__stderr_listener: Optional[Task] = None
         self.__stdout_listener: Optional[Task] = None
-        self.__queue: PriorityQueue = PriorityQueue()
+        self.__queue: PriorityQueue[ProcessMessage] = PriorityQueue()
         self.running: bool = False
 
     async def __aenter__(self):
         self.running = True
         self.__setup_env__()
-        self.__process = await create_subprocess_exec(self.blender_bin_path, '-b', '--python', self.script_path,
-                                                    '--', json.dumps(self.kwargs), stdout=PIPE, stderr=PIPE, stdin=PIPE)
+        self.__process = await create_subprocess_exec(
+            self.blender_bin_path,
+            "-b",
+            "--python",
+            self.script_path,
+            "--",
+            json.dumps(self.kwargs),
+            stdout=PIPE,
+            stderr=PIPE,
+            stdin=PIPE,
+        )
         self.__start_listeners()
 
     def __setup_env__(self):
-        os.environ["LANG"] = 'C'
-        os.environ['BLENDER_USER_CONFIG'] = self.config_path
+        os.environ["LANG"] = "C"
+        os.environ["BLENDER_USER_CONFIG"] = self.config_path
 
     def __start_listeners(self):
         self.__stdout_listener = create_task(self.__read_stdout__())
@@ -79,11 +98,15 @@ class BlenderSubprocess():
             stdout = await self.__process.stdout.readline()
             stdout_str = self.__decode_bytes(stdout)
             if stdout_str is None:
-                message = ProcessMessage(MessagePriority.STDOUT, 'Decode error', MessageType.STDOUT)
+                message = ProcessMessage(
+                    MessagePriority.STDOUT, "Decode error", MessageType.STDOUT
+                )
             else:
-                message = ProcessMessage(MessagePriority.STDOUT, stdout_str, MessageType.STDOUT)
+                message = ProcessMessage(
+                    MessagePriority.STDOUT, stdout_str, MessageType.STDOUT
+                )
             await self.__queue.put(message)
-        message = ProcessMessage(MessagePriority.STATE, 'stdout end', MessageType.STATE)
+        message = ProcessMessage(MessagePriority.STATE, "stdout end", MessageType.STATE)
         await self.__queue.put(message)
         self.running = False
 
@@ -93,11 +116,15 @@ class BlenderSubprocess():
             stderr = await self.__process.stderr.readline()
             stderr_str = self.__decode_bytes(stderr)
             if stderr_str is None:
-                message = ProcessMessage(MessagePriority.STATE, 'Decode error', MessageType.STATE)
+                message = ProcessMessage(
+                    MessagePriority.STATE, "Decode error", MessageType.STATE
+                )
             else:
-                message = ProcessMessage(MessagePriority.STDERR, stderr_str, MessageType.STDERR)
+                message = ProcessMessage(
+                    MessagePriority.STDERR, stderr_str, MessageType.STDERR
+                )
             await self.__queue.put(message)
-        message = ProcessMessage(MessagePriority.STATE, 'stderr end', MessageType.STATE)
+        message = ProcessMessage(MessagePriority.STATE, "stderr end", MessageType.STATE)
         await self.__queue.put(message)
         self.running = False
 

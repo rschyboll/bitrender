@@ -1,5 +1,7 @@
-from src.security.password import hash, check, strength_check, PasswordStrengthError
 from unittest import TestCase
+
+from src.security.password import (PasswordStrengthError, check, hash,
+                                   strength_check)
 
 
 class PasswordTest(TestCase):

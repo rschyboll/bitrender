@@ -1,8 +1,7 @@
+from controllers import login as LoginController
 from fastapi import APIRouter, HTTPException
 from fastapi.param_functions import Depends
 from fastapi.security import OAuth2PasswordRequestForm
-
-from controllers import login as LoginController
 from schema.user import UserCreate, UserLogin
 
 user_services = APIRouter(

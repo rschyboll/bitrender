@@ -2,7 +2,6 @@
 CREATE TABLE IF NOT EXISTS "task" (
     "id" UUID NOT NULL  PRIMARY KEY,
     "name" TEXT NOT NULL,
-    "path" TEXT,
     "engine" TEXT NOT NULL,
     "samples" INT NOT NULL
 );
