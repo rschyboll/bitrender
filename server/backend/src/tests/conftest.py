@@ -5,8 +5,9 @@ from typing import Generator
 
 import pytest
 from _pytest.fixtures import SubRequest
-from config import get_settings
 from tortoise.contrib.test import finalizer, initializer
+
+from config import get_settings
 
 settings = get_settings()
 

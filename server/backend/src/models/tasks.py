@@ -1,5 +1,6 @@
-from models import BaseModel
 from tortoise.fields.data import IntField, TextField
+
+from models import BaseModel
 
 
 class Task(BaseModel):

@@ -2,9 +2,10 @@ from datetime import datetime
 from typing import List, Optional
 from uuid import UUID
 
-from core import workers as WorkerCore
 from fastapi import APIRouter, Body, Depends, Header, HTTPException
 from fastapi.websockets import WebSocket, WebSocketDisconnect
+
+from core import workers as WorkerCore
 from schemas.workers import WorkerCreate, WorkerUpdate, WorkerView
 from storage import workers as WorkerStorage
 

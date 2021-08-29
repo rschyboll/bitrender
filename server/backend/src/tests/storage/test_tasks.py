@@ -5,13 +5,14 @@ from uuid import UUID
 
 import aiofiles
 import pytest
+from tortoise.contrib.test import TruncationTestCase
+from tortoise.exceptions import DoesNotExist
+
 from config import get_settings
 from models.tasks import Task
 from schemas.tasks import TaskCreate
 from storage import tasks
 from tests.utils.tasks import init_random_task_data, random_task_data
-from tortoise.contrib.test import TruncationTestCase
-from tortoise.exceptions import DoesNotExist
 
 settings = get_settings()
 

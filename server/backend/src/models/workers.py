@@ -1,5 +1,6 @@
-from models import BaseModel
 from tortoise.fields.data import BooleanField, DatetimeField, TextField
+
+from models import BaseModel
 
 
 class Worker(BaseModel):

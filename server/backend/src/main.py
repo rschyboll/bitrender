@@ -1,7 +1,8 @@
 import uvicorn  # type: ignore
-from api import tasks, workers
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+
+from api import binaries, tasks, workers
 from storage import init_db
 
 app = FastAPI()
@@ -22,6 +23,7 @@ app.add_middleware(
 
 app.include_router(tasks.router)
 app.include_router(workers.router)
+app.include_router(binaries.router)
 
 init_db(app)
 

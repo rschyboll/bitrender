@@ -1,10 +1,9 @@
-import websockets
-
 from config import Settings
 from core.register import deregister_worker, register_worker
 from core.settings import load_settings, remove_settings, save_settings, settings_exist
 from errors import ClientException
 from errors.register import AlreadyRegisteredError, NotRegisteredError
+from core import binaries as BinariesCore
 
 
 async def register(name: str, server_ip: str) -> None:
@@ -42,5 +41,5 @@ class App:
         self.settings = settings
 
     async def run(self) -> None:
-        uri = self.settings.server_ip + "workers/ws"
-        print("TEST")
+        if not await BinariesCore.up_to_date():
+            pass
