@@ -14,16 +14,16 @@ async def get_binaries() -> List[BinaryView]:
     return await BinaryStorage.get()
 
 
-@router.post("/new", status_code=status.HTTP_201_CREATED, response_model=BinaryView)
+@router.post("/new", status_code=status.HTTP_201_CREATED)
 async def create_task(binary: BinaryCreate) -> BinaryView:
     return await BinaryStorage.create(binary)
 
 
-@router.get("/{binary_id}", response_model=BinaryView)
+@router.get("/{binary_id}")
 async def get_task_by_id(binary_id: UUID) -> Optional[BinaryView]:
     return await BinaryStorage.get_by_id(binary_id)
 
 
-@router.get("/latest", response_model=BinaryView)
-async def get_latest() -> BinaryView:
+@router.get("/latest")
+async def get_latest() -> Optional[BinaryView]:
     return await BinaryStorage.get_latest()

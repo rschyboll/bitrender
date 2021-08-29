@@ -1,5 +1,7 @@
-from typing import List
+from typing import List, Optional
 from uuid import UUID
+
+from tortoise.exceptions import DoesNotExist
 
 from config import get_settings
 from models.workers import Worker
@@ -22,18 +24,17 @@ async def get() -> List[WorkerView]:
     return worker_views
 
 
-async def get_by_id(worker_id: UUID) -> WorkerView:
-    worker = await Worker.get(id=worker_id)
-    return WorkerView.from_orm(worker)
-
-
-async def update(worker_update: WorkerUpdate) -> WorkerView:
-    worker = await Worker.get(id=worker_update.id)
-    worker.update_from_dict(worker_update.dict(exclude_unset=True, exclude={"id"}))
-    await worker.save()
-    return WorkerView.from_orm(worker)
+async def get_by_id(worker_id: UUID) -> Optional[WorkerView]:
+    try:
+        worker = await Worker.get(id=worker_id)
+        return WorkerView.from_orm(worker)
+    except DoesNotExist:
+        return None
 
 
 async def delete(worker_id: UUID) -> None:
-    worker = await Worker.get(id=worker_id)
-    await worker.delete()
+    try:
+        worker = await Worker.get(id=worker_id)
+        await worker.delete()
+    except DoesNotExist:
+        return

@@ -14,11 +14,11 @@ async def get_tasks() -> List[TaskView]:
     return await tasks.get()
 
 
-@router.post("/new", status_code=status.HTTP_201_CREATED, response_model=TaskView)
+@router.post("/new", status_code=status.HTTP_201_CREATED)
 async def create_task(task: TaskCreate = Depends(TaskCreate.as_form)) -> TaskView:
     return await tasks.create(task)
 
 
-@router.get("/{task_id}", response_model=TaskView)
+@router.get("/{task_id}")
 async def get_task_by_id(task_id: UUID) -> Optional[TaskView]:
     return await tasks.get_by_id(task_id)

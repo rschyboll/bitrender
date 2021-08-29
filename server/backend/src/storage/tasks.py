@@ -46,7 +46,9 @@ async def get_by_id(task_id: UUID) -> Optional[TaskView]:
         return None
 
 
-async def delete(task_id: UUID) -> TaskView:
-    task_db = await Task.get(id=task_id)
-    await task_db.delete()
-    return TaskView.from_orm(task_db)
+async def delete(task_id: UUID) -> None:
+    try:
+        task_db = await Task.get(id=task_id)
+        await task_db.delete()
+    except DoesNotExist:
+        return
