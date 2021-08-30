@@ -3,7 +3,8 @@
         "dashboard": "Pulpit",
         "tasks": "Zadania",
         "machines": "Maszyny",
-        "addTask": "Dodaj zadanie"
+        "addTask": "Dodaj zadanie",
+        "binaries": "Wersje blendera"
     },
     "tasks" : {
         "new": "Nowe zadanie"
@@ -24,5 +25,13 @@
             "sampleAmount": "Ilość próbek",
             "upload": "Wyślij"
         }
+    },
+    "binaries": {
+        "new": "Nowa wersja",
+        "url": "Adres URL",
+        "version": "Wersja",
+        "provide_data": "Podaj dane wersji blendera",
+        "accept": "Akceptuj",
+        "abort": "Anuluj"
     }
 }

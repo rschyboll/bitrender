@@ -5,6 +5,7 @@ import { Sidebar } from "components/sidebar";
 import { Topbar } from "components/topbar";
 import { Tasks } from "screens/tasks";
 import { AddTask } from "screens/addTask";
+import { Binaries } from "screens/binaries";
 
 export const AppView: FunctionComponent = () => {
   return (
@@ -22,6 +23,9 @@ export const AppView: FunctionComponent = () => {
               <Route path="/machines">Hello3</Route>
               <Route path="/tasks">
                 <Tasks />
+              </Route>
+              <Route path="/binaries">
+                <Binaries />
               </Route>
 
               <Route path="/addTask">
