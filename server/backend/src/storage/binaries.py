@@ -1,4 +1,4 @@
-from typing import List, Optional
+from typing import List
 from uuid import UUID
 
 from tortoise.exceptions import DoesNotExist
@@ -21,28 +21,18 @@ async def get() -> List[BinaryView]:
     return binary_views
 
 
-async def get_by_id(binary_id: UUID) -> Optional[BinaryView]:
-    try:
-        binary_db = await Binary.get(id=binary_id)
-    except DoesNotExist:
-        return None
+async def get_by_id(binary_id: UUID) -> BinaryView:
+    binary_db = await Binary.get(id=binary_id)
     return BinaryView.from_orm(binary_db)
 
 
-async def get_latest() -> Optional[BinaryView]:
-    binary_db = await Binary.first()
+async def get_latest() -> BinaryView:
+    binary_db = await Binary.all().order_by("-id").first()
     if binary_db is None:
-        return None
+        raise DoesNotExist
     return BinaryView.from_orm(binary_db)
 
 
 async def delete(binary_id: UUID) -> None:
-    try:
-        binary_db = await Binary.get(id=binary_id)
-        await binary_db.delete()
-    except DoesNotExist:
-        return
-    
-
-
-
+    binary_db = await Binary.get(id=binary_id)
+    await binary_db.delete()

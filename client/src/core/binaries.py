@@ -1,22 +1,23 @@
-import os
 import aiohttp
 from errors.connection import ConnectionException
-
-from appdirs import user_data_dir  # type: ignore
-from config import Config
-
-data_dir = user_data_dir(Config.app_name, Config.app_author)
-binary_dir = os.path.join(data_dir, Config.binary_directory)
+from core.settings import load_current_version
 
 
-async def up_to_date() -> bool:
-    if not os.path.exists(binary_dir):
+async def up_to_date(server_ip: str) -> bool:
+    url = server_ip + "/binaries/latest"
+    version = await load_current_version()
+    if version is None:
         return False
-    
     try:
         async with aiohttp.ClientSession() as session:
-            async with session.delete(url) as response:
-                if response.status != 200:
-                    raise DeRegistrationFailedError
+            async with session.get(url) as response:
+                data = await response.text()
+                if data != version:
+                    return False
+                return True
     except (aiohttp.ClientError) as error:
         raise ConnectionException from error
+
+
+async def update_binary(server_ip: str) -> bool:
+    url = server_ip + "/binaries/latest"

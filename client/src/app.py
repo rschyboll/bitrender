@@ -41,5 +41,5 @@ class App:
         self.settings = settings
 
     async def run(self) -> None:
-        if not await BinariesCore.up_to_date():
-            pass
+        if not await BinariesCore.up_to_date(self.settings.server_ip):
+            print("TEST")

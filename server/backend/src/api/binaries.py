@@ -1,8 +1,7 @@
-from typing import List, Optional
+from typing import List
 from uuid import UUID
 
-from fastapi import APIRouter, status
-
+from fastapi import APIRouter, status, HTTPException
 from schemas.binaries import BinaryCreate, BinaryView
 from storage import binaries as BinaryStorage
 
@@ -19,11 +18,16 @@ async def create_task(binary: BinaryCreate) -> BinaryView:
     return await BinaryStorage.create(binary)
 
 
+@router.get("/latest")
+async def get_latest() -> BinaryView:
+    return await BinaryStorage.get_latest()
+
+
 @router.get("/{binary_id}")
-async def get_task_by_id(binary_id: UUID) -> Optional[BinaryView]:
+async def get_task_by_id(binary_id: UUID) -> BinaryView:
     return await BinaryStorage.get_by_id(binary_id)
 
 
-@router.get("/latest")
-async def get_latest() -> Optional[BinaryView]:
-    return await BinaryStorage.get_latest()
+@router.delete("/delete")
+async def delete(binary_id: UUID) -> None:
+    return await BinaryStorage.delete(binary_id)

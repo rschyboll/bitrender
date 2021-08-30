@@ -1,10 +1,9 @@
 import os
-from typing import List, Optional
+from typing import List
 from uuid import UUID
 
 import aiofiles
 from fastapi import UploadFile
-from tortoise.exceptions import DoesNotExist
 from tortoise.transactions import atomic
 
 from config import get_settings
@@ -38,17 +37,11 @@ async def get() -> List[TaskView]:
     return task_views
 
 
-async def get_by_id(task_id: UUID) -> Optional[TaskView]:
-    try:
-        task_db = await Task.get(id=task_id)
-        return TaskView.from_orm(task_db)
-    except DoesNotExist:
-        return None
+async def get_by_id(task_id: UUID) -> TaskView:
+    task_db = await Task.get(id=task_id)
+    return TaskView.from_orm(task_db)
 
 
 async def delete(task_id: UUID) -> None:
-    try:
-        task_db = await Task.get(id=task_id)
-        await task_db.delete()
-    except DoesNotExist:
-        return
+    task_db = await Task.get(id=task_id)
+    await task_db.delete()
