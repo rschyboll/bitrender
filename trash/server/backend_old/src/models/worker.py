@@ -1,9 +1,11 @@
 # coding: utf-8
-from sqlalchemy import Column, DateTime, ForeignKey, Integer, SmallInteger, String, Text, text
-from sqlalchemy.orm import relationship
+from sqlalchemy import (Column, DateTime, ForeignKey, Integer, SmallInteger,
+                        String, Text, text)
 from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import relationship
 
 from . import Base
+
 
 class GraphicCard(Base):
     __tablename__ = 'graphic_cards'

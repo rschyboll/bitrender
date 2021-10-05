@@ -1,20 +1,39 @@
 import asyncio
+import sys
+from argparse import ArgumentParser, Namespace
+from typing import List
 
-from lib.blender_subprocess import BlenderSubprocess
+from appdirs import user_data_dir  # type: ignore
 
-BIN_PATH = '/home/hoodrobinrs/Desktop/blender-2.92.0-linux64/blender'
-SCRIPT_PATH = '/home/hoodrobinrs/Documents/Rendering_Server/client/src/blender-rendering-api/src/main.py'
-CONFIG_PATH = '/home/hoodrobinrs/Documents/Rendering_Server/client/src/config'
+from app.register import Register
+from config import Config, Settings
 
-async def subprocess_listener():
-    subprocess = BlenderSubprocess(BIN_PATH, SCRIPT_PATH, CONFIG_PATH)
-    async with subprocess:
-        while subprocess.running or not subprocess.is_empty():
-            message = await subprocess.receive()
-            print(message)
 
-async def main():
-    task = asyncio.create_task(subprocess_listener())
-    await task
+def parse_args(args: List[str]) -> Namespace:
+    parser = ArgumentParser(prog="Rendering Client")
+    subparsers = parser.add_subparsers(help="Action", dest="action", required=True)
 
-asyncio.run(main())
+    register_parser = subparsers.add_parser("register", help="Registers the worker")
+    register_parser.add_argument("name", type=str, help="Worker name")
+    register_parser.add_argument("server_ip", type=str, help="Server Ip address")
+
+    subparsers.add_parser("run", help="Runs the worker")
+
+    subparsers.add_parser("deregister", help="Deregister the worker")
+    return parser.parse_args(args)
+
+
+args_namespace = parse_args(sys.argv[1:])
+action: str = args_namespace.action
+data_dir = user_data_dir(Config.app_name, Config.app_author)
+
+if action == "register":
+    name: str = args_namespace.name
+    server_ip: str = args_namespace.server_ip
+    register_app = Register(name, server_ip, data_dir)
+    asyncio.run(register_app.run())
+elif action == "run":
+    asyncio.run(app.run())
+elif action == "deregister":
+    register_app = Register(name, server_ip, data_dir)
+    asyncio.run(register_app.register())

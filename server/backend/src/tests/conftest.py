@@ -1,6 +1,6 @@
 import os
 import shutil
-from asyncio import get_event_loop, AbstractEventLoop
+from asyncio import AbstractEventLoop, get_event_loop
 from typing import Generator
 
 import pytest
@@ -8,7 +8,6 @@ from _pytest.fixtures import SubRequest
 from tortoise.contrib.test import finalizer, initializer
 
 from config import get_settings
-
 
 settings = get_settings()
 

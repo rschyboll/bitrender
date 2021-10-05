@@ -1,6 +1,6 @@
 import fastjsonschema
-from pyramid.request import Request
 from cornice import Service
+from pyramid.request import Request
 
 from ..controllers import login as LoginController
 

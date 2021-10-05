@@ -1,8 +1,10 @@
 # coding: utf-8
-from sqlalchemy import Column, DateTime, ForeignKey, Integer, LargeBinary, SmallInteger, String, Text, text
+from sqlalchemy import (Column, DateTime, ForeignKey, Integer, LargeBinary,
+                        SmallInteger, String, Text, text)
 from sqlalchemy.orm import relationship
 
 from . import Base
+
 
 class User(Base):
     __tablename__ = 'users'

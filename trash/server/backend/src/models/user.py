@@ -1,7 +1,7 @@
 """Module containing user ORM model"""
+from models import BaseModel
 from tortoise.fields.data import BinaryField, CharField, DatetimeField
 
-from models import BaseModel
 
 class User(BaseModel):
     """User Model"""

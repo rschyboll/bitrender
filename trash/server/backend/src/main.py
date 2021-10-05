@@ -1,9 +1,9 @@
 """Main application module"""
 from fastapi import FastAPI
-
-from resources import users as UserResource, add_resource_exception_handlers
-from services import login as LoginService
 from models import init_db
+from resources import add_resource_exception_handlers
+from resources import users as UserResource
+from services import login as LoginService
 
 app = FastAPI()
 

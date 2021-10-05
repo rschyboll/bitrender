@@ -1,10 +1,9 @@
+from controllers import login as LoginController
 from fastapi import APIRouter, HTTPException
 from fastapi.param_functions import Depends
-
-from services import oauth2_scheme
 from schema.user import UserView
+from services import oauth2_scheme
 from storage import users as UserStorage
-from controllers import login as LoginController
 
 user_resources = APIRouter(
     prefix='/user',

@@ -1,14 +1,14 @@
 import os
-from uuid import UUID
 from typing import List
+from uuid import UUID
 
 import aiofiles
 from fastapi import UploadFile
 from tortoise.transactions import atomic
 
 from config import get_settings
-from schemas.tasks import TaskCreate, TaskView
 from models.tasks import Task
+from schemas.tasks import TaskCreate, TaskView
 
 settings = get_settings()
 
@@ -42,7 +42,6 @@ async def get_by_id(task_id: UUID) -> TaskView:
     return TaskView.from_orm(task_db)
 
 
-async def delete(task_id: UUID) -> TaskView:
+async def delete(task_id: UUID) -> None:
     task_db = await Task.get(id=task_id)
     await task_db.delete()
-    return TaskView.from_orm(task_db)

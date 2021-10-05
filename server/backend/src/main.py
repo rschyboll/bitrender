@@ -2,8 +2,9 @@ import uvicorn  # type: ignore
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
+from api import binaries, tasks, workers
+from errors import add_exception_handlers
 from storage import init_db
-from api import tasks
 
 app = FastAPI()
 
@@ -20,7 +21,13 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+
 app.include_router(tasks.router)
+app.include_router(workers.router)
+app.include_router(binaries.router)
+
+
+add_exception_handlers(app)
 
 init_db(app)
 

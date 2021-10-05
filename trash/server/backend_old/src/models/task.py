@@ -1,8 +1,10 @@
 # coding: utf-8
-from sqlalchemy import Boolean, Column, DateTime, ForeignKey, Integer, SmallInteger, String, Text, text
+from sqlalchemy import (Boolean, Column, DateTime, ForeignKey, Integer,
+                        SmallInteger, String, Text, text)
 from sqlalchemy.orm import relationship
 
 from . import Base
+
 
 class Task(Base):
     __tablename__ = 'tasks'

@@ -1,10 +1,9 @@
 """Module containing user ORM model"""
+from config import get_settings
 from fastapi import FastAPI
 from tortoise.contrib.fastapi import register_tortoise
-from tortoise.models import Model
 from tortoise.fields.data import IntField
-
-from config import get_settings
+from tortoise.models import Model
 
 settings = get_settings()
 

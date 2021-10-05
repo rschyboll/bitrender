@@ -9,7 +9,16 @@ import "./style.scss";
 const sidebarItems = [
   { label: "navigation.dashboard", icon: "pi pi-fw pi-home", path: "/" },
   { label: "navigation.tasks", icon: "pi pi-fw pi-images", path: "/tasks" },
-  { label: "navigation.machines", icon: "pi pi-fw pi-desktop", path: "/machines" },
+  {
+    label: "navigation.machines",
+    icon: "pi pi-fw pi-desktop",
+    path: "/machines",
+  },
+  {
+    label: "navigation.binaries",
+    icon: "pi pi-fw pi-microsoft",
+    path: "/binaries",
+  },
 ];
 
 export const Sidebar: FunctionComponent = () => {

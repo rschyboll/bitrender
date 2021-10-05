@@ -8,7 +8,7 @@
     "editor.formatOnSave": true,
   },
   "python.defaultInterpreterPath": "/home/hoodrobinrs/Documents/Rendering_Server/.venv/bin/python3.9",
-  "python.analysis.extraPaths": ["./server/backend/src"],
+  "python.analysis.extraPaths": ["./client/src"],
   "files.exclude": {
     "**/.git": true,
     "**/.svn": true,
@@ -41,7 +41,9 @@
   ],
   "python.linting.mypyArgs": [
     "--follow-imports=silent",
-    "--strict"
+    "--strict",
+    "--strict-optional",
+    "--implicit-reexport"
 ],
   "editor.semanticTokenColorCustomizations": {
     "rules": {
