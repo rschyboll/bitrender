@@ -1,21 +1,9 @@
 from typing import Optional
 
 
-class ClientException(Exception):
-    error_message = ""
+class UserException(Exception):
+    message: Optional[str]
 
-    def __init__(self, *args: object, message: Optional[str] = None):
-        super(ClientException, self).__init__(args)
-        self.message = message
-
-    def __str__(self) -> str:
-        if self.message is None:
-            return self.error_message.format("")
-        return self.error_message.format(self.message)
-
-
-class UndefinedException(ClientException):
-    error_message = """
-        An undefined exception has occured
-        Error message: {}
-    """
+    def __init__(self, context: Optional[str] = None):
+        super(UserException, self).__init__()
+        self.context = context

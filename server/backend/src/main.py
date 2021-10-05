@@ -26,6 +26,7 @@ app.include_router(tasks.router)
 app.include_router(workers.router)
 app.include_router(binaries.router)
 
+
 add_exception_handlers(app)
 
 init_db(app)

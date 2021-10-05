@@ -7,7 +7,6 @@ from pydantic import BaseModel
 
 class WorkerCreate(BaseModel):
     name: str
-
     register_date: datetime
 
 
@@ -17,6 +16,7 @@ class WorkerView(BaseModel):
 
     register_date: datetime
     active: bool
+    test_time: Optional[int]
 
     class Config:
         orm_mode = True
@@ -27,3 +27,4 @@ class WorkerUpdate(BaseModel):
     name: Optional[str]
 
     active: Optional[bool]
+    test_time: Optional[int]

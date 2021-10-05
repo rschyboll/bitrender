@@ -22,7 +22,7 @@ async def get() -> List[WorkerView]:
     return worker_views
 
 
-async def get_by_id(worker_id: UUID) -> Optional[WorkerView]:
+async def get_by_id(worker_id: UUID) -> WorkerView:
     worker = await Worker.get(id=worker_id)
     return WorkerView.from_orm(worker)
 

@@ -5,39 +5,21 @@ from uuid import UUID
 from fastapi import APIRouter, Body, Depends, Header, HTTPException
 from fastapi.websockets import WebSocket, WebSocketDisconnect
 
-from core import workers as WorkerCore
+from core import jwt
 from schemas.workers import WorkerCreate, WorkerUpdate, WorkerView
 from storage import workers as WorkerStorage
+from services.workers import connection_manager
 
-
-class ConnectionManager:
-    def __init__(self) -> None:
-        self.__active_connections: List[WebSocket] = []
-
-    async def connect(self, websocket: WebSocket) -> None:
-        await websocket.accept()
-        self.__active_connections.append(websocket)
-
-    async def disconnect(self, websocket: WebSocket) -> None:
-        self.__active_connections.remove(websocket)
-
-    async def send_personal_message(self, message: str, websocket: WebSocket) -> None:
-        await websocket.send_text(message)
-
-    async def broadcast(self, message: str) -> None:
-        for connection in self.__active_connections:
-            await connection.send_text(message)
-
-
-connection_manager = ConnectionManager()
 router = APIRouter(prefix="/workers")
 
 
 async def get_current_worker(token: Optional[str] = Header(None)) -> WorkerView:
     if token is None:
         raise HTTPException(status_code=401, detail="No authorization token")
-    worker_name, worker_id = WorkerCore.decode_jwt(token)
-    worker = await WorkerStorage.get_by_id(worker_id)
+    worker_name, worker_id = jwt.decode_jwt(token)
+    worker = await WorkerStorage.get_by_id(UUID(worker_id))
+    if worker is None:
+        raise HTTPException(status_code=401, detail="Unauthorized")
     if worker_name == worker.name:
         return worker
     raise HTTPException(status_code=401, detail="Corrupted token")
@@ -63,10 +45,7 @@ async def register(name: str = Body(...)) -> str:
         register_date=datetime.now(),
     )
     worker_view = await WorkerStorage.create(worker)
-    return WorkerCore.create_jwt(
-        worker_name=name,
-        worker_id=worker_view.id,
-    )
+    return jwt.create_jwt({"name": name, "id": worker_view.id.hex})
 
 
 @router.post("/activate")
@@ -80,12 +59,14 @@ async def deregister(current_worker: WorkerView = Depends(get_current_worker)) -
     await WorkerStorage.delete(current_worker.id)
 
 
-@router.websocket("/ws")
-async def websocket_endpoint(websocket: WebSocket) -> None:
-    await connection_manager.connect(websocket)
+@router.websocket("/workers/ws")
+async def websocket_endpoint(
+    websocket: WebSocket, active_worker: WorkerView = Depends(get_active_worker)
+) -> None:
+    await connection_manager.connect(websocket, active_worker.id)
     try:
         while True:
             data = await websocket.receive_text()
-            await connection_manager.send_personal_message(data, websocket)
+            await connection_manager.send_personal_message(data, active_worker.id)
     except WebSocketDisconnect:
-        connection_manager.disconnect(websocket)
+        connection_manager.disconnect(active_worker.id)

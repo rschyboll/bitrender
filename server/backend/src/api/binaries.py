@@ -1,7 +1,8 @@
 from typing import List
 from uuid import UUID
 
-from fastapi import APIRouter, status, HTTPException
+from fastapi import APIRouter, status
+
 from schemas.binaries import BinaryCreate, BinaryView
 from storage import binaries as BinaryStorage
 

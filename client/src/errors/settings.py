@@ -1,17 +1,13 @@
-from errors import ClientException
+from errors import UserException
 
 
-class SettingsWriteError(ClientException):
-    error_message = """
-        An error occured while saving configuration to disk
-        Please try again
-        {}
-    """
+class SettingsWriteError(UserException):
+    pass
 
 
-class SettingsLoadError(ClientException):
-    error_message = """
-        Could not found config file
-        You need to register the worker first with the "register" command
-        {}
-    """
+class SettingsReadError(UserException):
+    pass
+
+
+class SettingsNotReadError(UserException):
+    pass
