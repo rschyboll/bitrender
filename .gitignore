@@ -10,3 +10,5 @@ venv
 temp
 */trash
 server/backend/tasks
+.coverage
+coverage.xml
