@@ -25,7 +25,12 @@ describe("Functional tests", () => {
   });
 
   test("Passes down props", () => {
-    const props = { label: "test_label", icon: "test_icon", path: "/", highlighted: true };
+    const props = {
+      label: "test_label",
+      icon: "test_icon",
+      path: "/",
+      highlighted: true,
+    };
     const wrapper = shallow(<SidebarItem {...props} />);
     expect(wrapper.find("SidebarItemView").props()).toStrictEqual(props);
   });

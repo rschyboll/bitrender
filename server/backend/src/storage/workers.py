@@ -1,11 +1,8 @@
-from typing import List, Optional
+from typing import List
 from uuid import UUID
 
-from config import get_settings
 from models.workers import Worker
 from schemas.workers import WorkerCreate, WorkerUpdate, WorkerView
-
-settings = get_settings()
 
 
 async def create(worker: WorkerCreate) -> WorkerView:

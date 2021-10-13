@@ -1,0 +1,29 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Python: FastAPI",
+            "type": "python",
+            "request": "launch",
+            "module": "uvicorn",
+            "args": [
+                "main:app"
+            ],
+            "cwd": "${workspaceFolder}/src",
+            "envFile": "${workspaceFolder}/env/dev.env"
+        },
+        {
+            "name": "Debug Unit Test",
+            "type": "python",
+            "request": "launch",
+            "justMyCode": false,
+            "program": "${file}",
+            "purpose": [
+                "debug-test"
+            ],
+            "env": {
+                "PYTEST_ADDOPTS": "--no-cov"
+            },
+        }
+    ],
+}

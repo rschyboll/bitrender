@@ -6,23 +6,21 @@ import aiofiles
 from fastapi import UploadFile
 from tortoise.transactions import atomic
 
-from config import get_settings
+from config import Settings
 from models.tasks import Task
 from schemas.tasks import TaskCreate, TaskView
 
-settings = get_settings()
-
 
 @atomic()
-async def create(task: TaskCreate) -> TaskView:
+async def create(task: TaskCreate, settings: Settings) -> TaskView:
     task_model = Task(**task.dict(), name=task.file.filename)
     await task_model.save()
-    await __write_file_to_disk(task.file, task_model.id)
+    await __write_file_to_disk(task.file, task_model.id, settings.task_dir)
     return TaskView.from_orm(task_model)
 
 
-async def __write_file_to_disk(file: UploadFile, uuid: UUID) -> None:
-    path = os.path.join(settings.task_files_path, uuid.hex + ".blend")
+async def __write_file_to_disk(file: UploadFile, uuid: UUID, task_dir: str) -> None:
+    path = os.path.join(task_dir, uuid.hex + ".blend")
     async with aiofiles.open(path, "wb+") as out_file:
         while content := await file.read(1024):
             if isinstance(content, bytes):

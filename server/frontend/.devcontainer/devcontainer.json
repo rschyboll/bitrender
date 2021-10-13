@@ -1,0 +1,32 @@
+{
+  "name": "Node.js",
+  "build": {
+    "dockerfile": "Dockerfile"
+  },
+  "settings": {
+    "files.exclude": {
+      "**/yarn*": true,
+      "**/node_modules": true
+    },
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.formatOnSave": true,
+    "jest.testExplorer": {
+      "enabled": true,
+      "showClassicStatus": true
+    },
+    "jest.autoRun": { "watch": false }
+  },
+  "extensions": [
+    "dbaeumer.vscode-eslint",
+    "esbenp.prettier-vscode",
+    "orta.vscode-jest"
+  ],
+  "forwardPorts": [3000, 9222],
+  "portsAttributes": {
+    "3000": {
+      "onAutoForward": "notify"
+    }
+  },
+  "postCreateCommand": "yarn install",
+  "remoteUser": "node"
+}

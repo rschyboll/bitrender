@@ -1,0 +1,33 @@
+version: '3.8'
+
+services:
+  app:
+    container_name: server-backend-fastapi-dev
+    build:
+      context: ..
+      dockerfile: .devcontainer/Dockerfile
+    volumes:
+      - ..:/workspace:cached 
+      - server-backend-data-dev:/data_dev
+    init: true
+
+    command: sleep infinity
+
+    network_mode: service:db
+
+    user: vscode
+
+  db:
+    container_name: server-db-postgres-dev
+    image: postgres:latest
+    restart: unless-stopped
+    volumes:
+      - server-db-data-dev:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_DB: rendering_server_dev
+      POSTGRES_PASSWORD: postgres
+
+volumes:
+  server-db-data-dev:
+  server-backend-data-dev:

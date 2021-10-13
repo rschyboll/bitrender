@@ -69,9 +69,7 @@ class TestWithoutData(TruncationTestCase):
             assert task_view.name == task.file.filename
             assert task_view.engine == task.engine
             assert task_view.id is not None
-            file_path = os.path.join(
-                settings.task_files_path, task_view.id.hex + ".blend"
-            )
+            file_path = os.path.join(settings.task_dir, task_view.id.hex + ".blend")
             assert os.path.isfile(file_path)
             async with aiofiles.open(file_path, "rb") as out_file:
                 file_data = await out_file.read()
@@ -80,12 +78,12 @@ class TestWithoutData(TruncationTestCase):
         assert len(await Task.all()) == 10
 
     async def test_create_rollback(self) -> None:
-        os.removedirs(settings.task_files_path)
+        os.removedirs(settings.task_dir)
         task = random_task_data()
         with pytest.raises(FileNotFoundError):
             await tasks.create(task)
         assert len(await Task.all()) == 0
-        os.makedirs(settings.task_files_path)
+        os.makedirs(settings.task_dir)
 
     async def test_get_without_data(self) -> None:
         tasks_data = await tasks.get()

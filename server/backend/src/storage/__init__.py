@@ -1,12 +1,25 @@
 from fastapi import FastAPI
 from tortoise.contrib.fastapi import register_tortoise
+from aerich import Command
 
-from config import get_settings
-
-settings = get_settings()
+from config import get_tortoise_config
 
 
-def init_db(app: FastAPI) -> None:
-    register_tortoise(
-        app, db_url=settings.postgres_database_url, modules={"models": settings.models}
+def register_db(app: FastAPI) -> None:
+    config = get_tortoise_config()
+    register_tortoise(app, config=config, add_exception_handlers=True)
+
+
+async def migrate() -> None:
+    config = get_tortoise_config()
+    command = Command(
+        tortoise_config=config,
+        app="rendering_server",
+        location="../migrations",
     )
+    await command.init()
+    try:
+        await command.init_db(False)
+    except FileExistsError:
+        pass
+    await command.upgrade()

@@ -1,31 +1,40 @@
+import os
 from functools import lru_cache
+from typing import Any, Dict
 
 from pydantic import BaseSettings
 
-tortoise_orm = {
-    "connections": {"default": "postgres://postgres:@localhost/rendering_server"},
+
+class Settings(BaseSettings):
+    models = ["models.tasks", "models.workers", "models.binaries", "aerich.models"]
+    database_url: str
+    data_dir: str
+    __task_dir: str = "tasks"
+
+    @property
+    def task_dir(self) -> str:
+        return os.path.join(self.data_dir, self.__task_dir)
+
+
+@lru_cache()
+def get_settings() -> Settings:
+    return Settings()
+
+
+__settings = get_settings()
+
+
+__tortoise_config = {
+    "connections": {"default": __settings.database_url},
     "apps": {
-        "models": {
-            "models": [
-                "models.tasks",
-                "models.workers",
-                "models.binaries",
-                "aerich.models",
-            ],
+        "rendering_server": {
+            "models": __settings.models,
             "default_connection": "default",
         },
     },
 }
 
 
-class Settings(BaseSettings):
-    app_name = "Rendering API"
-    postgres_database_url = "postgres://postgres:@localhost/rendering_server"
-    postgres_test_database_url = "postgres://postgres:@localhost/test_{}"
-    models = ["models.tasks", "models.workers", "models.binaries", "aerich.models"]
-    task_files_path = "../tasks/"
-
-
 @lru_cache()
-def get_settings() -> Settings:
-    return Settings()
+def get_tortoise_config() -> Dict[str, Any]:
+    return __tortoise_config
