@@ -1,11 +1,11 @@
-from aiohttp import ClientError
 import json
 
+from aiohttp import ClientError, ClientSession
+
+from app import App
 from config import DIR, URL, Settings
 from errors.connection import ConnectionException
 from errors.register import AlreadyRegisteredError, RegistrationFailedError
-
-from app import App
 
 
 class Register(App):
@@ -18,17 +18,17 @@ class Register(App):
         self.urls = URL(server_ip)
         self.settings = Settings(self.directories.settings_file)
 
-    async def _run(self) -> None:
+    async def _run(self, session: ClientSession) -> None:
         if self.settings.exist():
             raise AlreadyRegisteredError()
-        token = await self.__register()
+        token = await self.__register(session)
         self.__save_settings(self.name, self.server_ip, token)
 
-    async def __register(self) -> str:
+    async def __register(self, session: ClientSession) -> str:
         url = self.urls.register
         name = self.name
         try:
-            async with self.session.post(url, data=name) as response:
+            async with session.post(url, data=name) as response:
                 if response.status != 200:
                     raise RegistrationFailedError()
                 data = json.loads(await response.text())

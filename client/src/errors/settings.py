@@ -1,13 +1,13 @@
-from errors import UserException
+from errors import UserError
 
 
-class SettingsWriteError(UserException):
+class SettingsWriteError(UserError):
     pass
 
 
-class SettingsReadError(UserException):
+class SettingsReadError(UserError):
     pass
 
 
-class SettingsNotReadError(UserException):
+class SettingsNotReadError(UserError):
     pass

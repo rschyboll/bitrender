@@ -1,5 +1,5 @@
-from errors import UserException
+from errors import UserError
 
 
-class ConnectionException(UserException):
+class ConnectionException(UserError):
     message = """Can't connect to the server, please check your internet connection"""

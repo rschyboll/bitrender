@@ -5,14 +5,10 @@ import tarfile
 from json.decoder import JSONDecodeError
 
 import aiohttp
-from config import DIR, URL, Settings
 
-from core.settings import (
-    binary_dir,
-    load_current_version,
-    save_current_version,
-    temp_file_path,
-)
+from config import DIR, URL, Settings
+from core.settings import (binary_dir, load_current_version,
+                           save_current_version, temp_file_path)
 from errors.binaries import OSSaveError
 from errors.connection import ConnectionException
 

@@ -15,48 +15,48 @@ class Settings:
     blender_section = "blender"
 
     def __init__(self, settings_file: str):
-        self.__settings_file = settings_file
+        self.settings_file = settings_file
         self.__config_parser = ConfigParser()
 
     def read(self) -> None:
         try:
-            read_files = self.__config_parser.read(self.__settings_file)
+            read_files = self.__config_parser.read(self.settings_file)
             if len(read_files) == 0:
                 raise SettingsReadError()
             if not self.validate_settings():
                 raise SettingsReadError()
-        except (OSError, ParsingError) as error:
+        except ParsingError as error:
             raise SettingsReadError() from error
 
     def save(self) -> None:
         if not self.validate_settings():
             raise SettingsWriteError()
         try:
-            with open(self.__settings_file, "w+") as configfile:
+            with open(self.settings_file, "w+", encoding="utf-8") as configfile:
                 self.__config_parser.write(configfile)
         except OSError as error:
             raise SettingsWriteError() from error
 
     def delete(self) -> None:
         try:
-            if os.path.exists(self.__settings_file):
+            if os.path.exists(self.settings_file):
                 self.__config_parser.clear()
-                os.remove(self.__settings_file)
+                os.remove(self.settings_file)
         except OSError:
             pass
 
     def exist(self) -> bool:
-        try:
-            return os.path.exists(self.__settings_file)
-        except OSError:
-            return False
+        return os.path.exists(self.settings_file)
 
     def validate_settings(self) -> bool:
-        return (
-            self.token is not None
-            and self.name is not None
-            and self.server_ip is not None
-        )
+        try:
+            return (
+                self.token is not None
+                and self.name is not None
+                and self.server_ip is not None
+            )
+        except SettingsNotReadError:
+            return False
 
     @property
     def token(self) -> str:
@@ -113,15 +113,15 @@ class URL:
 
     @property
     def register(self) -> str:
-        return "http://{}/workers/register".format(self.server_ip)
+        return f"http://{self.server_ip}/workers/register"
 
     @property
     def deregister(self) -> str:
-        return "http://{}/workers/deregister".format(self.server_ip)
+        return f"http://{self.server_ip}/workers/deregister"
 
     @property
     def websocket(self) -> str:
-        return "ws://{}/workers/ws".format(self.server_ip)
+        return f"ws://{self.server_ip}/workers/ws"
 
 
 class DIR:

@@ -1,9 +1,9 @@
 from typing import Optional
 
 
-class UserException(Exception):
+class UserError(Exception):
     message: Optional[str]
 
     def __init__(self, context: Optional[str] = None):
-        super(UserException, self).__init__()
+        super(UserError, self).__init__()
         self.context = context
