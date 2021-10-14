@@ -2,7 +2,7 @@ import os
 from configparser import ConfigParser, NoOptionError, NoSectionError, ParsingError
 from typing import Optional
 
-from errors.settings import SettingsNotReadError, SettingsReadError, SettingsWriteError
+from errors.config import SettingsNotReadError, SettingsReadError, SettingsWriteError
 
 
 class Config:
@@ -32,6 +32,9 @@ class Settings:
         if not self.validate_settings():
             raise SettingsWriteError()
         try:
+            settings_directory = os.path.dirname(self.settings_file)
+            if not os.path.exists(settings_directory):
+                os.makedirs(settings_directory, exist_ok=True)
             with open(self.settings_file, "w+", encoding="utf-8") as configfile:
                 self.__config_parser.write(configfile)
         except OSError as error:
@@ -108,7 +111,10 @@ class Settings:
 
 
 class URL:
-    def __init__(self, server_ip: str):
+    def __init__(self, server_ip: str = "127.0.0.1:8000"):
+        self.server_ip = server_ip
+
+    def set_server_ip(self, server_ip: str) -> None:
         self.server_ip = server_ip
 
     @property
@@ -125,7 +131,10 @@ class URL:
 
 
 class DIR:
-    def __init__(self, data_dir: str):
+    def __init__(self, data_dir: str = "./"):
+        self.data_dir = data_dir
+
+    def set_data_dir(self, data_dir: str) -> None:
         self.data_dir = data_dir
 
     @property

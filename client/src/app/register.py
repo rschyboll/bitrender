@@ -23,6 +23,7 @@ class Register(App):
             raise AlreadyRegisteredError()
         token = await self.__register(session)
         self.__save_settings(self.name, self.server_ip, token)
+        print('Successfully registered, now start the worker with the "run" command')
 
     async def __register(self, session: ClientSession) -> str:
         url = self.urls.register

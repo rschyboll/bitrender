@@ -3,10 +3,11 @@ import sys
 from argparse import ArgumentParser, Namespace
 from typing import List
 
-from appdirs import user_data_dir  # type: ignore
+from appdirs import user_data_dir
 
+from app.deregister import Deregister
 from app.register import Register
-from config import Config, Settings
+from config import Config
 
 
 def parse_args(args: List[str]) -> Namespace:
@@ -33,7 +34,7 @@ if action == "register":
     register_app = Register(name, server_ip, data_dir)
     asyncio.run(register_app.run())
 elif action == "run":
-    asyncio.run(app.run())
+    pass
 elif action == "deregister":
-    register_app = Register(name, server_ip, data_dir)
-    asyncio.run(register_app.register())
+    deregister_app = Deregister(data_dir)
+    asyncio.run(deregister_app.run())

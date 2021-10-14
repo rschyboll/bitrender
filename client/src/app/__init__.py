@@ -18,9 +18,9 @@ class App(ABC):
                 raise
 
     def __print_error(self, error: UserError) -> None:
-        if error.message is not None:
+        if hasattr(error, "message") and error.message is not None:
             print(error.message)
-        if error.context is not None:
+        if hasattr(error, "context") and error.context is not None:
             print(error.context)
 
     @abstractmethod

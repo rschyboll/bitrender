@@ -41,7 +41,7 @@
             "program": "${file}",
             "purpose": [
                 "debug-test"
-            ],            
+            ],
             "env": {
                 "PYTEST_ADDOPTS": "--no-cov"
             },
@@ -51,12 +51,14 @@
         {
             "id": "name",
             "type": "promptString",
-            "description": "Name"
+            "description": "Name",
+            "default": "test"
         },
         {
             "id": "serverId",
             "type": "promptString",
-            "description": "Server ip"
+            "description": "Server ip",
+            "default": "172.17.0.1:8000"
         }
     ]
 }

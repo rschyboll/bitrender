@@ -1,10 +1,9 @@
 import os
 import random
 import string
+from unittest import mock
 
 import pytest
-from unittest import mock
-from configparser import ConfigParser
 
 from config import DIR, URL, Settings
 from errors.settings import SettingsNotReadError, SettingsReadError, SettingsWriteError
@@ -83,6 +82,14 @@ class TestSettings:
             mock_open.side_effect = OSError
             with pytest.raises(SettingsWriteError):
                 settings.save()
+
+    def test_save_no_directory(self, settings: Settings, data: SettingsData) -> None:
+        self.__input_data(settings, data)
+        settings_dir = os.path.abspath(os.path.dirname(settings.settings_file))
+        os.rmdir(settings_dir)
+        assert os.path.exists(settings_dir) is False
+        settings.save()
+        assert os.path.exists(settings_dir)
 
     def test_read(self, settings: Settings, data: SettingsData) -> None:
         with pytest.raises(SettingsReadError):

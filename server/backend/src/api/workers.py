@@ -16,8 +16,10 @@ router = APIRouter(prefix="/workers")
 async def get_current_worker(token: Optional[str] = Header(None)) -> WorkerView:
     if token is None:
         raise HTTPException(status_code=401, detail="No authorization token")
-    worker_name, worker_id = jwt.decode_jwt(token)
-    worker = await WorkerStorage.get_by_id(UUID(worker_id))
+    jwt_data = jwt.decode_jwt(token)
+    worker_name = jwt_data["name"]
+    worker_id = jwt_data["id"]
+    worker = await WorkerStorage.get_by_id(UUID(hex=worker_id))
     if worker is None:
         raise HTTPException(status_code=401, detail="Unauthorized")
     if worker_name == worker.name:

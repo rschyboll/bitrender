@@ -1,7 +1,7 @@
 from typing import Dict, Union
 
-from jose import jwt  # type: ignore
-from jose.exceptions import JWTClaimsError, JWTError  # type: ignore
+from jose import jwt
+from jose.exceptions import JWTClaimsError, JWTError
 
 from errors.core.jwt import JWTDecodeException
 

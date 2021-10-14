@@ -1,31 +1,41 @@
-from aiohttp import ClientSession
+from aiohttp import ClientError, ClientSession
 
+from app import App
 from config import DIR, URL, Settings
-from core.register import deregister_worker
+from errors.config import SettingsReadError
+from errors.connection import ConnectionException
 from errors.register import NotRegisteredError
 
 
-class Deregister:
-    def __init__(self, directories: DIR, settings: Settings, urls: URL):
-        self.directories = directories
-        self.settings = settings
-        self.urls = urls
+class Deregister(App):
+    def __init__(self, data_dir: str):
+        super(Deregister, self).__init__()
+        self.data_dir = data_dir
+        self.directories = DIR(data_dir)
+        self.settings = Settings(self.directories.settings_file)
+        self.urls = URL()
 
-    async def deregister(self) -> None:
+    async def _run(self, session: ClientSession) -> None:
+        if not self.settings.exist():
+            raise NotRegisteredError()
         try:
-            if not self.settings.exist():
-                raise NotRegisteredError()
-            async with ClientSession() as session:
-                await deregister_worker(
-                    session, self.urls.deregister, self.settings.token
-                )
-                self.__remove_settings()
-        except Exception:
-            await self.__rollback_deregister()
-            raise
-
-    def __remove_settings(self) -> None:
+            self.settings.read()
+            self.urls.set_server_ip(self.settings.server_ip)
+        except SettingsReadError as error:
+            raise NotRegisteredError() from error
+        await self.__deregister(session)
         self.settings.delete()
 
-    async def __rollback_deregister(self) -> None:
+    async def __deregister(self, session: ClientSession) -> None:
+        headers = {"token": self.settings.token}
+        try:
+            async with session.delete(
+                self.urls.deregister, headers=headers
+            ) as response:
+                if response.status != 200:
+                    pass
+        except ClientError as error:
+            raise ConnectionException() from error
+
+    async def _rollback(self) -> None:
         pass

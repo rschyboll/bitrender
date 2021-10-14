@@ -12,6 +12,9 @@
     "postCreateCommand": "pip install -r .devcontainer/requirements.txt",
     "waitFor": "postCreateCommand",
     "remoteUser": "vscode",
+    "forwardPorts": [
+        8000
+    ],
     "settings": {
         "terminal.integrated.profiles.linux": {
             "fish": {
