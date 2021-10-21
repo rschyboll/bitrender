@@ -1,27 +1,3 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-"""
-hello.py - Example file system for pyfuse3.
-
-This program presents a static file system containing a single file.
-
-Copyright © 2015 Nikolaus Rath <Nikolaus.org>
-Copyright © 2015 Gerion Entrup.
-
-Permission is hereby granted, free of charge, to any person obtaining a copy of
-this software and associated documentation files (the "Software"), to deal in
-the Software without restriction, including without limitation the rights to
-use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
-the Software, and to permit persons to whom the Software is furnished to do so.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
-FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
-COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
-IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
-CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-"""
-
 import os
 import sys
 
@@ -54,8 +30,9 @@ log = logging.getLogger(__name__)
 
 
 class TestFs(pyfuse3.Operations):
-    def __init__(self):
+    def __init__(self, files):
         super(TestFs, self).__init__()
+        self.files = files
         self.hello_name = b"message"
         self.hello_inode = pyfuse3.ROOT_INODE + 1
         self.hello_data = b"hello world\n"
@@ -65,9 +42,9 @@ class TestFs(pyfuse3.Operations):
         if inode == pyfuse3.ROOT_INODE:
             entry.st_mode = stat.S_IFDIR | 0o755
             entry.st_size = 0
-        elif inode == self.hello_inode:
+        elif inode <= pyfuse3.ROOT_INODE + len(self.files):
             entry.st_mode = stat.S_IFREG | 0o644
-            entry.st_size = len(self.hello_data)
+            entry.st_size = len(self.files[inode - 1 - pyfuse3.ROOT_INODE]["data"])
         else:
             raise pyfuse3.FUSEError(errno.ENOENT)
 
@@ -82,7 +59,10 @@ class TestFs(pyfuse3.Operations):
         return entry
 
     async def lookup(self, parent_inode, name, ctx=None):
-        if parent_inode != pyfuse3.ROOT_INODE or name != self.hello_name:
+        if (
+            parent_inode != pyfuse3.ROOT_INODE
+            or parent_inode >= pyfuse3.ROOT_INODE + len(self.files)
+        ):
             raise pyfuse3.FUSEError(errno.ENOENT)
         return self.getattr(self.hello_inode)
 
@@ -94,78 +74,59 @@ class TestFs(pyfuse3.Operations):
     async def readdir(self, fh, start_id, token):
         assert fh == pyfuse3.ROOT_INODE
 
-        # only one entry
-        if start_id == 0:
-            pyfuse3.readdir_reply(
-                token, self.hello_name, await self.getattr(self.hello_inode), 1
-            )
+        for file in self.files:
+            if file["inode"] <= start_id:
+                continue
+
+            if not pyfuse3.readdir_reply(
+                token,
+                file["name"].encode(),
+                await self.getattr(file["inode"]),
+                file["inode"] + 1,
+            ):
+                break
+
         return
 
     async def open(self, inode, flags, ctx):
-        if inode != self.hello_inode:
-            raise pyfuse3.FUSEError(errno.ENOENT)
         if flags & os.O_RDWR or flags & os.O_WRONLY:
             raise pyfuse3.FUSEError(errno.EACCES)
         return pyfuse3.FileInfo(fh=inode)
 
     async def read(self, fh, off, size):
-        assert fh == self.hello_inode
-        return self.hello_data[off : off + size]
+        data = self.files[fh - 1 - pyfuse3.ROOT_INODE]["data"]
+        if len(data) < size:
+            return data
 
-
-def init_logging(debug=False):
-    formatter = logging.Formatter(
-        "%(asctime)s.%(msecs)03d %(threadName)s: " "[%(name)s] %(message)s",
-        datefmt="%Y-%m-%d %H:%M:%S",
-    )
-    handler = logging.StreamHandler()
-    handler.setFormatter(formatter)
-    root_logger = logging.getLogger()
-    if debug:
-        handler.setLevel(logging.DEBUG)
-        root_logger.setLevel(logging.DEBUG)
-    else:
-        handler.setLevel(logging.INFO)
-        root_logger.setLevel(logging.INFO)
-    root_logger.addHandler(handler)
-
-
-def parse_args():
-    """Parse command line"""
-
-    parser = ArgumentParser()
-
-    parser.add_argument("mountpoint", type=str, help="Where to mount the file system")
-    parser.add_argument(
-        "--debug", action="store_true", default=False, help="Enable debugging output"
-    )
-    parser.add_argument(
-        "--debug-fuse",
-        action="store_true",
-        default=False,
-        help="Enable FUSE debugging output",
-    )
-    return parser.parse_args()
+        return self.files[fh - 1 - pyfuse3.ROOT_INODE]["data"]
 
 
 async def test():
-    options = parse_args()
-    init_logging(options.debug)
+    files = [
+        {"name": "test", "data": b"brewrwer\n", "inode": pyfuse3.ROOT_INODE + 1},
+        {"name": "test2", "data": b"brewrwer3\n", "inode": pyfuse3.ROOT_INODE + 2},
+    ]
 
-    testfs = TestFs()
+    testfs = TestFs(files)
     fuse_options = set(pyfuse3.default_options)
     fuse_options.add("fsname=hello")
-    if options.debug_fuse:
-        fuse_options.add("debug")
+    fuse_options.add("debug")
 
-    pyfuse3.init(testfs, options.mountpoint, fuse_options)
+    pyfuse3.init(testfs, "./test", fuse_options)
     task = asyncio.create_task(pyfuse3.main())
     i = 1
     while True:
         print("TEST")
-        await asyncio.sleep(5)
+        await asyncio.sleep(10)
+        files.append(
+            {
+                "name": "test2" + str(i),
+                "data": b"brewrwer3\n",
+                "inode": pyfuse3.ROOT_INODE + 2 + i,
+            },
+        )
         i += 1
-        if i == 5:
+        if i == 4:
             break
     pyfuse3.terminate()
     await task
