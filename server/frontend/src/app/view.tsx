@@ -6,6 +6,7 @@ import { Topbar } from "components/topbar";
 import { Tasks } from "screens/tasks";
 import { AddTask } from "screens/addTask";
 import { Binaries } from "screens/binaries";
+import { Workers } from "screens/workers";
 
 export const AppView: FunctionComponent = () => {
   return (
@@ -20,7 +21,9 @@ export const AppView: FunctionComponent = () => {
           </div>
           <div id="layout-content">
             <Switch>
-              <Route path="/machines">Hello3</Route>
+              <Route path="/workers">
+                <Workers />
+              </Route>
               <Route path="/tasks">
                 <Tasks />
               </Route>

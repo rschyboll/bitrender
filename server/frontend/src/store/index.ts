@@ -3,11 +3,14 @@ import createSagaMiddleware from "redux-saga";
 
 import { binariesSlice } from "./binaries/reducer";
 import { binariesSaga } from "./binaries/saga";
+import { workersSlice } from "./workers/reducer";
+import { workersSaga } from "./workers/saga";
 
 const sagaMiddleWare = createSagaMiddleware();
 
 const reducer = combineReducers({
   binaries: binariesSlice.reducer,
+  workers: workersSlice.reducer,
 });
 
 export const store = configureStore({
@@ -16,5 +19,6 @@ export const store = configureStore({
 });
 
 sagaMiddleWare.run(binariesSaga);
+sagaMiddleWare.run(workersSaga);
 
 export type StoreState = ReturnType<typeof store.getState>;

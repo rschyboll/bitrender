@@ -1,6 +1,6 @@
+from aerich import Command
 from fastapi import FastAPI
 from tortoise.contrib.fastapi import register_tortoise
-from aerich import Command
 
 from config import get_tortoise_config
 
@@ -19,7 +19,7 @@ async def migrate() -> None:
     )
     await command.init()
     try:
-        await command.init_db(False)
+        await command.init_db(True)
     except FileExistsError:
         pass
     await command.upgrade()

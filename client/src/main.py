@@ -7,6 +7,7 @@ from appdirs import user_data_dir
 
 from app.deregister import Deregister
 from app.register import Register
+from app.worker import Worker
 from config import Config
 
 
@@ -34,7 +35,8 @@ if action == "register":
     register_app = Register(name, server_ip, data_dir)
     asyncio.run(register_app.run())
 elif action == "run":
-    pass
+    worker = Worker(data_dir)
+    asyncio.run(worker.run())
 elif action == "deregister":
     deregister_app = Deregister(data_dir)
     asyncio.run(deregister_app.run())

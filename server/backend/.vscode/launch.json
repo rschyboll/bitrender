@@ -5,10 +5,7 @@
             "name": "Python: FastAPI",
             "type": "python",
             "request": "launch",
-            "module": "uvicorn",
-            "args": [
-                "main:app"
-            ],
+            "program": "main.py",
             "cwd": "${workspaceFolder}/src",
             "envFile": "${workspaceFolder}/env/dev.env"
         },

@@ -5,7 +5,8 @@
       "name": "Attach (9222)",
       "type": "chrome",
       "request": "attach",
-      "port": 9222
+      "port": 9222,
+      "timeout": 100000
     },
     {
       "name": "Start Dev",

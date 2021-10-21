@@ -15,8 +15,8 @@ async def get_tasks() -> List[TaskView]:
     return await tasks.get()
 
 
-@router.get("/test_app")
-async def get_test_app() -> FileResponse:
+@router.get("/test_task")
+async def get_test_task() -> FileResponse:
     return FileResponse("../resources/classroom.blend")
 
 

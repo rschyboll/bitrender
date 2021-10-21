@@ -1,4 +1,4 @@
-from tortoise.fields.data import BooleanField, DatetimeField, TextField, IntField
+from tortoise.fields.data import BooleanField, DatetimeField, IntField, TextField
 
 from models import BaseModel
 
@@ -8,4 +8,4 @@ class Worker(BaseModel):
     register_date = DatetimeField()
 
     active = BooleanField(default=False)
-    test_time = IntField(null=True)
+    test_time = IntField(null=True, default=None)

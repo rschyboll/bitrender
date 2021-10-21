@@ -7,6 +7,7 @@ import { Button } from "primereact/button";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { BinariesDialog } from "./dialog";
+import { BinaryData } from "store/binaries/types";
 
 const TableHeader: FunctionComponent<{ showDialog: (arg0: boolean) => void }> =
   (props) => {
@@ -23,7 +24,7 @@ const TableHeader: FunctionComponent<{ showDialog: (arg0: boolean) => void }> =
   };
 
 export type BinariesViewProps = {
-  binaries: { version: string; url: string; id: string }[];
+  binaries: BinaryData[];
   loading: boolean;
   showDialog: (arg0: boolean) => void;
   dialogVisible: boolean;

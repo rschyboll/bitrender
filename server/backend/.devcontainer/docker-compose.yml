@@ -12,8 +12,8 @@ services:
     init: true
 
     command: sleep infinity
-
-    network_mode: service:db
+    ports:
+    - "8000:8000"
 
     user: vscode
 
@@ -27,6 +27,7 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_DB: rendering_server_dev
       POSTGRES_PASSWORD: postgres
+    network_mode: service:app
 
 volumes:
   server-db-data-dev:

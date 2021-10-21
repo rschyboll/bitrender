@@ -21,9 +21,7 @@ class Settings:
     def read(self) -> None:
         try:
             read_files = self.__config_parser.read(self.settings_file)
-            if len(read_files) == 0:
-                raise SettingsReadError()
-            if not self.validate_settings():
+            if len(read_files) == 0 or not self.validate_settings():
                 raise SettingsReadError()
         except ParsingError as error:
             raise SettingsReadError() from error
@@ -87,18 +85,16 @@ class Settings:
 
     @property
     def blender_version(self) -> Optional[str]:
-        return self.__get_key_optional(self.settings_section, "blender_version")
+        return self.__get_key_optional(self.blender_section, "blender_version")
 
     @blender_version.setter
-    def blender_version(self, value: str) -> None:
-        self.__set_key(self.blender_section, "blender_version", value)
+    def blender_version(self, value: Optional[str]) -> None:
+        self.__set_key_optional(self.blender_section, "blender_version", value)
 
     def __set_key(self, section: str, option: str, value: str) -> None:
-        if self.__config_parser.has_section(section):
-            self.__config_parser.set(section, option, value)
-        else:
+        if not self.__config_parser.has_section(section):
             self.__config_parser.add_section(section)
-            self.__config_parser.set(section, option, value)
+        self.__config_parser.set(section, option, value)
 
     def __get_key(self, section: str, option: str) -> str:
         try:
@@ -108,6 +104,23 @@ class Settings:
 
     def __get_key_optional(self, section: str, option: str) -> Optional[str]:
         return self.__config_parser.get(section, option, fallback=None)
+
+    def __set_key_optional(
+        self, section: str, option: str, value: Optional[str]
+    ) -> None:
+        if not self.__config_parser.has_section(section):
+            self.__config_parser.add_section(section)
+        if value is None:
+            self.__config_parser.remove_option(section, option)
+        else:
+            self.__config_parser.set(section, option, value)
+
+    @property
+    def properties(self) -> list[str]:
+        class_items = self.__class__.__dict__.items()
+        return [
+            k for k, v in class_items if isinstance(v, property) and k != "properties"
+        ]
 
 
 class URL:
@@ -129,6 +142,14 @@ class URL:
     def websocket(self) -> str:
         return f"ws://{self.server_ip}/workers/ws"
 
+    @property
+    def binary(self) -> str:
+        return f"http://{self.server_ip}/binaries/latest"
+
+    @property
+    def test_task(self) -> str:
+        return f"http://{self.server_ip}/tasks/test_task"
+
 
 class DIR:
     def __init__(self, data_dir: str = "./"):
@@ -148,3 +169,10 @@ class DIR:
     @property
     def binary_dir(self) -> str:
         return os.path.join(self.data_dir, "blender/")
+
+    @property
+    def binary(self) -> str:
+        return os.path.join(self.binary_dir + "blender")
+
+    def binary_tar(self, tempdir: str) -> str:
+        return os.path.join(tempdir, "download.tar.xz")

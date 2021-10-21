@@ -1,4 +1,4 @@
-import React, { FunctionComponent, useEffect, useState } from "react";
+import { FunctionComponent, useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 
 import { binariesSlice } from "store/binaries/reducer";

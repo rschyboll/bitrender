@@ -12,7 +12,7 @@ const sidebarItems = [
   {
     label: "navigation.machines",
     icon: "pi pi-fw pi-desktop",
-    path: "/machines",
+    path: "/workers",
   },
   {
     label: "navigation.binaries",

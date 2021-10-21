@@ -4,6 +4,10 @@
         "dockerfile": "Dockerfile",
         "context": "..",
     },
+    "runArgs": [
+        "--cap-add=SYS_ADMIN",
+        "--device=/dev/fuse"
+    ],
     "extensions": [
         "ms-python.python",
         "ms-python.vscode-pylance",
@@ -28,11 +32,15 @@
         "python.linting.pylintEnabled": true,
         "python.linting.enabled": true,
         "python.linting.mypyEnabled": true,
+        "python.linting.mypyArgs": [
+            " --config-file=mypy.ini"
+        ],
         "python.testing.pytestArgs": [
             "src"
         ],
         "python.linting.pylintArgs": [
             "--disable=C0111",
+            "--extension-pkg-whitelist=pyfuse3"
         ],
         "editor.semanticTokenColorCustomizations": {
             "rules": {

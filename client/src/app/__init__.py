@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 
-from aiohttp import ClientSession
+from aiohttp import ClientSession, ClientTimeout
 
 from errors import UserError
 
