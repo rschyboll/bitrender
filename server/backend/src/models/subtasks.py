@@ -1,4 +1,4 @@
-from tortoise.fields.data import IntField, TextField, FloatField
+from tortoise.fields.data import FloatField, IntField, TextField
 from tortoise.fields.relational import ForeignKeyField, ForeignKeyRelation
 
 from models import BaseModel

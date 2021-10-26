@@ -1,8 +1,9 @@
 from __future__ import annotations
-from typing import Optional, Dict, Any
-from uuid import UUID
-from enum import Enum
+
 import json
+from enum import Enum
+from typing import Any, Dict, Optional
+from uuid import UUID
 
 
 class ActionType(str, Enum):
