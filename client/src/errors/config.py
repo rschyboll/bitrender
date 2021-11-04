@@ -2,11 +2,11 @@ from errors import UserError
 
 
 class SettingsWriteError(UserError):
-    message = "Can't save settings. Check permissions of app data folder."
+    pass
 
 
 class SettingsReadError(UserError):
-    message = "Can't read settings, if you are not registered, try removing "
+    pass
 
 
 class SettingsNotReadError(UserError):

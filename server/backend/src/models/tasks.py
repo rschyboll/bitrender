@@ -1,4 +1,4 @@
-from tortoise.fields.data import IntField, TextField
+from tortoise.fields.data import IntField, TextField, BooleanField
 
 from models import BaseModel
 

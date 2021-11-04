@@ -17,7 +17,7 @@ async def get_tasks() -> List[TaskView]:
 
 @router.get("/test_task")
 async def get_test_task() -> FileResponse:
-    return FileResponse("../resources/classroom.blend")
+    return FileResponse("../resources/test.blend")
 
 
 @router.post("/new", status_code=status.HTTP_201_CREATED)

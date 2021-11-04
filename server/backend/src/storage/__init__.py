@@ -22,4 +22,8 @@ async def migrate() -> None:
         await command.init_db(True)
     except FileExistsError:
         pass
+    try:
+        await command.migrate()
+    except:
+        pass
     await command.upgrade()

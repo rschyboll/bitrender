@@ -140,7 +140,7 @@ class URL:
 
     @property
     def websocket(self) -> str:
-        return f"ws://{self.server_ip}/workers/ws"
+        return f"ws://{self.server_ip}/ws"
 
     @property
     def binary(self) -> str:
@@ -176,3 +176,15 @@ class DIR:
 
     def binary_tar(self, tempdir: str) -> str:
         return os.path.join(tempdir, "download.tar.xz")
+
+    @property
+    def task_dir(self) -> str:
+        return os.path.join(self.data_dir, "tasks/")
+
+    @property
+    def render_scripts_dir(self) -> str:
+        return os.path.join(os.path.dirname(os.path.realpath(__file__)), "render")
+
+    @property
+    def blender_config_dir(self) -> str:
+        return os.path.join(self.data_dir, "blender_config/")

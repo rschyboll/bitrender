@@ -1,2 +1,4 @@
 coverage.xml
 migrations
+**/test.blend
+**/test.blend1

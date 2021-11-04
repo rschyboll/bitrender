@@ -1,13 +1,8 @@
 {
     "name": "Rendering server - client",
-    "build": {
-        "dockerfile": "Dockerfile",
-        "context": "..",
-    },
-    "runArgs": [
-        "--cap-add=SYS_ADMIN",
-        "--device=/dev/fuse"
-    ],
+    "dockerComposeFile": "docker-compose.yml",
+    "service": "app",
+    "workspaceFolder": "/workspace",
     "extensions": [
         "ms-python.python",
         "ms-python.vscode-pylance",
@@ -16,9 +11,6 @@
     "postCreateCommand": "pip install -r .devcontainer/requirements.txt",
     "waitFor": "postCreateCommand",
     "remoteUser": "vscode",
-    "forwardPorts": [
-        8000
-    ],
     "settings": {
         "terminal.integrated.profiles.linux": {
             "fish": {
@@ -32,14 +24,13 @@
         "python.linting.pylintEnabled": true,
         "python.linting.enabled": true,
         "python.linting.mypyEnabled": true,
-        "python.linting.mypyArgs": [
-            " --config-file=mypy.ini"
-        ],
         "python.testing.pytestArgs": [
             "src"
         ],
         "python.linting.pylintArgs": [
+            "--extension-pkg-whitelist=pydantic",
             "--disable=C0111",
+            "--disable=W0703",
             "--extension-pkg-whitelist=pyfuse3"
         ],
         "editor.semanticTokenColorCustomizations": {

@@ -1,4 +1,4 @@
-from tortoise.fields.data import FloatField, IntField, TextField
+from tortoise.fields.data import IntField
 from tortoise.fields.relational import ForeignKeyField, ForeignKeyRelation
 
 from models import BaseModel
@@ -12,6 +12,5 @@ class SubTask(BaseModel):
     max_samples = IntField()
     rendered_samples = IntField(null=True)
 
-    task: ForeignKeyRelation[Task] = ForeignKeyField(
-        "models.Tournament", related_name="events"
-    )
+    task: ForeignKeyRelation[Task] = ForeignKeyField("rendering_server.Task")
+    progress = IntField(default=0)

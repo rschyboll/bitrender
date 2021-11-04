@@ -1,14 +1,15 @@
 import asyncio
 import sys
 from argparse import ArgumentParser, Namespace
-from typing import List
+from typing import Any, List, Type
 
-from appdirs import user_data_dir
-
-from app.deregister import Deregister
-from app.register import Register
-from app.worker import Worker
-from config import Config
+from actions.binary import UpdateBinary
+from actions.config import GetRegisterConfig, GetWorkerConfig
+from actions.fuse import Fuse
+from actions.register import DeregisterWorker, RegisterWorker
+from actions.rpc import RPC
+from app.action import Action
+from app.app import App
 
 
 def parse_args(args: List[str]) -> Namespace:
@@ -27,16 +28,23 @@ def parse_args(args: List[str]) -> Namespace:
 
 args_namespace = parse_args(sys.argv[1:])
 action: str = args_namespace.action
-data_dir = user_data_dir(Config.app_name, Config.app_author)
 
-if action == "register":
-    name: str = args_namespace.name
-    server_ip: str = args_namespace.server_ip
-    register_app = Register(name, server_ip, data_dir)
-    asyncio.run(register_app.run())
-elif action == "run":
-    worker = Worker(data_dir)
-    asyncio.run(worker.run())
-elif action == "deregister":
-    deregister_app = Deregister(data_dir)
-    asyncio.run(deregister_app.run())
+actions: List[Type[Action[Any]]] = []
+
+try:
+    if action == "register":
+        name: str = args_namespace.name
+        server_ip: str = args_namespace.server_ip
+        actions = [GetRegisterConfig, RegisterWorker]
+        app = App(actions, name=name, server_ip=server_ip)
+        asyncio.run(app.run())
+    elif action == "run":
+        actions = [GetWorkerConfig, Fuse, UpdateBinary, RPC]
+        app = App(actions)
+        asyncio.run(app.run())
+    elif action == "deregister":
+        actions = [GetWorkerConfig, DeregisterWorker]
+        app = App(actions)
+        asyncio.run(app.run())
+except KeyboardInterrupt:
+    asyncio.run(app.cleanup())
