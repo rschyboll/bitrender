@@ -12,3 +12,5 @@ temp
 server/backend/tasks
 .coverage
 coverage.xml
+**/*.blend
+**/*.blend1

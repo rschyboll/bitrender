@@ -24,6 +24,9 @@ async def migrate() -> None:
         pass
     try:
         await command.migrate()
-    except:
-        pass
-    await command.upgrade()
+    except Exception as error:
+        print(error)
+    try:
+        await command.upgrade()
+    except Exception as error:
+        print(error)

@@ -21,5 +21,5 @@ def get(worker_id: UUID) -> Optional[RpcChannel]:
     return None
 
 
-def connected_workers() -> List[UUID]:
+def connected() -> List[UUID]:
     return list(__active_connections.keys())

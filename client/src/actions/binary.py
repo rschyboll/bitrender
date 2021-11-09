@@ -27,8 +27,8 @@ class UpdateBinary(Action[None]):
     async def _start(self) -> None:
         self.state.latest_version = await self.__get_latest_version()
         if self.state.latest_version.version != self.settings.blender_version:
-            await self._start_subaction(DownloadBinary)
-            await self._start_subaction(UnpackBinary)
+            await self.start_subaction(DownloadBinary)
+            await self.start_subaction(UnpackBinary)
             self.settings.blender_version = self.state.latest_version.version
             self.settings.save()
 

@@ -24,7 +24,7 @@ class MessageType(Enum):
 @dataclass(order=True)
 class ProcessMessage:
     priority: MessagePriority
-    message: str = field(compare=False)
+    text: str = field(compare=False)
     type: MessageType = field(compare=False)
 
 
@@ -41,6 +41,7 @@ class BlenderSubprocess:
         self.__stdout_listener: Optional[Task[None]] = None
         self.__queue: PriorityQueue[ProcessMessage] = PriorityQueue()
         self.running: bool = False
+        self.returncode: Optional[int] = None
 
     async def __aenter__(self) -> None:
         self.running = True
@@ -74,8 +75,8 @@ class BlenderSubprocess:
                 self.__process.kill()
             except ProcessLookupError:
                 pass
-            finally:
-                await self.__process.wait()
+            await self.__process.wait()
+            self.returncode = self.__process.returncode
 
     async def __stop_listeners(self) -> None:
         if self.__stderr_listener is not None:
@@ -93,44 +94,26 @@ class BlenderSubprocess:
 
     async def __read_stdout__(self) -> None:
         if self.__process is not None and self.__process.stdout is not None:
-            stdout = None
-            while stdout != b"":
+            while not self.__process.stdout.at_eof():
                 stdout = await self.__process.stdout.readline()
                 stdout_str = self.__decode_bytes(stdout)
-                if stdout_str is None:
-                    message = ProcessMessage(
-                        MessagePriority.STDOUT, "Decode error", MessageType.STDOUT
-                    )
-                else:
+                if stdout_str is not None:
                     message = ProcessMessage(
                         MessagePriority.STDOUT, stdout_str, MessageType.STDOUT
                     )
                 await self.__queue.put(message)
-            message = ProcessMessage(
-                MessagePriority.STATE, "stdout end", MessageType.STATE
-            )
-            await self.__queue.put(message)
         self.running = False
 
     async def __read_stderr__(self) -> None:
         if self.__process is not None and self.__process.stderr is not None:
-            stderr = None
-            while stderr != b"":
+            while not self.__process.stderr.at_eof():
                 stderr = await self.__process.stderr.readline()
                 stderr_str = self.__decode_bytes(stderr)
-                if stderr_str is None:
-                    message = ProcessMessage(
-                        MessagePriority.STATE, "Decode error", MessageType.STATE
-                    )
-                else:
+                if stderr_str is not None:
                     message = ProcessMessage(
                         MessagePriority.STDERR, stderr_str, MessageType.STDERR
                     )
                 await self.__queue.put(message)
-            message = ProcessMessage(
-                MessagePriority.STATE, "stderr end", MessageType.STATE
-            )
-            await self.__queue.put(message)
         self.running = False
 
     def __decode_bytes(self, data: bytes) -> Optional[str]:

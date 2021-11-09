@@ -24,15 +24,22 @@ class Fuse(Action[None]):
         self.directories = directories
         self.tasks = tasks
         self.filesystem = FuseFilesystem(tasks)
+        self.fuse_running = False
 
     async def _start(self) -> None:
         self._create_task_dir()
         fuse_options = set(pyfuse3.default_options)
-        pyfuse3.init(self.filesystem, self.directories.task_dir, fuse_options)
         try:
+            pyfuse3.init(self.filesystem, self.directories.task_dir, fuse_options)
+            self.fuse_running = True
             await pyfuse3.main()
         except CancelledError:
+            self.__close()
+
+    def __close(self) -> None:
+        if self.fuse_running:
             pyfuse3.close()
+            self.fuse_running = False
 
     def _create_task_dir(self) -> None:
         if os.path.exists(self.directories.task_dir):
@@ -40,14 +47,10 @@ class Fuse(Action[None]):
         os.mkdir(self.directories.task_dir)
 
     async def _local_rollback(self) -> None:
-        pass
+        self.__close()
 
     async def _rollback(self) -> None:
-        pyfuse3.close()
-        try:
-            shutil.rmtree(self.directories.task_dir)
-        except Exception:
-            pass
+        self.__close()
 
 
 class FuseFile:
@@ -138,6 +141,8 @@ class FuseFilesystem(pyfuse3.Operations):
         return pyfuse3.FileInfo(fh=inode)
 
     async def read(self, fh: int, off: int, size: int) -> bytes:
-        data = self.files[fh].data
+        if fh in self.files:
+            data = self.files[fh].data
 
-        return data[off : off + size]
+            return data[off : off + size]
+        return b""

@@ -1,28 +1,17 @@
-import json
+# pylint: disable=wrong-import-position
+import os
 import sys
 
 import bpy
-from pathlib import Path
 
-devices = bpy.context.preferences.addons["cycles"].preferences.get_devices_for_type(
-    "CUDA"
-)
-print(devices)
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+sys.path.append(os.path.dirname(SCRIPT_DIR))
 
+from render.utils import Args, setup_devices
 
-class Args:
-    def __init__(self, file: str):
-        self.file = file
+args = Args.from_sys_args()
+setup_devices()
 
+bpy.ops.wm.open_mainfile(filepath=args.task)
 
-def parse_args() -> Args:
-    __args = json.loads(sys.argv[5])
-    file = None
-    if "file" in __args:
-        file = __args["file"]
-    if file is not None:
-        return Args(file=file)
-    raise Exception()
-
-
-args = parse_args()
+bpy.ops.render.render()

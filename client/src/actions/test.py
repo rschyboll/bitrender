@@ -1,33 +1,45 @@
-import os
 import asyncio
+import os
 from asyncio import TimeoutError as AsyncioTimeout
-from typing import Any, Dict, List
+from typing import Any, Dict, List, TYPE_CHECKING
 
 from aiohttp import ClientError
 
 from app.action import Action
 from config import DIR, URL, Settings
-from core.rpc_call import RPCCall
 from core.subprocess import BlenderSubprocess
-from errors.connection import ConnectionException
+from core.task import TaskStatus
+from errors.connection import ConnectionException, WrongResponseException
+
+
+if TYPE_CHECKING:
+    from services import RPCCall
+else:
+    RPCCall = object
 
 
 class Test(Action[None]):
     critical = True
     background = True
 
-    def __init__(self, settings: Settings, tasks: Dict[str, bytes], **kwargs: Any):
+    def __init__(
+        self,
+        settings: Settings,
+        tasks: Dict[str, bytes],
+        rpc_call: RPCCall,
+        **kwargs: Any
+    ):
         super().__init__(**kwargs)
-        assert "rpc_call" in kwargs and isinstance(kwargs["rpc_call"], RPCCall)
         self.settings = settings
         self.tasks = tasks
-        self.rpc_call = kwargs["rpc_call"]
+        self.rpc_call = rpc_call
 
     async def _start(self) -> None:
+        return
         if "test" not in self.tasks:
-            await self._start_subaction(DownloadTestTask)
+            await self.start_subaction(DownloadTestTask)
         await asyncio.sleep(2)
-        await self._start_subaction(RenderTestTask)
+        await self.start_subaction(RenderTestTask)
 
     async def _local_rollback(self) -> None:
         pass
@@ -47,18 +59,23 @@ class RenderTestTask(Action[int]):
         self.tasks = tasks
         self.directories = directories
         self.rpc_call = kwargs["rpc_call"]
+        self.status = TaskStatus()
         self.subprocess = BlenderSubprocess(
             directories.binary,
             os.path.join(directories.render_scripts_dir, "test.py"),
             directories.blender_config_dir,
-            file=os.path.join(directories.task_dir, "test"),
+            task=os.path.join(directories.task_dir, "test2"),
         )
 
     async def _start(self) -> int:
         async with self.subprocess:
-            while self.subprocess.running:
+            while self.subprocess.running or not self.subprocess.is_empty():
                 message = await self.subprocess.receive()
-                print(message.message)
+                self.status.update(message)
+                print(message.priority, end=" ")
+                print(message.text)
+        print(self.status.finished)
+        print(self.subprocess.returncode)
         return 1
 
     async def _local_rollback(self) -> None:
@@ -84,6 +101,8 @@ class DownloadTestTask(Action[None]):
     async def __download(self) -> bytes:
         try:
             async with self.session.get(self.urls.test_task) as response:
+                if response.status != 200:
+                    raise WrongResponseException()
                 return await response.content.read()
         except (ClientError, AsyncioTimeout) as error:
             raise ConnectionException() from error

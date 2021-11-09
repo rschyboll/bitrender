@@ -31,20 +31,19 @@ action: str = args_namespace.action
 
 actions: List[Type[Action[Any]]] = []
 
+loop = asyncio.get_event_loop()
 try:
     if action == "register":
         name: str = args_namespace.name
         server_ip: str = args_namespace.server_ip
         actions = [GetRegisterConfig, RegisterWorker]
         app = App(actions, name=name, server_ip=server_ip)
-        asyncio.run(app.run())
     elif action == "run":
         actions = [GetWorkerConfig, Fuse, UpdateBinary, RPC]
         app = App(actions)
-        asyncio.run(app.run())
     elif action == "deregister":
         actions = [GetWorkerConfig, DeregisterWorker]
         app = App(actions)
-        asyncio.run(app.run())
+    loop.run_until_complete(app.run())
 except KeyboardInterrupt:
-    asyncio.run(app.cleanup())
+    loop.run_until_complete(app.cleanup())

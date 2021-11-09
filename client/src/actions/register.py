@@ -70,7 +70,7 @@ class DeregisterWorker(Action[None]):
             raise ConnectionException() from error
 
     async def _local_rollback(self) -> None:
-        pass
+        self.settings.delete()
 
     async def _rollback(self) -> None:
         pass

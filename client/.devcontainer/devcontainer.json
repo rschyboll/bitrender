@@ -12,6 +12,7 @@
     "waitFor": "postCreateCommand",
     "remoteUser": "vscode",
     "settings": {
+        "editor.hover.sticky": true,
         "terminal.integrated.profiles.linux": {
             "fish": {
                 "path": "/usr/bin/fish"

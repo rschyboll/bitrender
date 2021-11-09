@@ -2,7 +2,7 @@ import asyncio
 from asyncio import CancelledError, Task
 from typing import Any, Dict, List, Type
 
-from aiohttp.client import ClientSession
+from aiohttp.client import ClientSession, ClientTimeout
 
 from actions.log import Logger
 from app.action import Action
@@ -20,7 +20,8 @@ class App:
         self.logger = Logger(self.running, self.finished)
 
     async def run(self) -> None:
-        async with ClientSession() as session:
+        session_timeout = ClientTimeout(total=None, sock_connect=15, sock_read=30)
+        async with ClientSession(timeout=session_timeout) as session:
             try:
                 logger = asyncio.create_task(self.logger.start())
                 for action_type in self.action_types:
@@ -37,7 +38,7 @@ class App:
                 try:
                     logger.cancel()
                     await logger
-                except Exception:
+                except CancelledError:
                     pass
             except Exception as error:
                 print(error)

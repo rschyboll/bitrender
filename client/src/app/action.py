@@ -87,9 +87,7 @@ class Action(ABC, Generic[TVALUE]):
             except CancelledError:
                 self.__cancel_tasks()
                 raise
-        except SubtaskFailedError:
-            raise
-        except Exception:
+        except Exception as error:
             try:
                 await self._local_rollback()
             except Exception:
@@ -100,7 +98,7 @@ class Action(ABC, Generic[TVALUE]):
     async def _start(self) -> TVALUE:
         raise NotImplementedError()
 
-    async def _start_subaction(
+    async def start_subaction(
         self, action_type: Type[Action[TSUBVALUE]], **kwargs: Any
     ) -> Optional[TSUBVALUE]:
         action = action_type.create(**self.kwargs, **kwargs)
@@ -118,7 +116,7 @@ class Action(ABC, Generic[TVALUE]):
             except Exception as error:
                 self.__cancel_tasks()
                 await self.rollback()
-                raise SubtaskFailedError() from error
+                raise error
 
     async def _cancel_background_tasks(self) -> None:
         running = self.running.copy()

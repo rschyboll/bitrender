@@ -1,12 +1,11 @@
 import asyncio
 from typing import Any
 
-from fastapi_websocket_rpc import RpcChannel, RpcMethodsBase, WebSocketRpcClient
+from fastapi_websocket_rpc import WebSocketRpcClient
 
-from actions.test import Test
 from app.action import Action
 from config import URL, Settings
-from core.rpc_call import RPCCall
+from services import RPCCall, RPCClient
 
 
 class RPC(Action[None]):
@@ -20,35 +19,28 @@ class RPC(Action[None]):
 
     async def _start(self) -> None:
         headers = [("token", self.settings.token)]
-        async with WebSocketRpcClient(
+        self.state.rpc_client = WebSocketRpcClient(
             self.urls.websocket, RPCClient(self), extra_headers=headers, keep_alive=1
-        ) as client:
-            await client.wait_on_rpc_ready()
-            while True:
-                await self.check_tasks()
-                await asyncio.sleep(0.25)
+        )
+        self.state.rpc_call = RPCCall(self.state.rpc_client.channel)
+        await self.state.rpc_client.__aenter__()
+        while True:
+            await self.check_tasks()
+            await asyncio.sleep(0.25)
 
     async def check_tasks(self) -> None:
-        for action, task in self.running.items():
+        running = self.running.copy()
+        for action, task in running.items():
             if task.done():
-                if isinstance(action, Test):
-                    pass
-
-    async def test(self, channel: RpcChannel) -> None:
-        rpc_call = RPCCall(self.settings, channel)
-        await self._start_subaction(Test, rpc_call=rpc_call)
+                await task
+                self.running.pop(action)
+                self.finished.append(action)
 
     async def _local_rollback(self) -> None:
-        pass
+        await self._rollback()
 
     async def _rollback(self) -> None:
-        pass
-
-
-class RPCClient(RpcMethodsBase):
-    def __init__(self, rpc: RPC):
-        super().__init__()
-        self.rpc = rpc
-
-    async def test(self) -> None:
-        await self.rpc.test(self.channel)
+        if self.state.rpc_client is not None:
+            await self.state.rpc_client.__aexit__()
+            self.state.rpc_client = None
+            self.state.rpc_call = None

@@ -4,8 +4,6 @@ FROM mcr.microsoft.com/vscode/devcontainers/python:0-${VARIANT}
 ENV DEBIAN_FRONTEND=noninteractive
 ENV LC_ALL=C.UTF-8
 ENV LANG=C.UTF-8
-ENV NVIDIA_DRIVER_CAPABILITIES=compute,utility
-ENV NVIDIA_VISIBLE_DEVICES=all
 
 RUN apt-get update && apt-get install -y fish
 RUN apt-get -y install meson cmake fuse3 libfuse3-dev libglib2.0-dev

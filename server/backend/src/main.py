@@ -3,8 +3,8 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from api import binaries, tasks, workers
+import services
 from storage import migrate, register_db
-from services import rpc as RPCService
 
 origins = [
     "http://127.0.0.1:3000",
@@ -20,7 +20,7 @@ def __init_routers(_app: FastAPI) -> None:
     _app.include_router(tasks.router)
     _app.include_router(workers.router)
     _app.include_router(binaries.router)
-    _app.include_router(RPCService.router)
+    _app.include_router(services.router)
 
 
 def __init_middleware(__app: FastAPI) -> None:
