@@ -8,6 +8,8 @@ class TaskStatus:
         self.no_file = False
         self.samples = 0
         self.memory = 0
+        self.time = None
+        self.remaining = None
 
     def update(self, message: ProcessMessage) -> None:
         if message.type == MessageType.STDERR:
@@ -18,7 +20,7 @@ class TaskStatus:
             self.no_file = True
 
     def __finished(self, message: ProcessMessage) -> bool:
-        if "Blender quit" in message.text:
+        if "Finished" in message.text:
             return True
         return False
 

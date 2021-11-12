@@ -22,7 +22,7 @@ class RPC(Action[None]):
         self.state.rpc_client = WebSocketRpcClient(
             self.urls.websocket, RPCClient(self), extra_headers=headers, keep_alive=1
         )
-        self.state.rpc_call = RPCCall(self.state.rpc_client.channel)
+        self.state.rpc_call = RPCCall(self.state.rpc_client)
         await self.state.rpc_client.__aenter__()
         while True:
             await self.check_tasks()

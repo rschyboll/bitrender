@@ -98,25 +98,28 @@ class Action(ABC, Generic[TVALUE]):
     async def _start(self) -> TVALUE:
         raise NotImplementedError()
 
-    async def start_subaction(
+    async def run_subaction(
         self, action_type: Type[Action[TSUBVALUE]], **kwargs: Any
-    ) -> Optional[TSUBVALUE]:
+    ) -> TSUBVALUE:
         action = action_type.create(**self.kwargs, **kwargs)
-        if action.background:
-            self.running[action] = asyncio.create_task(action.start())
-            return None
-        else:
-            task = asyncio.create_task(action.start())
-            self.running[action] = task
-            try:
-                value = await task
-                self.running.pop(action)
-                self.finished.append(action)
-                return value
-            except Exception as error:
-                self.__cancel_tasks()
-                await self.rollback()
-                raise error
+        task = asyncio.create_task(action.start())
+        self.running[action] = task
+        try:
+            value = await task
+            self.running.pop(action)
+            self.finished.append(action)
+            return value
+        except Exception as error:
+            self.__cancel_tasks()
+            await self.rollback()
+            raise error
+
+    async def start_background_subaction(
+        self, action_type: Type[Action[TSUBVALUE]], **kwargs: Any
+    ) -> None:
+        assert action_type.background
+        action = action_type.create(**self.kwargs, **kwargs)
+        self.running[action] = asyncio.create_task(action.start())
 
     async def _cancel_background_tasks(self) -> None:
         running = self.running.copy()

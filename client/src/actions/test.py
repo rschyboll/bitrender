@@ -1,7 +1,7 @@
-import asyncio
+import time
 import os
 from asyncio import TimeoutError as AsyncioTimeout
-from typing import Any, Dict, List, TYPE_CHECKING
+from typing import Any, Dict, List, TYPE_CHECKING, Optional
 
 from aiohttp import ClientError
 
@@ -35,48 +35,57 @@ class Test(Action[None]):
         self.rpc_call = rpc_call
 
     async def _start(self) -> None:
-        return
         if "test" not in self.tasks:
-            await self.start_subaction(DownloadTestTask)
-        await asyncio.sleep(2)
-        await self.start_subaction(RenderTestTask)
+            await self.run_subaction(DownloadTestTask)
+        await self.__render_test(1)
+        sync_time = await self.__render_test(1)
+        render_time = await self.__render_test()
+        if sync_time is not None and render_time is not None:
+            await self.rpc_call.test_success(sync_time, render_time)
+        else:
+            await self.rpc_call.test_error()
+
+    async def __render_test(self, samples: Optional[int] = None) -> Optional[float]:
+        return await self.run_subaction(RenderTestTask, samples=samples)
 
     async def _local_rollback(self) -> None:
-        pass
+        await self.rpc_call.test_error()
 
     async def _rollback(self) -> None:
         pass
 
 
-class RenderTestTask(Action[int]):
+class RenderTestTask(Action[Optional[float]]):
     critical = True
     background = False
 
-    def __init__(self, tasks: Dict[str, bytes], directories: DIR, **kwargs: Any):
+    def __init__(self, directories: DIR, rpc_call: RPCCall, **kwargs: Any):
         super().__init__(**kwargs)
-        assert "rpc_call" in kwargs and isinstance(kwargs["rpc_call"], RPCCall)
-        self.messages: List[str] = []
-        self.tasks = tasks
+        assert "samples" in kwargs
         self.directories = directories
-        self.rpc_call = kwargs["rpc_call"]
+        self.rpc_call = rpc_call
+        self.samples = kwargs["samples"]
         self.status = TaskStatus()
-        self.subprocess = BlenderSubprocess(
-            directories.binary,
-            os.path.join(directories.render_scripts_dir, "test.py"),
-            directories.blender_config_dir,
-            task=os.path.join(directories.task_dir, "test2"),
+        self.subprocess = self.__create_subprocess()
+
+    def __create_subprocess(self) -> BlenderSubprocess:
+        return BlenderSubprocess(
+            self.directories.binary,
+            self.directories.test_script,
+            self.directories.blender_config_dir,
+            task=os.path.join(self.directories.task_dir, "test"),
+            samples=self.samples,
         )
 
-    async def _start(self) -> int:
+    async def _start(self) -> Optional[float]:
+        start = time.time()
         async with self.subprocess:
             while self.subprocess.running or not self.subprocess.is_empty():
                 message = await self.subprocess.receive()
-                self.status.update(message)
-                print(message.priority, end=" ")
-                print(message.text)
-        print(self.status.finished)
-        print(self.subprocess.returncode)
-        return 1
+                if message is not None:
+                    self.status.update(message)
+        end = time.time()
+        return end - start
 
     async def _local_rollback(self) -> None:
         pass

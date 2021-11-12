@@ -35,6 +35,10 @@ def setup_devices() -> None:
     cuda_devices = cycles_preferences.get_devices_for_type("CUDA")
     optix_devices = cycles_preferences.get_devices_for_type("OPTIX")
     if len(optix_devices) != 0:
+        bpy.context.preferences.addons[
+            "cycles"
+        ].preferences.compute_device_type = "OPTIX"
+        bpy.context.scene.cycles.device = "GPU"
         disable_devices(cuda_devices)
         for device in optix_devices:
             if device.type != "CPU":
@@ -42,6 +46,10 @@ def setup_devices() -> None:
             else:
                 device.use = False
     elif len(cuda_devices) != 0:
+        bpy.context.preferences.addons[
+            "cycles"
+        ].preferences.compute_device_type = "CUDA"
+        bpy.context.scene.cycles.device = "GPU"
         for device in cuda_devices:
             if device.type != "CPU":
                 device.use = True

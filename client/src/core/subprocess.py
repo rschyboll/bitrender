@@ -1,3 +1,4 @@
+import asyncio
 import json
 import os
 from asyncio import CancelledError
@@ -97,11 +98,15 @@ class BlenderSubprocess:
             while not self.__process.stdout.at_eof():
                 stdout = await self.__process.stdout.readline()
                 stdout_str = self.__decode_bytes(stdout)
-                if stdout_str is not None:
+                if (
+                    stdout_str is not None
+                    and not stdout_str.isspace()
+                    and stdout_str != ""
+                ):
                     message = ProcessMessage(
                         MessagePriority.STDOUT, stdout_str, MessageType.STDOUT
                     )
-                await self.__queue.put(message)
+                    await self.__queue.put(message)
         self.running = False
 
     async def __read_stderr__(self) -> None:
@@ -109,11 +114,15 @@ class BlenderSubprocess:
             while not self.__process.stderr.at_eof():
                 stderr = await self.__process.stderr.readline()
                 stderr_str = self.__decode_bytes(stderr)
-                if stderr_str is not None:
+                if (
+                    stderr_str is not None
+                    and not stderr_str.isspace()
+                    and stderr_str != ""
+                ):
                     message = ProcessMessage(
                         MessagePriority.STDERR, stderr_str, MessageType.STDERR
                     )
-                await self.__queue.put(message)
+                    await self.__queue.put(message)
         self.running = False
 
     def __decode_bytes(self, data: bytes) -> Optional[str]:
@@ -126,6 +135,9 @@ class BlenderSubprocess:
     def is_empty(self) -> bool:
         return self.__queue.empty()
 
-    async def receive(self) -> ProcessMessage:
+    async def receive(self) -> Optional[ProcessMessage]:
+        if self.is_empty():
+            await asyncio.sleep(0.01)
+            return None
         message = await self.__queue.get()
         return message

@@ -9,8 +9,10 @@ class TestView(BaseModel):
     id: UUID
 
     start_time: datetime
-    end_time: Optional[int]
-    samples: Optional[int]
+    end_time: Optional[datetime]
+
+    sync_time: Optional[float]
+    render_time: Optional[float]
     error: bool
     worker_id: UUID
 
@@ -27,5 +29,7 @@ class TestUpdate(BaseModel):
     id: UUID
 
     end_time: Optional[datetime]
-    samples: Optional[int]
+
+    sync_time: Optional[float]
+    render_time: Optional[float]
     error: Optional[bool]

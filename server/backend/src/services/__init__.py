@@ -9,11 +9,12 @@ from schemas.tests import TestCreate
 from schemas.workers import WorkerView
 from services.tests import TestsCall, TestsService
 from storage import tests as TestStorage
+from services.tasks import TasksService
 
 router = APIRouter()
 
 
-class RPCService(RpcMethodsBase, TestsService):
+class RPCService(TestsService, TasksService):
     pass
 
 
@@ -24,7 +25,7 @@ class RPCCall(TestsCall):
 async def on_connect(channel: RpcChannel) -> None:
     ChannelCore.add(channel, channel.id)
     test = await TestStorage.get_latest(channel.id)
-    if test is None or test.end_time is None:
+    if test is None or test.render_time is None or test.sync_time is None:
         await RPCCall.test_worker(channel)
 
 

@@ -1,5 +1,6 @@
 import asyncio
 import sys
+import traceback
 from argparse import ArgumentParser, Namespace
 from typing import Any, List, Type
 
@@ -47,3 +48,6 @@ try:
     loop.run_until_complete(app.run())
 except KeyboardInterrupt:
     loop.run_until_complete(app.cleanup())
+except Exception as error:
+    loop.run_until_complete(app.cleanup())
+    traceback.print_exc()

@@ -1,6 +1,7 @@
 import asyncio
 from asyncio import CancelledError, Task
 from typing import Any, Dict, List, Type
+import traceback
 
 from aiohttp.client import ClientSession, ClientTimeout
 
@@ -40,8 +41,8 @@ class App:
                     await logger
                 except CancelledError:
                     pass
-            except Exception as error:
-                print(error)
+            except Exception:
+                traceback.print_exc()
 
     async def run_action(self, action: Action[Any]) -> None:
         try:
