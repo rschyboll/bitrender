@@ -14,12 +14,14 @@ class Args:
         samples: Optional[int] = None,
         res_x: Optional[int] = None,
         res_y: Optional[int] = None,
+        output: Optional[str] = None,
         **__: Any,
     ):
         self.task = task
         self.samples = samples
         self.res_x = res_x
         self.res_y = res_y
+        self.output = output
 
     @classmethod
     def from_sys_args(cls) -> Args:

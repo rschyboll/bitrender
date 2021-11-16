@@ -1,8 +1,9 @@
-from typing import Optional
+from typing import Optional, List
 
 from fastapi import Depends, Header, HTTPException, WebSocket
 
-from core import jwt as JWTCore
+from core import channel, jwt as JWTCore
+from core import channel as ChannelCore
 from schemas.workers import WorkerView
 from storage import workers as WorkerStorage
 
@@ -42,3 +43,12 @@ async def ws_active_worker(
     except HTTPException:
         await websocket.close()
     return None
+
+
+async def filter_connected(workers: List[WorkerView]) -> List[WorkerView]:
+    connected_workers: List[WorkerView] = []
+    channels = ChannelCore.connected()
+    for worker in workers:
+        if worker.id in channels:
+            connected_workers.append(worker)
+    return connected_workers

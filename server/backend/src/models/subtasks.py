@@ -1,16 +1,14 @@
-from tortoise.fields.data import IntField
+from tortoise.fields.data import BooleanField, IntField
 from tortoise.fields.relational import ForeignKeyField, ForeignKeyRelation
 
 from models import BaseModel
-from models.tasks import Task
+from models.frames import Frame
 
 
 class SubTask(BaseModel):
-    frame = IntField()
+    frame: ForeignKeyRelation[Frame] = ForeignKeyField("rendering_server.Frame")
     seed = IntField()
     time_limit = IntField()
     max_samples = IntField()
     rendered_samples = IntField(null=True)
-
-    task: ForeignKeyRelation[Task] = ForeignKeyField("rendering_server.Task")
-    progress = IntField(default=0)
+    finished = BooleanField(default=False)

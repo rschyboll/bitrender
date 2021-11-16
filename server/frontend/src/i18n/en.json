@@ -1,24 +1,21 @@
 {
-    "navigation": {
-        "dashboard": "Dashboard",
-        "tasks": "Tasks",
-        "machines": "Machines"
-    },
-    "tasks" : {
-        "new": "New task"
-    },
-    "addTask": {
-        "drop": "Drop file here or browse",
-        "browse": "Browse",
-        "wrongFile": "File {{file}} is not a acceptable file format",
-        "config": {
-            "renderSettings": "Render settings",
-            "renderEngine": "Render engine",
-            "cycles": "Cycles",
-            "eevee": "Eevee",
-            "sampleAmount": "Sample amount",
-            
-            "upload": "Wyślij"
-        }
+  "navigation": {
+    "dashboard": "Dashboard",
+    "tasks": "Tasks",
+    "machines": "Machines"
+  },
+  "tasks": {
+    "new": "New task"
+  },
+  "addTask": {
+    "drop": "Drop file here or browse",
+    "browse": "Browse",
+    "wrongFile": "File {{file}} is not a acceptable file format",
+    "config": {
+      "renderSettings": "Render settings",
+      "resolution": "Resolution",
+      "sampleAmount": "Sample amount",
+      "upload": "Wyślij"
     }
+  }
 }

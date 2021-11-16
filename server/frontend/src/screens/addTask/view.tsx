@@ -1,27 +1,28 @@
-import { FormEvent, FunctionComponent } from "react";
+import React, { FunctionComponent } from "react";
 import { Card } from "primereact/card";
 import { Button } from "primereact/button";
-import { Dropdown, DropdownChangeParams } from "primereact/dropdown";
 import { InputText } from "primereact/inputtext";
 import { useTranslation } from "react-i18next";
 
 import { TaskUpload } from "components/taskUpload";
 import { getFileSizeInMB } from "./logic";
 
-const renderingEngines = [
-  { label: "addTask.config.cycles", value: "cycles" },
-  { label: "addTask.config.eevee", value: "eevee" },
-];
-
 export type AddTaskViewProps = {
   file?: File;
   setFile: (file?: File) => void;
-  renderingEngine: string;
-  setRenderingEngine: (event: DropdownChangeParams) => void;
   sampleAmount: number;
   setSampleAmount: (event: React.FormEvent<HTMLInputElement>) => void;
   abortTask: () => void;
   uploadFile: () => void;
+  changeXResolution: (event: React.FormEvent<HTMLInputElement>) => void;
+  changeYResolution: (event: React.FormEvent<HTMLInputElement>) => void;
+  xResolution: number;
+  yResolution: number;
+  changeStartFrame: (event: React.FormEvent<HTMLInputElement>) => void;
+  changeEndFrame: (event: React.FormEvent<HTMLInputElement>) => void;
+  startFrame: number;
+  endFrame: number;
+  uploading: boolean;
 };
 
 export const AddTaskView: FunctionComponent<AddTaskViewProps> = (props) => {
@@ -30,6 +31,11 @@ export const AddTaskView: FunctionComponent<AddTaskViewProps> = (props) => {
   if (props.file == null) {
     return <TaskUpload file={props.file} setFile={props.setFile} />;
   }
+
+  if (props.uploading) {
+    return <Card>Wysyłanie w trakcie.</Card>;
+  }
+
   return (
     <Card>
       <Button
@@ -46,19 +52,56 @@ export const AddTaskView: FunctionComponent<AddTaskViewProps> = (props) => {
           {t("addTask.config.projectName")}: {props.file.name}
         </p>
         <h5>{t("addTask.config.renderSettings")}</h5>
+
         <div className="p-field">
-          <label htmlFor="fieldId">{t("addTask.config.renderEngine")}</label>
-          <Dropdown
-            options={renderingEngines}
-            value={props.renderingEngine}
-            onChange={props.setRenderingEngine}
-            itemTemplate={(option: { label: string; code: string }) => t(option.label)}
-            valueTemplate={(option: { label: string; code: string }) => t(option.label)}
+          <label htmlFor="fieldId">{t("addTask.config.sampleAmount")}</label>
+          <InputText
+            type="number"
+            value={props.sampleAmount}
+            onChange={props.setSampleAmount}
           />
         </div>
         <div className="p-field">
-          <label htmlFor="fieldId">{t("addTask.config.sampleAmount")}</label>
-          <InputText type="number" value={props.sampleAmount} onChange={props.setSampleAmount} />
+          <label>{t("addTask.config.resolution")}</label>
+          <div className="p-inputgroup">
+            <span className="p-inputgroup-addon">
+              <p>x</p>
+            </span>
+            <InputText
+              type="number"
+              value={props.xResolution}
+              onChange={props.changeXResolution}
+            />
+            <span className="p-inputgroup-addon">
+              <p>y</p>
+            </span>
+            <InputText
+              type="number"
+              value={props.yResolution}
+              onChange={props.changeYResolution}
+            />
+          </div>
+        </div>
+        <div className="p-field">
+          <label>{t("addTask.config.frames")}</label>
+          <div className="p-inputgroup">
+            <span className="p-inputgroup-addon">
+              <p>Start</p>
+            </span>
+            <InputText
+              type="number"
+              value={props.startFrame}
+              onChange={props.changeStartFrame}
+            />
+            <span className="p-inputgroup-addon">
+              <p>End</p>
+            </span>
+            <InputText
+              type="number"
+              value={props.endFrame}
+              onChange={props.changeEndFrame}
+            />
+          </div>
         </div>
       </div>
       <Button label={t("addTask.config.upload")} onClick={props.uploadFile} />

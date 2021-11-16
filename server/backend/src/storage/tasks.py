@@ -20,6 +20,8 @@ async def create(task: TaskCreate, settings: Settings) -> TaskView:
 
 
 async def __write_file_to_disk(file: UploadFile, uuid: UUID, task_dir: str) -> None:
+    if not os.path.exists(task_dir):
+        os.mkdir(task_dir)
     path = os.path.join(task_dir, uuid.hex + ".blend")
     async with aiofiles.open(path, "wb+") as out_file:
         while content := await file.read(1024):

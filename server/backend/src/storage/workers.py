@@ -34,3 +34,11 @@ async def update(worker_update: WorkerUpdate) -> WorkerView:
 async def delete(worker_id: UUID) -> None:
     worker = await Worker.get(id=worker_id)
     await worker.delete()
+
+
+async def get_idle() -> List[WorkerView]:
+    workers = await Worker.filter(task=None)
+    worker_views: List[WorkerView] = []
+    for worker in workers:
+        worker_views.append(WorkerView.from_orm(worker))
+    return worker_views

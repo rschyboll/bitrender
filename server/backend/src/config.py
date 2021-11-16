@@ -12,6 +12,7 @@ class Settings(BaseSettings):
         "models.binaries",
         "models.subtasks",
         "models.tests",
+        "models.frames",
         "aerich.models",
     ]
     database_url: str

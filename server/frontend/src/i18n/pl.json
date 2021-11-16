@@ -1,37 +1,42 @@
 {
-    "navigation": {
-        "dashboard": "Pulpit",
-        "tasks": "Zadania",
-        "machines": "Maszyny",
-        "addTask": "Dodaj zadanie",
-        "binaries": "Wersje blendera"
-    },
-    "tasks" : {
-        "new": "Nowe zadanie"
-    },
-    "addTask": {
-        "drop": "Upuść plik tutaj lub wyszukaj",
-        "browse": "Przeglądaj",
-        "wrongFile": "Plik {{file}} nie jest akceptowalnym plikiem zadania",
-        "config": {
-            "projectSettings": "Dane zadania",
-            "projectSize": "Rozmiar pliku",
-            "projectName": "Nazwa pliku",
+  "navigation": {
+    "dashboard": "Pulpit",
+    "tasks": "Zadania",
+    "machines": "Maszyny",
+    "addTask": "Dodaj zadanie",
+    "binaries": "Wersje blendera"
+  },
+  "tasks": {
+    "new": "Nowe zadanie",
+    "name": "Nazwa pliku",
+    "samples": "Ilość próbek",
+    "start_frame": "Klatka początkowa",
+    "end_frame": "Klatka końcowa",
+    "resolution_x": "Rozdzielczość pozioma",
+    "resolution_y": "Rozdzielczość pionowa"
+  },
+  "addTask": {
+    "drop": "Upuść plik tutaj lub wyszukaj",
+    "browse": "Przeglądaj",
+    "wrongFile": "Plik {{file}} nie jest akceptowalnym plikiem zadania",
+    "config": {
+      "projectSettings": "Dane zadania",
+      "projectSize": "Rozmiar pliku",
+      "projectName": "Nazwa pliku",
 
-            "renderSettings": "Ustawienia renderowania",
-            "renderEngine": "Silnik renderujący",
-            "cycles": "Cycles",
-            "eevee": "Eevee",
-            "sampleAmount": "Ilość próbek",
-            "upload": "Wyślij"
-        }
-    },
-    "binaries": {
-        "new": "Nowa wersja",
-        "url": "Adres URL",
-        "version": "Wersja",
-        "provide_data": "Podaj dane wersji blendera",
-        "accept": "Akceptuj",
-        "abort": "Anuluj"
+      "renderSettings": "Ustawienia renderowania",
+      "resolution": "Rozdzielczość",
+      "frames": "Klatki",
+      "sampleAmount": "Ilość próbek",
+      "upload": "Wyślij"
     }
+  },
+  "binaries": {
+    "new": "Nowa wersja",
+    "url": "Adres URL",
+    "version": "Wersja",
+    "provide_data": "Podaj dane wersji blendera",
+    "accept": "Akceptuj",
+    "abort": "Anuluj"
+  }
 }

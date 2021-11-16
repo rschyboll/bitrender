@@ -1,7 +1,7 @@
 import time
 import os
 from asyncio import TimeoutError as AsyncioTimeout
-from typing import Any, Dict, List, TYPE_CHECKING, Optional
+from typing import Any, Dict, TYPE_CHECKING, Optional
 
 from aiohttp import ClientError
 
@@ -44,6 +44,7 @@ class Test(Action[None]):
             await self.rpc_call.test_success(sync_time, render_time)
         else:
             await self.rpc_call.test_error()
+        self.tasks.pop("test")
 
     async def __render_test(self, samples: Optional[int] = None) -> Optional[float]:
         return await self.run_subaction(RenderTestTask, samples=samples)
