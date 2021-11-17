@@ -1,8 +1,20 @@
+from typing import TYPE_CHECKING
+
 from tortoise.fields.data import BooleanField, IntField
-from tortoise.fields.relational import ForeignKeyField, ForeignKeyRelation
+from tortoise.fields.relational import (
+    ForeignKeyField,
+    ForeignKeyRelation,
+    ReverseRelation,
+)
 
 from models import BaseModel
-from models.tasks import Task
+
+if TYPE_CHECKING:
+    from models.tasks import Task
+    from models.subtasks import Subtask
+else:
+    Task = object
+    Subtask = object
 
 
 class Frame(BaseModel):
@@ -10,3 +22,4 @@ class Frame(BaseModel):
     finished = BooleanField(default=False)
 
     task: ForeignKeyRelation[Task] = ForeignKeyField("rendering_server.Task")
+    subtasks: ReverseRelation[Subtask]

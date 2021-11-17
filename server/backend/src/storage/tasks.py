@@ -1,4 +1,5 @@
 import os
+import datetime
 from typing import List
 from uuid import UUID
 
@@ -13,7 +14,9 @@ from schemas.tasks import TaskCreate, TaskView
 
 @atomic()
 async def create(task: TaskCreate, settings: Settings) -> TaskView:
-    task_model = Task(**task.dict(), name=task.file.filename)
+    task_model = Task(
+        **task.dict(), name=task.file.filename, date=datetime.datetime.now()
+    )
     await task_model.save()
     await __write_file_to_disk(task.file, task_model.id, settings.task_dir)
     return TaskView.from_orm(task_model)

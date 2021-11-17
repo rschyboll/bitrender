@@ -1,8 +1,10 @@
-from schemas.tasks import TaskView
+from core import worker as WorkerCore
 from schemas.frames import FrameCreate
+from schemas.tasks import TaskView
+from schemas.subtasks import SubtaskCreate
 from storage import frames as FrameStorage
 from storage import workers as WorkerStorage
-from core import worker as WorkerCore
+from storage import subtasks as SubtaskStorage
 
 
 async def new_task(task: TaskView) -> None:
@@ -13,9 +15,10 @@ async def new_task(task: TaskView) -> None:
 
 
 async def distribute_tasks() -> None:
-    workers = await WorkerStorage.get_idle()
-    workers = await WorkerCore.filter_connected(workers)
-    print(workers)
+    workers = await WorkerCore.filter_connected(await WorkerStorage.get_idle())
+    frames = await FrameStorage.get_not_finished()
+    if len(frames) != 0:
+        not_running_frames = await FrameStorage.get_not_running()
 
 
 async def get_last_not_finished_task() -> None:

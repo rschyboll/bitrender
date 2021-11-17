@@ -1,13 +1,13 @@
 from typing import List, Optional
 from uuid import UUID
 
-from fastapi import APIRouter, Depends, status, BackgroundTasks
+from fastapi import APIRouter, BackgroundTasks, Depends, status
 from fastapi.responses import FileResponse
 
+from config import Settings, get_settings
 from core import task as TasksCore
 from schemas.tasks import TaskCreate, TaskView
 from storage import tasks
-from config import Settings, get_settings
 
 router = APIRouter(prefix="/tasks")
 

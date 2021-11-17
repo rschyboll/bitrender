@@ -3,7 +3,7 @@ import datetime
 
 from fastapi_websocket_rpc import RpcChannel, RpcMethodsBase
 
-from schemas.tests import TestUpdate, TestCreate
+from schemas.tests import TestCreate, TestUpdate
 from storage import tests as TestStorage
 
 

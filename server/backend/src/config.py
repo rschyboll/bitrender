@@ -18,10 +18,29 @@ class Settings(BaseSettings):
     database_url: str
     data_dir: str
     __task_dir: str = "tasks"
+    __frames_dir: str = "frames"
+    __subtask_dir: str = "subtasks"
 
     @property
     def task_dir(self) -> str:
-        return os.path.join(self.data_dir, self.__task_dir)
+        path = os.path.join(self.data_dir, self.__task_dir)
+        if not os.path.exists(path):
+            os.mkdir(path)
+        return path
+
+    @property
+    def frames_dir(self) -> str:
+        path = os.path.join(self.data_dir, self.__frames_dir)
+        if not os.path.exists(path):
+            os.mkdir(path)
+        return path
+
+    @property
+    def subtask_dir(self) -> str:
+        path = os.path.join(self.data_dir, self.__subtask_dir)
+        if not os.path.exists(path):
+            os.mkdir(path)
+        return path
 
 
 @lru_cache()

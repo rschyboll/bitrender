@@ -1,9 +1,10 @@
-from typing import Optional, List
+from typing import List, Optional
 
 from fastapi import Depends, Header, HTTPException, WebSocket
 
-from core import channel, jwt as JWTCore
+from core import channel
 from core import channel as ChannelCore
+from core import jwt as JWTCore
 from schemas.workers import WorkerView
 from storage import workers as WorkerStorage
 

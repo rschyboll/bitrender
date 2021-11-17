@@ -7,9 +7,9 @@ from core import channel as ChannelCore
 from core import worker as WorkerCore
 from schemas.tests import TestCreate
 from schemas.workers import WorkerView
+from services.tasks import TasksService
 from services.tests import TestsCall, TestsService
 from storage import tests as TestStorage
-from services.tasks import TasksService
 
 router = APIRouter()
 

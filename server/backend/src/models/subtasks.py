@@ -5,7 +5,7 @@ from models import BaseModel
 from models.frames import Frame
 
 
-class SubTask(BaseModel):
+class Subtask(BaseModel):
     frame: ForeignKeyRelation[Frame] = ForeignKeyField("rendering_server.Frame")
     seed = IntField()
     time_limit = IntField()

@@ -2,7 +2,7 @@ from tortoise.fields.data import BooleanField, DatetimeField, TextField
 from tortoise.fields.relational import ForeignKeyField, ForeignKeyRelation
 
 from models import BaseModel
-from models.subtasks import SubTask
+from models.subtasks import Subtask
 
 
 class Worker(BaseModel):
@@ -11,6 +11,6 @@ class Worker(BaseModel):
 
     active = BooleanField(default=False)
 
-    task: ForeignKeyRelation[SubTask] = ForeignKeyField(
-        "rendering_server.SubTask", null=True
+    task: ForeignKeyRelation[Subtask] = ForeignKeyField(
+        "rendering_server.Subtask", null=True
     )
