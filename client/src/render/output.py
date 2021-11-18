@@ -73,6 +73,3 @@ def create_outputs(context: Context, file_path: str) -> None:
     for layer in layers:
         input_node = create_render_layers_node(tree, layer)
         connect_input_output(tree, input_node, layer, output_node)
-
-
-create_outputs(bpy.context, "/home/hoodrobinrs/hello.exr")

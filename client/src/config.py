@@ -190,5 +190,5 @@ class DIR:
         return os.path.join(self.data_dir, "blender_config/")
 
     @property
-    def test_script(self) -> str:
-        return os.path.join(self.render_scripts_dir, "test.py")
+    def render_script(self) -> str:
+        return os.path.join(self.render_scripts_dir, "render.py")

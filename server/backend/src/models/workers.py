@@ -1,5 +1,5 @@
 from tortoise.fields.data import BooleanField, DatetimeField, TextField
-from tortoise.fields.relational import ForeignKeyField, ForeignKeyRelation
+from tortoise.fields.relational import OneToOneField, OneToOneNullableRelation
 
 from models import BaseModel
 from models.subtasks import Subtask
@@ -11,6 +11,6 @@ class Worker(BaseModel):
 
     active = BooleanField(default=False)
 
-    task: ForeignKeyRelation[Subtask] = ForeignKeyField(
+    subtask: OneToOneNullableRelation[Subtask] = OneToOneField(
         "rendering_server.Subtask", null=True
     )

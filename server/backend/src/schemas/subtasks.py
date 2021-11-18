@@ -10,6 +10,7 @@ class SubtaskCreate(BaseModel):
     time_limit: int
     max_samples: int
     rendered_samples: Optional[int]
+    assigned: bool = False
     finished: bool = False
 
 
@@ -20,6 +21,7 @@ class SubtaskView(BaseModel):
     time_limit: int
     max_samples: int
     rendered_samples: Optional[int]
+    assigned: bool
     finished: bool
 
     class Config:

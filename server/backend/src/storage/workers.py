@@ -37,7 +37,7 @@ async def delete(worker_id: UUID) -> None:
 
 
 async def get_idle() -> List[WorkerView]:
-    workers = await Worker.filter(task=None)
+    workers = await Worker.filter(subtask=None, active=True).select_for_update()
     worker_views: List[WorkerView] = []
     for worker in workers:
         worker_views.append(WorkerView.from_orm(worker))

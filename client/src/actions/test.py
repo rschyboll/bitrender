@@ -72,7 +72,7 @@ class RenderTestTask(Action[Optional[float]]):
     def __create_subprocess(self) -> BlenderSubprocess:
         return BlenderSubprocess(
             self.directories.binary,
-            self.directories.test_script,
+            self.directories.render_script,
             self.directories.blender_config_dir,
             task=os.path.join(self.directories.task_dir, "test"),
             samples=self.samples,
@@ -85,6 +85,8 @@ class RenderTestTask(Action[Optional[float]]):
                 message = await self.subprocess.receive()
                 if message is not None:
                     self.status.update(message)
+        if self.status.error or self.subprocess.returncode != 0:
+            return None
         end = time.time()
         return end - start
 

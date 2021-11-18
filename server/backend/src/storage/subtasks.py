@@ -40,5 +40,9 @@ async def __write_file_to_disk(file: UploadFile, uuid: UUID, subtask_dir: str) -
                 await out_file.write(content)
 
 
-async def get_running_frames() -> None:
-    pass
+async def get_not_assigned() -> List[SubtaskView]:
+    subtasks = await Subtask.filter(assigned=False, finished=False).select_for_update()
+    subtask_views: List[SubtaskView] = []
+    for subtask in subtasks:
+        subtask_views.append(SubtaskView.from_orm(subtask))
+    return subtask_views

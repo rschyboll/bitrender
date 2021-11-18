@@ -10,8 +10,8 @@ from tortoise.fields.relational import (
 from models import BaseModel
 
 if TYPE_CHECKING:
-    from models.tasks import Task
     from models.subtasks import Subtask
+    from models.tasks import Task
 else:
     Task = object
     Subtask = object
