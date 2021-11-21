@@ -45,6 +45,18 @@ async def get_by_id(task_id: UUID) -> TaskView:
     return TaskView.from_orm(task_db)
 
 
+async def get_by_frame_id(frame_id: UUID) -> TaskView:
+    task_db = await Task.filter(frames__id=frame_id).select_for_update().get()
+    return TaskView.from_orm(task_db)
+
+
+async def get_by_subtask_id(subtask_id: UUID) -> TaskView:
+    task_db = (
+        await Task.filter(frames__subtasks__id=subtask_id).select_for_update().get()
+    )
+    return TaskView.from_orm(task_db)
+
+
 async def delete(task_id: UUID) -> None:
     task_db = await Task.get(id=task_id)
     await task_db.delete()

@@ -17,6 +17,8 @@ function* getWorkers(): Generator<StrictEffect<any, any>, void, any> {
       throw Error();
     }
     const data = response.data;
+    console.log(data);
+    console.log(workersValidator(data));
     if (workersValidator(data)) {
       yield put(workersSlice.actions.fetchSuccess(data));
     }

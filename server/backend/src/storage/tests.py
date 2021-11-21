@@ -2,6 +2,7 @@ from typing import List, Optional
 from uuid import UUID
 
 from models.tests import Test
+from models.workers import Worker
 from schemas.tests import TestCreate, TestUpdate, TestView
 
 
@@ -14,16 +15,18 @@ async def get() -> List[TestView]:
 
 
 async def get_latest(worker_id: UUID) -> Optional[TestView]:
-    test = await Test.filter(worker__id=worker_id).order_by("start_time").first()
+    test = await Test.filter(worker__id=worker_id).first()
     if test is None:
         return None
     return TestView.from_orm(test)
 
 
-async def create(test: TestCreate) -> TestView:
-    test_db = Test(**test.dict())
-    await test_db.save()
-    return TestView.from_orm(test_db)
+async def create(test_create: TestCreate) -> TestView:
+    worker = await Worker.get(id=test_create.worker_id)
+    worker.test = Test(**test_create.dict(exclude={"worker_id"}))
+    await worker.test.save()
+    await worker.save()
+    return TestView.from_orm(worker.test)
 
 
 async def update(test: TestUpdate) -> TestView:

@@ -41,7 +41,7 @@ class App:
                     await logger
                 except CancelledError:
                     pass
-            except Exception:
+            except Exception as error:
                 traceback.print_exc()
 
     async def run_action(self, action: Action[Any]) -> None:

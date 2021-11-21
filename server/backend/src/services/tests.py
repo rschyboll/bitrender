@@ -4,7 +4,9 @@ import datetime
 from fastapi_websocket_rpc import RpcChannel, RpcMethodsBase
 
 from schemas.tests import TestCreate, TestUpdate
+from schemas.workers import WorkerUpdate
 from storage import tests as TestStorage
+from storage import workers as WorkerStorage
 
 
 class TestsService(RpcMethodsBase):
@@ -28,6 +30,8 @@ class TestsService(RpcMethodsBase):
                 sync_time=sync_time,
             )
             await TestStorage.update(test_update)
+            worker_update = WorkerUpdate(test_id=test.id)
+            await WorkerStorage.update(worker_update)
 
 
 class TestsCall:

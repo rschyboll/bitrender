@@ -13,11 +13,12 @@ const workersSchema: JSONSchemaType<WorkerData[]> = {
     properties: {
       id: { type: "string" },
       name: { type: "string" },
-      register_date: { type: "string" },
+      create_date: { type: "string" },
       active: { type: "boolean" },
-      test_time: { type: "number", nullable: true },
+      subtask_id: { type: "number", nullable: true },
+      test_id: { type: "number", nullable: true },
     },
-    required: ["id", "name", "register_date", "active"],
+    required: ["id", "name", "create_date", "active"],
   },
 };
 

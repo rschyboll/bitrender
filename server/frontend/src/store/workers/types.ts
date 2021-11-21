@@ -7,10 +7,11 @@ export enum FetchStatus {
 
 export type WorkerData = {
   id: string;
+  create_date: string;
   name: string;
-  register_date: string;
   active: boolean;
-  test_time?: number;
+  subtask_id?: number;
+  test_id?: number;
 };
 
 export type WorkersState = {

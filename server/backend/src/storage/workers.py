@@ -25,19 +25,24 @@ async def get_by_id(worker_id: UUID) -> WorkerView:
 
 
 async def update(worker_update: WorkerUpdate) -> WorkerView:
-    worker = await Worker.get(id=worker_update.id)
+    worker = await Worker.all().select_for_update().get(id=worker_update.id)
     worker.update_from_dict(worker_update.dict(exclude_unset=True, exclude={"id"}))
     await worker.save()
     return WorkerView.from_orm(worker)
 
 
 async def delete(worker_id: UUID) -> None:
-    worker = await Worker.get(id=worker_id)
+    worker = await Worker.all().select_for_update().get(id=worker_id)
     await worker.delete()
 
 
 async def get_idle() -> List[WorkerView]:
-    workers = await Worker.filter(subtask=None, active=True).select_for_update()
+    workers = (
+        await Worker.filter(subtask=None, composite_task=None, active=True)
+        .filter(test__render_time__isnull=False)
+        .order_by("test__render_time")
+        .select_for_update()
+    )
     worker_views: List[WorkerView] = []
     for worker in workers:
         worker_views.append(WorkerView.from_orm(worker))

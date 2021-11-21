@@ -29,7 +29,7 @@ async def create_task(
     settings: Settings = Depends(get_settings),
 ) -> TaskView:
     task_view = await tasks.create(task, settings)
-    background_tasks.add_task(TasksCore.new_task, task_view)
+    background_tasks.add_task(TasksCore.new_task, task_view, settings)
     return task_view
 
 

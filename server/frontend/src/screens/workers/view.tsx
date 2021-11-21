@@ -39,9 +39,7 @@ export const WorkersView: FunctionComponent<WorkersViewProps> = (props) => {
             {" " + worker.name}
           </h5>
           <p>Zarejestrowany w: </p>
-          <b> {parse_date(worker.register_date)}</b>
-          <p>Wynik testowego renderu: </p>
-          <b> {worker.test_time}</b>
+          <b> {parse_date(worker.create_date)}</b>
           <div className="spacer" />
           <div className="align-left">
             {worker.active ? (

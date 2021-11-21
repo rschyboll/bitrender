@@ -7,16 +7,18 @@ from pydantic import BaseModel
 
 class WorkerCreate(BaseModel):
     name: str
-    register_date: datetime
 
 
 class WorkerView(BaseModel):
     id: UUID
-    name: str
+    create_date: datetime
 
-    register_date: datetime
+    name: str
     active: bool
-    test_time: Optional[int]
+
+    subtask_id: Optional[UUID]
+    test_id: Optional[UUID]
+    composite_task_id: Optional[UUID]
 
     class Config:
         orm_mode = True
@@ -24,7 +26,9 @@ class WorkerView(BaseModel):
 
 class WorkerUpdate(BaseModel):
     id: UUID
-    name: Optional[str]
 
     active: Optional[bool]
-    test_time: Optional[int]
+
+    test_id: Optional[UUID]
+    subtask_id: Optional[UUID]
+    composite_task_id: Optional[UUID]

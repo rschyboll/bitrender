@@ -13,6 +13,9 @@ class Settings(BaseSettings):
         "models.subtasks",
         "models.tests",
         "models.frames",
+        "models.composite_tasks",
+        "models.subtasks_assignments",
+        "models.composite_assignments",
         "aerich.models",
     ]
     database_url: str
@@ -20,6 +23,9 @@ class Settings(BaseSettings):
     __task_dir: str = "tasks"
     __frames_dir: str = "frames"
     __subtask_dir: str = "subtasks"
+    test_time = 60
+    task_time = 60 * 5
+    safe_time = 60 * 10
 
     @property
     def task_dir(self) -> str:

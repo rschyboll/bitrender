@@ -1,6 +1,7 @@
+from enum import IntEnum
 from typing import TYPE_CHECKING
 
-from tortoise.fields.data import BooleanField, IntField
+from tortoise.fields.data import BooleanField, IntEnumField
 from tortoise.fields.relational import (
     ForeignKeyField,
     ForeignKeyRelation,
@@ -12,24 +13,27 @@ from models import BaseModel
 
 if TYPE_CHECKING:
     from models.workers import Worker
+    from models.composite_assignments import CompositeAssignment
     from models.frames import Frame
-    from models.subtasks_assignments import SubtaskAssignment
 else:
     Worker = object
+    CompositeAssignment = object
     Frame = object
-    SubtaskAssignment = object
 
 
-class Subtask(BaseModel):
+class CompositeType(IntEnum):
+    COMPOSITE = 1
+    MERGE = 2
+
+
+class CompositeTask(BaseModel):
     frame: ForeignKeyRelation[Frame] = ForeignKeyField("rendering_server.Frame")
-    seed = IntField()
-    time_limit = IntField()
-    max_samples = IntField()
-    rendered_samples = IntField(null=True)
+
+    type: CompositeType = IntEnumField(CompositeType)
 
     assigned = BooleanField(default=False)
     finished = BooleanField(default=False)
     error = BooleanField(default=False)
 
     worker = ReverseRelation[Worker]
-    assignments = ReverseRelation[SubtaskAssignment]
+    assignments = ReverseRelation[CompositeAssignment]

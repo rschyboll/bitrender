@@ -1,6 +1,6 @@
 from typing import TYPE_CHECKING
 
-from tortoise.fields.data import DateField, IntField, TextField
+from tortoise.fields.data import BooleanField, IntField, TextField
 from tortoise.fields.relational import ReverseRelation
 
 from models import BaseModel
@@ -13,10 +13,12 @@ else:
 
 class Task(BaseModel):
     name = TextField()
-    date = DateField()
     samples = IntField()
     start_frame = IntField()
     end_frame = IntField()
     resolution_x = IntField()
     resolution_y = IntField()
+
+    finished = BooleanField(default=False)
+
     frames: ReverseRelation[Frame]
