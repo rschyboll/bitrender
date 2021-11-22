@@ -28,4 +28,3 @@ class SubtaskCreate(BaseModel):
     seed: int
     time_limit: int
     max_samples: int
-    rendered_samples: Optional[int]

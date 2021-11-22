@@ -2,47 +2,48 @@ import os
 from typing import List
 from uuid import UUID
 
-import aiofiles
 from fastapi import UploadFile
-from tortoise.transactions import atomic
 
 from config import Settings
 from models.subtasks import Subtask
 from schemas.subtasks import SubtaskCreate, SubtaskView
+from utils import save_file
 
 
-async def create(subtask: SubtaskCreate) -> SubtaskView:
+async def create(subtask: SubtaskCreate) -> Subtask:
     subtask_db = Subtask(**subtask.dict())
     await subtask_db.save()
-    return SubtaskView.from_orm(subtask_db)
+    return subtask_db
 
 
-async def get() -> List[SubtaskView]:
+async def get() -> List[Subtask]:
+    return await Subtask.all().select_for_update()
+
+
+async def get_view() -> List[SubtaskView]:
     subtasks = await Subtask.all()
-    subtask_views: List[SubtaskView] = []
+    return __to_view_list(subtasks)
+
+
+async def get_by_id(subtask_id: UUID) -> Subtask:
+    return await Subtask.all().select_for_update().get(id=subtask_id)
+
+
+async def get_view_by_id(subtask_id: UUID) -> SubtaskView:
+    return (await Subtask.get(id=subtask_id)).to_view()
+
+
+async def get_not_assigned() -> List[Subtask]:
+    return await Subtask.filter(assigned=False, finished=False).select_for_update()
+
+
+async def save_result(subtask_id: UUID, file: UploadFile, settings: Settings) -> None:
+    path = os.path.join(settings.subtask_dir, subtask_id.hex + ".exr")
+    await save_file(path, file)
+
+
+def __to_view_list(subtasks: List[Subtask]) -> List[SubtaskView]:
+    views: List[SubtaskView] = []
     for subtask in subtasks:
-        subtask_views.append(SubtaskView.from_orm(subtask))
-    return subtask_views
-
-
-@atomic()
-async def set_finished(subtask_id: UUID, file: UploadFile, settings: Settings) -> None:
-    subtask = Subtask.filter(id=subtask_id)
-    await __write_file_to_disk(file, subtask_id, settings.subtask_dir)
-    await subtask.update(finished=True)
-
-
-async def __write_file_to_disk(file: UploadFile, uuid: UUID, subtask_dir: str) -> None:
-    path = os.path.join(subtask_dir, uuid.hex + ".exr")
-    async with aiofiles.open(path, "wb+") as out_file:
-        while content := await file.read(1024):
-            if isinstance(content, bytes):
-                await out_file.write(content)
-
-
-async def get_not_assigned() -> List[SubtaskView]:
-    subtasks = await Subtask.filter(assigned=False, finished=False).select_for_update()
-    subtask_views: List[SubtaskView] = []
-    for subtask in subtasks:
-        subtask_views.append(SubtaskView.from_orm(subtask))
-    return subtask_views
+        views.append(subtask.to_view())
+    return views

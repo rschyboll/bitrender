@@ -25,6 +25,7 @@ class AppState:
         self.urls: Optional[URL] = None
         self.settings: Optional[Settings] = None
         self.tasks: Dict[str, bytes] = {}
+        self.output_files: Dict[str, bytes] = {}
         self.latest_version: Optional[BinaryData] = None
         self.rpc_client: Optional[WebSocketRpcClient] = None
         self.rpc_call: Optional[RPCCall]

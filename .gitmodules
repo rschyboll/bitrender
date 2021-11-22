@@ -1,6 +1,3 @@
 [submodule "client/src/blender-rendering-api"]
-	path = client/src/blender-rendering-api
-	url = git@github.com:Hoodrobinrs/blender-rendering-api.git
-[submodule "server/backend/src/blender-rendering-api"]
-	path = server/backend/src/blender-rendering-api
-	url = git@github.com:Hoodrobinrs/blender-rendering-api.git
+	path = client/src/rendering_api
+	url = https://github.com/Hoodrobinrs/blender-rendering-api

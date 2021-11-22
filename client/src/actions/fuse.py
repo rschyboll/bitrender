@@ -1,4 +1,3 @@
-import asyncio
 import errno
 import os
 import shutil
@@ -19,11 +18,18 @@ class Fuse(Action[None]):
     critical = True
     background = True
 
-    def __init__(self, directories: DIR, tasks: Dict[str, bytes], **kwargs: Any):
+    def __init__(
+        self,
+        directories: DIR,
+        tasks: Dict[str, bytes],
+        output_files: Dict[str, bytes],
+        **kwargs: Any
+    ):
         super().__init__(**kwargs)
         self.directories = directories
         self.tasks = tasks
-        self.filesystem = FuseFilesystem(tasks)
+        self.output_files = output_files
+        self.filesystem = FuseFilesystem(tasks, output_files)
         self.fuse_running = False
 
     async def _start(self) -> None:
@@ -61,9 +67,11 @@ class FuseFile:
 
 
 class FuseFilesystem(pyfuse3.Operations):
-    def __init__(self, tasks: Dict[str, bytes]):
+    def __init__(self, tasks: Dict[str, bytes], output_files: Dict[str, bytes]):
         super(FuseFilesystem, self).__init__()
         self.tasks = tasks
+        self.output_files = output_files
+        self.output_inode_start = 100
 
     @property
     def files(self) -> Dict[int, FuseFile]:
@@ -75,16 +83,38 @@ class FuseFilesystem(pyfuse3.Operations):
         return files
 
     @property
+    def output(self) -> Dict[int, FuseFile]:
+        files: Dict[int, FuseFile] = {}
+        inode: int = self.output_inode_start + 1
+        for task_name, task in self.output_files.items():
+            files[inode] = FuseFile(task_name, inode, task)
+            inode += 1
+        return files
+
+    @property
     def max_inode(self) -> int:
-        inode: int = pyfuse3.ROOT_INODE + len(self.tasks)
+        inode: int = pyfuse3.ROOT_INODE + len(self.tasks) + len(self.output_files)
         return inode
 
     def find_by_name(self, name: str) -> Optional[FuseFile]:
-        files = self.files
-        for file in files.values():
+        for file in self.files.values():
             if file.name == name:
                 return file
         return None
+
+    def createattr(self, inode: int) -> pyfuse3.EntryAttributes:
+        entry = pyfuse3.EntryAttributes()
+        entry.st_mode = stat.S_IFREG | 0o644
+        entry.st_size = 0
+        stamp = int(1438467123.985654 * 1e9)
+        entry.st_atime_ns = stamp
+        entry.st_ctime_ns = stamp
+        entry.st_mtime_ns = stamp
+        entry.st_gid = os.getgid()
+        entry.st_uid = os.getuid()
+        entry.st_ino = inode
+
+        return entry
 
     async def getattr(self, inode: int, ctx: Any = None) -> pyfuse3.EntryAttributes:
         entry = pyfuse3.EntryAttributes()
@@ -135,7 +165,7 @@ class FuseFilesystem(pyfuse3.Operations):
                 break
         return
 
-    async def open(self, inode: str, flags: Any, ctx: Any) -> pyfuse3.FileInfo:
+    async def open(self, inode: int, flags: Any, ctx: Any) -> pyfuse3.FileInfo:
         if flags & os.O_RDWR or flags & os.O_WRONLY:
             raise pyfuse3.FUSEError(errno.EACCES)
         return pyfuse3.FileInfo(fh=inode)
@@ -146,3 +176,23 @@ class FuseFilesystem(pyfuse3.Operations):
 
             return data[off : off + size]
         return b""
+
+    async def write(self, fh: int, off: int, buf: bytes) -> int:
+        data = list(self.output_files.values())[self.output_inode_start - fh]
+        data = data[:off] + buf + data[off + len(buf) :]
+        return len(buf)
+
+    async def create(
+        self, parent_inode: int, name: bytes, mode: Any, flags: Any, ctx: Any
+    ) -> tuple[pyfuse3.FileInfo, pyfuse3.EntryAttributes]:
+        assert parent_inode == pyfuse3.ROOT_INODE
+        if ".exr" in name.decode():
+            inode = len(self.output_files) + self.output_inode_start
+            file_id = name.decode().split(".")[0]
+            self.output_files[file_id] = bytes()
+            entry = self.createattr(inode)
+            entry.st_mode = mode
+
+            return (pyfuse3.FileInfo(fh=inode), entry)
+        else:
+            raise pyfuse3.FUSEError(errno.EACCES)

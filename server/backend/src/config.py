@@ -1,4 +1,5 @@
 import os
+from uuid import UUID
 from functools import lru_cache
 from typing import Any, Dict
 
@@ -47,6 +48,12 @@ class Settings(BaseSettings):
         if not os.path.exists(path):
             os.mkdir(path)
         return path
+
+    def get_subtask_path(self, subtask_id: UUID) -> str:
+        return os.path.join(self.subtask_dir, subtask_id.hex + "exr")
+
+    def get_frame_path(self, frame_id: UUID) -> str:
+        return os.path.join(self.frames_dir, frame_id.hex)
 
 
 @lru_cache()

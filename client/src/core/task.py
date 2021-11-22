@@ -1,3 +1,7 @@
+from uuid import UUID
+
+from pydantic import BaseModel
+
 from core.subprocess import MessageType, ProcessMessage
 
 
@@ -31,3 +35,14 @@ class TaskStatus:
         ):
             return True
         return False
+
+
+class TaskData(BaseModel):
+    task_id: UUID
+    subtask_id: UUID
+    frame_nr: int
+    seed: int
+    time_limit: int
+    max_samples: int
+    resolution_x: int
+    resolution_y: int

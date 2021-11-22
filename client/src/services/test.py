@@ -1,4 +1,4 @@
-from typing import Any, TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
 from actions.test import Test
 from app.action import Action
@@ -11,7 +11,6 @@ else:
 
 class TestClient:
     def __init__(self, action: Action[Any]):
-        super().__init__()
         self.action = action
 
     async def test(self) -> None:

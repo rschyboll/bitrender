@@ -1,7 +1,8 @@
+import os
 from typing import List, Optional
 from uuid import UUID
 
-from fastapi import APIRouter, BackgroundTasks, Depends, status
+from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, status
 from fastapi.responses import FileResponse
 
 from config import Settings, get_settings
@@ -41,3 +42,13 @@ async def get_task_by_id(task_id: UUID) -> Optional[TaskView]:
 @router.delete("/{task_id}")
 async def delete_task(task_id: UUID) -> None:
     await tasks.delete(task_id)
+
+
+@router.get("/file/{task_id}")
+async def get_task_file(
+    task_id: UUID, settings: Settings = Depends(get_settings)
+) -> FileResponse:
+    path = os.path.join(settings.task_dir, task_id.hex + ".blend")
+    if os.path.exists(path):
+        return FileResponse(path)
+    raise HTTPException(404)

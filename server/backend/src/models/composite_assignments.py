@@ -1,12 +1,12 @@
 from typing import TYPE_CHECKING
 
-from tortoise.fields.relational import ForeignKeyRelation, ForeignKeyField
+from tortoise.fields.relational import ForeignKeyField, ForeignKeyRelation
 
 from models import BaseModel
 
 if TYPE_CHECKING:
-    from models.workers import Worker
     from models.composite_tasks import CompositeTask
+    from models.workers import Worker
 else:
     Worker = object
     CompositeTask = object

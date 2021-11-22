@@ -6,8 +6,10 @@ from tortoise.fields.relational import (
     ForeignKeyRelation,
     ReverseRelation,
 )
+from tortoise.functions import Sum
 
 from models import BaseModel
+from schemas.frames import FrameView
 
 if TYPE_CHECKING:
     from models.composite_tasks import CompositeTask
@@ -20,13 +22,27 @@ else:
 
 
 class Frame(BaseModel):
-    nr = IntField()
-    running = BooleanField(default=False)
-    tested = BooleanField(default=False)
-    finished = BooleanField(default=False)
-    merged = BooleanField(default=False)
-    composited = BooleanField(default=False)
+    nr: int = IntField()
+    running: bool = BooleanField(default=False)  # type: ignore
+    tested: bool = BooleanField(default=False)  # type: ignore
+    finished: bool = BooleanField(default=False)  # type: ignore
+    merged: bool = BooleanField(default=False)  # type: ignore
+    composited: bool = BooleanField(default=False)  # type: ignore
 
     task: ForeignKeyRelation[Task] = ForeignKeyField("rendering_server.Task")
     subtasks: ReverseRelation[Subtask]
     composite_tasks = ReverseRelation[CompositeTask]
+
+    @property
+    async def is_finished(self) -> bool:
+        frame = (
+            await self.annotate(rendered_samples=Sum("samples__rendered_samples"))
+            .filter(id=self.id)
+            .first()
+        )
+        if frame is not None:
+            return True
+        return False
+
+    def to_view(self) -> FrameView:
+        return FrameView.from_orm(self)

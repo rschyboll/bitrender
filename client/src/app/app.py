@@ -1,7 +1,7 @@
 import asyncio
+import traceback
 from asyncio import CancelledError, Task
 from typing import Any, Dict, List, Type
-import traceback
 
 from aiohttp.client import ClientSession, ClientTimeout
 

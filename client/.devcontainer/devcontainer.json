@@ -32,7 +32,6 @@
             "--extension-pkg-whitelist=pydantic",
             "--disable=C0111",
             "--disable=W0703",
-            "--extension-pkg-whitelist=pyfuse3"
         ],
         "editor.semanticTokenColorCustomizations": {
             "rules": {

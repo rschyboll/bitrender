@@ -5,7 +5,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 import services
-from api import binaries, tasks, workers
+from api import binaries, subtasks, tasks, workers
 from storage import migrate, register_db
 
 origins = [
@@ -23,6 +23,7 @@ def __init_routers(_app: FastAPI) -> None:
     _app.include_router(workers.router)
     _app.include_router(binaries.router)
     _app.include_router(services.router)
+    _app.include_router(subtasks.router)
 
 
 def __init_middleware(__app: FastAPI) -> None:

@@ -21,6 +21,10 @@ async def get() -> List[BinaryView]:
     return binary_views
 
 
+async def get_view() -> List[BinaryView]:
+    pass
+
+
 async def get_by_id(binary_id: UUID) -> BinaryView:
     binary_db = await Binary.get(id=binary_id)
     return BinaryView.from_orm(binary_db)
@@ -36,3 +40,10 @@ async def get_latest() -> BinaryView:
 async def delete(binary_id: UUID) -> None:
     binary_db = await Binary.get(id=binary_id)
     await binary_db.delete()
+
+
+def __to_view_list(subtasks: List[Subtask]) -> List[SubtaskView]:
+    views: List[SubtaskView] = []
+    for subtask in subtasks:
+        views.append(subtask.to_view())
+    return views

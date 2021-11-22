@@ -1,7 +1,7 @@
-import time
 import os
+import time
 from asyncio import TimeoutError as AsyncioTimeout
-from typing import Any, Dict, TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING, Any, Dict, Optional
 
 from aiohttp import ClientError
 
@@ -10,7 +10,6 @@ from config import DIR, URL, Settings
 from core.subprocess import BlenderSubprocess
 from core.task import TaskStatus
 from errors.connection import ConnectionException, WrongResponseException
-
 
 if TYPE_CHECKING:
     from services import RPCCall

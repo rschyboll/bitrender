@@ -6,11 +6,12 @@ from schemas.frames import FrameCreate, FrameView
 from schemas.subtasks import SubtaskCreate, SubtaskView
 from schemas.tasks import TaskView
 from schemas.workers import WorkerUpdate, WorkerView
-from storage import tasks as TaskStorage
+from services.tasks import TaskCall
 from storage import frames as FrameStorage
-from storage import subtasks as SubtaskStorage
-from storage import workers as WorkerStorage
 from storage import subtask_assignments as SubtaskAssignmentStorage
+from storage import subtasks as SubtaskStorage
+from storage import tasks as TaskStorage
+from storage import workers as WorkerStorage
 
 
 async def new_task(task: TaskView, settings: Settings) -> None:
@@ -22,14 +23,15 @@ async def new_task(task: TaskView, settings: Settings) -> None:
 
 @atomic()
 async def distribute_tasks(settings: Settings) -> None:
-    test = await WorkerStorage.get_idle()
     workers = await WorkerCore.filter_connected(await WorkerStorage.get_idle())
     subtasks = await SubtaskStorage.get_not_assigned()
     if len(subtasks) != 0 and len(workers) != 0:
         for worker in workers.copy():
             if len(subtasks) != 0:
                 subtask = subtasks.pop(0)
-                await assign_subtask_to_worker(worker, subtask, settings)
+                frame = await FrameStorage.get_by_subtask_id(subtask.id)
+                task = await TaskStorage.get_by_subtask_id(subtask.id)
+                await assign_subtask_to_worker(worker, frame, subtask, task, settings)
                 workers.remove(worker)
             else:
                 break
@@ -48,11 +50,12 @@ async def distribute_tasks(settings: Settings) -> None:
 @atomic()
 async def assign_subtask_to_worker(
     worker: WorkerView,
+    frame: FrameView,
     subtask: SubtaskView,
     task: TaskView,
     settings: Settings,
 ) -> None:
-    worker_update = WorkerUpdate(id=worker.id, subtask_id=subtask.id)
+    await TaskCall.assign(worker.id, subtask, frame, task)
 
 
 @atomic()
@@ -63,6 +66,13 @@ async def assign_frame_to_worker(
     settings: Settings,
 ) -> None:
     if not frame.tested:
-        subtask = SubtaskCreate(frame_id=frame.id, seed=0)
+        subtask_create = SubtaskCreate(
+            frame_id=frame.id,
+            seed=0,
+            time_limit=settings.test_time,
+            max_samples=task.samples,
+        )
+        subtask_view = await SubtaskStorage.create(subtask_create)
+        await TaskCall.assign(worker.id, subtask_view, frame, task)
     else:
         pass

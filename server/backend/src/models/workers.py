@@ -10,11 +10,11 @@ from tortoise.fields.relational import (
 from models import BaseModel
 
 if TYPE_CHECKING:
-    from models.tests import Test
-    from models.subtasks import Subtask
-    from models.composite_tasks import CompositeTask
-    from models.subtasks_assignments import SubtaskAssignment
     from models.composite_assignments import CompositeAssignment
+    from models.composite_tasks import CompositeTask
+    from models.subtasks import Subtask
+    from models.subtasks_assignments import SubtaskAssignment
+    from models.tests import Test
 else:
     Test = object
     Subtask = object

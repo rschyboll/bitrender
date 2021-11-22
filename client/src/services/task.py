@@ -1,7 +1,8 @@
-from typing import Any, TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
 from actions.task import Task
 from app.action import Action
+from core.task import TaskData
 
 if TYPE_CHECKING:
     from services import RPCClient
@@ -11,11 +12,11 @@ else:
 
 class TaskClient:
     def __init__(self, action: Action[Any]):
-        super().__init__()
         self.action = action
 
-    async def new_task(self) -> None:
-        await self.action.start_background_subaction(Task)
+    async def new_task(self, task: dict[str, Any]) -> None:
+        task_data = TaskData(**task)
+        await self.action.start_background_subaction(Task, task_data=task_data)
 
 
 class TaskCall:

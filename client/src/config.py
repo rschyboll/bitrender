@@ -1,6 +1,7 @@
 import os
 from configparser import ConfigParser, NoOptionError, NoSectionError, ParsingError
 from typing import Optional
+from uuid import UUID
 
 from errors.config import SettingsNotReadError, SettingsReadError, SettingsWriteError
 
@@ -150,6 +151,17 @@ class URL:
     def test_task(self) -> str:
         return f"http://{self.server_ip}/tasks/test_task"
 
+    def task(self, task_id: UUID) -> str:
+        return f"http://{self.server_ip}/tasks/file/{task_id.hex}"
+
+    @property
+    def subtask_success(self) -> str:
+        return f"http://{self.server_ip}/subtasks/success"
+
+    @property
+    def subtask_error(self) -> str:
+        return f"http://{self.server_ip}/subtasks/error"
+
 
 class DIR:
     def __init__(self, data_dir: str = "./"):
@@ -183,7 +195,9 @@ class DIR:
 
     @property
     def render_scripts_dir(self) -> str:
-        return os.path.join(os.path.dirname(os.path.realpath(__file__)), "render")
+        return os.path.join(
+            os.path.dirname(os.path.realpath(__file__)), "rendering_api/"
+        )
 
     @property
     def blender_config_dir(self) -> str:

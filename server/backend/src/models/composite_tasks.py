@@ -10,11 +10,10 @@ from tortoise.fields.relational import (
 
 from models import BaseModel
 
-
 if TYPE_CHECKING:
-    from models.workers import Worker
     from models.composite_assignments import CompositeAssignment
     from models.frames import Frame
+    from models.workers import Worker
 else:
     Worker = object
     CompositeAssignment = object

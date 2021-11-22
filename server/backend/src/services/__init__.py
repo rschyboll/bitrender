@@ -25,14 +25,14 @@ class RPCCall(TestsCall):
 async def on_connect(channel: RpcChannel) -> None:
     ChannelCore.add(channel, channel.id)
     test = await TestStorage.get_latest(channel.id)
-    if test is None or test.render_time is None or test.sync_time is None:
+    if test is None or test.render_time is None:
         await RPCCall.test_worker(channel)
 
 
 async def on_disconnect(channel: RpcChannel) -> None:
     ChannelCore.remove(channel.id)
     test = await TestStorage.get_latest(channel.id)
-    if test is not None and test.end_time is None:
+    if test is not None and test.render_time is None:
         await TestStorage.delete(test.id)
 
 
