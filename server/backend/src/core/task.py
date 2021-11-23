@@ -3,7 +3,7 @@ from tortoise.transactions import atomic
 from config import Settings
 from core import worker as WorkerCore
 from schemas.frames import FrameCreate, FrameView
-from schemas.subtasks import SubtaskCreate, SubtaskView
+from schemas.subtask import SubtaskCreate, SubtaskView
 from schemas.tasks import TaskView
 from schemas.workers import WorkerUpdate, WorkerView
 from services.tasks import TaskCall

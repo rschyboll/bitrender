@@ -2,13 +2,13 @@ from fastapi import FastAPI, Request, Response
 from tortoise.exceptions import BaseORMException, DoesNotExist
 
 DBException = BaseORMException
-RecordNotFoundException = DoesNotExist
+RecordNotFound = DoesNotExist
 
 
 def add_storage_exception_handlers(app: FastAPI) -> None:
-    @app.exception_handler(RecordNotFoundException)
+    @app.exception_handler(RecordNotFound)
     async def record_not_found_exception_handler(
-        _request: Request, _exc: RecordNotFoundException
+        _request: Request, _exc: RecordNotFound
     ) -> Response:
         return Response(status_code=404)
 

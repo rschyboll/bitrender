@@ -3,7 +3,7 @@ from uuid import UUID
 
 from fastapi import APIRouter, status
 
-from schemas.binaries import BinaryCreate, BinaryView
+from schemas.binary import BinaryCreate, BinaryView
 from storage import binaries as BinaryStorage
 
 router = APIRouter(prefix="/binaries")

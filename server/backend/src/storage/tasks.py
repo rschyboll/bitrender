@@ -9,7 +9,7 @@ from tortoise.transactions import atomic
 
 from config import Settings
 from models.tasks import Task
-from schemas.tasks import TaskCreate, TaskView
+from schemas.task import TaskCreate, TaskView
 
 
 @atomic()

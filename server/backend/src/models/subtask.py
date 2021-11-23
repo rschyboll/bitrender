@@ -1,5 +1,5 @@
+# pylint: disable=invalid-name
 from typing import TYPE_CHECKING, List, Optional, Type, TypeVar
-from uuid import UUID
 
 from fastapi import UploadFile
 from tortoise.fields.data import BooleanField, IntField
@@ -8,25 +8,26 @@ from tortoise.fields.relational import (
     ForeignKeyRelation,
     ReverseRelation,
 )
-from config import Settings, get_settings
 
-from models.base import BaseModel
-from schemas.subtasks import SubtaskCreate, SubtaskView
+from config import Settings, get_settings
+from schemas.subtask import SubtaskCreate, SubtaskView
 from utils import save_file
 
+from .base import BaseModel
+
 if TYPE_CHECKING:
-    from models.frames import Frame
-    from models.subtasks_assignments import SubtaskAssignment
-    from models.workers import Worker
+    from models.frame import Frame
+    from models.subtask_assign import SubtaskAssign
+    from models.worker import Worker
 else:
     Worker = object
     Frame = object
-    SubtaskAssignment = object
+    SubtaskAssign = object
 
-T = TypeVar("T", bound="Subtask")  # pylint: disable=invalid-name
+_MODEL = TypeVar("_MODEL", bound="Subtask")
 
 
-class Subtask(BaseModel):
+class Subtask(BaseModel[SubtaskView, SubtaskCreate]):
     seed: int = IntField()
     time_limit: int = IntField()
     max_samples: int = IntField()
@@ -38,36 +39,14 @@ class Subtask(BaseModel):
 
     frame: ForeignKeyRelation[Frame] = ForeignKeyField("rendering_server.Frame")
     worker = ReverseRelation[Worker]
-    assignments = ReverseRelation[SubtaskAssignment]
-
-    @classmethod
-    async def get_lock(cls: Type[T]) -> List[T]:
-        return await cls.select_for_update()
-
-    @classmethod
-    async def get_view(cls: Type[T]) -> List[SubtaskView]:
-        return [subtask.to_view() for subtask in await cls.all()]
-
-    @classmethod
-    async def get_lock_by_id(cls: Type[T], subtask_id: UUID) -> T:
-        return await cls.select_for_update().get(id=subtask_id)
-
-    @classmethod
-    async def get_view_by_id(cls: Type[T], subtask_id: UUID) -> T:
-        return await cls.get(id=subtask_id)
-
-    @classmethod
-    async def get_lock_not_assigned(cls: Type[T]) -> List[T]:
-        return await cls.filter(assigned=False, finished=False).select_for_update()
-
-    @classmethod
-    async def from_create(cls: Type[T], subtask_create: SubtaskCreate) -> T:
-        subtask = cls(**subtask_create.dict())
-        await subtask.save()
-        return subtask
+    assignments = ReverseRelation[SubtaskAssign]
 
     def to_view(self) -> SubtaskView:
         return SubtaskView.from_orm(self)
+
+    @classmethod
+    async def get_not_assigned(cls: Type[_MODEL]) -> List[_MODEL]:
+        return await cls.filter(assigned=False, finished=False).select_for_update()
 
     async def save_result(
         self, file: UploadFile, settings: Settings = get_settings()

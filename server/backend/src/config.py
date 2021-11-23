@@ -1,7 +1,7 @@
 import os
-from uuid import UUID
 from functools import lru_cache
 from typing import Any, Dict
+from uuid import UUID
 
 from pydantic import BaseSettings
 
@@ -10,8 +10,8 @@ class Settings(BaseSettings):
     models = [
         "models.tasks",
         "models.workers",
-        "models.binaries",
-        "models.subtasks",
+        "models.binary",
+        "models.subtask",
         "models.tests",
         "models.frames",
         "models.composite_tasks",
@@ -54,6 +54,9 @@ class Settings(BaseSettings):
 
     def get_frame_path(self, frame_id: UUID) -> str:
         return os.path.join(self.frames_dir, frame_id.hex)
+
+    def get_task_path(self, task_id: UUID) -> str:
+        return os.path.join(self.task_dir, task_id.hex)
 
 
 @lru_cache()

@@ -2,18 +2,22 @@ from typing import TYPE_CHECKING
 
 from tortoise.fields.relational import ForeignKeyField, ForeignKeyRelation
 
-from models import BaseModel
+from schemas.composite_assign import CompositeAssignCreate, CompositeAssignView
+
+from .base import BaseModel
 
 if TYPE_CHECKING:
-    from models.composite_tasks import CompositeTask
-    from models.workers import Worker
+    from models import CompositeTask, Worker
 else:
     Worker = object
     CompositeTask = object
 
 
-class CompositeAssignment(BaseModel):
+class CompositeAssign(BaseModel[CompositeAssignView, CompositeAssignCreate]):
     composite_task: ForeignKeyRelation[CompositeTask] = ForeignKeyField(
         "rendering_server.CompositeTask"
     )
     worker: ForeignKeyRelation[Worker] = ForeignKeyField("rendering_server.Worker")
+
+    def to_view(self) -> CompositeAssignView:
+        return CompositeAssignView.from_orm(self)

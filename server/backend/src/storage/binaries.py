@@ -3,8 +3,8 @@ from uuid import UUID
 
 from tortoise.exceptions import DoesNotExist
 
-from models.binaries import Binary
-from schemas.binaries import BinaryCreate, BinaryView
+from models.binary import Binary
+from schemas.binary import BinaryCreate, BinaryView
 
 
 async def create(binary: BinaryCreate) -> BinaryView:
@@ -40,10 +40,3 @@ async def get_latest() -> BinaryView:
 async def delete(binary_id: UUID) -> None:
     binary_db = await Binary.get(id=binary_id)
     await binary_db.delete()
-
-
-def __to_view_list(subtasks: List[Subtask]) -> List[SubtaskView]:
-    views: List[SubtaskView] = []
-    for subtask in subtasks:
-        views.append(subtask.to_view())
-    return views

@@ -5,8 +5,8 @@ from uuid import UUID
 from fastapi import UploadFile
 
 from config import Settings
-from models.subtasks import Subtask
-from schemas.subtasks import SubtaskCreate, SubtaskView
+from models.subtask import Subtask
+from schemas.subtask import SubtaskCreate, SubtaskView
 from utils import save_file
 
 

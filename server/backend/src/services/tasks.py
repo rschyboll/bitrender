@@ -5,7 +5,7 @@ from pydantic import BaseModel
 
 from core import channel as ChannelCore
 from schemas.frames import FrameView
-from schemas.subtasks import SubtaskView
+from schemas.subtask import SubtaskView
 from schemas.tasks import TaskView
 
 

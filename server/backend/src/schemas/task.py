@@ -1,17 +1,13 @@
-from datetime import datetime
 from typing import Type, TypeVar
-from uuid import UUID
 
 from fastapi import File, Form, UploadFile
-from pydantic import BaseModel
+
+from .base import BaseCreate, BaseView
 
 TASKCREATE = TypeVar("TASKCREATE", bound="TaskCreate")
 
 
-class TaskView(BaseModel):
-    id: UUID
-    create_date: datetime
-
+class TaskView(BaseView):
     name: str
     samples: int
     start_frame: int
@@ -25,7 +21,7 @@ class TaskView(BaseModel):
         orm_mode = True
 
 
-class TaskCreate(BaseModel):
+class TaskCreate(BaseCreate):
     file: UploadFile
     samples: int
     start_frame: int

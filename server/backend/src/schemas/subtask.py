@@ -1,14 +1,10 @@
-from datetime import datetime
 from typing import Optional
 from uuid import UUID
 
-from pydantic import BaseModel
+from .base import BaseCreate, BaseView
 
 
-class SubtaskView(BaseModel):
-    id: UUID
-    create_date: datetime
-
+class SubtaskView(BaseView):
     frame_id: UUID
     seed: int
     time_limit: int
@@ -19,11 +15,8 @@ class SubtaskView(BaseModel):
     finished: bool
     error: bool
 
-    class Config:
-        orm_mode = True
 
-
-class SubtaskCreate(BaseModel):
+class SubtaskCreate(BaseCreate):
     frame_id: UUID
     seed: int
     time_limit: int

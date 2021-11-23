@@ -7,23 +7,25 @@ from tortoise.fields.relational import (
     ReverseRelation,
 )
 
-from models import BaseModel
+from schemas.worker import WorkerCreate, WorkerView
+
+from .base import BaseModel
 
 if TYPE_CHECKING:
-    from models.composite_assignments import CompositeAssignment
-    from models.composite_tasks import CompositeTask
-    from models.subtasks import Subtask
-    from models.subtasks_assignments import SubtaskAssignment
-    from models.tests import Test
+    from models.composite_assign import CompositeAssign
+    from models.composite_task import CompositeTask
+    from models.subtask import Subtask
+    from models.subtask_assign import SubtaskAssign
+    from models.test import Test
 else:
     Test = object
     Subtask = object
     CompositeTask = object
-    SubtaskAssignment = object
-    CompositeAssignment = object
+    SubtaskAssign = object
+    CompositeAssign = object
 
 
-class Worker(BaseModel):
+class Worker(BaseModel[WorkerView, WorkerCreate]):
     name = TextField()
     active = BooleanField(default=False)
 
@@ -31,13 +33,13 @@ class Worker(BaseModel):
         "rendering_server.Test", null=True, default=None
     )
     subtask: OneToOneNullableRelation[Subtask] = OneToOneField(
-        "rendering_server.Subtask",
-        null=True,
-        default=None,
-        related_name="assigned_worker",
+        "rendering_server.Subtask", null=True, default=None
     )
     composite_task: OneToOneNullableRelation[CompositeTask] = OneToOneField(
         "rendering_server.CompositeTask", null=True, default=None
     )
-    subtask_assignments: ReverseRelation[SubtaskAssignment]
-    composite_assignments: ReverseRelation[CompositeAssignment]
+    subtask_assignments: ReverseRelation[SubtaskAssign]
+    composite_assignments: ReverseRelation[CompositeAssign]
+
+    def to_view(self) -> WorkerView:
+        return WorkerView.from_orm(self)
