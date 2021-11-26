@@ -7,18 +7,7 @@ from pydantic import BaseSettings
 
 
 class Settings(BaseSettings):
-    models = [
-        "models.tasks",
-        "models.workers",
-        "models.binary",
-        "models.subtask",
-        "models.tests",
-        "models.frames",
-        "models.composite_tasks",
-        "models.subtasks_assignments",
-        "models.composite_assignments",
-        "aerich.models",
-    ]
+    models = ["models", "aerich.models"]
     database_url: str
     data_dir: str
     __task_dir: str = "tasks"

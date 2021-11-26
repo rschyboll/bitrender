@@ -2,6 +2,7 @@ import asyncio
 from typing import Any
 
 from fastapi_websocket_rpc import WebSocketRpcClient
+from fastapi_websocket_rpc.rpc_channel import RpcChannel
 
 from app.action import Action
 from config import URL, Settings
@@ -16,17 +17,30 @@ class RPC(Action[None]):
         super().__init__(**kwargs)
         self.settings = settings
         self.urls = urls
+        self.connected = False
+
+    async def on_connect(self, channel: RpcChannel) -> None:
+        self.connected = True
+
+    async def on_disconnect(self, channel: RpcChannel) -> None:
+        self.connected = False
 
     async def _start(self) -> None:
         headers = [("token", self.settings.token)]
         self.state.rpc_client = WebSocketRpcClient(
-            self.urls.websocket, RPCClient(self), extra_headers=headers, keep_alive=1
+            self.urls.websocket,
+            RPCClient(self),
+            extra_headers=headers,
+            keep_alive=1,
+            on_connect=[self.on_connect],
+            on_disconnect=[self.on_disconnect],
         )
         self.state.rpc_call = RPCCall(self.state.rpc_client)
         await self.state.rpc_client.__aenter__()
-        while True:
+        while self.connected:
             await self.check_tasks()
             await asyncio.sleep(0.25)
+        print("SERVER DICONNECTED")
 
     async def check_tasks(self) -> None:
         running = self.running.copy()

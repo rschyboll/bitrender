@@ -6,36 +6,32 @@ from fastapi import APIRouter, Body, Depends
 
 from core import jwt as JWTCore
 from core import worker as WorkerCore
-from schemas.workers import WorkerCreate, WorkerUpdate, WorkerView
-from storage import workers as WorkerStorage
+from models import Worker
+from schemas import WorkerCreate, WorkerView
 
 router = APIRouter(prefix="/workers")
 
 
 @router.get("/")
 async def get_workers() -> List[WorkerView]:
-    return await WorkerStorage.get()
+    return await Worker.get_all(True)
 
 
 @router.post("/register")
 async def register(name: str = Body(...)) -> str:
-    worker = WorkerCreate(
-        name=name,
-        register_date=datetime.now(),
-    )
-    worker_view = await WorkerStorage.create(worker)
-    print(JWTCore.create_jwt({"name": name, "id": worker_view.id}))
-    return JWTCore.create_jwt({"name": name, "id": worker_view.id})
+    worker_create = WorkerCreate(name=name, register_date=datetime.now())
+    worker = await Worker.from_create(worker_create)
+    return JWTCore.create_jwt({"name": name, "id": worker.id})
 
 
 @router.post("/activate")
 async def activate(worker_id: UUID = Body(...), status: bool = Body(...)) -> WorkerView:
-    worker_update = WorkerUpdate(id=worker_id, active=status)
-    return await WorkerStorage.update(worker_update)
+    worker = await Worker.get_by_id(worker_id)
+    worker.active = status
+    await worker.save()
+    return worker.to_view()
 
 
 @router.delete("/deregister")
-async def deregister(
-    current_worker: WorkerView = Depends(WorkerCore.get_current_worker),
-) -> None:
-    await WorkerStorage.delete(current_worker.id)
+async def deregister(worker: Worker = Depends(WorkerCore.get_current_worker)) -> None:
+    await worker.delete()

@@ -32,14 +32,15 @@ class Subtask(BaseModel[SubtaskView, SubtaskCreate]):
     time_limit: int = IntField()
     max_samples: int = IntField()
     rendered_samples: Optional[int] = IntField(null=True, default=None)
+    test: bool = BooleanField()  # type: ignore
 
     assigned: bool = BooleanField(default=False)  # type: ignore
     finished: bool = BooleanField(default=False)  # type: ignore
     error: bool = BooleanField(default=False)  # type: ignore
 
     frame: ForeignKeyRelation[Frame] = ForeignKeyField("rendering_server.Frame")
-    worker = ReverseRelation[Worker]
-    assignments = ReverseRelation[SubtaskAssign]
+    worker: ReverseRelation[Worker]
+    assignments: ReverseRelation[SubtaskAssign]
 
     def to_view(self) -> SubtaskView:
         return SubtaskView.from_orm(self)
@@ -52,3 +53,8 @@ class Subtask(BaseModel[SubtaskView, SubtaskCreate]):
         self, file: UploadFile, settings: Settings = get_settings()
     ) -> None:
         await save_file(settings.get_subtask_path(self.id), file)
+
+    async def get_latest_assign(self) -> Optional[SubtaskAssign]:
+        return (
+            await self.assignments.order_by("-create_date").select_for_update().first()
+        )

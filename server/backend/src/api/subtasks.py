@@ -5,7 +5,7 @@ from fastapi.datastructures import UploadFile
 
 from config import Settings, get_settings
 from core import task as TasksCore
-from storage import subtasks as SubtasksStorage
+from models import Subtask
 
 router = APIRouter(prefix="/subtasks")
 
@@ -17,8 +17,7 @@ async def success(
     file: UploadFile = File(...),
     settings: Settings = Depends(get_settings),
 ) -> None:
-    await SubtasksStorage.set_finished(subtask_id, file, settings)
-    background_tasks.add_task(TasksCore.distribute_tasks, settings)
+    pass
 
 
 @router.post("/error")

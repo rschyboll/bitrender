@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, List, Type, TypeVar
 
 from tortoise.fields.data import BooleanField, TextField
 from tortoise.fields.relational import (
@@ -24,10 +24,12 @@ else:
     SubtaskAssign = object
     CompositeAssign = object
 
+_MODEL = TypeVar("_MODEL", bound="Worker")
+
 
 class Worker(BaseModel[WorkerView, WorkerCreate]):
-    name = TextField()
-    active = BooleanField(default=False)
+    name: str = TextField()
+    active: bool = BooleanField(default=False)  # type: ignore
 
     test: OneToOneNullableRelation[Test] = OneToOneField(
         "rendering_server.Test", null=True, default=None
@@ -38,8 +40,17 @@ class Worker(BaseModel[WorkerView, WorkerCreate]):
     composite_task: OneToOneNullableRelation[CompositeTask] = OneToOneField(
         "rendering_server.CompositeTask", null=True, default=None
     )
-    subtask_assignments: ReverseRelation[SubtaskAssign]
-    composite_assignments: ReverseRelation[CompositeAssign]
+    subtask_assigns: ReverseRelation[SubtaskAssign]
+    composite_assigns: ReverseRelation[CompositeAssign]
 
     def to_view(self) -> WorkerView:
         return WorkerView.from_orm(self)
+
+    @classmethod
+    async def get_idle(cls: Type[_MODEL]) -> List[_MODEL]:
+        return (
+            await cls.filter(subtask=None, composite_task=None, active=True)
+            .filter(test__render_time__isnull=False)
+            .order_by("test__render_time")
+            .select_for_update()
+        )

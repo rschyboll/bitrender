@@ -1,4 +1,13 @@
-from typing import TYPE_CHECKING, List, Literal, Type, TypeVar, Union, overload
+from typing import (
+    TYPE_CHECKING,
+    List,
+    Literal,
+    Optional,
+    Type,
+    TypeVar,
+    Union,
+    overload,
+)
 
 from fastapi import UploadFile
 from tortoise.fields.data import BooleanField, IntField
@@ -82,3 +91,18 @@ class Frame(BaseModel[FrameView, FrameCreate]):
         self, file: UploadFile, settings: Settings = get_settings()
     ) -> None:
         await save_file(settings.get_frame_path(self.id), file)
+
+    async def get_latest_subtask(self) -> Optional[Subtask]:
+        return await self.subtasks.order_by("-create_date").first()
+
+    async def get_test_subtask(self) -> Subtask:
+        return await self.subtasks.filter(test=True).get()
+
+    async def get_samples_sum(self) -> int:
+        samples_list = await self.annotate(
+            samples_sum=Sum("subtasks__rendered_samples")
+        ).values_list("samples_sum")
+        samples = samples_list[0]
+        if isinstance(samples, int):
+            return samples
+        raise Exception("get_samples_sum_not_working")

@@ -1,5 +1,4 @@
-from typing import TYPE_CHECKING, Literal, Type, TypeVar, Union, overload
-from uuid import UUID
+from typing import TYPE_CHECKING, Type, TypeVar
 
 from tortoise.fields.data import BooleanField, IntField, TextField
 from tortoise.fields.relational import ReverseRelation
@@ -19,22 +18,22 @@ _MODEL = TypeVar("_MODEL", bound="Task")
 
 
 class Task(BaseModel[TaskView, TaskCreate]):
-    name = TextField()
-    samples = IntField()
-    start_frame = IntField()
-    end_frame = IntField()
-    resolution_x = IntField()
-    resolution_y = IntField()
+    name: str = TextField()
+    samples: int = IntField()
+    start_frame: int = IntField()
+    end_frame: int = IntField()
+    resolution_x: int = IntField()
+    resolution_y: int = IntField()
 
-    finished = BooleanField(default=False)
+    finished: bool = BooleanField(default=False)  # type: ignore
 
     frames: ReverseRelation[Frame]
 
     def to_view(self) -> TaskView:
         return TaskView.from_orm(self)
 
-    @atomic()
     @classmethod
+    @atomic()
     async def from_create(
         cls: Type[_MODEL], create: TaskCreate, settings: Settings = get_settings()
     ) -> _MODEL:
@@ -42,47 +41,3 @@ class Task(BaseModel[TaskView, TaskCreate]):
         await task.save()
         await save_file(settings.get_task_path(task.id), create.file)
         return task
-
-    @overload
-    @classmethod
-    async def get_by_frame_id(
-        cls: Type[_MODEL], frame_id: UUID, view: Literal[False] = ...
-    ) -> _MODEL:
-        ...
-
-    @overload
-    @classmethod
-    async def get_by_frame_id(
-        cls: Type[_MODEL], frame_id: UUID, view: Literal[True]
-    ) -> TaskView:
-        ...
-
-    @classmethod
-    async def get_by_frame_id(
-        cls: Type[_MODEL], frame_id: UUID, view: bool = False
-    ) -> Union[_MODEL, TaskView]:
-        if not view:
-            return await cls.select_for_update().get(frames__id=frame_id)
-        return (await cls.get(frames__id=frame_id)).to_view()
-
-    @overload
-    @classmethod
-    async def get_by_subtask_id(
-        cls: Type[_MODEL], subtask_id: UUID, view: Literal[False] = ...
-    ) -> _MODEL:
-        ...
-
-    @overload
-    @classmethod
-    async def get_by_subtask_id(
-        cls: Type[_MODEL], subtask_id: UUID, view: Literal[True]
-    ) -> TaskView:
-        ...
-
-    @classmethod
-    async def get_by_subtask_id(
-        cls: Type[_MODEL], subtask_id: UUID, view: bool = False
-    ) -> Union[_MODEL, TaskView]:
-        if not view:
-            return await cls.select_for_update().get(frames__subtasks__id=subtask_id)
-        return (await cls.get(frames__subtasks__id=subtask_id)).to_view()

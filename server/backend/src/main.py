@@ -6,7 +6,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 import services
 from api import binaries, subtasks, tasks, workers
-from storage import migrate, register_db
+from models import migrate, register_db
 
 origins = [
     "http://127.0.0.1:3000",

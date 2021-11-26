@@ -10,6 +10,7 @@ class SubtaskView(BaseView):
     time_limit: int
     max_samples: int
     rendered_samples: Optional[int]
+    test: bool
 
     assigned: bool
     finished: bool
@@ -21,3 +22,4 @@ class SubtaskCreate(BaseCreate):
     seed: int
     time_limit: int
     max_samples: int
+    test: bool

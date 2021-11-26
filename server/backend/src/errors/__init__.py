@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 
-from errors.storage import add_storage_exception_handlers
+from errors.db import add_storage_exception_handlers
 
 
 class ServerException(Exception):

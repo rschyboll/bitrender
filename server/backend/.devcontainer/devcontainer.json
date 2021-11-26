@@ -67,7 +67,7 @@
             }
         ],
         "material-icon-theme.folders.associations": {
-            "storage": "resources",
+            "storage": "resource",
         },
         "material-icon-theme.files.associations": {
             ".coveragerc": "Settings"

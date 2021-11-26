@@ -4,9 +4,8 @@ from fastapi_websocket_rpc import RpcMethodsBase
 from pydantic import BaseModel
 
 from core import channel as ChannelCore
-from schemas.frames import FrameView
-from schemas.subtask import SubtaskView
-from schemas.tasks import TaskView
+from models import Frame, Task
+from models.subtask import Subtask
 
 
 class TaskData(BaseModel):
@@ -27,9 +26,7 @@ class TasksService(RpcMethodsBase):
 
 class TaskCall:
     @staticmethod
-    def __create_send_task(
-        subtask: SubtaskView, frame: FrameView, task: TaskView
-    ) -> TaskData:
+    def __create_send_task(subtask: Subtask, frame: Frame, task: Task) -> TaskData:
         return TaskData(
             task_id=task.id,
             subtask_id=subtask.id,
@@ -43,7 +40,7 @@ class TaskCall:
 
     @staticmethod
     async def assign(
-        worker_id: UUID, subtask: SubtaskView, frame: FrameView, task: TaskView
+        worker_id: UUID, subtask: Subtask, frame: Frame, task: Task
     ) -> None:
         send_task = TaskCall.__create_send_task(subtask, frame, task)
         channel = ChannelCore.get(worker_id)

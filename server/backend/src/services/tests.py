@@ -1,43 +1,39 @@
 import asyncio
-import datetime
 
 from fastapi_websocket_rpc import RpcChannel, RpcMethodsBase
 
-from schemas.tests import TestCreate, TestUpdate
-from schemas.workers import WorkerUpdate
-from storage import tests as TestStorage
-from storage import workers as WorkerStorage
+from models import Test, Worker
+from schemas import TestCreate
 
 
 class TestsService(RpcMethodsBase):
-    def __init__(self) -> None:
-        super().__init__()
-        self._channel: RpcChannel
-
     async def test_error(self) -> None:
-        test = await TestStorage.get_latest(self._channel.id)
-        if test is not None:
-            test_update = TestUpdate(id=test.id, error=True)
-            await TestStorage.update(test_update)
+        worker = await Worker.get_by_id(self.channel.id)
+        if worker.test is not None:
+            test = await worker.test
+            if test is not None:
+                test.error = True
+                await test.save()
+                return
+        await TestsCall.test_worker(self.channel)
 
     async def test_success(self, render_time: float, sync_time: float) -> None:
-        test = await TestStorage.get_latest(self._channel.id)
-        if test is not None:
-            test_update = TestUpdate(
-                id=test.id,
-                end_time=datetime.datetime.now(),
-                render_time=render_time,
-                sync_time=sync_time,
-            )
-            await TestStorage.update(test_update)
-            worker_update = WorkerUpdate(test_id=test.id)
-            await WorkerStorage.update(worker_update)
+        worker = await Worker.get_by_id(self.channel.id)
+        if worker.test is not None:
+            test = await worker.test
+            if test is not None:
+                test.render_time = render_time
+                test.sync_time = sync_time
+                await test.save()
+                return
+        await TestsCall.test_worker(self.channel)
 
 
 class TestsCall:
     @staticmethod
     async def test_worker(channel: RpcChannel) -> None:
-        start_time = datetime.datetime.now()
-        test = TestCreate(worker_id=channel.id, start_time=start_time)
-        await TestStorage.create(test)
+        worker = await Worker.get_by_id(channel.id)
+        test_create = TestCreate(worker_id=channel.id)
+        worker.test = await Test.from_create(test_create)
+        await worker.save()
         asyncio.create_task(channel.other.test())

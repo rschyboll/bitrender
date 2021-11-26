@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, TypeVar
 
 from tortoise.fields.relational import ForeignKeyField, ForeignKeyRelation
 
@@ -12,6 +12,8 @@ if TYPE_CHECKING:
 else:
     Worker = object
     Subtask = object
+
+_MODEL = TypeVar("_MODEL", bound="SubtaskAssign")
 
 
 class SubtaskAssign(BaseModel[SubtaskAssignView, SubtaskAssignCreate]):

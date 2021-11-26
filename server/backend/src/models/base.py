@@ -87,8 +87,8 @@ class BaseModel(Model, Generic[_VIEW, _CREATE]):
         cls: Type[_MODEL], view: bool = False
     ) -> Union[Optional[_MODEL], Optional[_VIEW]]:
         if not view:
-            return await cls.select_for_update().order_by("~create_date").first()
-        model = await cls.all().order_by("~create_date").first()
+            return await cls.select_for_update().order_by("-create_date").first()
+        model = await cls.all().order_by("-create_date").first()
         if model is None:
             return None
         return model.to_view()
