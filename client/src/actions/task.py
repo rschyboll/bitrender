@@ -1,6 +1,6 @@
 import os
 from asyncio import TimeoutError as AsyncioTimeout
-from typing import TYPE_CHECKING, Any, Dict
+from typing import TYPE_CHECKING, Any, Dict, Optional
 from uuid import UUID
 
 from aiohttp import ClientError
@@ -42,21 +42,32 @@ class Task(Action[None]):
     async def _start(self) -> None:
         if not self.task_data.subtask_id.hex in self.tasks:
             await self.run_subaction(DownloadTask)
-        await self.run_subaction(RenderTestTask)
-        if self.task_data.subtask_id.hex in self.output_files:
-            await self.__success(self.task_data.subtask_id)
+        samples = await self.run_subaction(RenderTestTask)
+        if (
+            self.task_data.subtask_id.hex in self.output_files
+            and self.output_files[self.task_data.subtask_id.hex] != b""
+            and samples is not None
+        ):
+            await self.__success(self.task_data.subtask_id, samples)
         else:
             await self.__error(self.task_data.subtask_id)
         await self.__remove_task()
 
-    async def __success(self, subtask_id: UUID) -> None:
-        data = {"file": self.output_files[subtask_id.hex], "subtask_id": subtask_id.hex}
+    async def __success(self, subtask_id: UUID, samples: int) -> None:
+        data = {
+            "file": self.output_files[subtask_id.hex],
+            "subtask_id": subtask_id.hex,
+            "samples": str(samples),
+        }
         async with self.session.post(self.urls.subtask_success, data=data) as response:
             if response.status == 200:
                 pass
 
     async def __error(self, subtask_id: UUID) -> None:
-        pass
+        data = {"subtask_id": subtask_id.hex}
+        async with self.session.post(self.urls.subtask_error, data=data) as response:
+            if response.status == 200:
+                pass
 
     async def __remove_task(self) -> None:
         if self.task_data.task_id.hex in self.tasks:
@@ -106,7 +117,7 @@ class DownloadTask(Action[None]):
         pass
 
 
-class RenderTestTask(Action[None]):
+class RenderTestTask(Action[Optional[int]]):
     critical = True
     background = False
 
@@ -134,15 +145,15 @@ class RenderTestTask(Action[None]):
             ),
         )
 
-    async def _start(self) -> None:
+    async def _start(self) -> Optional[int]:
         async with self.subprocess:
             while self.subprocess.running or not self.subprocess.is_empty():
                 message = await self.subprocess.receive()
                 if message is not None:
                     self.status.update(message)
-                    print(message.text)
         if self.status.error or self.subprocess.returncode != 0:
             return None
+        return self.status.samples
 
     async def _local_rollback(self) -> None:
         pass

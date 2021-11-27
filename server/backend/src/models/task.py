@@ -2,6 +2,7 @@ from typing import TYPE_CHECKING, Type, TypeVar
 
 from tortoise.fields.data import BooleanField, IntField, TextField
 from tortoise.fields.relational import ReverseRelation
+from tortoise.functions import Count
 from tortoise.transactions import atomic
 
 from config import Settings, get_settings
@@ -31,6 +32,18 @@ class Task(BaseModel[TaskView, TaskCreate]):
 
     def to_view(self) -> TaskView:
         return TaskView.from_orm(self)
+
+    @property
+    async def finished_frames_count(self) -> int:
+        frame_list = (
+            await self.filter(id=self.id, frames__merged=True)
+            .annotate(frame_count=Count("frames__id"))
+            .values_list("frame_count")
+        )
+        frame_count = frame_list[0][0]
+        if isinstance(frame_count, int):
+            return frame_count
+        raise Exception("finished_frames_count not working")
 
     @classmethod
     @atomic()

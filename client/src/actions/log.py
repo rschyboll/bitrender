@@ -21,7 +21,7 @@ class Logger:
         self.finished = finished
 
     async def start(self) -> None:
-        while False:
+        while True:
             clear_console()
             for action in self.finished:
                 self.print_action(action, True)

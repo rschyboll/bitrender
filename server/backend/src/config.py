@@ -39,7 +39,7 @@ class Settings(BaseSettings):
         return path
 
     def get_subtask_path(self, subtask_id: UUID) -> str:
-        return os.path.join(self.subtask_dir, subtask_id.hex + "exr")
+        return os.path.join(self.subtask_dir, subtask_id.hex)
 
     def get_frame_path(self, frame_id: UUID) -> str:
         return os.path.join(self.frames_dir, frame_id.hex)

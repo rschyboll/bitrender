@@ -1,13 +1,4 @@
-from typing import (
-    TYPE_CHECKING,
-    List,
-    Literal,
-    Optional,
-    Type,
-    TypeVar,
-    Union,
-    overload,
-)
+from typing import TYPE_CHECKING, List, Optional, Type, TypeVar
 
 from fastapi import UploadFile
 from tortoise.fields.data import BooleanField, IntField
@@ -16,7 +7,7 @@ from tortoise.fields.relational import (
     ForeignKeyRelation,
     ReverseRelation,
 )
-from tortoise.functions import Sum
+from tortoise.functions import Count, Sum
 
 from config import Settings, get_settings
 from schemas.frame import FrameCreate, FrameView
@@ -41,6 +32,7 @@ class Frame(BaseModel[FrameView, FrameCreate]):
     nr: int = IntField()
     running: bool = BooleanField(default=False)  # type: ignore
     tested: bool = BooleanField(default=False)  # type: ignore
+    assigned: bool = BooleanField(default=False)  # type: ignore
     finished: bool = BooleanField(default=False)  # type: ignore
     merged: bool = BooleanField(default=False)  # type: ignore
     composited: bool = BooleanField(default=False)  # type: ignore
@@ -63,29 +55,51 @@ class Frame(BaseModel[FrameView, FrameCreate]):
             return True
         return False
 
-    @overload
-    @classmethod
-    async def get_not_running(
-        cls: Type[_MODEL], view: Literal[False] = ...
-    ) -> List[_MODEL]:
-        ...
+    @property
+    async def rendered_samples_sum(self) -> int:
+        samples_list = (
+            await self.annotate(samples_sum=Sum("subtasks__rendered_samples"))
+            .filter(id=self.id)
+            .values_list("samples_sum")
+        )
+        samples = samples_list[0][0]
+        if isinstance(samples, int):
+            return samples
+        raise Exception("rendered_samples_sum working")
 
-    @overload
-    @classmethod
-    async def get_not_running(
-        cls: Type[_MODEL], view: Literal[True]
-    ) -> List[FrameView]:
-        ...
+    @property
+    async def subtasks_count(self) -> int:
+        subtasks_list = (
+            await self.filter(id=self.id)
+            .annotate(subtasks_count=Count("subtasks__id"))
+            .values_list("subtasks_count")
+        )
+        subtasks_count = subtasks_list[0][0]
+        if isinstance(subtasks_count, int):
+            return subtasks_count
+        raise Exception("subtasks_count not working")
+
+    @property
+    async def assigned_samples_sum(self) -> int:
+        max_not_rendered_samples = await self.filter(subtasks__finished=True).annotate(
+            samples_sum=Sum("subtasks__max_samples")
+        )
+        samples = max_not_rendered_samples[0]
+        if isinstance(samples, int):
+            return samples + await self.rendered_samples_sum
+        raise Exception("assigned_samples_sum not working")
 
     @classmethod
-    async def get_not_running(
-        cls: Type[_MODEL], view: bool = False
-    ) -> Union[List[_MODEL], List[FrameView]]:
-        if not view:
-            return await cls.filter(finished=False, running=False).select_for_update()
-        return [
-            frame.to_view() for frame in await cls.filter(finished=False, running=False)
-        ]
+    async def get_not_tested(cls: Type[_MODEL]) -> List[_MODEL]:
+        return await cls.filter(
+            finished=False, running=False, tested=False
+        ).select_for_update()
+
+    @classmethod
+    async def get_not_assigned(cls: Type[_MODEL]) -> List[_MODEL]:
+        return await cls.filter(
+            finished=False, tested=True, assigned=False
+        ).select_for_update()
 
     async def save_result(
         self, file: UploadFile, settings: Settings = get_settings()
@@ -97,12 +111,3 @@ class Frame(BaseModel[FrameView, FrameCreate]):
 
     async def get_test_subtask(self) -> Subtask:
         return await self.subtasks.filter(test=True).get()
-
-    async def get_samples_sum(self) -> int:
-        samples_list = await self.annotate(
-            samples_sum=Sum("subtasks__rendered_samples")
-        ).values_list("samples_sum")
-        samples = samples_list[0]
-        if isinstance(samples, int):
-            return samples
-        raise Exception("get_samples_sum_not_working")

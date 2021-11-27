@@ -1,6 +1,7 @@
 import asyncio
 
 from fastapi_websocket_rpc import RpcChannel, RpcMethodsBase
+from core import task as TaskCore
 
 from models import Test, Worker
 from schemas import TestCreate
@@ -25,6 +26,7 @@ class TestsService(RpcMethodsBase):
                 test.render_time = render_time
                 test.sync_time = sync_time
                 await test.save()
+                asyncio.create_task(TaskCore.distribute_tasks())
                 return
         await TestsCall.test_worker(self.channel)
 

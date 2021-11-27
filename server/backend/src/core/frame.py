@@ -29,7 +29,7 @@ async def __calculate_samples(
         worker_test = await worker.test
         test_worker_test = await test_worker.test
         if worker_test is not None and test_worker_test is not None:
-            max_samples = task.samples - (await frame.get_samples_sum())
+            max_samples = task.samples - (await frame.assigned_samples_sum)
             performance_dif = (
                 test_worker_test.render_time - test_worker_test.sync_time
             ) / (worker_test.render_time - worker_test.sync_time)
@@ -43,8 +43,21 @@ async def __calculate_samples(
     return task.samples
 
 
-async def distribute_frames(workers: List[Worker], settings: Settings) -> None:
-    frames = await Frame.get_not_running()
+async def distribute_tested_frames(workers: List[Worker], settings: Settings) -> None:
+    frames = await Frame.get_not_assigned()
+    for worker in workers.copy():
+        if len(frames) != 0:
+            frame = frames.pop(0)
+            await assign_frame_to_worker(worker, frame, settings)
+            workers.remove(worker)
+        else:
+            break
+
+
+async def distribute_not_tested_frames(
+    workers: List[Worker], settings: Settings
+) -> None:
+    frames = await Frame.get_not_tested()
     for worker in workers.copy():
         if len(frames) != 0:
             frame = frames.pop(0)
@@ -70,7 +83,7 @@ async def assign_frame_to_worker(
         test_subtask = await frame.get_test_subtask()
         last_subtask = await frame.get_latest_subtask()
         if test_subtask is not None and last_subtask is not None:
-            test_subtask_assign = await test_subtask.get_latest_assign()
+            test_subtask_assign = await test_subtask.latest_assign
             if test_subtask_assign is not None:
                 test_subtask_worker = await test_subtask_assign.worker
                 subtask_create = SubtaskCreate(
@@ -82,6 +95,8 @@ async def assign_frame_to_worker(
                     ),
                     test=False,
                 )
+        frame.assigned = await frame.assigned_samples_sum == task.samples
+        frame.save()
     subtask = await Subtask.from_create(subtask_create)
     await __create_assign(subtask, worker)
     await TaskCall.assign(worker.id, subtask, frame, task)

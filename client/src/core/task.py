@@ -1,4 +1,5 @@
 from uuid import UUID
+import re
 
 from pydantic import BaseModel
 
@@ -22,6 +23,7 @@ class TaskStatus:
             self.finished = True
         if self.__no_file(message):
             self.no_file = True
+        self.__parse_samples(message)
 
     def __finished(self, message: ProcessMessage) -> bool:
         if "Finished" in message.text:
@@ -35,6 +37,14 @@ class TaskStatus:
         ):
             return True
         return False
+
+    def __parse_samples(self, message: ProcessMessage) -> None:
+        regex = r"Sample (\d*)/"
+        match = re.search(regex, message.text, re.MULTILINE)
+        if match is not None:
+            value = match.groups()[0]
+            if value.isdigit():
+                self.samples = int(value)
 
 
 class TaskData(BaseModel):

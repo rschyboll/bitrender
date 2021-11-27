@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, List, Type, TypeVar
+from typing import TYPE_CHECKING, List, Optional, Type, TypeVar
 
 from tortoise.fields.data import BooleanField, TextField
 from tortoise.fields.relational import (
@@ -54,3 +54,8 @@ class Worker(BaseModel[WorkerView, WorkerCreate]):
             .order_by("test__render_time")
             .select_for_update()
         )
+
+    async def get_test(self) -> Optional[Test]:
+        if self.test is not None:
+            return await self.test
+        return None

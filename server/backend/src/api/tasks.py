@@ -48,7 +48,7 @@ async def delete_task(task_id: UUID) -> None:
 async def get_task_file(
     task_id: UUID, settings: Settings = Depends(get_settings)
 ) -> FileResponse:
-    path = os.path.join(settings.task_dir, task_id.hex + ".blend")
+    path = os.path.join(settings.task_dir, task_id.hex)
     if os.path.exists(path):
         return FileResponse(path)
     raise HTTPException(404)
