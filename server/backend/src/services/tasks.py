@@ -12,7 +12,7 @@ class TaskData(BaseModel):
     task_id: UUID
     subtask_id: UUID
     frame_nr: int
-    seed: int
+    samples_offset: int
     time_limit: int
     max_samples: int
     resolution_x: int
@@ -31,7 +31,7 @@ class TaskCall:
             task_id=task.id,
             subtask_id=subtask.id,
             frame_nr=frame.nr,
-            seed=subtask.seed,
+            samples_offset=subtask.samples_offset,
             time_limit=subtask.time_limit,
             max_samples=subtask.max_samples,
             resolution_x=task.resolution_x,

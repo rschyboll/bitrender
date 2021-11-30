@@ -16,7 +16,7 @@ async def get_binaries() -> List[BinaryView]:
 
 @router.post("/new", status_code=status.HTTP_201_CREATED)
 async def create_task(binary: BinaryCreate) -> BinaryView:
-    return (await Binary.from_create(binary)).to_view()
+    return (await Binary.make(**binary.dict())).to_view()
 
 
 @router.get("/latest")

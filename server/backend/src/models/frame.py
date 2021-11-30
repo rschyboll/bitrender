@@ -1,4 +1,5 @@
-from typing import TYPE_CHECKING, List, Optional, Type, TypeVar
+from typing import TYPE_CHECKING, List, Optional, Type, TypeVar, Union
+from uuid import UUID
 
 from fastapi import UploadFile
 from tortoise.fields.data import BooleanField, IntField
@@ -10,15 +11,14 @@ from tortoise.fields.relational import (
 from tortoise.functions import Count, Sum
 
 from config import Settings, get_settings
-from schemas.frame import FrameCreate, FrameView
+from schemas import FrameView
 from utils import save_file
+from utils.file import move_file
 
 from .base import BaseModel
 
 if TYPE_CHECKING:
-    from models.composite_task import CompositeTask
-    from models.subtask import Subtask
-    from models.task import Task
+    from models import CompositeTask, Subtask, Task
 else:
     Task = object
     Subtask = object
@@ -28,11 +28,12 @@ else:
 _MODEL = TypeVar("_MODEL", bound="Frame")
 
 
-class Frame(BaseModel[FrameView, FrameCreate]):
+class Frame(BaseModel[FrameView]):
     nr: int = IntField()
+
     running: bool = BooleanField(default=False)  # type: ignore
     tested: bool = BooleanField(default=False)  # type: ignore
-    assigned: bool = BooleanField(default=False)  # type: ignore
+    distributed: bool = BooleanField(default=False)  # type: ignore
     finished: bool = BooleanField(default=False)  # type: ignore
     merged: bool = BooleanField(default=False)  # type: ignore
     composited: bool = BooleanField(default=False)  # type: ignore
@@ -41,73 +42,111 @@ class Frame(BaseModel[FrameView, FrameCreate]):
     subtasks: ReverseRelation[Subtask]
     composite_tasks = ReverseRelation[CompositeTask]
 
+    @classmethod
+    async def make(cls: Type[_MODEL], task_id: UUID, frame_nr: int) -> _MODEL:
+        return await cls.create(task_id=task_id, nr=frame_nr)
+
     def to_view(self) -> FrameView:
         return FrameView.from_orm(self)
 
     @property
-    async def is_finished(self) -> bool:
-        frame = (
-            await self.annotate(rendered_samples=Sum("samples__rendered_samples"))
-            .filter(id=self.id)
-            .first()
-        )
-        if frame is not None:
-            return True
-        return False
+    def path(self) -> str:
+        """Returns the frame render result file path"""
+        return get_settings().get_frame_path(self.id)
 
     @property
-    async def rendered_samples_sum(self) -> int:
-        samples_list = (
-            await self.annotate(samples_sum=Sum("subtasks__rendered_samples"))
-            .filter(id=self.id)
-            .values_list("samples_sum")
-        )
-        samples = samples_list[0][0]
+    async def rendered_samples(self) -> int:
+        """Returns the amount of currently rendered samples"""
+        samples = (
+            await self.filter(id=self.id)
+            .annotate(samples_sum=Sum("subtasks__rendered_samples"))
+            .values_list("samples_sum", flat=True)
+        )[0]
         if isinstance(samples, int):
             return samples
-        raise Exception("rendered_samples_sum working")
+        return 0
+
+    @property
+    async def distributed_samples(self) -> int:
+        """Return how many samples have already been distributed"""
+        samples = (
+            await self.filter(subtasks__finished=True)
+            .annotate(samples_sum=Sum("subtasks__max_samples"))
+            .values_list("samples_sum", flat=True)
+        )[0]
+        if isinstance(samples, int):
+            return samples
+        return 0
+
+    @property
+    async def is_rendered(self) -> bool:
+        """Returns if the frame is fully rendered"""
+        return await self.rendered_samples == (await self.task).samples
+
+    @property
+    async def is_distributed(self) -> bool:
+        """Returns if the frame is fully distributed"""
+        return await self.distributed_samples == (await self.task).samples
 
     @property
     async def subtasks_count(self) -> int:
-        subtasks_list = (
+        """Returns on how many subtasks the frame has been splitted"""
+        count = (
             await self.filter(id=self.id)
             .annotate(subtasks_count=Count("subtasks__id"))
-            .values_list("subtasks_count")
-        )
-        subtasks_count = subtasks_list[0][0]
-        if isinstance(subtasks_count, int):
-            return subtasks_count
-        raise Exception("subtasks_count not working")
+            .values_list("subtasks_count", flat=True)
+        )[0]
+        if isinstance(count, int):
+            return count
+        return 0
 
     @property
-    async def assigned_samples_sum(self) -> int:
-        max_not_rendered_samples = await self.filter(subtasks__finished=True).annotate(
-            samples_sum=Sum("subtasks__max_samples")
-        )
-        samples = max_not_rendered_samples[0]
-        if isinstance(samples, int):
-            return samples + await self.rendered_samples_sum
-        raise Exception("assigned_samples_sum not working")
+    async def latest_subtask(self) -> Optional[Subtask]:
+        """Returns frames latest subtask"""
+        return await self.subtasks.order_by("-create_date").first()
+
+    @property
+    async def test_subtask(self) -> Subtask:
+        """Returns frames test subtask"""
+        return await self.subtasks.filter(test=True).get()
 
     @classmethod
     async def get_not_tested(cls: Type[_MODEL]) -> List[_MODEL]:
+        """Returns all not tested frames"""
         return await cls.filter(
-            finished=False, running=False, tested=False
+            finished=False,
+            running=False,
+            tested=False,
+            distributed=False,
         ).select_for_update()
 
     @classmethod
-    async def get_not_assigned(cls: Type[_MODEL]) -> List[_MODEL]:
+    async def get_not_distributed(cls: Type[_MODEL]) -> List[_MODEL]:
+        """Returns all tested, not distributed frames"""
         return await cls.filter(
-            finished=False, tested=True, assigned=False
+            finished=False, tested=True, distributed=False
         ).select_for_update()
 
-    async def save_result(
-        self, file: UploadFile, settings: Settings = get_settings()
-    ) -> None:
-        await save_file(settings.get_frame_path(self.id), file)
+    async def set_merged(self, file: Union[UploadFile, str]) -> None:
+        """Sets the frame to be merged and saves the merge result"""
+        self.merged = True
+        if isinstance(file, str):
+            await move_file(file, self.path)
+        else:
+            await save_file(self.path, file)
+        await self.save()
 
-    async def get_latest_subtask(self) -> Optional[Subtask]:
-        return await self.subtasks.order_by("-create_date").first()
-
-    async def get_test_subtask(self) -> Subtask:
-        return await self.subtasks.filter(test=True).get()
+    async def update(self, settings: Settings = get_settings()) -> None:
+        if await self.is_rendered:
+            self.finished = True
+            if await self.subtasks_count == 1:
+                subtask = await self.latest_subtask
+                if subtask is not None:
+                    await self.set_merged(settings.get_subtask_path(subtask.id))
+        else:
+            self.finished = False
+        if await self.is_distributed:
+            self.distributed = True
+        else:
+            self.distributed = False
+        await self.save()

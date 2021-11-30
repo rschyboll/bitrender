@@ -1,12 +1,12 @@
 from typing import TYPE_CHECKING, Type, TypeVar
 
+from fastapi import UploadFile
 from tortoise.fields.data import BooleanField, IntField, TextField
 from tortoise.fields.relational import ReverseRelation
 from tortoise.functions import Count
-from tortoise.transactions import atomic
 
 from config import Settings, get_settings
-from schemas.task import TaskCreate, TaskView
+from schemas.task import TaskView
 from utils import save_file
 
 from .base import BaseModel
@@ -15,10 +15,11 @@ if TYPE_CHECKING:
     from models.frame import Frame
 else:
     Frame = object
+
 _MODEL = TypeVar("_MODEL", bound="Task")
 
 
-class Task(BaseModel[TaskView, TaskCreate]):
+class Task(BaseModel[TaskView]):
     name: str = TextField()
     samples: int = IntField()
     start_frame: int = IntField()
@@ -30,27 +31,47 @@ class Task(BaseModel[TaskView, TaskCreate]):
 
     frames: ReverseRelation[Frame]
 
+    @classmethod
+    async def make(
+        cls: Type[_MODEL],
+        file: UploadFile,
+        samples: int,
+        start_frame: int,
+        end_frame: int,
+        resolution_x: int,
+        resolution_y: int,
+        settings: Settings = get_settings(),
+    ) -> _MODEL:
+        task = await cls.create(
+            name=file.filename,
+            samples=samples,
+            start_frame=start_frame,
+            end_frame=end_frame,
+            resolution_x=resolution_x,
+            resolution_y=resolution_y,
+        )
+        await save_file(settings.get_task_path(task.id), file)
+        return task
+
     def to_view(self) -> TaskView:
         return TaskView.from_orm(self)
 
     @property
+    def path(self) -> str:
+        return get_settings().get_task_path(self.id)
+
+    @property
     async def finished_frames_count(self) -> int:
-        frame_list = (
+        frame_count = (
             await self.filter(id=self.id, frames__merged=True)
             .annotate(frame_count=Count("frames__id"))
-            .values_list("frame_count")
-        )
-        frame_count = frame_list[0][0]
+            .values_list("frame_count", flat=True)
+        )[0]
         if isinstance(frame_count, int):
             return frame_count
-        raise Exception("finished_frames_count not working")
+        return 0
 
-    @classmethod
-    @atomic()
-    async def from_create(
-        cls: Type[_MODEL], create: TaskCreate, settings: Settings = get_settings()
-    ) -> _MODEL:
-        task = cls(**create.dict(), name=create.file.filename)
-        await task.save()
-        await save_file(settings.get_task_path(task.id), create.file)
-        return task
+    async def update(self) -> None:
+        if await self.finished_frames_count == self.end_frame + 1 - self.start_frame:
+            self.finished = True
+        await self.save()

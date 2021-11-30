@@ -1,20 +1,19 @@
 # pylint: disable=unused-import
 # pylint: disable=invalid-name
 from datetime import datetime
-from typing import Generic, List, Literal, Optional, Type, TypeVar, Union, overload
+from typing import Any, Generic, List, Literal, Optional, Type, TypeVar, Union, overload
 from uuid import UUID
 
 from tortoise.fields import DatetimeField, UUIDField
 from tortoise.models import Model
 
-from schemas.base import BaseCreate, BaseView
+from schemas.base import BaseView
 
-_CREATE = TypeVar("_CREATE", bound="BaseCreate")
 _VIEW = TypeVar("_VIEW", bound="BaseView")
-_MODEL = TypeVar("_MODEL", bound="BaseModel[_VIEW, _CREATE]")  # type: ignore
+_MODEL = TypeVar("_MODEL", bound="BaseModel[_VIEW]")  # type: ignore
 
 
-class BaseModel(Model, Generic[_VIEW, _CREATE]):
+class BaseModel(Model, Generic[_VIEW]):
     id: UUID = UUIDField(pk=True)
     create_date: datetime = DatetimeField(auto_now_add=True)
 
@@ -23,12 +22,6 @@ class BaseModel(Model, Generic[_VIEW, _CREATE]):
 
     def to_view(self) -> _VIEW:
         raise NotImplementedError()
-
-    @classmethod
-    async def from_create(cls: Type[_MODEL], create: _CREATE) -> _MODEL:
-        model = cls(**create.dict())
-        await model.save()
-        return model
 
     @overload
     @classmethod

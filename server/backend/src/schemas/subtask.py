@@ -6,7 +6,7 @@ from .base import BaseCreate, BaseView
 
 class SubtaskView(BaseView):
     frame_id: UUID
-    seed: int
+    samples_offset: int
     time_limit: int
     max_samples: int
     rendered_samples: Optional[int]
@@ -19,7 +19,7 @@ class SubtaskView(BaseView):
 
 class SubtaskCreate(BaseCreate):
     frame_id: UUID
-    seed: int
+    samples_offset: int
     time_limit: int
     max_samples: int
     test: bool

@@ -29,7 +29,7 @@ async def create_task(
     task_create: TaskCreate = Depends(TaskCreate.as_form),
     settings: Settings = Depends(get_settings),
 ) -> TaskView:
-    task = await Task.from_create(task_create)
+    task = await Task.make(**task_create.dict())
     background_tasks.add_task(TasksCore.new_task, task, settings)
     return task.to_view()
 

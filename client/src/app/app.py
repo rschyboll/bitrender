@@ -21,8 +21,7 @@ class App:
         self.logger = Logger(self.running, self.finished)
 
     async def run(self) -> None:
-        session_timeout = ClientTimeout(total=None, sock_connect=15, sock_read=30)
-        async with ClientSession(timeout=session_timeout) as session:
+        async with ClientSession() as session:
             try:
                 logger = asyncio.create_task(self.logger.start())
                 for action_type in self.action_types:

@@ -38,6 +38,8 @@ async def assign_subtask(worker: Worker, subtask: Subtask) -> None:
         if not subtask.test and last_assign is not None:
             await update_subtask(subtask, worker, last_assign, task, frame)
         await __create_assign(subtask, worker)
+        subtask.assigned = True
+        await subtask.save()
         await TaskCall.assign(worker.id, subtask, frame, task)
 
 

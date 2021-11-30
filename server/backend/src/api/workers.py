@@ -19,8 +19,7 @@ async def get_workers() -> List[WorkerView]:
 
 @router.post("/register")
 async def register(name: str = Body(...)) -> str:
-    worker_create = WorkerCreate(name=name, register_date=datetime.now())
-    worker = await Worker.from_create(worker_create)
+    worker = await Worker.make(name=name)
     return JWTCore.create_jwt({"name": name, "id": worker.id})
 
 

@@ -7,16 +7,12 @@ from tortoise.fields.relational import (
     ReverseRelation,
 )
 
-from schemas.worker import WorkerCreate, WorkerView
+from schemas.worker import WorkerView
 
 from .base import BaseModel
 
 if TYPE_CHECKING:
-    from models.composite_assign import CompositeAssign
-    from models.composite_task import CompositeTask
-    from models.subtask import Subtask
-    from models.subtask_assign import SubtaskAssign
-    from models.test import Test
+    from models import CompositeAssign, CompositeTask, Subtask, SubtaskAssign, Test
 else:
     Test = object
     Subtask = object
@@ -27,7 +23,7 @@ else:
 _MODEL = TypeVar("_MODEL", bound="Worker")
 
 
-class Worker(BaseModel[WorkerView, WorkerCreate]):
+class Worker(BaseModel[WorkerView]):
     name: str = TextField()
     active: bool = BooleanField(default=False)  # type: ignore
 
@@ -42,6 +38,10 @@ class Worker(BaseModel[WorkerView, WorkerCreate]):
     )
     subtask_assigns: ReverseRelation[SubtaskAssign]
     composite_assigns: ReverseRelation[CompositeAssign]
+
+    @classmethod
+    async def make(cls: Type[_MODEL], name: str) -> _MODEL:
+        return await cls.create(name=name)
 
     def to_view(self) -> WorkerView:
         return WorkerView.from_orm(self)

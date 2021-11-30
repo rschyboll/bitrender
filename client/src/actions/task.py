@@ -137,7 +137,7 @@ class RenderTestTask(Action[Optional[int]]):
             self.directories.blender_config_dir,
             task=os.path.join(self.directories.task_dir, self.task_data.task_id.hex),
             samples=self.task_data.max_samples,
-            seed=self.task_data.seed,
+            offset=self.task_data.samples_offset,
             res_x=self.task_data.resolution_x,
             res_y=self.task_data.resolution_y,
             output=os.path.join(
@@ -150,6 +150,7 @@ class RenderTestTask(Action[Optional[int]]):
             while self.subprocess.running or not self.subprocess.is_empty():
                 message = await self.subprocess.receive()
                 if message is not None:
+                    print(message.text)
                     self.status.update(message)
         if self.status.error or self.subprocess.returncode != 0:
             return None

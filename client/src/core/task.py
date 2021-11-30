@@ -51,7 +51,7 @@ class TaskData(BaseModel):
     task_id: UUID
     subtask_id: UUID
     frame_nr: int
-    seed: int
+    samples_offset: int
     time_limit: int
     max_samples: int
     resolution_x: int

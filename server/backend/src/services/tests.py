@@ -1,8 +1,8 @@
 import asyncio
 
 from fastapi_websocket_rpc import RpcChannel, RpcMethodsBase
-from core import task as TaskCore
 
+from core import task as TaskCore
 from models import Test, Worker
 from schemas import TestCreate
 
@@ -35,7 +35,6 @@ class TestsCall:
     @staticmethod
     async def test_worker(channel: RpcChannel) -> None:
         worker = await Worker.get_by_id(channel.id)
-        test_create = TestCreate(worker_id=channel.id)
-        worker.test = await Test.from_create(test_create)
+        worker.test = await Test.make(worker_id=channel.id)
         await worker.save()
         asyncio.create_task(channel.other.test())

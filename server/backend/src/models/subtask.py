@@ -1,35 +1,43 @@
 # pylint: disable=invalid-name
-from typing import TYPE_CHECKING, List, Optional, Type, TypeVar
 from datetime import datetime
+from typing import TYPE_CHECKING, List, Optional, Type, TypeVar
+from uuid import UUID
 
 from fastapi import UploadFile
-from tortoise.fields.data import BooleanField, IntField, DatetimeField
+from tortoise.fields.data import BooleanField, DatetimeField, IntField
 from tortoise.fields.relational import (
     ForeignKeyField,
     ForeignKeyRelation,
     ReverseRelation,
+    OneToOneRelation,
 )
 
-from config import Settings, get_settings
-from schemas.subtask import SubtaskCreate, SubtaskView
-from utils import save_file, move_file
+from config import get_settings
+from models.subtask_assign import SubtaskAssign
+from schemas.subtask import SubtaskView
+from utils import save_file
 
 from .base import BaseModel
 
 if TYPE_CHECKING:
-    from models.frame import Frame
-    from models.subtask_assign import SubtaskAssign
-    from models.worker import Worker
+    from models import Frame, Worker
 else:
     Worker = object
     Frame = object
-    SubtaskAssign = object
 
 _MODEL = TypeVar("_MODEL", bound="Subtask")
 
 
-class Subtask(BaseModel[SubtaskView, SubtaskCreate]):
-    seed: int = IntField()
+class SubtaskAssigned(Exception):
+    pass
+
+
+class SubtaskNotAssigned(Exception):
+    pass
+
+
+class Subtask(BaseModel[SubtaskView]):
+    samples_offset: int = IntField()
     time_limit: int = IntField()
     max_samples: int = IntField()
     test: bool = BooleanField()  # type: ignore
@@ -40,39 +48,94 @@ class Subtask(BaseModel[SubtaskView, SubtaskCreate]):
 
     assigned: bool = BooleanField(default=False)  # type: ignore
     finished: bool = BooleanField(default=False)  # type: ignore
-    error: bool = BooleanField(default=False)  # type: ignore
+    failed: bool = BooleanField(default=False)  # type: ignore
 
     frame: ForeignKeyRelation[Frame] = ForeignKeyField("rendering_server.Frame")
-    worker: ReverseRelation[Worker]
+    worker: OneToOneRelation[Worker]
     assignments: ReverseRelation[SubtaskAssign]
 
+    @classmethod
+    async def make(
+        cls: Type[_MODEL],
+        frame_id: UUID,
+        samples_offset: int,
+        time_limit: int,
+        max_samples: int,
+        test: bool,
+    ) -> _MODEL:
+        return await cls.create(
+            frame_id=frame_id,
+            samples_offset=samples_offset,
+            time_limit=time_limit,
+            max_samples=max_samples,
+            test=test,
+        )
+
     def to_view(self) -> SubtaskView:
+        """Creates view schema from subtask"""
         return SubtaskView.from_orm(self)
 
     @property
-    async def latest_assign(self) -> Optional[SubtaskAssign]:
-        return (
-            await self.assignments.order_by("-create_date").select_for_update().first()
-        )
+    def path(self) -> str:
+        """Returns the subtasks render result file path"""
+        return get_settings().get_subtask_path(self.id)
+
+    @property
+    async def latest_worker(self) -> Optional[Worker]:
+        """Returns the latest worker that was assigned to render this subtask"""
+        order = "-create_date"
+        assign = await self.assignments.order_by(order).select_for_update().first()
+        if assign is not None:
+            return await assign.worker
+        return None
 
     @classmethod
     async def get_not_assigned(cls: Type[_MODEL]) -> List[_MODEL]:
-        return await cls.filter(assigned=False, finished=False).select_for_update()
+        """Returns all not assigned subtasks"""
+        filters = {"assigned": False, "finished": False, "failed": False}
+        return await cls.filter(**filters).select_for_update()
+
+    async def assign(self, worker: Worker) -> None:
+        """Assigns subtask to worker"""
+        if await self.__is_assigned():
+            raise SubtaskAssigned()
+        await self.__create_subtask_assign(worker)
+        await self.__assign(worker)
 
     async def set_finished(self, samples: int, file: UploadFile) -> None:
+        """Sets subtask as finished and saves the render result"""
+        if not await self.__is_assigned():
+            raise SubtaskNotAssigned()
         self.finished = True
         self.rendered_samples = samples
         self.finish_date = datetime.now()
-        await self.save_result(file)
+        await self.__deassign()
+        await save_file(self.path, file)
         await self.save()
 
-    async def save_result(
-        self, file: UploadFile, settings: Settings = get_settings()
-    ) -> None:
-        await save_file(settings.get_subtask_path(self.id), file)
+    async def set_failed(self) -> None:
+        """Sets subtask as failed and deassings it"""
+        if not await self.__is_assigned():
+            raise SubtaskNotAssigned()
+        self.failed = True
+        await self.__deassign()
+        await self.save()
 
-    async def copy_subtask_to_frame(self, settings: Settings = get_settings()) -> None:
-        frame = await self.frame
-        await move_file(
-            settings.get_subtask_path(self.id), settings.get_frame_path(frame.id)
-        )
+    async def __deassign(self) -> None:
+        self.assigned = False
+        worker = await self.worker
+        worker.subtask = None
+        await worker.save()
+        await self.save()
+
+    async def __assign(self, worker: Worker) -> None:
+        self.assigned = True
+        worker.subtask = self
+        await worker.save()
+        await self.save()
+
+    async def __is_assigned(self) -> bool:
+        return await self.worker is not None or self.assigned
+
+    async def __create_subtask_assign(self, worker: Worker) -> None:
+        await SubtaskAssign(worker_id=worker.id, subtask_id=self.id).save()

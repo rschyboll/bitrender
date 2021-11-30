@@ -1,7 +1,5 @@
 from typing import List
 
-from tortoise.transactions import atomic
-
 from config import Settings
 from models import Frame, Subtask, SubtaskAssign, Task, Worker
 from schemas import SubtaskAssignCreate, SubtaskCreate
@@ -10,7 +8,7 @@ from services.tasks import TaskCall
 
 async def __create_assign(subtask: Subtask, worker: Worker) -> SubtaskAssign:
     subtask_create = SubtaskAssignCreate(subtask_id=subtask.id, worker_id=worker.id)
-    return await SubtaskAssign.from_create(subtask_create)
+    return await SubtaskAssign.make(**subtask_create.dict())
 
 
 async def __calculate_samples(
@@ -44,7 +42,7 @@ async def __calculate_samples(
 
 
 async def distribute_tested_frames(workers: List[Worker], settings: Settings) -> None:
-    frames = await Frame.get_not_assigned()
+    frames = await Frame.get_not_distributed()
     for worker in workers.copy():
         if len(frames) != 0:
             frame = frames.pop(0)
@@ -61,10 +59,19 @@ async def distribute_not_tested_frames(
     for worker in workers.copy():
         if len(frames) != 0:
             frame = frames.pop(0)
-            await assign_frame_to_worker(worker, frame, settings)
+            if not frame.tested:
+                await assign_frame_to_worker(worker, frame, settings)
             workers.remove(worker)
         else:
             break
+
+
+async def __assign_not_tested(worker: Worker, frame: Frame, settings: Settings) -> None:
+    task = await frame.task
+
+
+async def __assign_tested(worker, frame: Frame, settings: Settings) -> None:
+    pass
 
 
 async def assign_frame_to_worker(
@@ -74,7 +81,7 @@ async def assign_frame_to_worker(
     if not frame.tested:
         subtask_create = SubtaskCreate(
             frame_id=frame.id,
-            seed=0,
+            samples_offset=0,
             time_limit=settings.test_time,
             max_samples=task.samples,
             test=True,
@@ -97,6 +104,8 @@ async def assign_frame_to_worker(
                 )
         frame.assigned = await frame.assigned_samples_sum == task.samples
         frame.save()
-    subtask = await Subtask.from_create(subtask_create)
+    subtask = await Subtask.make(**subtask_create.dict())
+    worker.subtask = subtask
+    await worker.save()
     await __create_assign(subtask, worker)
     await TaskCall.assign(worker.id, subtask, frame, task)

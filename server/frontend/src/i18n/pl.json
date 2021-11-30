@@ -2,7 +2,7 @@
   "navigation": {
     "dashboard": "Pulpit",
     "tasks": "Zadania",
-    "machines": "Maszyny",
+    "workers": "Maszyny",
     "addTask": "Dodaj zadanie",
     "binaries": "Wersje blendera"
   },
