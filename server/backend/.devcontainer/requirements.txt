@@ -54,7 +54,7 @@ starlette==0.14.2
 tenacity==8.0.1
 toml==0.10.2
 tomli==1.2.1
-tortoise-orm @ git+https://github.com/Hoodrobinrs/tortoise-orm@c7d20e80b6b159bed97b1e47837b5d6e7c61b8cc
+tortoise-orm==0.17.8
 types-aiofiles==0.1.9
 typing-extensions==3.10.0.2
 urllib3==1.26.7

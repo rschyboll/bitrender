@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, List, Optional, Type, TypeVar, Union
+from typing import TYPE_CHECKING, List, Type, TypeVar, Union
 from uuid import UUID
 
 from fastapi import UploadFile
@@ -101,9 +101,9 @@ class Frame(BaseModel[FrameView]):
         return 0
 
     @property
-    async def latest_subtask(self) -> Optional[Subtask]:
+    async def latest_subtask(self) -> Subtask:
         """Returns frames latest subtask"""
-        return await self.subtasks.order_by("-create_date").first()
+        return await self.subtasks.order_by("-create_date").get()
 
     @property
     async def test_subtask(self) -> Subtask:

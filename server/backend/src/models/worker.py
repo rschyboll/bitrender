@@ -1,5 +1,6 @@
 from typing import TYPE_CHECKING, List, Optional, Type, TypeVar
 
+from tortoise.exceptions import DoesNotExist
 from tortoise.fields.data import BooleanField, TextField
 from tortoise.fields.relational import (
     OneToOneField,
@@ -45,6 +46,14 @@ class Worker(BaseModel[WorkerView]):
 
     def to_view(self) -> WorkerView:
         return WorkerView.from_orm(self)
+
+    @property
+    async def test_time(self) -> float:
+        if self.test is not None:
+            test = await self.test
+            if test is not None:
+                return test.render_time - test.sync_time
+        raise DoesNotExist()
 
     @classmethod
     async def get_idle(cls: Type[_MODEL]) -> List[_MODEL]:
