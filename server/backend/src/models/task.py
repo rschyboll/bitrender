@@ -62,11 +62,14 @@ class Task(BaseModel[TaskView]):
 
     @property
     async def finished_frames_count(self) -> int:
-        frame_count = (
+        frame_list = (
             await self.filter(id=self.id, frames__merged=True)
             .annotate(frame_count=Count("frames__id"))
             .values_list("frame_count", flat=True)
-        )[0]
+        )
+        if len(frame_list) == 0:
+            return 0
+        frame_count = frame_list[0]
         if isinstance(frame_count, int):
             return frame_count
         return 0

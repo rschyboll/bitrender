@@ -8,8 +8,8 @@ from tortoise.fields.data import BooleanField, DatetimeField, IntField
 from tortoise.fields.relational import (
     ForeignKeyField,
     ForeignKeyRelation,
-    ReverseRelation,
     OneToOneRelation,
+    ReverseRelation,
 )
 
 from config import get_settings

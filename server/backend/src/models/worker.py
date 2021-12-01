@@ -57,6 +57,7 @@ class Worker(BaseModel[WorkerView]):
 
     @classmethod
     async def get_idle(cls: Type[_MODEL]) -> List[_MODEL]:
+
         return (
             await cls.filter(subtask=None, composite_task=None, active=True)
             .filter(test__render_time__isnull=False)

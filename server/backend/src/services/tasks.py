@@ -1,22 +1,11 @@
 from uuid import UUID
 
 from fastapi_websocket_rpc import RpcMethodsBase
-from pydantic import BaseModel
 
 from core import channel as ChannelCore
-from models import Frame, Task
-from models.subtask import Subtask
-
-
-class TaskData(BaseModel):
-    task_id: UUID
-    subtask_id: UUID
-    frame_nr: int
-    samples_offset: int
-    time_limit: int
-    max_samples: int
-    resolution_x: int
-    resolution_y: int
+from models import CompositeTask, Frame, Subtask, Task
+from schemas.composite_task import MergeTaskData
+from schemas.subtask import SubtaskData
 
 
 class TasksService(RpcMethodsBase):
@@ -26,8 +15,8 @@ class TasksService(RpcMethodsBase):
 
 class TaskCall:
     @staticmethod
-    def __create_send_task(subtask: Subtask, frame: Frame, task: Task) -> TaskData:
-        return TaskData(
+    def __create_send_task(subtask: Subtask, frame: Frame, task: Task) -> SubtaskData:
+        return SubtaskData(
             task_id=task.id,
             subtask_id=subtask.id,
             frame_nr=frame.nr,
@@ -39,9 +28,23 @@ class TaskCall:
         )
 
     @staticmethod
+    async def __create_merge_task(composite_task: CompositeTask) -> MergeTaskData:
+
+        return MergeTaskData(
+            composite_task_id=composite_task.id,
+            subtask_ids=await composite_task.subtask_ids,
+        )
+
+    @staticmethod
     async def assign(
         worker_id: UUID, subtask: Subtask, frame: Frame, task: Task
     ) -> None:
         send_task = TaskCall.__create_send_task(subtask, frame, task)
         channel = ChannelCore.get(worker_id)
         await channel.other.new_task(task=send_task)
+
+    @staticmethod
+    async def merge(worker_id: UUID, composite_task: CompositeTask) -> None:
+        merge_task = await TaskCall.__create_merge_task(composite_task)
+        channel = ChannelCore.get(worker_id)
+        await channel.other.merge_task(task=merge_task)

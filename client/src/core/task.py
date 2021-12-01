@@ -1,3 +1,4 @@
+from typing import List, TypedDict
 from uuid import UUID
 import re
 
@@ -44,7 +45,8 @@ class TaskStatus:
         if match is not None:
             value = match.groups()[0]
             if value.isdigit():
-                self.samples = int(value)
+                if int(value) > self.samples:
+                    self.samples = int(value)
 
 
 class TaskData(BaseModel):
@@ -56,3 +58,13 @@ class TaskData(BaseModel):
     max_samples: int
     resolution_x: int
     resolution_y: int
+
+
+class MergeTask(TypedDict):
+    samples: int
+    subtask_id: UUID
+
+
+class MergeTaskData(BaseModel):
+    composite_task_id: UUID
+    subtask_ids: List[MergeTask]

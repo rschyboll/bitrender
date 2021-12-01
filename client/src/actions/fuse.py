@@ -23,13 +23,15 @@ class Fuse(Action[None]):
         directories: DIR,
         tasks: Dict[str, bytes],
         output_files: Dict[str, bytes],
+        merge_files: Dict[str, bytes],
         **kwargs: Any
     ):
         super().__init__(**kwargs)
         self.directories = directories
         self.tasks = tasks
         self.output_files = output_files
-        self.filesystem = FuseFilesystem(tasks, output_files)
+        self.merge_files = merge_files
+        self.filesystem = FuseFilesystem(tasks, output_files, merge_files)
         self.fuse_running = False
 
     async def _start(self) -> None:
@@ -67,11 +69,18 @@ class FuseFile:
 
 
 class FuseFilesystem(pyfuse3.Operations):
-    def __init__(self, tasks: Dict[str, bytes], output_files: Dict[str, bytes]):
+    def __init__(
+        self,
+        tasks: Dict[str, bytes],
+        output_files: Dict[str, bytes],
+        merge_files: Dict[str, bytes],
+    ):
         super(FuseFilesystem, self).__init__()
         self.tasks = tasks
         self.output_files = output_files
-        self.output_inode_start = 100
+        self.merge_files = merge_files
+        self.output_inode_start = 1000
+        self.merge_inode_start = 2000
 
     @property
     def files(self) -> Dict[int, FuseFile]:
@@ -80,14 +89,9 @@ class FuseFilesystem(pyfuse3.Operations):
         for task_name, task in self.tasks.items():
             files[inode] = FuseFile(task_name, inode, task)
             inode += 1
-        return files
-
-    @property
-    def output(self) -> Dict[int, FuseFile]:
-        files: Dict[int, FuseFile] = {}
-        inode: int = self.output_inode_start + 1
-        for task_name, task in self.output_files.items():
-            files[inode] = FuseFile(task_name, inode, task)
+        inode = self.merge_inode_start
+        for file_name, file in self.merge_files.items():
+            files[inode] = FuseFile(file_name, inode, file)
             inode += 1
         return files
 

@@ -35,7 +35,11 @@ class Frame(BaseModel[FrameView]):
     tested: bool = BooleanField(default=False)  # type: ignore
     distributed: bool = BooleanField(default=False)  # type: ignore
     finished: bool = BooleanField(default=False)  # type: ignore
+
     merged: bool = BooleanField(default=False)  # type: ignore
+    merging: bool = BooleanField(default=False)  # type: ignore
+
+    compositing: bool = BooleanField(default=False)  # type: ignore
     composited: bool = BooleanField(default=False)  # type: ignore
 
     task: ForeignKeyRelation[Task] = ForeignKeyField("rendering_server.Task")
@@ -69,14 +73,27 @@ class Frame(BaseModel[FrameView]):
     @property
     async def distributed_samples(self) -> int:
         """Return how many samples have already been distributed"""
-        samples = (
-            await self.filter(subtasks__finished=True)
+        test_samples_list = (
+            await self.filter(subtasks__test=True, subtasks__finished=True)
+            .annotate(samples_sum=Sum("subtasks__rendered_samples"))
+            .values_list("samples_sum", flat=True)
+        )
+        distributed_samples_list = (
+            await self.filter(subtasks__test=False, subtasks__finished=True)
             .annotate(samples_sum=Sum("subtasks__max_samples"))
             .values_list("samples_sum", flat=True)
-        )[0]
-        if isinstance(samples, int):
-            return samples
-        return 0
+        )
+        test_samples = 0
+        distributed_samples = 0
+        if len(test_samples_list) != 0:
+            test_samples_temp = test_samples_list[0]
+            if isinstance(test_samples_temp, int):
+                test_samples = test_samples_temp
+        if len(distributed_samples_list) != 0:
+            distributed_samples_temp = distributed_samples_list[0]
+            if isinstance(distributed_samples_temp, int):
+                distributed_samples = distributed_samples_temp
+        return test_samples + distributed_samples
 
     @property
     async def is_rendered(self) -> bool:
@@ -87,6 +104,14 @@ class Frame(BaseModel[FrameView]):
     async def is_distributed(self) -> bool:
         """Returns if the frame is fully distributed"""
         return await self.distributed_samples == (await self.task).samples
+
+    @property
+    async def is_tested(self) -> bool:
+        """Returns if the frame has been tested"""
+        test_subtask = await self.subtasks.filter(test=True).first()
+        if test_subtask is not None:
+            return True
+        return False
 
     @property
     async def subtasks_count(self) -> int:
@@ -114,17 +139,20 @@ class Frame(BaseModel[FrameView]):
     async def get_not_tested(cls: Type[_MODEL]) -> List[_MODEL]:
         """Returns all not tested frames"""
         return await cls.filter(
-            finished=False,
-            running=False,
-            tested=False,
-            distributed=False,
+            finished=False, running=False, tested=False, distributed=False, merged=False
         ).select_for_update()
 
     @classmethod
     async def get_not_distributed(cls: Type[_MODEL]) -> List[_MODEL]:
         """Returns all tested, not distributed frames"""
         return await cls.filter(
-            finished=False, tested=True, distributed=False
+            finished=False, tested=True, distributed=False, merged=False
+        ).select_for_update()
+
+    @classmethod
+    async def get_not_merged(cls: Type[_MODEL]) -> List[_MODEL]:
+        return await cls.filter(
+            finished=True, tested=True, distributed=True, merged=False, merging=False
         ).select_for_update()
 
     async def set_merged(self, file: Union[UploadFile, str]) -> None:
@@ -149,4 +177,6 @@ class Frame(BaseModel[FrameView]):
             self.distributed = True
         else:
             self.distributed = False
+        if await self.is_tested:
+            self.tested = True
         await self.save()

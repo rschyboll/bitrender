@@ -24,7 +24,8 @@ class RPCCall(TestsCall):
 
 async def on_connect(channel: RpcChannel) -> None:
     ChannelCore.add(channel, channel.id)
-    test = await Test.get_latest(channel.id)
+    worker = await Worker.get_by_id(channel.id)
+    test = await worker.get_test()
     if test is None or test.render_time is None:
         await RPCCall.test_worker(channel)
     else:
@@ -33,12 +34,13 @@ async def on_connect(channel: RpcChannel) -> None:
 
 async def on_disconnect(channel: RpcChannel) -> None:
     ChannelCore.remove(channel.id)
-    test = await Test.get_latest(channel.id)
     worker = await Worker.get_by_id(channel.id)
+    test = await worker.get_test()
     if test is not None and test.render_time is None:
-        await (await Test.get_by_id(channel.id)).delete(test.id)
+        await test.delete()
         worker.test = None
     worker.subtask = None
+    worker.composite_task = None
     await worker.save()
 
 

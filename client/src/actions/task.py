@@ -140,6 +140,7 @@ class RenderTestTask(Action[Optional[int]]):
             offset=self.task_data.samples_offset,
             res_x=self.task_data.resolution_x,
             res_y=self.task_data.resolution_y,
+            time_limit=self.task_data.time_limit,
             output=os.path.join(
                 self.directories.task_dir, self.task_data.subtask_id.hex + ".exr"
             ),

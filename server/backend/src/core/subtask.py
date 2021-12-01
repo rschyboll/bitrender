@@ -1,24 +1,8 @@
-from typing import List, Optional, Tuple
+from typing import List
 
-from tortoise.transactions import atomic, in_transaction
-
-from models import Frame, Subtask, SubtaskAssign, Task, Worker
-from schemas import SubtaskAssignCreate
+from models import Frame, Subtask, Task, Worker
 from services.tasks import TaskCall
-
-
-async def __create_assign(subtask: Subtask, worker: Worker) -> SubtaskAssign:
-    subtask_create = SubtaskAssignCreate(subtask_id=subtask.id, worker_id=worker.id)
-    return await SubtaskAssign.from_create(subtask_create)
-
-
-async def __get_subtask_data(
-    subtask: Subtask,
-) -> Tuple[Frame, Task, Optional[SubtaskAssign]]:
-    frame = await subtask.frame
-    task = await frame.task
-    assign = await subtask.latest_assign
-    return frame, task, assign
+from config import get_settings
 
 
 async def distribute_subtasks(workers: List[Worker]) -> None:
@@ -32,44 +16,49 @@ async def distribute_subtasks(workers: List[Worker]) -> None:
             break
 
 
-async def assign_subtask(worker: Worker, subtask: Subtask) -> None:
-    async with in_transaction():
-        frame, task, last_assign = await __get_subtask_data(subtask)
-        if not subtask.test and last_assign is not None:
-            await update_subtask(subtask, worker, last_assign, task, frame)
-        await __create_assign(subtask, worker)
-        subtask.assigned = True
-        await subtask.save()
-        await TaskCall.assign(worker.id, subtask, frame, task)
+async def assign_subtask(worker: Worker, subtask: Subtask) -> List[Subtask]:
+    new_subtasks: List[Subtask] = []
+    frame = await subtask.frame
+    task = await frame.task
+    if subtask.test:
+        pass
+    else:
+        test_subtask = await frame.test_subtask
+        test_worker = await test_subtask.latest_worker
+        if test_worker is not None:
+            new_subtasks.extend(
+                await update_subtask(subtask, worker, test_worker, task, frame)
+            )
+    await subtask.assign(worker)
+    await TaskCall.assign(worker.id, subtask, frame, task)
+    return new_subtasks
 
 
 async def update_subtask(
-    subtask: Subtask,
-    worker: Worker,
-    last_assign: SubtaskAssign,
-    task: Task,
-    frame: Frame,
-) -> None:
-    await update_subtask_samples(worker, subtask, last_assign, task, frame)
-    if await frame.assigned_samples_sum != task.samples:
-        frame.assigned = False
-    else:
-        frame.assigned = True
-    await frame.save()
+    subtask: Subtask, worker: Worker, test_worker: Worker, task: Task, frame: Frame
+) -> List[Subtask]:
+    settings = get_settings()
+    new_subtasks: List[Subtask] = []
+    new_samples = await get_new_samples(worker, subtask, test_worker)
+    if new_samples < subtask.max_samples:
+        new_subtask = await Subtask.make(
+            frame.id,
+            subtask.samples_offset + new_samples,
+            settings.task_time,
+            subtask.max_samples - subtask.samples_offset + new_samples,
+            False,
+        )
+        new_subtasks.append(new_subtask)
+    subtask.max_samples = new_samples
+    await subtask.save()
+    return new_subtasks
 
 
-async def update_subtask_samples(
-    worker: Worker, subtask: Subtask, assign: SubtaskAssign, task: Task, frame: Frame
-) -> None:
-    test_worker = await assign.worker
-    test_worker_test = await test_worker.get_test()
-    worker_test = await worker.get_test()
-    if test_worker_test is not None and worker_test is not None:
-        max_samples = task.samples - (await frame.assigned_samples_sum)
-        performance_dif = (
-            test_worker_test.render_time - test_worker_test.sync_time
-        ) / (worker_test.render_time - worker_test.sync_time)
-        new_samples = subtask.max_samples * performance_dif
-        new_samples = min(new_samples, max_samples)
-        subtask.max_samples = int(new_samples)
-        await subtask.save()
+async def get_new_samples(worker: Worker, subtask: Subtask, test_worker: Worker) -> int:
+    perf_dif = await test_worker.test_time / await worker.test_time
+    new_samples = subtask.max_samples * perf_dif
+    if new_samples < subtask.max_samples:
+        pass
+    elif new_samples >= subtask.max_samples:
+        new_samples = subtask.max_samples
+    return int(new_samples)
