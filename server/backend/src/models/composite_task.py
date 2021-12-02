@@ -77,6 +77,8 @@ class CompositeTask(BaseModel[CompositeTaskView]):
             raise SubtaskNotAssigned()
         self.finished = True
         await self.__deassign()
+        frame.merged = True
+        await frame.save()
         await save_file(frame.path, file)
         await self.save()
 

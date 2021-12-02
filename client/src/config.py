@@ -154,6 +154,9 @@ class URL:
     def task(self, task_id: UUID) -> str:
         return f"http://{self.server_ip}/tasks/file/{task_id.hex}"
 
+    def subtask(self, subtask_id: UUID) -> str:
+        return f"http://{self.server_ip}/subtasks/file/{subtask_id.hex}"
+
     @property
     def subtask_success(self) -> str:
         return f"http://{self.server_ip}/subtasks/success"
@@ -161,6 +164,14 @@ class URL:
     @property
     def subtask_error(self) -> str:
         return f"http://{self.server_ip}/subtasks/error"
+
+    @property
+    def composite_task_success(self) -> str:
+        return f"http://{self.server_ip}/composite_task/success"
+
+    @property
+    def composite_task_error(self) -> str:
+        return f"http://{self.server_ip}/composite_task/error"
 
 
 class DIR:
@@ -206,3 +217,7 @@ class DIR:
     @property
     def render_script(self) -> str:
         return os.path.join(self.render_scripts_dir, "render.py")
+
+    @property
+    def merge_script(self) -> str:
+        return os.path.join(self.render_scripts_dir, "merge.py")

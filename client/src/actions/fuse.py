@@ -95,11 +95,6 @@ class FuseFilesystem(pyfuse3.Operations):
             inode += 1
         return files
 
-    @property
-    def max_inode(self) -> int:
-        inode: int = pyfuse3.ROOT_INODE + len(self.tasks) + len(self.output_files)
-        return inode
-
     def find_by_name(self, name: str) -> Optional[FuseFile]:
         for file in self.files.values():
             if file.name == name:
@@ -125,12 +120,11 @@ class FuseFilesystem(pyfuse3.Operations):
         if inode == pyfuse3.ROOT_INODE:
             entry.st_mode = stat.S_IFDIR | 0o755
             entry.st_size = 0
-        elif inode > pyfuse3.ROOT_INODE and inode <= self.max_inode:
+        elif inode > pyfuse3.ROOT_INODE and inode in self.files:
             entry.st_mode = stat.S_IFREG | 0o644
             entry.st_size = len(self.files[inode].data)
         else:
             raise pyfuse3.FUSEError(errno.ENOENT)
-
         stamp = int(1438467123.985654 * 1e9)
         entry.st_atime_ns = stamp
         entry.st_ctime_ns = stamp
@@ -144,7 +138,9 @@ class FuseFilesystem(pyfuse3.Operations):
     async def lookup(
         self, parent_inode: int, name: bytes, ctx: Any = None
     ) -> pyfuse3.EntryAttributes:
-        if parent_inode != pyfuse3.ROOT_INODE or name.decode() not in self.tasks:
+        if parent_inode != pyfuse3.ROOT_INODE or (
+            name.decode() not in self.tasks and name.decode() not in self.merge_files
+        ):
             raise pyfuse3.FUSEError(errno.ENOENT)
         file = self.find_by_name(name.decode())
         if file is not None:

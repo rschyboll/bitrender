@@ -1,7 +1,10 @@
+import os
 from uuid import UUID
 
-from fastapi import APIRouter, BackgroundTasks, File, Form
+from fastapi import APIRouter, BackgroundTasks, File, Form, HTTPException
 from fastapi.datastructures import UploadFile
+from fastapi.responses import FileResponse
+
 from tortoise.transactions import atomic
 
 from core import task as TaskCore
@@ -40,3 +43,11 @@ async def error(
     await frame.update()
     await task.update()
     background_tasks.add_task(TaskCore.distribute_tasks)
+
+
+@router.get("/file/{subtask_id}")
+async def get_subtask_file(subtask_id: UUID) -> FileResponse:
+    subtask = await Subtask.get_by_id(subtask_id)
+    if os.path.exists(subtask.path):
+        return FileResponse(subtask.path)
+    raise HTTPException(404)

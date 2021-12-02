@@ -16,6 +16,7 @@ class TaskView(BaseView):
     resolution_y: int
 
     finished: bool
+    packed: bool
 
     class Config:
         orm_mode = True

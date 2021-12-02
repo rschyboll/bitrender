@@ -32,7 +32,7 @@ class TaskCall:
 
         return MergeTaskData(
             composite_task_id=composite_task.id,
-            subtask_ids=await composite_task.subtask_ids,
+            subtask_data=await composite_task.merge_data,
         )
 
     @staticmethod

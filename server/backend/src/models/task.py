@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, Type, TypeVar
+from typing import TYPE_CHECKING, Type, TypeVar, List
 
 from fastapi import UploadFile
 from tortoise.fields.data import BooleanField, IntField, TextField
@@ -28,6 +28,7 @@ class Task(BaseModel[TaskView]):
     resolution_y: int = IntField()
 
     finished: bool = BooleanField(default=False)  # type: ignore
+    packed: bool = BooleanField(default=False)  # type: ignore
 
     frames: ReverseRelation[Frame]
 
@@ -73,6 +74,10 @@ class Task(BaseModel[TaskView]):
         if isinstance(frame_count, int):
             return frame_count
         return 0
+
+    @classmethod
+    async def get_finished_not_packed(cls: Type[_MODEL]) -> List[_MODEL]:
+        return await cls.filter(finished=True, packed=False).select_for_update()
 
     async def update(self) -> None:
         if await self.finished_frames_count == self.end_frame + 1 - self.start_frame:

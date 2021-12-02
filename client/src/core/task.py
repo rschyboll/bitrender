@@ -67,4 +67,4 @@ class MergeTask(TypedDict):
 
 class MergeTaskData(BaseModel):
     composite_task_id: UUID
-    subtask_ids: List[MergeTask]
+    subtask_data: List[MergeTask]

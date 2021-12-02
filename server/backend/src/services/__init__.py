@@ -39,9 +39,19 @@ async def on_disconnect(channel: RpcChannel) -> None:
     if test is not None and test.render_time is None:
         await test.delete()
         worker.test = None
+    await __remove_composite_task(worker)
     worker.subtask = None
     worker.composite_task = None
     await worker.save()
+
+
+async def __remove_composite_task(worker: Worker) -> None:
+    if worker.composite_task is not None:
+        composite_task = await worker.composite_task
+        if composite_task is not None:
+            frame = await composite_task.frame
+            frame.merging = False
+            await frame.save()
 
 
 endpoint = WebsocketRPCEndpoint(
