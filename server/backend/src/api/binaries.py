@@ -34,4 +34,4 @@ async def get_task_by_id(binary_id: UUID) -> BinaryView:
 
 @router.delete("/delete")
 async def delete(binary_id: UUID) -> None:
-    (await Binary.get_by_id(binary_id)).delete()
+    await (await Binary.get_by_id(binary_id)).delete()

@@ -13,6 +13,8 @@ export type TaskData = {
   end_frame: number;
   resolution_x: number;
   resolution_y: number;
+  finished: boolean;
+  packed: boolean;
 };
 
 export type TasksState = {

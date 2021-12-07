@@ -26,6 +26,7 @@ class Merge(Action[None]):
         settings: Settings,
         urls: URL,
         rpc_call: RPCCall,
+        merge_files: Dict[str, bytes],
         output_files: Dict[str, bytes],
         **kwargs: Any
     ):
@@ -38,6 +39,7 @@ class Merge(Action[None]):
         self.rpc_call = rpc_call
         self.merge_data = kwargs["merge_data"]
         self.output_files = output_files
+        self.merge_files = merge_files
 
     async def _start(self) -> None:
         await self.run_subaction(DownloadMergeFiles)
@@ -46,6 +48,7 @@ class Merge(Action[None]):
             await self.__success(self.merge_data.composite_task_id)
         else:
             await self.__error(self.merge_data.composite_task_id)
+        await self.__remove_files()
 
     async def __success(self, composite_task_id: UUID) -> None:
         data = {
@@ -65,6 +68,11 @@ class Merge(Action[None]):
         ) as response:
             if response.status == 200:
                 pass
+
+    async def __remove_files(self) -> None:
+        for subtask in self.merge_data.subtask_data:
+            if subtask["subtask_id"].hex in self.merge_files:
+                self.merge_files.pop(subtask["subtask_id"].hex)
 
     async def _local_rollback(self) -> None:
         pass

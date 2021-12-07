@@ -16,7 +16,6 @@ class TestsService(RpcMethodsBase):
                 test.error = True
                 await test.save()
                 return
-        await TestsCall.test_worker(self.channel)
 
     async def test_success(self, render_time: float, sync_time: float) -> None:
         worker = await Worker.get_by_id(self.channel.id)
@@ -28,7 +27,6 @@ class TestsService(RpcMethodsBase):
                 await test.save()
                 asyncio.create_task(TaskCore.distribute_tasks())
                 return
-        await TestsCall.test_worker(self.channel)
 
 
 class TestsCall:

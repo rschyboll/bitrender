@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, List, Type, TypeVar, Union
+from typing import TYPE_CHECKING, List, Optional, Type, TypeVar, Union
 from uuid import UUID
 
 from fastapi import UploadFile
@@ -74,13 +74,13 @@ class Frame(BaseModel[FrameView]):
     async def distributed_samples(self) -> int:
         """Return how many samples have already been distributed"""
         test_samples_list = (
-            await self.filter(subtasks__test=True, subtasks__finished=True)
-            .annotate(samples_sum=Sum("subtasks__rendered_samples"))
+            await self.subtasks.filter(test=True, finished=True, frame_id=self.id)
+            .annotate(samples_sum=Sum("rendered_samples"))
             .values_list("samples_sum", flat=True)
         )
         distributed_samples_list = (
-            await self.filter(subtasks__test=False, subtasks__finished=True)
-            .annotate(samples_sum=Sum("subtasks__max_samples"))
+            await self.subtasks.filter(test=False, finished=True, frame_id=self.id)
+            .annotate(samples_sum=Sum("max_samples"))
             .values_list("samples_sum", flat=True)
         )
         test_samples = 0
@@ -117,8 +117,8 @@ class Frame(BaseModel[FrameView]):
     async def subtasks_count(self) -> int:
         """Returns on how many subtasks the frame has been splitted"""
         count = (
-            await self.filter(id=self.id)
-            .annotate(subtasks_count=Count("subtasks__id"))
+            await self.subtasks.filter(frame_id=self.id)
+            .annotate(subtasks_count=Count("id"))
             .values_list("subtasks_count", flat=True)
         )[0]
         if isinstance(count, int):
@@ -126,14 +126,18 @@ class Frame(BaseModel[FrameView]):
         return 0
 
     @property
-    async def latest_subtask(self) -> Subtask:
+    async def latest_subtask(self) -> Optional[Subtask]:
         """Returns frames latest subtask"""
-        return await self.subtasks.order_by("-create_date").get()
+        return (
+            await self.subtasks.filter(frame_id=self.id)
+            .order_by("-create_date")
+            .first()
+        )
 
     @property
     async def test_subtask(self) -> Subtask:
         """Returns frames test subtask"""
-        return await self.subtasks.filter(test=True).get()
+        return await self.subtasks.filter(frame_id=self.id, test=True).get()
 
     @classmethod
     async def get_not_tested(cls: Type[_MODEL]) -> List[_MODEL]:

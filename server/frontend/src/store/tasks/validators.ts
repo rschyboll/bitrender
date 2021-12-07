@@ -16,6 +16,8 @@ const tasksSchema: JSONSchemaType<TaskData[]> = {
       end_frame: { type: "integer" },
       resolution_x: { type: "integer" },
       resolution_y: { type: "integer" },
+      finished: { type: "boolean" },
+      packed: { type: "boolean" },
     },
     required: [
       "id",
@@ -25,6 +27,8 @@ const tasksSchema: JSONSchemaType<TaskData[]> = {
       "end_frame",
       "resolution_x",
       "resolution_y",
+      "finished",
+      "packed",
     ],
   },
 };

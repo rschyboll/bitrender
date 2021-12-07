@@ -78,7 +78,7 @@ class DownloadBinary(Action[None]):
         try:
             async with self.session.get(url) as response:
                 with open(file_path, "wb+") as file:
-                    async for chunk in response.content.iter_chunked(1024):
+                    async for chunk in response.content.iter_chunked(1024*8):
                         file.write(chunk)
         except (ClientError, AsyncioTimeout) as error:
             raise ConnectionException() from error

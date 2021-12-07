@@ -24,6 +24,8 @@ async def success(
     task = await frame.task
     await frame.update()
     await task.update()
+    if task.finished:
+        background_tasks.add_task(task.pack)
     background_tasks.add_task(TaskCore.distribute_tasks)
 
 
@@ -34,7 +36,7 @@ async def error(
     composite_task_id: UUID = Form(...),
 ) -> None:
     composite_task = await CompositeTask.get_by_id(composite_task_id)
-    await composite_task.set_failed()    
+    await composite_task.set_failed()
     frame = await composite_task.frame
     task = await frame.task
     await frame.update()

@@ -178,11 +178,12 @@ class FuseFilesystem(pyfuse3.Operations):
         return b""
 
     async def write(self, fh: int, off: int, buf: bytes) -> int:
-        file_id = list(self.output_files.keys())[self.output_inode_start - fh]
+        file_id = list(self.output_files.keys())[fh - self.output_inode_start]
 
         data = self.output_files[file_id]
         data = data[:off] + buf + data[off + len(buf) :]
-        self.output_files[file_id] = data
+        if data != b"":
+            self.output_files[file_id] = data
         return len(buf)
 
     async def create(

@@ -1,4 +1,6 @@
+import os
 from typing import TYPE_CHECKING, Type, TypeVar, List
+from zipfile import ZipFile
 
 from fastapi import UploadFile
 from tortoise.fields.data import BooleanField, IntField, TextField
@@ -62,6 +64,10 @@ class Task(BaseModel[TaskView]):
         return get_settings().get_task_path(self.id)
 
     @property
+    def zip_path(self) -> str:
+        return get_settings().get_task_path(self.id) + ".zip"
+
+    @property
     async def finished_frames_count(self) -> int:
         frame_list = (
             await self.filter(id=self.id, frames__merged=True)
@@ -82,4 +88,13 @@ class Task(BaseModel[TaskView]):
     async def update(self) -> None:
         if await self.finished_frames_count == self.end_frame + 1 - self.start_frame:
             self.finished = True
+        await self.save()
+
+    async def pack(self) -> None:
+        frames = await self.frames
+        with ZipFile(self.zip_path, "w") as file:
+            for frame in frames:
+                file.write(frame.path, arcname=str(frame.nr) + ".exr")
+                os.remove(frame.path)
+        self.packed = True
         await self.save()

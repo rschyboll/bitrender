@@ -17,7 +17,7 @@ async def __calculate_subtask_samples(
         samples = (
             test_subtask.rendered_samples
             * perf_dif
-            * (settings.test_time / settings.task_time)
+            * (settings.task_time / settings.test_time)
         )
         if samples > remaining_samples or samples < remaining_samples - 10:
             return remaining_samples

@@ -34,6 +34,14 @@ async def create_task(
     return task.to_view()
 
 
+@router.get("/result/{task_id}")
+async def get_task_result(task_id: UUID) -> FileResponse:
+    task = await Task.get_by_id(task_id)
+    if os.path.exists(task.zip_path):
+        return FileResponse(task.zip_path)
+    raise HTTPException(404)
+
+
 @router.get("/{task_id}")
 async def get_task_by_id(task_id: UUID) -> Optional[TaskView]:
     return await Task.get_by_id(task_id, True)

@@ -1,12 +1,14 @@
 from typing import TYPE_CHECKING, List, Optional, Type, TypeVar
 
 from tortoise.exceptions import DoesNotExist
+from tortoise import BaseDBAsyncClient
 from tortoise.fields.data import BooleanField, TextField
 from tortoise.fields.relational import (
     OneToOneField,
     OneToOneNullableRelation,
     ReverseRelation,
 )
+from tortoise.signals import post_delete
 
 from schemas.worker import WorkerView
 
@@ -69,3 +71,16 @@ class Worker(BaseModel[WorkerView]):
         if self.test is not None:
             return await self.test
         return None
+
+
+@post_delete(Worker)
+async def worker_delete(
+    sender: Type[_MODEL],
+    instance: _MODEL,
+    created: bool,
+    using_db: Optional[BaseDBAsyncClient],
+    update_fields: List[str],
+) -> None:
+    print("WORKER")
+    print(instance.name)
+    print("DELETED")
