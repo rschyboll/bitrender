@@ -24,6 +24,8 @@ async def success(
     subtask = await Subtask.get_by_id(subtask_id)
     frame = await subtask.frame
     task = await frame.task
+    if subtask.test:
+        frame.testing = False
     await subtask.set_finished(samples, file)
     await frame.update()
     await task.update()
@@ -39,6 +41,8 @@ async def error(
     subtask = await Subtask.get_by_id(subtask_id)
     frame = await subtask.frame
     task = await frame.task
+    if subtask.test:
+        frame.testing = False
     await subtask.set_failed()
     await frame.update()
     await task.update()

@@ -144,6 +144,7 @@ class RenderTestTask(Action[Optional[int]]):
             output=os.path.join(
                 self.directories.task_dir, self.task_data.subtask_id.hex + ".exr"
             ),
+            frame_nr=self.task_data.frame_nr,
         )
 
     async def _start(self) -> Optional[int]:

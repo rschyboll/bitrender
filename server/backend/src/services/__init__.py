@@ -36,6 +36,12 @@ async def on_disconnect(channel: RpcChannel) -> None:
     ChannelCore.remove(channel.id)
     worker = await Worker.get_by_id(channel.id)
     test = await worker.get_test()
+    if worker.subtask is not None:
+        subtask = await worker.subtask
+        if subtask is not None and subtask.test:
+            frame = await subtask.frame
+            frame.testing = False
+            await frame.save()
     if test is not None and test.render_time is None:
         await test.delete()
         worker.test = None

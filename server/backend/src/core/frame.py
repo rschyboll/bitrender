@@ -19,7 +19,7 @@ async def __calculate_subtask_samples(
             * perf_dif
             * (settings.task_time / settings.test_time)
         )
-        if samples > remaining_samples or samples < remaining_samples - 10:
+        if samples > remaining_samples:
             return remaining_samples
         return int(samples)
     raise Exception("Could not calculate subtask samples")
@@ -56,6 +56,8 @@ async def __assign_not_tested(worker: Worker, frame: Frame, settings: Settings) 
     task = await frame.task
     subtask = await Subtask.make(frame.id, 0, settings.test_time, task.samples, True)
     await subtask.assign(worker)
+    frame.testing = True
+    await frame.save()
     await TaskCall.assign(worker.id, subtask, frame, task)
 
 

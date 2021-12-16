@@ -31,7 +31,7 @@ _MODEL = TypeVar("_MODEL", bound="Frame")
 class Frame(BaseModel[FrameView]):
     nr: int = IntField()
 
-    running: bool = BooleanField(default=False)  # type: ignore
+    testing: bool = BooleanField(default=False)  # type: ignore
     tested: bool = BooleanField(default=False)  # type: ignore
     distributed: bool = BooleanField(default=False)  # type: ignore
     finished: bool = BooleanField(default=False)  # type: ignore
@@ -79,7 +79,7 @@ class Frame(BaseModel[FrameView]):
             .values_list("samples_sum", flat=True)
         )
         distributed_samples_list = (
-            await self.subtasks.filter(test=False, finished=True, frame_id=self.id)
+            await self.subtasks.filter(test=False, frame_id=self.id)
             .annotate(samples_sum=Sum("max_samples"))
             .values_list("samples_sum", flat=True)
         )
@@ -143,7 +143,7 @@ class Frame(BaseModel[FrameView]):
     async def get_not_tested(cls: Type[_MODEL]) -> List[_MODEL]:
         """Returns all not tested frames"""
         return await cls.filter(
-            finished=False, running=False, tested=False, distributed=False, merged=False
+            finished=False, testing=False, tested=False, distributed=False, merged=False
         ).select_for_update()
 
     @classmethod
