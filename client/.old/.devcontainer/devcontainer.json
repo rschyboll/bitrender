@@ -1,5 +1,5 @@
 {
-    "name": "Rendering worker",
+    "name": "Rendering server - client",
     "dockerComposeFile": "docker-compose.yml",
     "service": "app",
     "workspaceFolder": "/workspace",
@@ -7,12 +7,11 @@
         "ms-python.python",
         "ms-python.vscode-pylance",
         "ryanluker.vscode-coverage-gutters",
-        "njpwerner.autodocstring",
-        "usernamehw.errorlens"
     ],
     "remoteUser": "vscode",
     "postCreateCommand": "poetry install",
     "settings": {
+        "editor.hover.sticky": true,
         "terminal.integrated.profiles.linux": {
             "fish": {
                 "path": "/usr/bin/fish"
@@ -22,23 +21,17 @@
         "editor.formatOnSave": true,
         "python.languageServer": "Pylance",
         "python.formatting.provider": "black",
-        "python.formatting.blackArgs": [
-            "--line-length=100"
+        "python.linting.pylintEnabled": true,
+        "python.linting.enabled": true,
+        "python.linting.mypyEnabled": true,
+        "python.testing.pytestArgs": [
+            "src"
         ],
-        "python.sortImports.args": [
-            "--profile",
-            "black"
+        "python.linting.pylintArgs": [
+            "--extension-pkg-whitelist=pydantic",
+            "--disable=C0111",
+            "--disable=W0703",
         ],
-        "[python]": {
-            "editor.codeActionsOnSave": {
-                "source.organizeImports": true
-            }
-        },
-        "files.exclude": {
-            "**/*.pyc": true,
-            "**/__pycache__": true,
-            "**/.pytest_cache": true,
-        },
         "editor.semanticTokenColorCustomizations": {
             "rules": {
                 "variable:python": "#d4d4d4",
@@ -47,5 +40,20 @@
                 "property:python": "#d4d4d4"
             }
         },
+        "python.testing.unittestEnabled": false,
+        "python.testing.pytestEnabled": true,
+        "files.exclude": {
+            "**/.git": true,
+            "**/*.pyc": true,
+            "**/__pycache__": true,
+            "**/venv": true,
+            "**/.pytest_cache": true,
+            "**/.mypy_cache": true,
+            "coverage.xml": true,
+            ".coverage": true,
+        },
+        "material-icon-theme.files.associations": {
+            ".coveragerc": "Settings"
+        }
     },
 }

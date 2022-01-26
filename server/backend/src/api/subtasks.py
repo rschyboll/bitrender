@@ -29,6 +29,8 @@ async def success(
     await subtask.set_finished(samples, file)
     await frame.update()
     await task.update()
+    if task.finished:
+        background_tasks.add_task(task.pack)
     background_tasks.add_task(TaskCore.distribute_tasks)
 
 
