@@ -1,54 +1,71 @@
 """This module contains functions for creating mocks for subprocess calls."""
-from typing import List, Optional
+from asyncio import Event
+from typing import Any, List, Optional
 from unittest.mock import AsyncMock, MagicMock
 
-from black import asyncio
 from pytest_mock import MockerFixture
 
 
 class MockStreamReader(MagicMock):
-    def __init__(self, values: List[bytes]):
+    """Mock of StreamReader from asyncio"""
+
+    def __init__(self, values: List[bytes], *_: Any, **__: Any):
         MagicMock.__init__(self)
         self.values = values
+        self.readline = AsyncMock(side_effect=self.mock_readline)
+        self.at_eof = MagicMock(side_effect=self.__at_eof)
 
-    async def readline(self) -> bytes:
+    async def mock_readline(self) -> bytes:
+        """Side effect for mock readline."""
         return self.values.pop(0)
 
-    def at_eof(self) -> bool:
+    def __at_eof(self) -> bool:
+        """Side effect for mock at_eof"""
         return len(self.values) == 0
 
 
 class MockProcess(MagicMock):
+    """Mock of Process from asyncio.subprocess"""
+
     def __init__(
         self,
-        returncode: int = 0,
+        *_: Any,
+        returncode: Optional[int] = None,
         stdout_values: Optional[List[bytes]] = None,
         stderr_values: Optional[List[bytes]] = None,
+        wait_for_terminate: bool = False,
+        **__: Any
     ):
         MagicMock.__init__(self)
         self.returncode = returncode
-        self.stdout: Optional[MockStreamReader] = None
-        if stdout_values is not None:
-            self.stdout = MockStreamReader(stdout_values.copy())
-        self.stderr: Optional[MockStreamReader] = None
-        if stderr_values is not None:
-            self.stderr = MockStreamReader(stderr_values.copy())
-        self.terminate = AsyncMock()
+        self.wait = AsyncMock(side_effect=self.mock_wait)
+        self.stdout = self.__create_mock_stream(stdout_values)
+        self.stderr = self.__create_mock_stream(stderr_values)
+        self.terminate = MagicMock(side_effect=self.mock_terminate)
+        self.__wait_for_terminate = wait_for_terminate
+        self.__event = Event()
 
-    async def wait(self) -> int:
-        await asyncio.sleep(self.timeout)
-        return self.returncode
+    async def mock_wait(self) -> Optional[int]:
+        """Side effect for wait mock."""
+        if self.__wait_for_terminate:
+            await self.__event.wait()
+        if self.returncode is not None:
+            return self.returncode
+        return None
+
+    def mock_terminate(self) -> None:
+        """Side effect for terminate mock"""
+        self.__event.set()
+
+    @staticmethod
+    def __create_mock_stream(values: Optional[List[bytes]]) -> Optional[MockStreamReader]:
+        if values is not None:
+            return MockStreamReader(values)
+        return None
 
 
 def mock_create_subprocess_exec(mocker: MockerFixture, return_value: MockProcess) -> MagicMock:
-    """Creates a create_subprocess_exec mock and assigns a return_value to it.
-
-    Args:
-        mocker (MockerFixture): Mocker fixture from pytest-mock library.
-        return_value (Any): Value that should be returned when calling create_subprocess_exec.
-
-    Returns:
-        MagicMock: Mocked create_subprocess_exec"""
+    """Creates a subprocess.create_subprocess_exec mock and assigns a return_value to it."""
     mock = mocker.patch("bitrender_worker.utils.subprocess.create_subprocess_exec")
     mock.return_value = return_value
 

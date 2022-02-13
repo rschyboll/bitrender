@@ -1,4 +1,5 @@
 """This module contains tests for Subprocess class from bitrender_worker.utils.subprocess."""
+import asyncio
 from typing import List
 from unittest.mock import AsyncMock, call
 
@@ -11,13 +12,16 @@ from tests.mocks.subprocess import MockProcess, mock_create_subprocess_exec
 
 @pytest.mark.asyncio
 async def test_return_code(mocker: MockerFixture):
-    """Tests returning correnct returncode from run method."""
-    for returncode in range(0, 255):
-        process_mock = MockProcess(returncode)
+    """Tests returning correct returncode from run method."""
+    for returncode in range(-255, 255):
+        process_mock = MockProcess(returncode=returncode)
         mock_create_subprocess_exec(mocker, process_mock)
 
         subprocess = Subprocess("", [], AsyncMock())
-        assert returncode == await subprocess.run()
+        assert subprocess.returncode is None
+        run_returncode = await subprocess.run()
+        assert returncode == run_returncode
+        assert returncode == subprocess.returncode
 
 
 @pytest.mark.asyncio
@@ -31,7 +35,7 @@ async def test_on_message_callback(mocker: MockerFixture, stdout: List[bytes], s
         *[call({"text": arg.decode(), "source": MessageSource.STDERR}) for arg in stderr],
     ]
 
-    process_mock = MockProcess(0, stdout, stderr)
+    process_mock = MockProcess(stdout_values=stdout, stderr_values=stderr)
     mock_create_subprocess_exec(mocker, process_mock)
 
     on_message_mock = AsyncMock()
@@ -44,11 +48,51 @@ async def test_on_message_callback(mocker: MockerFixture, stdout: List[bytes], s
         assert expected_call in on_message_mock.call_args_list
 
 
-async def test_message_not_decodable(mocker: MockerFixture):
-    pass
-
-
-async def test_stop_process(mocker: MockerFixture):
-    process_mock = MockProcess(timeout=1000)
+@pytest.mark.asyncio
+async def test_stop(mocker: MockerFixture):
+    """Tests correct subprocess terminating when calling the stop method."""
+    process_mock = MockProcess(wait_for_terminate=True)
     mock_create_subprocess_exec(mocker, process_mock)
-    
+
+    on_message_mock = AsyncMock()
+    subprocess = Subprocess("", [], on_message_mock)
+
+    run_task = asyncio.create_task(subprocess.run())
+    await asyncio.sleep(0.00001)
+
+    await subprocess.stop()
+
+    assert subprocess.returncode is None
+
+    process_mock.returncode = -1
+
+    assert await run_task == -1
+
+    process_mock.terminate.assert_called()
+
+
+@pytest.mark.asyncio
+async def test_stop_not_running(mocker: MockerFixture):
+    """Tests calling stop on Subprocess without launching it."""
+    process_mock = MockProcess(wait_for_terminate=True)
+    mock_create_subprocess_exec(mocker, process_mock)
+
+    on_message_mock = AsyncMock()
+    subprocess = Subprocess("", [], on_message_mock)
+
+    await subprocess.stop()
+    process_mock.terminate.assert_not_called()
+
+
+@pytest.mark.asyncio
+async def test_wrong_messages(mocker: MockerFixture):
+    """Tests correct calling the on_message callback."""
+    process_mock = MockProcess(stdout_values=[b"\xed"], stderr_values=[b"\xea"])
+    mock_create_subprocess_exec(mocker, process_mock)
+
+    on_message_mock = AsyncMock()
+    subprocess = Subprocess("", [], on_message_mock)
+
+    await subprocess.run()
+
+    assert on_message_mock.call_count == 0

@@ -3,48 +3,37 @@
 from asyncio import StreamReader
 from asyncio.subprocess import PIPE, Process, create_subprocess_exec
 from asyncio.tasks import Task, create_task
-from enum import Enum
-from typing import Callable, Coroutine, Optional, TypedDict, TypeGuard
-
-
-class MessageSource(Enum):
-    """Enum subprocess message source streams."""
-
-    STDERR = "stderr"
-    STDOUT = "stdout"
-
-
-class SubprocessMessage(TypedDict):
-    """TypedDict containing a message that has been received from the launched Subprocess.
-
-    Keys:
-        text (str): String containing the returned message.
-        source (MessageSource): Enum specifying the message source stream."""
-
-    text: str
-    source: MessageSource
+from typing import Callable, Coroutine, Optional, TypeGuard
 
 
 class Subprocess:
-    """Class for running subprocesses and retrieving messages from them."""
+    """Class for running subprocesses and retrieving messages from them.
+
+    Attributes:
+        returncode (int, optional): Returncode from the launched subprocess.
+            Is None when the subprocess has not finished."""
 
     def __init__(
         self,
         launch_path: str,
         launch_args: list[str],
-        on_message: Callable[[SubprocessMessage], Coroutine[None, None, None]],
+        on_stdout: Callable[[str], Coroutine[None, None, None]],
+        on_stderr: Callable[[str], Coroutine[None, None, None]],
     ):
         """Initialize class variables.
 
         Args:
             launch_path (str): Path to the executable, that should be launched as a subprocess.
             launch_args (list[str]): Args that will be passed to the executable at launch.
-            on_message (Callable[[SubprocessMessage], Coroutine[None, None, None]]): Callback
-                that is called with messages returned from stdout and stderr streams.
+            on_message (Callable[[SubprocessMessage], Coroutine[None, None, None]]):
+                Callback that is called with messages returned from stdout and stderr streams.
         """
+
+        self.on_stdout = on_stdout
+        self.on_stderr = on_stderr
+        self.returncode: Optional[int] = None
         self.__launch_path = launch_path
         self.__launch_args = launch_args
-        self.__on_message = on_message
         self.__process: Optional[Process] = None
         self.__stdout_listener: Optional[Task[None]] = None
         self.__stderr_listener: Optional[Task[None]] = None
@@ -55,18 +44,18 @@ class Subprocess:
         Returns:
             int: return code from the launched subprocess."""
         self.__process = await self.__create()
-        self.__start_listeners()
+        self.__start_listeners(self.__process)
 
-        returncode = await self.__process.wait()
+        self.returncode = await self.__process.wait()
         await self.__wait_for_listeners()
 
-        return returncode
+        return self.returncode
 
     async def stop(self) -> None:
         """Stops the running subprocess and the listeners."""
         if self.__process is not None and self.__process.returncode is None:
             self.__process.terminate()
-            await self.__process.wait()
+            self.returncode = await self.__process.wait()
         await self.__wait_for_listeners()
 
     async def __create(self) -> Process:
@@ -74,16 +63,11 @@ class Subprocess:
             self.__launch_path, *self.__launch_args, stdout=PIPE, stderr=PIPE
         )
 
-    def __start_listeners(self) -> None:
-        if self.__process is not None:
-            if self.__process.stderr is not None:
-                self.__stderr_listener = self.__create_listener(
-                    self.__process.stderr, MessageSource.STDERR
-                )
-            if self.__process.stdout is not None:
-                self.__stdout_listener = self.__create_listener(
-                    self.__process.stdout, MessageSource.STDOUT
-                )
+    def __start_listeners(self, process: Process) -> None:
+        if process.stderr is not None:
+            self.__stderr_listener = self.__create_listener(process.stderr, MessageSource.STDERR)
+        if process.stdout is not None:
+            self.__stdout_listener = self.__create_listener(process.stdout, MessageSource.STDOUT)
 
     def __create_listener(self, stream: StreamReader, source: MessageSource) -> Task[None]:
         return create_task(self.__listen_to_stream(stream, source))

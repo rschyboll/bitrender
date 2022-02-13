@@ -8,9 +8,11 @@
         "ms-python.vscode-pylance",
         "ryanluker.vscode-coverage-gutters",
         "njpwerner.autodocstring",
-        "usernamehw.errorlens"
+        "usernamehw.errorlens",
+        "actboy168.tasks"
     ],
     "remoteUser": "vscode",
+    "waitFor": "postCreateCommand",
     "postCreateCommand": "poetry install",
     "settings": {
         "terminal.integrated.profiles.linux": {
@@ -38,6 +40,9 @@
             "**/*.pyc": true,
             "**/__pycache__": true,
             "**/.pytest_cache": true,
+            "**/.mypy_cache": true,
+            "**/.coverage": true,
+            "**/coverage.xml": true,
         },
         "editor.semanticTokenColorCustomizations": {
             "rules": {
