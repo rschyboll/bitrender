@@ -1,0 +1,17 @@
+version: '3.8'
+services:
+  app:
+    container_name: worker-DEV
+    build:
+      context: ..
+      dockerfile: .devcontainer/Dockerfile
+    command: sleep infinity
+    volumes:
+    - worker-DEV:/home/vscode/.local/share/rendering_server_worker
+    user: vscode
+    cap_add:
+    - SYS_ADMIN
+    security_opt:
+    - apparmor:unconfined
+volumes:
+  worker-DEV:

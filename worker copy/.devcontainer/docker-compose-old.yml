@@ -1,0 +1,22 @@
+version: '3.8'
+services:
+  app:
+    container_name: client-dev
+    build:
+      context: ..
+      dockerfile: .devcontainer/Dockerfile
+    volumes:
+    - ..:/workspace:cached 
+    - client-dev:/home/vscode/.local/share/rendering_server_worker
+    init: true
+    command: sleep infinity
+    user: vscode
+    cap_add:
+    - SYS_ADMIN
+    devices:
+    - "/dev/fuse:/dev/fuse"
+    security_opt:
+    - apparmor:unconfined
+
+volumes:
+  client-dev:

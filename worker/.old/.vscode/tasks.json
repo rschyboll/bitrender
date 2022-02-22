@@ -1,0 +1,38 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "$(output) Register",
+            "type": "shell",
+            "command": "python main.py register ${input:name} ${input:serverId}",
+            "options": {
+                "statusbar": {
+                    "color": "#b9ffb9"
+                },
+                "cwd": "${workspaceFolder}/src/"
+            }
+        },
+        {
+            "label": "$(notebook-execute) Run",
+            "type": "shell",
+            "command": "python main.py run",
+            "options": {
+                "statusbar": {
+                    "color": "#b9beff"
+                },
+                "cwd": "${workspaceFolder}/src/"
+            }
+        },
+        {
+            "label": "$(remove-close) Deregister",
+            "type": "shell",
+            "command": "python main.py deregister",
+            "options": {
+                "statusbar": {
+                    "color": "#ffb9b9"
+                },
+                "cwd": "${workspaceFolder}/src/"
+            }
+        },
+    ],
+}

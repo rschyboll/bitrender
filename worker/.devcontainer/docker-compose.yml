@@ -1,0 +1,20 @@
+version: '3.8'
+services:
+  app:
+    container_name: worker-DEV
+    build:
+      context: ..
+      dockerfile: .devcontainer/Dockerfile
+    volumes:
+      - ..:/workspace:cached
+      - worker-DEV:/home/vscode/.local/share/rendering_server_worker
+      - worker-DEV-fish:/home/vscode/.local/share/fish
+    command: sleep infinity
+    user: vscode
+    cap_add:
+    - SYS_ADMIN
+    security_opt:
+    - apparmor:unconfined
+volumes:
+  worker-DEV:
+  worker-DEV-fish:

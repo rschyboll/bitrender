@@ -1,0 +1,64 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Run",
+            "type": "python",
+            "request": "launch",
+            "args": [
+                "run"
+            ],
+            "cwd": "${workspaceFolder}/src",
+            "program": "${workspaceFolder}/src/main.py"
+        },
+        {
+            "name": "Register",
+            "type": "python",
+            "request": "launch",
+            "args": [
+                "register",
+                "${input:name}",
+                "${input:serverId}"
+            ],
+            "cwd": "${workspaceFolder}/src",
+            "program": "${workspaceFolder}/src/main.py"
+        },
+        {
+            "name": "Deregister",
+            "type": "python",
+            "request": "launch",
+            "args": [
+                "deregister",
+            ],
+            "cwd": "${workspaceFolder}/src",
+            "program": "${workspaceFolder}/src/main.py"
+        },
+        {
+            "name": "Debug Unit Test",
+            "type": "python",
+            "request": "launch",
+            "justMyCode": false,
+            "program": "${file}",
+            "purpose": [
+                "debug-test"
+            ],
+            "env": {
+                "PYTEST_ADDOPTS": "--no-cov"
+            },
+        }
+    ],
+    "inputs": [
+        {
+            "id": "name",
+            "type": "promptString",
+            "description": "Name",
+            "default": "test"
+        },
+        {
+            "id": "serverId",
+            "type": "promptString",
+            "description": "Server ip",
+            "default": "172.17.0.1:8000"
+        }
+    ]
+}

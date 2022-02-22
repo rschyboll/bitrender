@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  app:
+    container_name: backend-DEV
+    build:
+      context: ..
+      dockerfile: .devcontainer/Dockerfile
+    volumes:
+      - ..:/workspace:cached 
+      - backend-data-DEV:/data
+    init: true
+
+    command: sleep infinity
+    user: vscode
+
+  db:
+    container_name: database-DEV
+    image: postgres:latest
+    restart: unless-stopped
+    volumes:
+      - database-DEV:/var/lib/postgresql/data
+
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_DB: bitrender-DEV
+      POSTGRES_PASSWORD: postgres
+    network_mode: service:app
+
+volumes:
+  backend-data-DEV:
+  database-DEV:

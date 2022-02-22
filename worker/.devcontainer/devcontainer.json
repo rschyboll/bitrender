@@ -1,0 +1,25 @@
+{
+    "name": "Rendering worker",
+    "dockerComposeFile": "docker-compose.yml",
+    "service": "app",
+    "workspaceFolder": "/workspace",
+    "extensions": [
+        "ms-python.python",
+        "ms-python.vscode-pylance",
+        "ryanluker.vscode-coverage-gutters",
+        "njpwerner.autodocstring",
+        "usernamehw.errorlens",
+        "actboy168.tasks"
+    ],
+    "postCreateCommand": "poetry install",
+    "waitFor": "postCreateCommand",
+    "remoteUser": "vscode",
+    "settings": {
+        "terminal.integrated.profiles.linux": {
+            "fish": {
+                "path": "/usr/bin/fish"
+            }
+        },
+        "terminal.integrated.defaultProfile.linux": "fish",
+    }
+}

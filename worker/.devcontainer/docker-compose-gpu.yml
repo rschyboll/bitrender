@@ -1,0 +1,31 @@
+version: '3.8'
+services:
+  app:
+    container_name: worker-DEV
+    build:
+      context: ..
+      dockerfile: .devcontainer/Dockerfile
+    command: sleep infinity
+    volumes:
+    - ..:/workspace:cached 
+    - worker-DEV:/home/vscode/.local/share/rendering_server_worker
+    user: vscode
+    cap_add:
+    - SYS_ADMIN
+    environment:
+    - NVIDIA_VISIBLE_DEVICES=all
+    - NVIDIA_DRIVER_CAPABILITIES=all
+    devices:
+    - "/dev/fuse:/dev/fuse"
+    - "/dev/nvidia0:/dev/nvidia0"
+    - "/dev/nvidiactl:/dev/nvidiactl"
+    - "/dev/nvidia-modeset:/dev/nvidia-modeset"
+    - "/dev/nvidia-uvm:/dev/nvidia-uvm"
+    - "/dev/nvidia-uvm-tools:/dev/nvidia-uvm-tools"
+    deploy:
+      resources:
+        reservations:
+          devices:
+          - capabilities: [gpu]
+volumes:
+  worker-DEV:
