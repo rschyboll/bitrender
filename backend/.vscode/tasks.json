@@ -1,0 +1,25 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Generate coverage",
+            "options": {
+                "statusbar": {
+                    "color": "#22C1D6"
+                }
+            },
+            "type": "shell",
+            "command": "pytest --cov-report=xml:coverage.xml --cov=bitrender_worker tests/",
+        },
+        {
+            "label": "Run coverage",
+            "options": {
+                "statusbar": {
+                    "color": "#22C1D6"
+                }
+            },
+            "type": "shell",
+            "command": "pytest --cov=bitrender_worker tests/",
+        }
+    ]
+}

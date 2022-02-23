@@ -2,11 +2,10 @@ import os
 from typing import List, Optional
 from uuid import UUID
 
-from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, status
-from fastapi.responses import FileResponse
-
 from config import Settings, get_settings
 from core import task as TasksCore
+from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, status
+from fastapi.responses import FileResponse
 from models import Task
 from schemas import TaskCreate, TaskView
 
@@ -53,9 +52,7 @@ async def delete_task(task_id: UUID) -> None:
 
 
 @router.get("/file/{task_id}")
-async def get_task_file(
-    task_id: UUID, settings: Settings = Depends(get_settings)
-) -> FileResponse:
+async def get_task_file(task_id: UUID, settings: Settings = Depends(get_settings)) -> FileResponse:
     path = os.path.join(settings.task_dir, task_id.hex)
     if os.path.exists(path):
         return FileResponse(path)

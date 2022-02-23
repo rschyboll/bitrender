@@ -20,57 +20,6 @@
             }
         },
         "terminal.integrated.defaultProfile.linux": "fish",
-        "editor.formatOnSave": true,
-        "python.languageServer": "Pylance",
-        "python.formatting.provider": "black",
-        "python.linting.pylintEnabled": true,
-        "python.linting.enabled": true,
-        "python.linting.mypyEnabled": true,
-        "python.testing.pytestArgs": [
-            "src"
-        ],
-        "python.linting.pylintArgs": [
-            "--extension-pkg-whitelist=pydantic",
-            "--disable=C0111",
-            "--load-plugins=tortoise.contrib.pylint"
-        ],
-        "python.testing.unittestEnabled": false,
-        "python.testing.pytestEnabled": true,
-        "editor.semanticTokenColorCustomizations": {
-            "rules": {
-                "variable:python": "#d4d4d4",
-                "variable.readonly:python": "#D19A66",
-                "selfParameter": "#6090f1",
-                "property:python": "#d4d4d4"
-            }
-        },
-        "files.exclude": {
-            "**/.git": true,
-            "**/*.pyc": true,
-            "**/__pycache__": true,
-            "**/venv": true,
-            "**/.pytest_cache": true,
-            "**/.mypy_cache": true,
-            "coverage.xml": true,
-            ".coverage": true,
-        },
-        "sqltools.connections": [
-            {
-                "name": "Container database",
-                "driver": "PostgreSQL",
-                "previewLimit": 50,
-                "server": "localhost",
-                "port": 5432,
-                "database": "rendering_server_dev",
-                "username": "postgres",
-                "password": "postgres"
-            }
-        ],
-        "material-icon-theme.folders.associations": {
-            "storage": "resource",
-        },
-        "material-icon-theme.files.associations": {
-            ".coveragerc": "Settings"
-        }
+
     },
 }

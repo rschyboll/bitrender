@@ -9,6 +9,7 @@ services:
     volumes:
       - ..:/workspace:cached 
       - backend-data-DEV:/data
+      - backend-DEV-fish:/home/vscode/.local/share/fish
     init: true
 
     command: sleep infinity
@@ -30,3 +31,4 @@ services:
 volumes:
   backend-data-DEV:
   database-DEV:
+  backend-DEV-fish:

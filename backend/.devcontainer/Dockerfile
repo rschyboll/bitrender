@@ -5,6 +5,7 @@ RUN apt-get update && export DEBIAN_FRONTEND=noninteractive && apt-get -y instal
 RUN mkdir /data
 
 RUN chown vscode /data && chmod 777 /data
+RUN chown vscode /usr/local/src && chmod 777 /usr/local/src
 
 USER vscode
 
