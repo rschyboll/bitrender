@@ -2,9 +2,9 @@ FROM mcr.microsoft.com/vscode/devcontainers/python:0-3.10
 
 RUN apt-get update && export DEBIAN_FRONTEND=noninteractive && apt-get -y install --no-install-recommends fish
 
-RUN mkdir /data
+RUN mkdir /data_dev
 
-RUN chown vscode /data && chmod 777 /data
+RUN chown vscode /data_dev && chmod 777 /data_dev
 RUN chown vscode /usr/local/src && chmod 777 /usr/local/src
 
 USER vscode

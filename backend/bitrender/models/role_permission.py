@@ -10,7 +10,7 @@ else:
     Role = object
 
 
-class Permission(IntEnum):
+"""class Permission(IntEnum):
     ADD_WORKER = 1
     REMOVE_WORKER = 2
     MANAGE_WORKER = 3
@@ -20,3 +20,4 @@ class Permission(IntEnum):
 class RolePermission:
     role: ForeignKeyRelation[Role] = ForeignKeyField("models.Role")
     permission = IntEnumField(Permission)
+"""

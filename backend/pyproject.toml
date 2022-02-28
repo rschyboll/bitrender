@@ -9,6 +9,8 @@ python = "^3.10"
 fastapi = "^0.74.1"
 uvicorn = "^0.17.5"
 tortoise-orm = { git = "https://github.com/Hoodrobinrs/tortoise-orm.git", branch = "generic-models" }
+asyncpg = "^0.25.0"
+aerich = "^0.6.2"
 
 [tool.poetry.dev-dependencies]
 pytest = "^7.0.1"

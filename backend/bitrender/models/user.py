@@ -11,7 +11,7 @@ else:
     Role = object
 
 
-class User(BaseModel[None]):
+"""class User(BaseModel[None]):
     username: str = TextField()
     full_name: str = TextField()
     email: str = TextField()
@@ -19,3 +19,4 @@ class User(BaseModel[None]):
 
     active: bool = BooleanField()  # type: ignore
     role: ForeignKeyRelation = ForeignKeyField("models.Role")
+"""
