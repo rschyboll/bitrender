@@ -21,12 +21,22 @@ services:
     restart: unless-stopped
     volumes:
       - database-DEV:/var/lib/postgresql/data
-
     environment:
       POSTGRES_USER: postgres
-      POSTGRES_DB: bitrender-DEV
+      POSTGRES_DB: bitrenderDEV
       POSTGRES_PASSWORD: postgres
     network_mode: service:app
+
+  db-test:
+    container_name: database-TEST
+    image: postgres:latest
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_DB: bitrenderTEST
+      POSTGRES_PASSWORD: postgres
+    network_mode: service:app
+    command: -p 5433
 
 volumes:
   backend-data-DEV:

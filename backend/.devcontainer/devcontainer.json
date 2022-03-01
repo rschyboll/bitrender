@@ -9,7 +9,9 @@
         "ryanluker.vscode-coverage-gutters",
         "njpwerner.autodocstring",
         "usernamehw.errorlens",
-        "actboy168.tasks"
+        "actboy168.tasks",
+        "mtxr.sqltools",
+        "mtxr.sqltools-driver-pg",
     ],
     "postCreateCommand": "poetry install",
     "waitFor": "postCreateCommand",

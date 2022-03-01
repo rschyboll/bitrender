@@ -1,18 +1,13 @@
-import pytest
 from tortoise.contrib.test import TruncationTestCase
 
-from bitrender.models import BaseModel
-from bitrender.schemas import BaseView
+from bitrender.models.role import Role
 
 
-class TestModel(BaseModel[BaseView]):
-    """Model used only for testing methods from BaseModel class."""
+class TestBaseModel(TruncationTestCase):
+    async def test_hello(self) -> None:
+        test = await Role.get_all()
+        print(test)
 
-    def to_view(self) -> BaseView:
-        """Converts the model to it's corresponding pydantic schema."""
-        return BaseView.from_orm(self)
-
-
-class TestSomething(TruncationTestCase):
-    async def test_something(self):
-        assert 2 == 4
+    async def test_hello2(self) -> None:
+        test = await Role.get_all()
+        print(test)

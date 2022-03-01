@@ -1,7 +1,9 @@
-from tortoise.fields.data import BooleanField, IntEnumField, IntField, TextField
+from tortoise.fields.data import TextField
+
+from bitrender.schemas.role import RoleView
 
 from .base import BaseModel
 
-"""class Role(BaseModel[None]):
+
+class Role(BaseModel[RoleView]):
     name: str = TextField()
-"""

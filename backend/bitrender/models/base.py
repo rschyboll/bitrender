@@ -17,7 +17,8 @@ class BaseModel(Model, Generic[_VIEW]):
 
     Attributes:
         id (UUID): Primary key of the database entry.
-        create_time (datetime): Datetime, when the entry was created."""
+        created_at (datetime): Datetime, when the entry was created.
+        modified_at (datetime): Datetime, when the entry was modified."""
 
     id: UUID = UUIDField(pk=True)
     created_at: datetime = DatetimeField(auto_now_add=True)

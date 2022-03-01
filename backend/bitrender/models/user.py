@@ -12,7 +12,7 @@ else:
 
 
 """class User(BaseModel[None]):
-    username: str = TextField()
+    username: str = TextField() 
     full_name: str = TextField()
     email: str = TextField()
     hashed_password: str = TextField()
