@@ -9,7 +9,7 @@
                 }
             },
             "type": "shell",
-            "command": "pytest --cov-report=xml:coverage.xml --cov=bitrender_worker tests/",
+            "command": "pytest --cov-report=xml:coverage.xml --cov=bitrender tests/",
         },
         {
             "label": "Run coverage",
@@ -19,7 +19,7 @@
                 }
             },
             "type": "shell",
-            "command": "pytest --cov=bitrender_worker tests/",
+            "command": "pytest --cov=bitrender tests/",
         }
     ]
 }

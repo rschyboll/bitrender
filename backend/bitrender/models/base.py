@@ -1,10 +1,11 @@
 """This module contains the base class for all database models."""
+from abc import ABC, ABCMeta, abstractmethod
 from datetime import datetime
 from typing import Generic, List, Literal, Type, TypeVar, overload
 from uuid import UUID
 
 from tortoise.fields import DatetimeField, UUIDField
-from tortoise.models import Model
+from tortoise.models import Model, ModelMeta
 
 from bitrender.schemas.base import BaseView  # pylint: disable=unused-import
 
@@ -12,7 +13,11 @@ _VIEW = TypeVar("_VIEW", bound="BaseView")
 _MODEL = TypeVar("_MODEL", bound="BaseModel[_VIEW]")  # type: ignore
 
 
-class BaseModel(Model, Generic[_VIEW]):
+class BaseModelMeta(ABCMeta, ModelMeta):
+    """Metaclass for BaseModel"""
+
+
+class BaseModel(Model, ABC, Generic[_VIEW], metaclass=BaseModelMeta):
     """Class that serves as the base for all database models.
 
     Attributes:
@@ -29,9 +34,9 @@ class BaseModel(Model, Generic[_VIEW]):
 
         abstract = True
 
+    @abstractmethod
     def to_view(self) -> _VIEW:
         """Converts the model to it's corresponding pydantic schema."""
-        raise NotImplementedError()
 
     @overload
     @classmethod

@@ -1,2 +1,3 @@
-from .base import BaseModel
-from .role import Role
+# pylint: disable=missing-module-docstring
+
+from .base import BaseModel  # noqa: F401

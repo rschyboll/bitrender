@@ -10,10 +10,12 @@ class BaseView(BaseModel):
 
     Attributes:
         id (UUID): Primary key of the database entry.
-        create_time (datetime): Datetime, when the entry was created."""
+        created_at (datetime): Datetime, when the entry was created.
+        modified_at (datetime): Datetime, when the entry was last modified."""
 
     id: UUID
-    create_date: datetime
+    created_at: datetime
+    modified_at: datetime
 
     class Config:
         """BaseView config."""
