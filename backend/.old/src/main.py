@@ -1,11 +1,10 @@
 import os
 
+import services
 import uvicorn
+from api import binaries, composite_task, subtasks, tasks, workers
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-
-import services
-from api import binaries, subtasks, tasks, workers, composite_task
 from models import migrate, register_db
 
 origins = [

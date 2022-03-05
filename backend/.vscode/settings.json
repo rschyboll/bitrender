@@ -38,4 +38,26 @@
             "property:python": "#d4d4d4"
         }
     },
+    "sqltools.connections": [
+        {
+            "previewLimit": 50,
+            "server": "localhost",
+            "port": 5432,
+            "driver": "PostgreSQL",
+            "name": "Bitrender-DEV",
+            "database": "bitrender-DEV",
+            "username": "postgres",
+            "password": "postgres"
+        },
+        {
+            "previewLimit": 50,
+            "server": "localhost",
+            "port": 5433,
+            "driver": "PostgreSQL",
+            "name": "Bitrender-TEST",
+            "database": "bitrender-TEST",
+            "username": "postgres",
+            "password": "postgres"
+        }
+    ],
 }

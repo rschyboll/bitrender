@@ -72,7 +72,7 @@ __settings = get_settings()
 tortoise_config = {
     "connections": {"default": __settings.database_url},
     "apps": {
-        "rendering_server": {
+        "bitrender": {
             "models": __settings.models,
             "default_connection": "default",
         },

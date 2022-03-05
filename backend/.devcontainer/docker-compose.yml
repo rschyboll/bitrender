@@ -23,7 +23,7 @@ services:
       - database-DEV:/var/lib/postgresql/data
     environment:
       POSTGRES_USER: postgres
-      POSTGRES_DB: bitrenderDEV
+      POSTGRES_DB: bitrender-DEV
       POSTGRES_PASSWORD: postgres
     network_mode: service:app
 
@@ -33,7 +33,7 @@ services:
     restart: unless-stopped
     environment:
       POSTGRES_USER: postgres
-      POSTGRES_DB: bitrenderTEST
+      POSTGRES_DB: bitrender-TEST
       POSTGRES_PASSWORD: postgres
     network_mode: service:app
     command: -p 5433
