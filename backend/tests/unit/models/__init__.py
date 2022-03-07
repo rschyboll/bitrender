@@ -4,6 +4,7 @@ from bitrender.schemas.base import BaseView
 
 
 class TestModel(BaseModel[BaseView]):
+    # TODO zmiana nazwy na nie konfliktującą z nazwami testów
     """Database model used only for testing methods from BaseModel."""
 
     def to_view(self) -> BaseView:

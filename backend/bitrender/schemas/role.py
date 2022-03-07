@@ -2,11 +2,10 @@
 from datetime import datetime
 from uuid import UUID
 
-from bitrender.models import Role
 from bitrender.schemas import BaseView
 
 
-class RoleView(BaseView[Role]):
+class RoleView(BaseView):
     """s.
 
     Attributes:
@@ -17,11 +16,3 @@ class RoleView(BaseView[Role]):
     id: UUID
     created_at: datetime
     modified_at: datetime
-
-    def to_model(self) -> Role:
-        return
-
-    class Config:
-        """BaseView config."""
-
-        orm_mode = True

@@ -1,6 +1,6 @@
 """This module contains a database model describing user roles."""
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
 from tortoise.fields import BooleanField, ReverseRelation, TextField
 

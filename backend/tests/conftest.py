@@ -11,7 +11,7 @@ from bitrender.config import Settings, get_settings
 settings = get_settings()
 
 test_settings = Settings(
-    database_url="postgres://postgres:@localhost:5433/bitrenderTEST",
+    database_url="postgres://postgres:@localhost:5433/bitrender-TEST",
     data_dir="/data-TEST",
     models=[*settings.models, "tests.unit.models"],
 )
@@ -24,6 +24,7 @@ def initialize_orm(request: SubRequest) -> None:
         test_settings.models,
         db_url=test_settings.database_url,
         loop=get_event_loop(),
+        app_label="bitrender",
     )
     request.addfinalizer(finalizer)
 

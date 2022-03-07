@@ -2,10 +2,10 @@
 from datetime import datetime
 from uuid import UUID
 
-from bitrender.schemas import BaseVIew
+from bitrender.schemas import BaseView
 
 
-class BaseView(BaseView):
+class Permission(BaseView):
     """s.
 
     Attributes:
@@ -16,8 +16,3 @@ class BaseView(BaseView):
     id: UUID
     created_at: datetime
     modified_at: datetime
-
-    class Config:
-        """BaseView config."""
-
-        orm_mode = True
