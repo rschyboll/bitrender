@@ -1,4 +1,3 @@
-"""This module contains the base class for all pydantic schemas."""
 from datetime import datetime
 from uuid import UUID
 

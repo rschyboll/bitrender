@@ -11,6 +11,8 @@ uvicorn = "^0.17.5"
 asyncpg = "^0.25.0"
 aerich = "^0.6.2"
 tortoise-orm = { git = "https://github.com/Hoodrobinrs/tortoise-orm.git", branch = "generic-models" }
+bcrypt = "^3.2.0"
+python-jose = {extras = ["cryptography"], version = "^3.3.0"}
 
 [tool.poetry.dev-dependencies]
 pytest = "^7.0.1"

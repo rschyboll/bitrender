@@ -52,6 +52,13 @@ class Settings(BaseSettings):
         return path
 
     def get_subtask_path(self, subtask_id: UUID) -> str:
+        """Returns absoule path of a subtask based on the provided subtask_id.
+
+        Args:
+            subtask_id (UUID): Id of the subtask.
+
+        Returns:
+            str: Absolute path of the subtask."""
         return os.path.join(self.subtask_dir, subtask_id.hex)
 
     def get_frame_path(self, frame_id: UUID) -> str:
@@ -63,7 +70,7 @@ class Settings(BaseSettings):
 
 @lru_cache()
 def get_settings() -> Settings:
-    """Allows using settings as a FastAPI dependency."""
+    """Returns a cached Settings instance. Allows using settings as a FastAPI dependency."""
     return Settings()
 
 

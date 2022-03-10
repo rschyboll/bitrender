@@ -1,15 +1,31 @@
 # pylint: disable=missing-module-docstring
 
-from .base import BaseModel  # noqa: F401
-from .permission import Permission, RoleHasPermission  # noqa: F401
+import aerich
+
+from bitrender.config import tortoise_config
+
+from .permission import Permissions, RoleHasPermission  # noqa: F401
 from .role import Role  # noqa: F401
+from .user import User  # noqa: F401
 
 
-async def init_db_data():
-    """Populates database with initial data."""
-
-
-async def create_admin_role():
-    role = Role(
-        name="admin",
+async def __create_aerich_command() -> aerich.Command:
+    command = aerich.Command(
+        tortoise_config=tortoise_config,
+        app="bitrender",
     )
+    await command.init()
+    return command
+
+
+async def init_db():
+    """Initializes the database, creates all tables and relations based on models."""
+    command = await __create_aerich_command()
+    await command.init_db()
+
+
+async def migrate():
+    """Migrates the database based on current models."""
+    command = await __create_aerich_command()
+    await command.migrate()
+    await command.upgrade()
