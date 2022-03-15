@@ -4,6 +4,7 @@ import aerich
 
 from bitrender.config import tortoise_config
 
+from .auth import UserAuth  # noqa: F401
 from .permission import Permissions, RoleHasPermission  # noqa: F401
 from .role import Role  # noqa: F401
 from .user import User  # noqa: F401

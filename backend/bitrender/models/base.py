@@ -67,7 +67,7 @@ class BaseModel(Model, ABC, Generic[_VIEW], metaclass=BaseModelMeta):
 
     @overload
     @classmethod
-    async def get_by_id(cls: Type[_MODEL], model_id: UUID, view: Literal[False] = ...) -> _MODEL:
+    async def get_by_id(cls: Type[_MODEL], model_id: UUID, view: Literal[False]) -> _MODEL:
         ...
 
     @overload
@@ -85,7 +85,7 @@ class BaseModel(Model, ABC, Generic[_VIEW], metaclass=BaseModelMeta):
                 Defaults to False.
 
         Returns:
-            _MODEL: If view is False. Instances of the model.
+            _MODEL: If view is False. Instance of the model.
                 Locks the row in the database.
             _VIEW: If view if True. Schema created from the model.
                 Does not lock the row in the database."""

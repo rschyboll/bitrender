@@ -3,11 +3,11 @@ from datetime import datetime, timedelta
 
 import bcrypt
 from fastapi import Depends, HTTPException, status
-from fastapi.security import OAuth2PasswordBearer, SecurityScopes
+from fastapi.security import OAuth2PasswordBearer
 from jose import JWTError, jwt
 from pydantic import ValidationError
 
-from bitrender.models import User
+from bitrender.models import Permissions, User
 from bitrender.schemas import TokenData
 
 SECRET_KEY = "bb2a5daf96fd0cd95493b9a5f12ca4badadc5425663a0e391a2ed0f088b03026"
@@ -41,6 +41,13 @@ def check_password(password: str, password_hash: bytes) -> bool:
 
 
 def create_access_token(data: dict) -> str:
+    """Creates a JWT with the passed data.
+
+    Args:
+        data (dict): Dict containing data that should be included in the JWT.
+
+    Returns:
+        str: JWT containing signed data."""
     to_encode = data.copy()
     expire = datetime.utcnow() + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
     to_encode.update({"exp": expire})
@@ -49,18 +56,23 @@ def create_access_token(data: dict) -> str:
 
 
 def decode_access_token(token: str) -> TokenData:
-    pass
+    """Decodes a JWT and parses it to TokenData form.
+
+    Args:
+        token (str): JWT to decode.
+
+    Returns:
+        TokenData: Data present in the JWT."""
+    payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+    return TokenData(**payload)
 
 
-async def get_current_user(security_scopes: SecurityScopes, token: str = Depends(oauth2_scheme)):
-    if security_scopes.scopes:
-        authenticate_value = f'Bearer scope="{security_scopes.scope_str}"'
-    else:
-        authenticate_value = "Bearer"
+async def get_current_user(token: str = Depends(oauth2_scheme)):
+    """TODO generate docstring."""
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Could not validate credentials",
-        headers={"WWW-Authenticate": authenticate_value},
+        headers={"WWW-Authenticate": "Bearer"},
     )
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
@@ -69,16 +81,19 @@ async def get_current_user(security_scopes: SecurityScopes, token: str = Depends
             raise credentials_exception
         token_scopes = payload.get("scopes", [])
         token_data = TokenData(scopes=token_scopes, username=username)
-    except (JWTError, ValidationError):
-        raise credentials_exception
-    user = User.get_by_username(token_data.username)
+    except (JWTError, ValidationError) as error:
+        raise credentials_exception from error
+    user = await User.get_by_username(token_data.username)
     if user is None:
         raise credentials_exception
-    for scope in security_scopes.scopes:
-        if scope not in token_data.scopes:
-            raise HTTPException(
-                status_code=status.HTTP_401_UNAUTHORIZED,
-                detail="Not enough permissions",
-                headers={"WWW-Authenticate": authenticate_value},
-            )
     return user
+
+
+class HasPermission:
+    """TODO generate docstring"""
+
+    def __init__(self, permissions: list[Permissions]):
+        self.permissions = permissions
+
+    def __call__(self):
+        pass
