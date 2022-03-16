@@ -3,12 +3,12 @@ from typing import TYPE_CHECKING
 from bitrender.schemas import BaseView
 
 if TYPE_CHECKING:
-    from bitrender.models import Permissions, Role
+    from bitrender.models import Permission, Role
 else:
-    Permissions = object
+    Permission = object
     Role = object
 
 
 class RoleHasPermissionView(BaseView):
-    permission: Permissions
+    permission: Permission
     role: Role | None

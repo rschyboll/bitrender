@@ -4,6 +4,7 @@ from datetime import datetime
 from typing import Generic, List, Literal, Type, TypeVar, overload
 from uuid import UUID
 
+from tortoise.contrib.pydantic import PydanticModel
 from tortoise.fields import DatetimeField, UUIDField
 from tortoise.models import Model, ModelMeta
 
@@ -122,3 +123,11 @@ class BaseModel(Model, ABC, Generic[_VIEW], metaclass=BaseModelMeta):
         if model is None:
             return None
         return model.to_view()
+
+
+class BaseSchema(PydanticModel):
+    """TODO generate docstring"""
+
+    id: UUID
+    created_at: datetime
+    modified_at: datetime

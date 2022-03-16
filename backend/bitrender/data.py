@@ -3,7 +3,7 @@ from tortoise import Tortoise
 from bitrender.base.auth import hash_password
 from bitrender.config import tortoise_config
 from bitrender.models import User
-from bitrender.models.permission import Permissions, RoleHasPermission
+from bitrender.models.permission import Permission, RoleHasPermission
 from bitrender.models.role import Role
 
 
@@ -37,6 +37,6 @@ async def assign_all_permissions(role: Role):
 
     Args:
         role (Role): Role to assign the permissions to."""
-    for permission in Permissions:
+    for permission in Permission:
         role_permission = RoleHasPermission(permission, role)
         await role_permission.save()

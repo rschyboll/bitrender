@@ -6,6 +6,9 @@
             "type": "python",
             "request": "launch",
             "program": "bitrender/main.py",
+            "args": [
+                "run"
+            ]
         },
     ],
 }

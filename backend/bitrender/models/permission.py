@@ -13,12 +13,18 @@ else:
     Role = object
 
 
-class Permissions(IntEnum):
+class Permission(IntEnum):
     """Static enum containing available user permissions."""
 
-    READ_TASKS = 1
-    ADD_TASKS = 2
-    REMOVE_TASKS = 3
+    READ_TASK = 1
+    CREATE_TASK = 2
+    DELETE_TASK = 3
+    BROWSE_TASKS = 4
+
+    BROWSE_ROLES = 100
+    CREATE_ROLE = 101
+    UPDATE_ROLE = 102
+    DELETE_ROLE = 103
 
 
 class RoleHasPermission(BaseModel[RoleHasPermissionView]):
@@ -30,10 +36,10 @@ class RoleHasPermission(BaseModel[RoleHasPermissionView]):
         role (ForeignKeyRelation[Role]): Role, to which the permission is beeing assigned.
         initial (bool): If the permission is an initial system permission and cannot be deleted."""
 
-    def __init__(self, permission: Permissions, role: Role, **kwargs):
+    def __init__(self, permission: Permission, role: Role, **kwargs):
         super().__init__(permission=permission, role=role, **kwargs)
 
-    permission: Permissions = IntEnumField(Permissions)
+    permission: Permission = IntEnumField(Permission)
 
     role: ForeignKeyRelation[Role] = ForeignKeyField("bitrender.Role")
 

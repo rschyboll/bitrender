@@ -7,7 +7,7 @@ from fastapi.security import OAuth2PasswordBearer
 from jose import JWTError, jwt
 from pydantic import ValidationError
 
-from bitrender.models import Permissions, User
+from bitrender.models import Permission, User
 from bitrender.schemas import TokenData
 
 SECRET_KEY = "bb2a5daf96fd0cd95493b9a5f12ca4badadc5425663a0e391a2ed0f088b03026"
@@ -15,6 +15,12 @@ ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
+
+credentials_exception = HTTPException(
+    status_code=status.HTTP_401_UNAUTHORIZED,
+    detail="Could not validate credentials",
+    headers={"WWW-Authenticate": "Bearer"},
+)
 
 
 def hash_password(password: str) -> bytes:
@@ -67,20 +73,14 @@ def decode_access_token(token: str) -> TokenData:
     return TokenData(**payload)
 
 
-async def get_current_user(token: str = Depends(oauth2_scheme)):
+async def get_current_user(token: str = Depends(oauth2_scheme)) -> User:
     """TODO generate docstring."""
-    credentials_exception = HTTPException(
-        status_code=status.HTTP_401_UNAUTHORIZED,
-        detail="Could not validate credentials",
-        headers={"WWW-Authenticate": "Bearer"},
-    )
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
         username: str = payload.get("sub")
         if username is None:
             raise credentials_exception
-        token_scopes = payload.get("scopes", [])
-        token_data = TokenData(scopes=token_scopes, username=username)
+        token_data = TokenData(username=username)
     except (JWTError, ValidationError) as error:
         raise credentials_exception from error
     user = await User.get_by_username(token_data.username)
@@ -89,11 +89,16 @@ async def get_current_user(token: str = Depends(oauth2_scheme)):
     return user
 
 
-class HasPermission:
+class UserWithPermissions:
     """TODO generate docstring"""
 
-    def __init__(self, permissions: list[Permissions]):
+    def __init__(self, *permissions: Permission):
         self.permissions = permissions
 
-    def __call__(self):
-        pass
+    async def __call__(self, user: User = Depends(get_current_user)) -> User:
+        role = await user.role
+        user_permissions = [has_permission.permission for has_permission in await role.permissions]
+        for permission in self.permissions:
+            if permission not in user_permissions:
+                raise credentials_exception
+        return user
