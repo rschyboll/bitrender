@@ -1,5 +1,7 @@
 """This module contains dependencies for user authorization."""
+import functools
 from datetime import datetime, timedelta
+from typing import Callable, Container, ParamSpec, TypeVar
 
 import bcrypt
 from fastapi import Depends, HTTPException, status
@@ -92,7 +94,7 @@ async def get_current_user(token: str = Depends(oauth2_scheme)) -> User:
 class UserWithPermissions:
     """TODO generate docstring"""
 
-    def __init__(self, *permissions: Permission):
+    def __init__(self, *permissions: list[Permission]):
         self.permissions = permissions
 
     async def __call__(self, user: User = Depends(get_current_user)) -> User:
@@ -102,3 +104,26 @@ class UserWithPermissions:
             if permission not in user_permissions:
                 raise credentials_exception
         return user
+
+
+T = TypeVar("T")
+P = ParamSpec("P")
+
+
+def testt():
+    def my_decorator(func: Callable[P, T]) -> Callable[P, Container[T]]:
+        @functools.wraps(func)
+        async def wrapper(*args, **kwargs):
+            return await func(*args, **kwargs)
+
+        return wrapper
+
+    return my_decorator
+
+
+@testt()
+async def test(i: int, s: str):
+    pass
+
+
+test()

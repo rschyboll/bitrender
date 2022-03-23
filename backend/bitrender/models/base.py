@@ -1,17 +1,28 @@
 """This module contains the base class for all database models."""
 from abc import ABC, ABCMeta, abstractmethod
 from datetime import datetime
-from typing import Generic, List, Literal, Type, TypeVar, overload
+from typing import Generic, Literal, Type, TypeVar, overload
 from uuid import UUID
 
 from tortoise.contrib.pydantic import PydanticModel
 from tortoise.fields import DatetimeField, UUIDField
 from tortoise.models import Model, ModelMeta
 
-from bitrender.schemas.base import BaseView  # pylint: disable=unused-import
-
 _VIEW = TypeVar("_VIEW", bound="BaseView")
 _MODEL = TypeVar("_MODEL", bound="BaseModel[_VIEW]")  # type: ignore
+
+
+class BaseView(PydanticModel):
+    """Class that serves as the base for all pydantic schemas.
+
+    Attributes:
+        id (UUID): Primary key of the database entry.
+        created_at (datetime): Datetime, when the entry was created.
+        modified_at (datetime): Datetime, when the entry was last modified."""
+
+    id: UUID
+    created_at: datetime
+    modified_at: datetime
 
 
 class BaseModelMeta(ABCMeta, ModelMeta):
@@ -36,21 +47,33 @@ class BaseModel(Model, ABC, Generic[_VIEW], metaclass=BaseModelMeta):
         abstract = True
 
     @abstractmethod
-    def to_view(self) -> _VIEW:
+    def to_view_full(self) -> _VIEW:
         """Converts the model to it's corresponding pydantic schema."""
 
+    @abstractmethod
+    def to_view_partial(self) -> _VIEW:
+        """TODO generate docstring"""
+
+    @abstractmethod
+    def to_view_flat(self) -> _VIEW:
+        """TODO generate docstring"""
+
+    @abstractmethod
+    def to_view_only(self) -> _VIEW:
+        """TODO generate docstring"""
+
     @overload
     @classmethod
-    async def get_all(cls: Type[_MODEL], view: Literal[False] = ...) -> List[_MODEL]:
+    async def get_all(cls: Type[_MODEL], view: Literal[False] = ...) -> list[_MODEL]:
         ...
 
     @overload
     @classmethod
-    async def get_all(cls: Type[_MODEL], view: Literal[True]) -> List[_VIEW]:
+    async def get_all(cls: Type[_MODEL], view: Literal[True]) -> list[_VIEW]:
         ...
 
     @classmethod
-    async def get_all(cls: Type[_MODEL], view: bool = False) -> List[_MODEL] | List[_VIEW]:
+    async def get_all(cls: Type[_MODEL], view: bool = False) -> list[_MODEL] | list[_VIEW]:
         """Returns all database entries of the given model.
 
         Args:
@@ -64,7 +87,7 @@ class BaseModel(Model, ABC, Generic[_VIEW], metaclass=BaseModelMeta):
                 Does not lock the rows in the database."""
         if not view:
             return await cls.all().select_for_update()
-        return [model.to_view() for model in await cls.all()]
+        return [model.to_view() async for model in cls.all()]
 
     @overload
     @classmethod
@@ -116,7 +139,6 @@ class BaseModel(Model, ABC, Generic[_VIEW], metaclass=BaseModelMeta):
                 Locks the row in the database.
             _VIEW: If view if True. Schema created from the model.
                 Does not lock the row in the database."""
-
         if not view:
             return await cls.select_for_update().order_by("-created_at").first()
         model = await cls.all().order_by("-created_at").first()
@@ -124,10 +146,48 @@ class BaseModel(Model, ABC, Generic[_VIEW], metaclass=BaseModelMeta):
             return None
         return model.to_view()
 
+    @overload
+    @classmethod
+    async def get_amount(
+        cls: Type[_MODEL],
+        amount: int,
+        offset: int,
+        order: str = ...,
+        view: Literal[False] = ...,
+    ) -> list[_MODEL]:
+        ...
 
-class BaseSchema(PydanticModel):
-    """TODO generate docstring"""
+    @overload
+    @classmethod
+    async def get_amount(
+        cls: Type[_MODEL],
+        amount: int,
+        offset: int,
+        order: str = ...,
+        view: Literal[True] = ...,
+    ) -> list[_VIEW]:
+        ...
 
-    id: UUID
-    created_at: datetime
-    modified_at: datetime
+    @classmethod
+    async def get_amount(
+        cls: Type[_MODEL], amount: int, offset: int, order: str = "-created_at", view: bool = False
+    ) -> list[_MODEL] | list[_VIEW]:
+        """Returns specified amount of database entries, wih specified offset.
+
+        Args:
+            amount (int): Amount of entries to return.
+            offset (int): Offset, of the first entry to return.
+            view (bool, optional): Specifies if the models should be converted to schemas.
+                Defaults to False.
+
+        Returns:
+            List[_MODEL]: If view is False. A list with instances of the model.
+                Locks the rows in the database.
+            List[_VIEW]: If view if True. A list with schemas created from the model.
+                Does not lock the rows in the database."""
+        if not view:
+            return await cls.all().order_by(order).offset(offset).limit(amount)
+        return [
+            model.to_view()
+            async for model in cls.all().order_by(order).offset(offset).limit(amount)
+        ]

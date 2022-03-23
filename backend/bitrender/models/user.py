@@ -1,5 +1,6 @@
-from typing import TYPE_CHECKING, Literal, Type, TypeVar, overload
+from typing import Literal, Type, TypeVar, overload
 
+from pydantic import BaseModel as BaseSchema
 from tortoise.fields import (
     BooleanField,
     CharField,
@@ -9,34 +10,48 @@ from tortoise.fields import (
     OneToOneNullableRelation,
 )
 
-from bitrender.models.base import BaseModel
-from bitrender.schemas import UserView
-
-if TYPE_CHECKING:
-    from bitrender.models import Role, UserAuth
-else:
-    Role = object
-    UserAuth = object
+from bitrender import models
 
 _MODEL = TypeVar("_MODEL", bound="User")
 
 
-class User(BaseModel[UserView]):
+class UserIn(BaseSchema):
+    """TODO create docstring"""
+
+    username: str
+    email: str
+    password: str
+
+
+class UserView(models.BaseView):
+    """TODO create docstring"""
+
+    username: str
+    email: str
+    role: str
+    removable: bool
+
+
+class User(models.BaseModel[UserView]):
     """TODO create docstring"""
 
     username: str = CharField(32, unique=True)
     email: str = CharField(255, unique=True)
 
-    auth: OneToOneNullableRelation[UserAuth] = OneToOneField(
+    auth: OneToOneNullableRelation[models.UserAuth] = OneToOneField(
         "bitrender.UserAuth", null=True, default=None
     )
-    role: ForeignKeyRelation[Role] = ForeignKeyField("bitrender.Role")
+    role: ForeignKeyRelation[models.Role] = ForeignKeyField("bitrender.Role")
 
     removable: bool = BooleanField(default=True)  # type: ignore
 
     def to_view(self) -> UserView:
         """Converts the model to it's corresponding pydantic schema."""
         return UserView.from_orm(self)
+
+    @property
+    async def principals(self) -> list[str]:
+        """TODO generate docstring"""
 
     @overload
     @classmethod

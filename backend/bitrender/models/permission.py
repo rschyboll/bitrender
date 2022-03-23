@@ -1,33 +1,32 @@
 """This module contains classes/database models describing user permissions."""
-from enum import IntEnum
-from typing import TYPE_CHECKING
+from enum import Flag, auto
 
 from tortoise.fields import BooleanField, ForeignKeyField, ForeignKeyRelation, IntEnumField
 
-from bitrender.models.base import BaseModel
-from bitrender.schemas.permission import RoleHasPermissionView
-
-if TYPE_CHECKING:
-    from bitrender.models import Role
-else:
-    Role = object
+from bitrender import models
 
 
-class Permission(IntEnum):
+class Permission(Flag):
     """Static enum containing available user permissions."""
 
-    READ_TASK = 1
-    CREATE_TASK = 2
-    DELETE_TASK = 3
-    BROWSE_TASKS = 4
+    READ_TASK = auto()
+    CREATE_TASK = auto()
+    DELETE_TASK = auto()
+    MANAGE_TASKS = auto()
 
-    BROWSE_ROLES = 100
-    CREATE_ROLE = 101
-    UPDATE_ROLE = 102
-    DELETE_ROLE = 103
+    CREATE_ROLE = auto()
+    UPDATE_ROLE = auto()
+    DELETE_ROLE = auto()
 
 
-class RoleHasPermission(BaseModel[RoleHasPermissionView]):
+
+class RoleHasPermissionView(models.BaseView):
+    permission: Permission
+    role: models.RoleView
+    removable: bool
+
+
+class RoleHasPermission(models.BaseModel[RoleHasPermissionView]):
     """Database model describing permissions assigned to a specific user role.
 
 
@@ -36,12 +35,9 @@ class RoleHasPermission(BaseModel[RoleHasPermissionView]):
         role (ForeignKeyRelation[Role]): Role, to which the permission is beeing assigned.
         initial (bool): If the permission is an initial system permission and cannot be deleted."""
 
-    def __init__(self, permission: Permission, role: Role, **kwargs):
-        super().__init__(permission=permission, role=role, **kwargs)
-
     permission: Permission = IntEnumField(Permission)
 
-    role: ForeignKeyRelation[Role] = ForeignKeyField("bitrender.Role")
+    role: ForeignKeyRelation[models.Role] = ForeignKeyField("bitrender.Role")
 
     removable: bool = BooleanField(default=True)  # type: ignore
 
