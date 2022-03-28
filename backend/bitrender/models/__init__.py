@@ -5,9 +5,9 @@ import aerich
 from bitrender.config import tortoise_config
 
 from .auth import UserAuth  # noqa: F401
-from .base import BaseModel, BaseView  # noqa: F401
-from .permission import Permission, RoleHasPermission, RoleHasPermissionView  # noqa: F401
-from .role import Role, RoleView  # noqa: F401
+from .base import BaseModel  # noqa: F401
+from .permission import Permission, PermissionsEnum  # noqa: F401
+from .role import Role  # noqa: F401
 from .user import User  # noqa: F401
 
 

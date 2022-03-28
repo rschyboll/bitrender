@@ -1,46 +1,45 @@
 """This module contains classes/database models describing user permissions."""
-from enum import Flag, auto
+from enum import Enum, unique
+from typing import TYPE_CHECKING
 
-from tortoise.fields import BooleanField, ForeignKeyField, ForeignKeyRelation, IntEnumField
+from tortoise.fields import CharEnumField, ForeignKeyField, ForeignKeyRelation
 
-from bitrender import models
+from bitrender.models.base import BaseModel
+
+if TYPE_CHECKING:
+    from bitrender.models import Role
+else:
+    Role = object
 
 
-class Permission(Flag):
+@unique
+class PermissionStr(Enum):
     """Static enum containing available user permissions."""
 
-    READ_TASK = auto()
-    CREATE_TASK = auto()
-    DELETE_TASK = auto()
-    MANAGE_TASKS = auto()
+    READ_TASK = "read_task"
+    CREATE_TASK = "create_task"
+    DELETE_TASK = "delete_task"
+    MANAGE_TASKS = "manage_tasks"
 
-    CREATE_ROLE = auto()
-    UPDATE_ROLE = auto()
-    DELETE_ROLE = auto()
-
-
-
-class RoleHasPermissionView(models.BaseView):
-    permission: Permission
-    role: models.RoleView
-    removable: bool
+    CREATE_ROLE = "create_role"
+    UPDATE_ROLE = "update_role"
+    DELETE_ROLE = "delete_role"
 
 
-class RoleHasPermission(models.BaseModel[RoleHasPermissionView]):
+class Permission(BaseModel):
     """Database model describing permissions assigned to a specific user role.
 
-
     Attributes:
-        permission (Permission): Permission that is beeing assigned.
-        role (ForeignKeyRelation[Role]): Role, to which the permission is beeing assigned.
-        initial (bool): If the permission is an initial system permission and cannot be deleted."""
+        name (PermissionsEnum): Permission name.
+        role (ForeignKeyRelation[Role]): Role, to which the permission is beeing assigned."""
 
-    permission: Permission = IntEnumField(Permission)
+    name = CharEnumField(PermissionStr, max_length=32)
+    role: ForeignKeyRelation[Role] = ForeignKeyField("bitrender.Role")
 
-    role: ForeignKeyRelation[models.Role] = ForeignKeyField("bitrender.Role")
+    @property
+    def auth_id(self) -> str:
+        """Returns authentication identifier of the permission.
 
-    removable: bool = BooleanField(default=True)  # type: ignore
-
-    def to_view(self) -> RoleHasPermissionView:
-        """Converts the model to it's corresponding pydantic schema."""
-        return RoleHasPermissionView.from_orm(self)
+        Returns:
+            str: Auth id."""
+        return f"permission:{self.name}"

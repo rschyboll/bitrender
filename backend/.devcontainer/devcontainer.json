@@ -12,6 +12,7 @@
         "actboy168.tasks",
         "mtxr.sqltools",
         "mtxr.sqltools-driver-pg",
+        "gruntfuggly.todo-tree"
     ],
     "postCreateCommand": "poetry install",
     "waitFor": "postCreateCommand",

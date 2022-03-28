@@ -1,28 +1,26 @@
 """This module contains a database models describing user roles."""
+from typing import TYPE_CHECKING
 
-from tortoise.fields import BooleanField, ReverseRelation, TextField
+from tortoise.fields import ReverseRelation, TextField
 
-from bitrender import models
+from bitrender.models.base import BaseModel
 
-
-class RoleView(models.BaseView):
-    """TODO generate docstring"""
-
-    name: str
-    permissions: list[models.RoleHasPermissionView]
-    removable: bool
+if TYPE_CHECKING:
+    from bitrender.models import Permission
+else:
+    Permission = object
 
 
-class Role(models.BaseModel[RoleView]):
+class Role(BaseModel):
     """TODO generate docstring"""
 
     name: str = TextField()
-    permissions: ReverseRelation[models.RoleHasPermission]
-    removable: bool = BooleanField(default=True)  # type: ignore
+    permissions: ReverseRelation[Permission]
 
-    def to_view(self) -> RoleView:
-        """Converts the model to it's corresponding pydantic schema."""
-        return RoleView.from_orm(self)
+    @property
+    async def auth_ids(self) -> list[str]:
+        """Returns authentication identifiers from it's permissions.
 
-
-# TODO Zamienić modele pydantic tak żeby miały tylko relacje w jedną stronę
+        Returns:
+            list[str]: List of authentication identifiers."""
+        return [permission.auth_id for permission in await self.permissions]
