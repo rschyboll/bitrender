@@ -2,6 +2,7 @@
 from typing import TYPE_CHECKING
 
 from tortoise.fields import (
+    BooleanField,
     CharField,
     ForeignKeyField,
     ForeignKeyRelation,
@@ -23,6 +24,8 @@ class User(BaseModel):
 
     username: str = CharField(32, unique=True)
     email: str = CharField(255, unique=True)
+
+    active: bool = BooleanField()  # type: ignore
 
     auth: OneToOneNullableRelation[UserAuth] = OneToOneField(
         "bitrender.UserAuth", null=True, default=None

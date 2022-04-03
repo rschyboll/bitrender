@@ -1,22 +1,20 @@
 """This module contains the base class for all database models."""
-from abc import ABC, ABCMeta, abstractmethod
 from datetime import datetime
-from typing import Type, TypeVar
+from typing import TYPE_CHECKING, Type, TypeVar
 from uuid import UUID
 
 from tortoise.fields import DatetimeField, UUIDField
-from tortoise.models import Model, ModelMeta
+from tortoise.models import Model
 
-from bitrender.base.auth import AclEntry
+if TYPE_CHECKING:
+    from bitrender.base.auth import AclEntry
+else:
+    AclEntry = object
 
 _MODEL = TypeVar("_MODEL", bound="BaseModel")
 
 
-class BaseModelMeta(ABCMeta, ModelMeta):
-    """TODO generate docstring"""
-
-
-class BaseModel(Model, ABC, metaclass=BaseModelMeta):
+class BaseModel(Model):
     """TODO generate docstring"""
 
     id: UUID = UUIDField(pk=True)
@@ -58,11 +56,9 @@ class BaseModel(Model, ABC, metaclass=BaseModelMeta):
             return await cls.all().select_for_update().order_by(order).offset(offset).limit(amount)
         return await cls.all().order_by(order).offset(offset).limit(amount)
 
-    @abstractmethod
     @classmethod
-    def __sacl__(cls) -> list[AclEntry]:
-        ...
+    def __sacl__(cls) -> list[AclEntry] | None:
+        return None
 
-    @abstractmethod
-    async def __dacl__(self) -> list[AclEntry]:
-        ...
+    async def __dacl__(self) -> list[list[AclEntry]] | None:
+        return None
