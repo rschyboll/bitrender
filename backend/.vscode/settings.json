@@ -60,4 +60,7 @@
             "password": "postgres"
         }
     ],
+    "workbench.colorCustomizations": {
+        "editor.foldBackground": "#00b7ff08"
+    },
 }

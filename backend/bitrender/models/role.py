@@ -1,7 +1,7 @@
-"""This module contains a database models describing user roles."""
+"""Contains a database model describing user roles."""
 from typing import TYPE_CHECKING
 
-from tortoise.fields import ReverseRelation, TextField
+from tortoise.fields import BooleanField, ReverseRelation, TextField
 
 from bitrender.models.base import BaseModel
 
@@ -12,10 +12,17 @@ else:
 
 
 class Role(BaseModel):
-    """TODO generate docstring"""
+    """_summary_
+
+    Args:
+        BaseModel (_type_): _description_
+
+    Returns:
+        _type_: _description_"""
 
     name: str = TextField()
     permissions: ReverseRelation[Permission]
+    default: bool = BooleanField()  # type: ignore
 
     @property
     async def auth_ids(self) -> list[str]:

@@ -1,4 +1,4 @@
-"""This module contains classes/database models describing user permissions."""
+"""Contains classes/database models describing user permissions."""
 from enum import Enum, unique
 from typing import TYPE_CHECKING
 
@@ -16,10 +16,7 @@ else:
 class PermissionStr(Enum):
     """Static enum containing available user permissions."""
 
-    READ_TASK = "read_task"
-    CREATE_TASK = "create_task"
-    DELETE_TASK = "delete_task"
-    MANAGE_TASKS = "manage_tasks"
+    MANAGE_USERS = "manage_users"
 
     CREATE_ROLE = "create_role"
     UPDATE_ROLE = "update_role"

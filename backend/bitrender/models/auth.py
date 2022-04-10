@@ -1,7 +1,8 @@
 from typing import TYPE_CHECKING, TypeVar
 
 from tortoise.fields import BinaryField, OneToOneRelation
-from tortoise.models import Model
+
+from bitrender.models.base import BaseModel
 
 if TYPE_CHECKING:
     from bitrender.models import User
@@ -11,7 +12,7 @@ else:
 _MODEL = TypeVar("_MODEL", bound="UserAuth")
 
 
-class UserAuth(Model):
+class UserAuth(BaseModel):
     """TODO generate docstring"""
 
     user: OneToOneRelation[User]

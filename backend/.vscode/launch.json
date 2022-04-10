@@ -8,7 +8,20 @@
             "program": "bitrender/main.py",
             "args": [
                 "run"
-            ]
+            ],
+            "console": "integratedTerminal",
+            "justMyCode": false,
+        },
+        {
+            "name": "Python: Debug Tests",
+            "type": "python",
+            "request": "launch",
+            "program": "${file}",
+            "console": "integratedTerminal",
+            "justMyCode": false,
+            "purpose": [
+                "debug-test"
+            ],
         },
     ],
 }

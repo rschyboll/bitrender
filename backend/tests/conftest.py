@@ -18,9 +18,5 @@ test_settings = Settings(
 @pytest.fixture(scope="session", autouse=True)
 def initialize_orm(request: SubRequest) -> None:
     """Initializes database for testing and removes it when finished."""
-    initializer(
-        test_settings.models,
-        db_url=test_settings.database_url,
-        app_label="bitrender",
-    )
+    initializer(test_settings.models, db_url=test_settings.database_url, app_label="bitrender")
     request.addfinalizer(finalizer)

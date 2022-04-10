@@ -10,6 +10,7 @@ from tortoise.fields import (
     OneToOneNullableRelation,
 )
 
+from bitrender.base.auth import AclAction, AclEntry, AclPermit, StaticAclEntries
 from bitrender.models.base import BaseModel
 
 if TYPE_CHECKING:
@@ -27,9 +28,7 @@ class User(BaseModel):
 
     active: bool = BooleanField()  # type: ignore
 
-    auth: OneToOneNullableRelation[UserAuth] = OneToOneField(
-        "bitrender.UserAuth", null=True, default=None
-    )
+    auth: OneToOneNullableRelation[UserAuth] = OneToOneField("bitrender.UserAuth")
     role: ForeignKeyRelation[Role] = ForeignKeyField("bitrender.Role")
 
     @property
@@ -42,3 +41,11 @@ class User(BaseModel):
     @property
     def auth_id(self) -> str:
         """TODO create docstring"""
+        return f"user:{self.id}"
+
+    @classmethod
+    def __sacl__(cls) -> list[AclEntry]:
+        return [StaticAclEntries.IS_AUTHENTICATED]
+
+    async def __dacl__(self) -> list[list[AclEntry]]:
+        return [[(AclPermit.ALLOW, self.auth_id, AclAction.VIEW)]]

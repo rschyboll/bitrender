@@ -1,5 +1,4 @@
 """This module contains dependencies for user authorization."""
-import asyncio
 import inspect
 from ctypes import Union
 from datetime import datetime, timedelta
@@ -13,6 +12,8 @@ from fastapi.security import OAuth2PasswordBearer
 from jose import JWTError, jwt
 from pydantic import BaseModel as PydanticBase
 from pydantic import ValidationError
+from tortoise.exceptions import DoesNotExist
+from tortoise.transactions import in_transaction
 
 from bitrender.models import User
 from bitrender.models.base import BaseModel
@@ -21,7 +22,7 @@ SECRET_KEY = "bb2a5daf96fd0cd95493b9a5f12ca4badadc5425663a0e391a2ed0f088b03026"
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token", auto_error=False)
 
 credentials_exception = HTTPException(
     status_code=status.HTTP_401_UNAUTHORIZED,
@@ -44,6 +45,8 @@ class AclPermit(Enum):
 
     ALLOW = "Allow"
     DENY = "Deny"
+    NOTALLOW = "NotAllow"
+    NOTDENY = "NotDeny"
 
 
 AclEntry = tuple[AclPermit, list[str] | str, list[AclAction] | AclAction]
@@ -55,7 +58,7 @@ AUTHENTICATED = "system:authenticated"
 
 
 class TokenData(PydanticBase):
-    """Class containing decoded JWT data.
+    """Class containing data decoded from JWT.
 
     Attributes:
         id (UUID) - User id"""
@@ -64,19 +67,36 @@ class TokenData(PydanticBase):
 
 
 def hash_password(password: str) -> bytes:
-    """TODO generate docstring"""
+    """Hashes the given passoword with the brypt algorithm.
+
+    Args:
+        password (str): Password to hash.
+
+    Returns:
+        bytes: Hashed passowrd."""
     return bcrypt.hashpw(password.encode(), bcrypt.gensalt(14))
 
 
 def check_password(password: str, password_hash: bytes) -> bool:
-    """TODO generate docstring"""
+    """Checks if the given password corresponds to the given hash.
 
+    Args:
+        password (str): Password to check.
+        password_hash (bytes): Hashed password to check against.
+
+    Returns:
+        bool: Bool if the hash corresponds to the hash."""
     return bcrypt.checkpw(password.encode(), password_hash)
 
 
 def create_access_token(data: dict) -> str:
-    """TODO generate docstring"""
+    """Creates a JWT token with the given data.
 
+    Args:
+        data (dict): Data that should be signed in the token
+
+    Returns:
+        str: Created JWT"""
     to_encode = data.copy()
     expire = datetime.utcnow() + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
     to_encode.update({"exp": expire})
@@ -85,44 +105,48 @@ def create_access_token(data: dict) -> str:
 
 
 def decode_access_token(token: str) -> TokenData:
-    """TODO generate docstring"""
+    """Decodes the JWT doken and returns data that was contained with it.
 
+    Args:
+        token (str): JWT that should be decoded.
+
+    Returns:
+        TokenData: Data that was contained within the JWT"""
     payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
     return TokenData(**payload)
 
 
-async def get_current_user(token: str = Depends(oauth2_scheme)) -> User:
-    """TODO generate docstring."""
+async def get_current_user(token: str | None = Depends(oauth2_scheme)) -> User | None:
+    """Extracts user data from the JWT, validates it and returns the current user,\
+        or None, if the validation failed.
+
+    Args:
+        token (str | None, optional): JWT token extracted from Request headers.\
+            Defaults to Depends(oauth2_scheme).
+
+    Returns:
+        User | None: Current user, or None, if no user could be authenticated."""
+    if token is None:
+        return None
     try:
-        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-        username: str = payload.get("sub")
-        if username is None:
-            raise credentials_exception
-        token_data = TokenData(username=username)
-    except (JWTError, ValidationError) as error:
-        raise credentials_exception from error
-    user = await User.get_by_id(token_data.id, False)
-    if user is None:
-        raise credentials_exception
-    return user
-
-
-async def get_active_user(user: User = Depends(get_current_user)) -> User:
-    """TODO generate docstring."""
-    if user.active:
+        token_data = decode_access_token(token)
+        user = await User.get_by_id(token_data.id, False)
         return user
-    raise credentials_exception
+    except (JWTError, ValidationError, DoesNotExist):
+        return None
 
 
-async def get_auth_ids(user: User = Depends(get_active_user)) -> list[str]:
+async def get_auth_ids(user: User | None = Depends(get_current_user)) -> list[str]:
     """TODO generate docstring."""
-    return [*(await user.auth_ids), AUTHENTICATED]
+    if user is None or not user.active:
+        return [EVERYONE]
+    return [*(await user.auth_ids), AUTHENTICATED, EVERYONE]
 
 
 ReturnT = TypeVar("ReturnT", bound=BaseModel)
 
 
-class DBSelector:
+class AuthCheck:
     """TODO generate docstring."""
 
     def __init__(self, auth_ids: list[str] = Depends(get_auth_ids)):
@@ -135,17 +159,18 @@ class DBSelector:
         additional_model_types: list[Type[BaseModel]] = None,
         args: tuple = (),
     ) -> ReturnT:
-        if additional_model_types is None:
-            additional_model_types = []
-        if not isinstance(actions, list):
-            actions = [actions]
-        return_type = self.__get_selector_returntype(selector)
-        static_check = self.__static_check([*additional_model_types, return_type], actions)
-        model = await selector(*args)
-        if static_check:
+        async with in_transaction():
+            if additional_model_types is None:
+                additional_model_types = []
+            if not isinstance(actions, list):
+                actions = [actions]
+            return_type = self.__get_selector_returntype(selector)
+            static_check = self.__static_check([*additional_model_types, return_type], actions)
+            model = await selector(*args)
+            if static_check:
+                return model
+            await self.__dynamic_check(model, actions)
             return model
-        await self.__dynamic_check(model, actions)
-        return model
 
     def __static_check(self, model_types: list[Type[BaseModel]], actions: list[AclAction]) -> bool:
         permits: list[AclPermit | None] = []
@@ -190,6 +215,16 @@ class DBSelector:
             auth_ids = [auth_ids]
         if not isinstance(actions, list):
             actions = [actions]
+        if permit == AclPermit.NOTALLOW:
+            if required_action in actions and all(
+                auth_id not in self.auth_ids for auth_id in auth_ids
+            ):
+                return AclPermit.ALLOW
+        if permit == AclPermit.NOTDENY:
+            if required_action in actions and all(
+                auth_id not in self.auth_ids for auth_id in auth_ids
+            ):
+                return AclPermit.DENY
         if required_action in actions and all(auth_id in self.auth_ids for auth_id in auth_ids):
             return permit
         return None
@@ -211,27 +246,11 @@ class DBSelector:
         return True
 
 
-class TestModel(BaseModel):
-    @classmethod
-    def __sacl__(cls) -> list[AclEntry]:
-        return [
-            (AclPermit.ALLOW, "user:test", AclAction.VIEW),
-            (AclPermit.DENY, "user:hello", AclAction.VIEW),
-        ]
+class StaticAclEntries:
+    """Enum containing static reusable AclEntries."""
 
-    async def __dacl__(self) -> list[list[AclEntry]]:
-        return [
-            [
-                (AclPermit.ALLOW, "user:test23", AclAction.VIEW),
-            ]
-        ]
-
-
-test = DBSelector(["user:test2"])
-
-
-async def test_selector() -> TestModel:
-    return TestModel()
-
-
-asyncio.run(test(test_selector, AclAction.VIEW))
+    IS_AUTHENTICATED = (
+        AclPermit.NOTDENY,
+        AUTHENTICATED,
+        [AclAction.CREATE, AclAction.VIEW, AclAction.EDIT, AclAction.DELETE],
+    )
