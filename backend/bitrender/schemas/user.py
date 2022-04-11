@@ -1,5 +1,3 @@
-from uuid import UUID
-
 from pydantic import BaseModel as Schema
 from pydantic import EmailStr, SecretStr
 
@@ -12,18 +10,6 @@ class UserSchema(BaseSchema):
     active: bool
 
 
-class UserSchemaFlat(UserSchema):
-    role_id: UUID
-
-
-class UserSchemaPartial(BaseSchema):
-    pass
-
-
-class UserSchemaFull(BaseSchema):
-    pass
-
-
 class UserRegisterData(Schema):
     username: str
     email: EmailStr
@@ -31,5 +17,5 @@ class UserRegisterData(Schema):
 
 
 class UserLoginData(Schema):
-    username_email: str | EmailStr
+    login: str | EmailStr
     password: SecretStr

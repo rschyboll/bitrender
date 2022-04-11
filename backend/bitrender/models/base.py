@@ -3,7 +3,13 @@ from datetime import datetime
 from typing import TYPE_CHECKING, Type, TypeVar
 from uuid import UUID
 
-from tortoise.fields import DatetimeField, UUIDField
+from tortoise.fields import (
+    DatetimeField,
+    ForeignKeyRelation,
+    OneToOneNullableRelation,
+    ReverseRelation,
+    UUIDField,
+)
 from tortoise.models import Model
 
 if TYPE_CHECKING:
@@ -11,7 +17,7 @@ if TYPE_CHECKING:
 else:
     AclEntry = object
 
-_MODEL = TypeVar("_MODEL", bound="BaseModel")
+MODEL = TypeVar("MODEL", bound="BaseModel")
 
 
 class BaseModel(Model):
@@ -32,7 +38,7 @@ class BaseModel(Model):
         abstract = True
 
     @classmethod
-    async def get_all(cls: Type[_MODEL], lock=True, skip_locked=False) -> list[_MODEL]:
+    async def get_all(cls: Type[MODEL], lock=True, skip_locked=False) -> list[MODEL]:
         """Returns all database entries of the given model.
 
         Args:
@@ -47,11 +53,11 @@ class BaseModel(Model):
         return await cls.all().select_for_update(skip_locked=skip_locked)
 
     @classmethod
-    async def get_by_id(cls: Type[_MODEL], model_id: UUID, lock=True) -> _MODEL:
+    async def get_by_id(cls: Type[MODEL], model_id: UUID, lock=True) -> MODEL:
         """Returns a database entry based on the provided id.
 
         Args:
-            model_id (UUID): Id of the database entry that should be returned.
+            model_id (UUID): Id of the database entry that should be selected.
             lock (bool, optional): Specifies if the entry should be locked, \
                 adds FOR UPDATE to the query. Defaults to True.
         Returns:
@@ -61,7 +67,7 @@ class BaseModel(Model):
         return await cls.select_for_update().get(id=model_id)
 
     @classmethod
-    async def get_latest(cls: Type[_MODEL], lock=True) -> _MODEL | None:
+    async def get_latest(cls: Type[MODEL], lock=True) -> MODEL | None:
         """Returns the last created database entry of the model.
 
         Args:
@@ -75,13 +81,13 @@ class BaseModel(Model):
 
     @classmethod
     async def get_amount(
-        cls: Type[_MODEL],
+        cls: Type[MODEL],
         amount: int,
         offset: int,
         order: str = "-created_at",
         lock=True,
         skip_locked=False,
-    ) -> list[_MODEL]:
+    ) -> list[MODEL]:
         """Returns a specified amount of database entries of the model.
 
         Args:
@@ -105,6 +111,24 @@ class BaseModel(Model):
             .offset(offset)
             .limit(amount)
         )
+
+    @staticmethod
+    async def _extend_dacl(
+        relation: ForeignKeyRelation[MODEL]
+        | OneToOneNullableRelation[MODEL]
+        | ReverseRelation[MODEL],
+        acl: list[list[AclEntry]],
+    ) -> list[list[AclEntry]]:
+        if isinstance(relation, BaseModel):
+            relation_acl = await relation.__dacl__()
+            if relation_acl is not None:
+                acl.extend(relation_acl)
+        if isinstance(relation, ReverseRelation) and relation._fetched:  # pylint: disable=W0212
+            for item in relation:
+                relation_item_acl = await item.__dacl__()
+                if relation_item_acl is not None:
+                    acl.extend(relation_item_acl)
+        return acl
 
     @classmethod
     def __sacl__(cls) -> list[AclEntry] | None:

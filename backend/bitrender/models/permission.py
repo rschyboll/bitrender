@@ -22,6 +22,11 @@ class PermissionStr(Enum):
     UPDATE_ROLE = "update_role"
     DELETE_ROLE = "delete_role"
 
+    @property
+    def auth_id(self):
+        """TODO generate docstring"""
+        return f"permission:{self.value}"
+
 
 class Permission(BaseModel):
     """Database model describing permissions assigned to a specific user role.

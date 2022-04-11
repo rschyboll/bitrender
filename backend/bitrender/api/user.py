@@ -1,7 +1,14 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Response
+from tortoise.exceptions import DoesNotExist
 from tortoise.transactions import atomic
 
-from bitrender.base.auth import AclAction, AuthCheck, hash_password
+from bitrender.base.auth import (
+    AclAction,
+    AuthCheck,
+    create_access_token,
+    credentials_exception,
+    hash_password,
+)
 from bitrender.models import User, UserAuth
 from bitrender.schemas.user import UserLoginData, UserRegisterData
 
@@ -24,8 +31,21 @@ async def register(data: UserRegisterData):
 
 @atomic()
 @router.post("/login")
-async def login(data: UserLoginData):
-    pass
+async def login(response: Response, data: UserLoginData):
+    #TODO change implementation to compatible with OAUTH
+    user: User | None = None
+    try:
+        user = await User.get_by_username(data.login)
+    except DoesNotExist:
+        pass
+    try:
+        user = await User.get_by_email(data.login)
+    except DoesNotExist:
+        pass
+    if user is None:
+        raise credentials_exception
+    access_token = create_access_token({"id": user.id})
+    response.set_cookie(key="access_token", value=access_token, httponly=True)
 
 
 async def create_user(data: UserRegisterData, auth_check: AuthCheck = Depends(AuthCheck)):

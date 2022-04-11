@@ -3,6 +3,7 @@ from typing import TYPE_CHECKING
 
 from tortoise.fields import BooleanField, ReverseRelation, TextField
 
+from bitrender.base.auth import AclEntry, StaticAclEntries
 from bitrender.models.base import BaseModel
 
 if TYPE_CHECKING:
@@ -31,3 +32,7 @@ class Role(BaseModel):
         Returns:
             list[str]: List of authentication identifiers."""
         return [permission.auth_id for permission in await self.permissions]
+
+    @classmethod
+    def __sacl__(cls) -> list[AclEntry]:
+        return [StaticAclEntries.IS_AUTHENTICATED]
