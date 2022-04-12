@@ -89,17 +89,16 @@ def check_password(password: str, password_hash: bytes) -> bool:
     return bcrypt.checkpw(password.encode(), password_hash)
 
 
-def create_access_token(data: dict) -> str:
+def create_access_token(user_id: UUID) -> str:
     """Creates a JWT token with the given data.
 
     Args:
-        data (dict): Data that should be signed in the token
+        user_id (UUID): Id of the user
 
     Returns:
         str: Created JWT"""
-    to_encode = data.copy()
     expire = datetime.utcnow() + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
-    to_encode.update({"exp": expire})
+    to_encode = {"exp": expire, "sub": user_id}
     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
     return encoded_jwt
 

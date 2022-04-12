@@ -1,5 +1,5 @@
 {
-    "name": "Rendering worker",
+    "name": "Worker",
     "dockerComposeFile": "docker-compose.yml",
     "service": "app",
     "workspaceFolder": "/workspace",

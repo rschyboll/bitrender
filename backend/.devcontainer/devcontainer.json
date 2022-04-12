@@ -3,17 +3,6 @@
     "dockerComposeFile": "docker-compose.yml",
     "service": "app",
     "workspaceFolder": "/workspace",
-    "extensions": [
-        "ms-python.python",
-        "ms-python.vscode-pylance",
-        "ryanluker.vscode-coverage-gutters",
-        "njpwerner.autodocstring",
-        "usernamehw.errorlens",
-        "actboy168.tasks",
-        "mtxr.sqltools",
-        "mtxr.sqltools-driver-pg",
-        "gruntfuggly.todo-tree"
-    ],
     "postCreateCommand": "poetry install",
     "waitFor": "postCreateCommand",
     "remoteUser": "vscode",
@@ -24,5 +13,16 @@
             }
         },
         "terminal.integrated.defaultProfile.linux": "fish",
-    }
+    },
+    "extensions": [
+        "ms-python.python",
+        "ms-python.vscode-pylance",
+        "ryanluker.vscode-coverage-gutters",
+        "njpwerner.autodocstring",
+        "usernamehw.errorlens",
+        "actboy168.tasks",
+        "mtxr.sqltools",
+        "mtxr.sqltools-driver-pg",
+        "gruntfuggly.todo-tree"
+    ]
 }

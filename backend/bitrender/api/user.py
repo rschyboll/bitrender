@@ -32,19 +32,20 @@ async def register(data: UserRegisterData):
 @atomic()
 @router.post("/login")
 async def login(response: Response, data: UserLoginData):
-    #TODO change implementation to compatible with OAUTH
+    """TODO change implementation to compatible with OAUTH"""
     user: User | None = None
     try:
         user = await User.get_by_username(data.login)
     except DoesNotExist:
         pass
-    try:
-        user = await User.get_by_email(data.login)
-    except DoesNotExist:
-        pass
+    if user is None:
+        try:
+            user = await User.get_by_email(data.login)
+        except DoesNotExist:
+            pass
     if user is None:
         raise credentials_exception
-    access_token = create_access_token({"id": user.id})
+    access_token = create_access_token({"sub": user.id})
     response.set_cookie(key="access_token", value=access_token, httponly=True)
 
 

@@ -1,32 +1,22 @@
 {
-  "name": "Node.js",
-  "build": {
-    "dockerfile": "Dockerfile"
-  },
+  "name": "Frontend",
+  "dockerComposeFile": "docker-compose.yml",
+  "service": "app",
+  "workspaceFolder": "/workspace",
+  "postCreateCommand": "yarn install",
+  "waitFor": "postCreateCommand",
+  "remoteUser": "node",
   "settings": {
-    "files.exclude": {
-      "**/yarn*": true,
-      "**/node_modules": true
+    "terminal.integrated.profiles.linux": {
+        "fish": {
+            "path": "/usr/bin/fish"
+        }
     },
-    "editor.defaultFormatter": "esbenp.prettier-vscode",
-    "editor.formatOnSave": true,
-    "jest.testExplorer": {
-      "enabled": true,
-      "showClassicStatus": true
-    },
-    "jest.autoRun": { "watch": false }
+    "terminal.integrated.defaultProfile.linux": "fish",
   },
   "extensions": [
     "dbaeumer.vscode-eslint",
     "esbenp.prettier-vscode",
     "orta.vscode-jest"
-  ],
-  "forwardPorts": [3000],
-  "portsAttributes": {
-    "3000": {
-      "onAutoForward": "notify"
-    }
-  },
-  "postCreateCommand": "yarn install",
-  "remoteUser": "node"
+  ]
 }

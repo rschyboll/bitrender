@@ -1,0 +1,16 @@
+version: '3.8'
+services:
+  app:
+    container_name: frontend-DEV
+    build:
+      context: ..
+      dockerfile: .devcontainer/Dockerfile
+    volumes:
+      - ..:/workspace:cached
+      - frontend-DEV-fish:/home/node/.local/share/fish
+    init: true
+    command: sleep infinity
+    user: node
+  
+volumes:
+  frontend-DEV-fish:
