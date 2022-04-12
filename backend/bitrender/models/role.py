@@ -1,25 +1,20 @@
 """Contains a database model describing user roles."""
+from __future__ import annotations
+
 from typing import TYPE_CHECKING
 
 from tortoise.fields import BooleanField, ReverseRelation, TextField
 
-from bitrender.base.auth import AclEntry, StaticAclEntries
 from bitrender.models.base import BaseModel
+from bitrender.utils.auth import StaticAclEntries
 
 if TYPE_CHECKING:
+    from bitrender.base.auth import AclEntry
     from bitrender.models import Permission
-else:
-    Permission = object
 
 
 class Role(BaseModel):
-    """_summary_
-
-    Args:
-        BaseModel (_type_): _description_
-
-    Returns:
-        _type_: _description_"""
+    """TODO generate docstring"""
 
     name: str = TextField()
     permissions: ReverseRelation[Permission]

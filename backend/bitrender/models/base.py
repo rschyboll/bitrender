@@ -1,4 +1,6 @@
 """Contains the base class for all database models."""
+from __future__ import annotations
+
 from datetime import datetime
 from typing import TYPE_CHECKING, Type, TypeVar
 from uuid import UUID
@@ -14,8 +16,7 @@ from tortoise.models import Model
 
 if TYPE_CHECKING:
     from bitrender.base.auth import AclEntry
-else:
-    AclEntry = object
+
 
 MODEL = TypeVar("MODEL", bound="BaseModel")
 

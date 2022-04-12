@@ -1,4 +1,6 @@
 """Contains tests for BaseModel from bitrender.models.base."""
+from __future__ import annotations
+
 import asyncio
 from typing import Any, Callable, Coroutine, TypeVar
 

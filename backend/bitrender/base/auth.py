@@ -2,7 +2,6 @@
 import inspect
 from ctypes import Union
 from datetime import datetime, timedelta
-from enum import Enum
 from typing import Any, Callable, Coroutine, Type, TypeVar, get_args, get_origin
 from uuid import UUID
 
@@ -29,32 +28,6 @@ credentials_exception = HTTPException(
     detail="Could not validate credentials",
     headers={"WWW-Authenticate": "Bearer"},
 )
-
-
-class AclAction(Enum):
-    """TODO generate docstring"""
-
-    CREATE = "create"
-    VIEW = "view"
-    EDIT = "edit"
-    DELETE = "delete"
-
-
-class AclPermit(Enum):
-    """TODO generate docstring"""
-
-    ALLOW = "Allow"
-    DENY = "Deny"
-    NOTALLOW = "NotAllow"
-    NOTDENY = "NotDeny"
-
-
-AclEntry = tuple[AclPermit, list[str] | str, list[AclAction] | AclAction]
-
-AclList = list[AclEntry]
-
-EVERYONE = "system:everyone"
-AUTHENTICATED = "system:authenticated"
 
 
 class TokenData(PydanticBase):
@@ -243,13 +216,3 @@ class AuthCheck:
         if get_origin(return_type) is Union and None in get_args(return_type):
             return False
         return True
-
-
-class StaticAclEntries:
-    """Enum containing static reusable AclEntries."""
-
-    IS_AUTHENTICATED = (
-        AclPermit.NOTDENY,
-        AUTHENTICATED,
-        [AclAction.CREATE, AclAction.VIEW, AclAction.EDIT, AclAction.DELETE],
-    )

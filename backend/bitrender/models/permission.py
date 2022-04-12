@@ -1,4 +1,6 @@
 """Contains classes/database models describing user permissions."""
+from __future__ import annotations
+
 from enum import Enum, unique
 from typing import TYPE_CHECKING
 
@@ -8,8 +10,6 @@ from bitrender.models.base import BaseModel
 
 if TYPE_CHECKING:
     from bitrender.models import Role
-else:
-    Role = object
 
 
 @unique
@@ -44,4 +44,4 @@ class Permission(BaseModel):
 
         Returns:
             str: Auth id."""
-        return f"permission:{self.name}"
+        return self.name.auth_id

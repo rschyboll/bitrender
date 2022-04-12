@@ -1,4 +1,6 @@
 """TODO create docstring"""
+from __future__ import annotations
+
 from typing import TYPE_CHECKING, Type, TypeVar
 
 from tortoise.fields import (
@@ -10,14 +12,12 @@ from tortoise.fields import (
     OneToOneNullableRelation,
 )
 
-from bitrender.base.auth import AclAction, AclEntry, AclPermit, StaticAclEntries
 from bitrender.models.base import BaseModel
+from bitrender.utils.auth import StaticAclEntries
 
 if TYPE_CHECKING:
+    from bitrender.base.auth import AclAction, AclEntry, AclPermit
     from bitrender.models import Role, UserAuth
-else:
-    UserAuth = object
-    Role = object
 
 MODEL = TypeVar("MODEL", bound="User")
 
