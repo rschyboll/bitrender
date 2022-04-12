@@ -7,6 +7,7 @@ from bitrender.base.auth import (
     AuthCheck,
     create_access_token,
     credentials_exception,
+    get_current_user,
     hash_password,
 )
 from bitrender.models import User, UserAuth
@@ -45,8 +46,14 @@ async def login(response: Response, data: UserLoginData):
             pass
     if user is None:
         raise credentials_exception
-    access_token = create_access_token({"sub": user.id})
+    access_token = create_access_token(user.id)
     response.set_cookie(key="access_token", value=access_token, httponly=True)
+
+
+@router.post("/loggedIn")
+async def logged_in(user: User | None = Depends(get_current_user)):
+    """TODO generate docstring"""
+    return user is not None
 
 
 async def create_user(data: UserRegisterData, auth_check: AuthCheck = Depends(AuthCheck)):

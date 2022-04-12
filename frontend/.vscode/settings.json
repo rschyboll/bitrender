@@ -1,0 +1,10 @@
+{
+  "editor.formatOnSave": true,
+  "workbench.colorCustomizations": {
+    "statusBar.background": "#333333",
+    "statusBar.border": "#333333",
+    "statusBarItem.hoverBackground": "#444444"
+  },
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "typescript.tsdk": "./node_modules/typescript/lib"
+}
