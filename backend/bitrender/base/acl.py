@@ -21,7 +21,9 @@ class AclPermit(Enum):
     NOTDENY = "NotDeny"
 
 
-AclEntry = tuple[AclPermit, list[str] | str, list[AclAction] | AclAction]
+AclId = str
+
+AclEntry = tuple[AclPermit, list[AclId] | AclId, list[AclAction] | AclAction]
 
 AclList = list[AclEntry]
 

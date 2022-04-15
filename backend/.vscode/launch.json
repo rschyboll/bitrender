@@ -7,7 +7,7 @@
             "request": "launch",
             "program": "bitrender/main.py",
             "args": [
-                "run"
+                "run",
             ],
             "console": "integratedTerminal",
             "justMyCode": false,

@@ -13,35 +13,32 @@ if TYPE_CHECKING:
 
 
 @unique
-class PermissionStr(Enum):
+class Permission(Enum):
     """Static enum containing available user permissions."""
 
     MANAGE_USERS = "manage_users"
-
-    CREATE_ROLE = "create_role"
-    UPDATE_ROLE = "update_role"
-    DELETE_ROLE = "delete_role"
+    MANAGE_ROLES = "manage_roles"
 
     @property
-    def auth_id(self):
+    def acl_id(self):
         """TODO generate docstring"""
         return f"permission:{self.value}"
 
 
-class Permission(BaseModel):
+class RolePermission(BaseModel):
     """Database model describing permissions assigned to a specific user role.
 
     Attributes:
         name (PermissionsEnum): Permission name.
         role (ForeignKeyRelation[Role]): Role, to which the permission is beeing assigned."""
 
-    name = CharEnumField(PermissionStr, max_length=32)
-    role: ForeignKeyRelation[Role] = ForeignKeyField("bitrender.Role")
+    permission = CharEnumField(Permission, max_length=32)
+    role: ForeignKeyRelation[Role] = ForeignKeyField("bitrender.Role", related_name="permissions")
 
     @property
-    def auth_id(self) -> str:
+    def acl_id(self) -> str:
         """Returns authentication identifier of the permission.
 
         Returns:
             str: Auth id."""
-        return self.name.auth_id
+        return self.permission.acl_id

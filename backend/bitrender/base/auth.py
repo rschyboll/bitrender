@@ -1,8 +1,7 @@
 """This module contains dependencies for user authorization."""
 import inspect
-from ctypes import Union
 from datetime import datetime, timedelta
-from typing import Any, Callable, Coroutine, Type, TypeVar, get_args, get_origin
+from typing import Any, Callable, Coroutine, Type, TypeVar, get_args
 from uuid import UUID
 
 import bcrypt
@@ -14,14 +13,16 @@ from pydantic import ValidationError
 from tortoise.exceptions import DoesNotExist
 from tortoise.transactions import in_transaction
 
+from bitrender.base.acl import AUTHENTICATED, EVERYONE, AclAction, AclEntry, AclList, AclPermit
 from bitrender.models import User
 from bitrender.models.base import BaseModel
+from bitrender.models.permission import Permission
 
 SECRET_KEY = "bb2a5daf96fd0cd95493b9a5f12ca4badadc5425663a0e391a2ed0f088b03026"
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token", auto_error=False)
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="users/login", auto_error=False)
 
 credentials_exception = HTTPException(
     status_code=status.HTTP_401_UNAUTHORIZED,
@@ -36,7 +37,8 @@ class TokenData(PydanticBase):
     Attributes:
         id (UUID) - User id"""
 
-    id: UUID
+    sub: UUID
+    exp: int
 
 
 def hash_password(password: str) -> bytes:
@@ -71,7 +73,7 @@ def create_access_token(user_id: UUID) -> str:
     Returns:
         str: Created JWT"""
     expire = datetime.utcnow() + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
-    to_encode = {"exp": expire, "sub": user_id}
+    to_encode = {"exp": expire, "sub": user_id.hex}
     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
     return encoded_jwt
 
@@ -102,7 +104,7 @@ async def get_current_user(token: str | None = Depends(oauth2_scheme)) -> User |
         return None
     try:
         token_data = decode_access_token(token)
-        user = await User.get_by_id(token_data.id, False)
+        user = await User.get_by_id(token_data.sub, False)
         return user
     except (JWTError, ValidationError, DoesNotExist):
         return None
@@ -112,7 +114,7 @@ async def get_auth_ids(user: User | None = Depends(get_current_user)) -> list[st
     """TODO generate docstring."""
     if user is None or not user.active:
         return [EVERYONE]
-    return [*(await user.auth_ids), AUTHENTICATED, EVERYONE]
+    return [*(await user.acl_id_list), AUTHENTICATED, EVERYONE]
 
 
 ReturnT = TypeVar("ReturnT", bound=BaseModel)
@@ -144,18 +146,19 @@ class AuthCheck:
             await self.__dynamic_check(model, actions)
             return model
 
+    async def has_permission(self, permission: Permission):
+        """TODO generate docstring"""
+        return permission.acl_id in self.auth_ids
+
     def __static_check(self, model_types: list[Type[BaseModel]], actions: list[AclAction]) -> bool:
         permits: list[AclPermit | None] = []
         for model_type in model_types:
-            has_dacl = self.__has_dacl(model_type)
             acl_list = model_type.__sacl__()
-            if acl_list is None and not has_dacl:
-                raise credentials_exception
-            elif acl_list is None:
+            if acl_list is None:
                 continue
             for action in actions:
                 permit = self.__get_acllist_permit(acl_list, action)
-                if permit is None and not has_dacl or permit == AclPermit.DENY:
+                if permit == AclPermit.DENY:
                     raise credentials_exception
                 permits.append(permit)
         return all(permit == AclPermit.ALLOW for permit in permits)
@@ -208,11 +211,3 @@ class AuthCheck:
         if isinstance(return_type, list):
             return get_args(return_type)[0]
         return return_type
-
-    @classmethod
-    def __has_dacl(cls, model_type: Type[BaseModel]) -> bool:
-        signature = inspect.signature(model_type.__dacl__)
-        return_type = signature.return_annotation
-        if get_origin(return_type) is Union and None in get_args(return_type):
-            return False
-        return True

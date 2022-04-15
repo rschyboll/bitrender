@@ -1,7 +1,8 @@
-from __future__ import annotations
-
 from uuid import UUID
 
+from pydantic import BaseModel as Schema
+
+from bitrender.models.permission import Permission
 from bitrender.schemas.base import BaseSchema
 
 
@@ -20,3 +21,8 @@ class RoleSchemaPartial(RoleSchema):
 
 class RoleSchemaFull(RoleSchema):
     pass
+
+
+class RoleCreateData(Schema):
+    name: str
+    permissions: set[Permission]

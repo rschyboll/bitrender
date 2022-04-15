@@ -12,11 +12,10 @@ from tortoise.fields import (
     OneToOneNullableRelation,
 )
 
+from bitrender.base.acl import AclAction, AclEntry, AclPermit, StaticAclEntries
 from bitrender.models.base import BaseModel
-from bitrender.utils.auth import StaticAclEntries
 
 if TYPE_CHECKING:
-    from bitrender.base.auth import AclAction, AclEntry, AclPermit
     from bitrender.models import Role, UserAuth
 
 MODEL = TypeVar("MODEL", bound="User")
@@ -28,10 +27,11 @@ class User(BaseModel):
     username: str = CharField(32, unique=True)
     email: str = CharField(255, unique=True)
 
-    active: bool = BooleanField()  # type: ignore
-
-    auth: OneToOneNullableRelation[UserAuth] = OneToOneField("bitrender.UserAuth")
+    active: bool = BooleanField(default=False)  # type: ignore
     role: ForeignKeyRelation[Role] = ForeignKeyField("bitrender.Role")
+    auth: OneToOneNullableRelation[UserAuth] = OneToOneField(
+        "bitrender.UserAuth", null=True, default=None
+    )
 
     @classmethod
     async def get_by_username(cls: Type[MODEL], username: str, lock=True) -> MODEL:
@@ -70,14 +70,13 @@ class User(BaseModel):
         return await cls.select_for_update().get(email=email)
 
     @property
-    async def auth_ids(self) -> list[str]:
+    async def acl_id_list(self) -> list[str]:
         """TODO create docstring"""
         role = await self.role
-        permissions = await role.permissions
-        return [self.auth_id, *[permission.name.value for permission in permissions]]
+        return [self.acl_id, *(await role.acl_id_list)]
 
     @property
-    def auth_id(self) -> str:
+    def acl_id(self) -> str:
         """TODO create docstring"""
         return f"user:{self.id}"
 
@@ -86,7 +85,6 @@ class User(BaseModel):
         return [StaticAclEntries.IS_AUTHENTICATED]
 
     async def __dacl__(self) -> list[list[AclEntry]]:
-        acl: list[list[AclEntry]] = [[(AclPermit.ALLOW, self.auth_id, AclAction.VIEW)]]
+        acl: list[list[AclEntry]] = [[(AclPermit.ALLOW, self.acl_id, AclAction.VIEW)]]
         await self._extend_dacl(self.role, acl)
-        await self._extend_dacl(self.auth, acl)
         return acl

@@ -2,7 +2,7 @@
 from __future__ import annotations
 
 from datetime import datetime
-from typing import TYPE_CHECKING, Type, TypeVar
+from typing import Type, TypeVar
 from uuid import UUID
 
 from tortoise.fields import (
@@ -14,9 +14,7 @@ from tortoise.fields import (
 )
 from tortoise.models import Model
 
-if TYPE_CHECKING:
-    from bitrender.base.auth import AclEntry
-
+from bitrender.base.acl import EVERYONE, AclAction, AclEntry, AclPermit
 
 MODEL = TypeVar("MODEL", bound="BaseModel")
 
@@ -132,8 +130,8 @@ class BaseModel(Model):
         return acl
 
     @classmethod
-    def __sacl__(cls) -> list[AclEntry] | None:
-        return None
+    def __sacl__(cls) -> list[AclEntry]:
+        return [(AclPermit.DENY, EVERYONE, AclAction.VIEW)]
 
-    async def __dacl__(self) -> list[list[AclEntry]] | None:
-        return None
+    async def __dacl__(self) -> list[list[AclEntry]]:
+        return [[(AclPermit.DENY, EVERYONE, AclAction.VIEW)]]
