@@ -27,11 +27,11 @@ class User(BaseModel):
     username: str = CharField(32, unique=True)
     email: str = CharField(255, unique=True)
 
-    active: bool = BooleanField(default=False)  # type: ignore
+    is_active: bool = BooleanField(default=True)  # type: ignore
+    is_superuser: bool = BooleanField(default=False)  # type: ignore
+    is_verified: bool = BooleanField(default=False)  # type: ignore
+    
     role: ForeignKeyRelation[Role] = ForeignKeyField("bitrender.Role")
-    auth: OneToOneNullableRelation[UserAuth] = OneToOneField(
-        "bitrender.UserAuth", null=True, default=None
-    )
 
     @classmethod
     async def get_by_username(cls: Type[MODEL], username: str, lock=True) -> MODEL:

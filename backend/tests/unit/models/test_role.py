@@ -76,6 +76,9 @@ class TestRole(TruncationTestCase):
             )
             permission_counter += 1
 
+    async def test_role_users(self):
+        """TODO write test"""
+
     async def test_acl_id_list(self):
         """Tests acl_id_list property."""
         all_permissions = [permission for permission in Permission]

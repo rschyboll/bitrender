@@ -1,21 +1,28 @@
-from pydantic import BaseModel as Schema
-from pydantic import EmailStr, SecretStr
+"""TODO generate docstring"""
 
-from bitrender.schemas.base import BaseSchema
+from fastapi_users import models
+from tortoise.contrib.pydantic import PydanticModel
 
-
-class UserSchema(BaseSchema):
-    username: str
-    email: EmailStr
-    active: bool
+from bitrender.models import User
 
 
-class UserRegisterData(Schema):
-    username: str
-    email: EmailStr
-    password: SecretStr
+class UserSchema(models.BaseUser):
+    """TODO generate docstring"""
 
 
-class UserLoginData(Schema):
-    login: str | EmailStr
-    password: SecretStr
+class UserCreate(models.BaseUserCreate):
+    """TODO generate docstring"""
+
+
+class UserUpdate(models.BaseUserUpdate):
+    """TODO generate docstring"""
+
+
+class UserAuth(UserSchema, models.BaseUserDB, PydanticModel):
+    """TODO generate docstring"""
+
+    class Config:
+        """TODO generate docstring"""
+
+        orm_mode = True
+        orig_model = User

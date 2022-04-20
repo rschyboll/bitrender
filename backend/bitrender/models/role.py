@@ -9,7 +9,7 @@ from bitrender.base.acl import AclEntry, StaticAclEntries
 from bitrender.models.base import BaseModel
 
 if TYPE_CHECKING:
-    from bitrender.models import RolePermission
+    from bitrender.models import RolePermission, User
 
 
 MODEL = TypeVar("MODEL", bound="Role")
@@ -19,7 +19,10 @@ class Role(BaseModel):
     """TODO generate docstring"""
 
     name: str = TextField()
+
     permissions: ReverseRelation[RolePermission]
+    users: ReverseRelation[User]
+
     default: bool | None = BooleanField(default=None, null=True, unique=True)  # type: ignore
 
     @classmethod
