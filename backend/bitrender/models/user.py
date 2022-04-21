@@ -4,19 +4,18 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Type, TypeVar
 
 from tortoise.fields import (
+    BinaryField,
     BooleanField,
     CharField,
     ForeignKeyField,
     ForeignKeyRelation,
-    OneToOneField,
-    OneToOneNullableRelation,
 )
 
 from bitrender.base.acl import AclAction, AclEntry, AclPermit, StaticAclEntries
 from bitrender.models.base import BaseModel
 
 if TYPE_CHECKING:
-    from bitrender.models import Role, UserAuth
+    from bitrender.models import Role
 
 MODEL = TypeVar("MODEL", bound="User")
 
@@ -24,13 +23,13 @@ MODEL = TypeVar("MODEL", bound="User")
 class User(BaseModel):
     """TODO create docstring"""
 
-    username: str = CharField(32, unique=True)
     email: str = CharField(255, unique=True)
+    hashed_password: bytes = BinaryField()
 
     is_active: bool = BooleanField(default=True)  # type: ignore
     is_superuser: bool = BooleanField(default=False)  # type: ignore
     is_verified: bool = BooleanField(default=False)  # type: ignore
-    
+
     role: ForeignKeyRelation[Role] = ForeignKeyField("bitrender.Role")
 
     @classmethod
@@ -68,6 +67,12 @@ class User(BaseModel):
         if not lock:
             return await cls.get(email=email)
         return await cls.select_for_update().get(email=email)
+
+    async def request_password_reset(self):
+        pass
+
+    async def reset_password(self):
+        pass
 
     @property
     async def acl_id_list(self) -> list[str]:

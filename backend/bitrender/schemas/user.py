@@ -1,28 +1,35 @@
 """TODO generate docstring"""
 
-from fastapi_users import models
-from tortoise.contrib.pydantic import PydanticModel
+from pydantic import BaseModel as PydanticBase
+from pydantic import EmailStr, SecretStr, validator
 
-from bitrender.models import User
+from bitrender.schemas.base import BaseSchema
 
 
-class UserSchema(models.BaseUser):
+class UserSchema(BaseSchema):
     """TODO generate docstring"""
 
+    email: EmailStr
 
-class UserCreate(models.BaseUserCreate):
+
+class UserRegister(PydanticBase):
     """TODO generate docstring"""
 
+    email: EmailStr
+    password: SecretStr
 
-class UserUpdate(models.BaseUserUpdate):
-    """TODO generate docstring"""
+    @staticmethod
+    @validator("password")
+    def password_check(password: str):
+        """Validates that the password is secure enough."""
+        if len(password) < 8:
+            raise ValueError("Password length should be at least 8")
 
+        if not any(char.isdigit() for char in password):
+            raise ValueError("Password should have at least one numeral")
 
-class UserAuth(UserSchema, models.BaseUserDB, PydanticModel):
-    """TODO generate docstring"""
+        if not any(char.isupper() for char in password):
+            raise ValueError("Password should have at least one uppercase letter")
 
-    class Config:
-        """TODO generate docstring"""
-
-        orm_mode = True
-        orig_model = User
+        if not any(char.islower() for char in password):
+            raise ValueError("Password should have at least one lowercase letter")

@@ -4,10 +4,10 @@ from fastapi.security import OAuth2PasswordRequestForm
 from tortoise.exceptions import BaseORMException, DoesNotExist
 from tortoise.transactions import atomic
 
-from bitrender.base.auth import create_access_token, credentials_exception, hash_password
+from bitrender.auth.password import BCryptHelper
 from bitrender.models import User, UserAuth
 from bitrender.models.role import Role
-from bitrender.schemas.user import UserRegisterData
+from bitrender.schemas.user import UserRegister, UserSchema
 
 router = APIRouter(prefix="/users")
 
@@ -20,26 +20,17 @@ async def __get_default_role() -> Role:
 
 
 @atomic()
-async def __register_user(password_hash: bytes, data: UserRegisterData, role: Role) -> User:
-    try:
-        user = User(email=data.email, username=data.username, role=role)
-        await user.save()
-        user_auth = UserAuth(password_hash=password_hash, user=user)
-        await user_auth.save()
-        return user
-    except BaseORMException as error:
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR) from error
-
-
-@router.post("/register")
-async def register(data: UserRegisterData):
+@router.post(
+    "/register", response_model=UserSchema, status_code=status.HTTP_201_CREATED, responses={}
+)
+async def register(data: UserRegister):
     """Registers a new user and assigns him the default role.
 
     Args:
         data (RegisterData): User data that is required in registration."""
-    password_hash = hash_password(data.password.get_secret_value())
+    hashed_password = BCryptHelper.hash(data.password)
     default_role = await __get_default_role()
-    await __register_user(password_hash, data, default_role)
+    await __register_user(hashed_password, data, default_role)
 
 
 @atomic()

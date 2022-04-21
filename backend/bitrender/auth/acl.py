@@ -13,7 +13,7 @@ class AclAction(Enum):
 
 
 class AclPermit(Enum):
-    """TODO generate docstring"""
+    """Enum containing available actions."""
 
     ALLOW = "Allow"
     DENY = "Deny"
@@ -32,7 +32,7 @@ AUTHENTICATED = "system:authenticated"
 
 
 class StaticAclEntries:
-    """TODO generate docstring"""
+    """Class containing static AclEntries."""
 
     IS_AUTHENTICATED = (
         AclPermit.NOTDENY,

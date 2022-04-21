@@ -19,14 +19,14 @@ class Settings(BaseSettings):
         _type_: _description_
     """
 
-    database_url: str = "postgres://postgres:@localhost/bitrender-DEV"
-    data_dir: str = "/data-DEV"
+    database_url = "postgres://postgres:@localhost/bitrender-DEV"
+    data_dir = "/data-DEV"
 
     models = ["bitrender.models", "aerich.models"]
 
-    __task_dir: str = "tasks"
-    __frames_dir: str = "frames"
-    __subtask_dir: str = "subtasks"
+    __task_dir = "tasks"
+    __frames_dir = "frames"
+    __subtask_dir = "subtasks"
 
     @property
     def task_dir(self) -> str:

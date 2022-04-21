@@ -2,4 +2,4 @@
 
 from bitrender.schemas.permission import RolePermissionSchema  # noqa: F401
 from bitrender.schemas.role import RoleSchema  # noqa: F401
-from bitrender.schemas.user import UserAuth, UserCreate, UserSchema, UserUpdate  # noqa: F401
+from bitrender.schemas.user import UserRegister  # noqa: F401

@@ -9,6 +9,7 @@ from tortoise.contrib.fastapi import register_tortoise
 
 from bitrender.api.role import router as role_router
 from bitrender.api.user import router as user_router
+from bitrender.auth.password import BCryptHelper, PasswordHelper
 from bitrender.config import tortoise_config
 from bitrender.data import create_admin_account
 from bitrender.models import init_db, migrate
