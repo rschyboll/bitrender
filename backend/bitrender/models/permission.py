@@ -24,6 +24,10 @@ class Permission(Enum):
         """TODO generate docstring"""
         return f"permission:{self.value}"
 
+    @classmethod
+    def list(cls):
+        return list(map(lambda c: c.value, cls))
+
 
 class RolePermission(BaseModel):
     """Database model describing permissions assigned to a specific user role.

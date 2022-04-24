@@ -26,6 +26,8 @@ class User(BaseModel):
     email: str = CharField(255, unique=True)
     hashed_password: bytes = BinaryField()
 
+    reset_password_token: str | None = CharField(255, null=True)
+
     is_active: bool = BooleanField(default=True)  # type: ignore
     is_superuser: bool = BooleanField(default=False)  # type: ignore
     is_verified: bool = BooleanField(default=False)  # type: ignore
@@ -67,12 +69,6 @@ class User(BaseModel):
         if not lock:
             return await cls.get(email=email)
         return await cls.select_for_update().get(email=email)
-
-    async def request_password_reset(self):
-        pass
-
-    async def reset_password(self):
-        pass
 
     @property
     async def acl_id_list(self) -> list[str]:

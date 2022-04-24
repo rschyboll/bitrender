@@ -4,7 +4,7 @@ from tortoise.transactions import in_transaction
 
 from bitrender.base.auth import hash_password
 from bitrender.config import tortoise_config
-from bitrender.models import Permission, Role, RolePermission, User, UserAuth
+from bitrender.models import Permission, Role, RolePermission, User
 
 
 async def create_admin_account(username: str, password: str, email: str):
@@ -12,14 +12,12 @@ async def create_admin_account(username: str, password: str, email: str):
     await Tortoise.init(config=tortoise_config)
     async with in_transaction():
         role = await create_admin_role()
-        password_hash = hash_password(password)
-        auth = UserAuth(password_hash=password_hash)
-        await auth.save()
+        hashed_password = hash_password(password)
         user = User(
             username=username,
             email=email,
+            hashed_password=hashed_password,
             role=role,
-            active=True,
         )
         await user.save()
 

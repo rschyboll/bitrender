@@ -5,8 +5,9 @@ import pytest
 from tortoise.contrib.test import TruncationTestCase
 from tortoise.exceptions import IntegrityError
 
-from bitrender.models import Permission, Role, RolePermission
+from bitrender.models import Permission, Role
 from tests.utils import TransactionTest
+from tests.utils.generators import generate_role_permissions, generate_roles, generate_users
 
 
 class TestRole(TruncationTestCase):
@@ -14,15 +15,14 @@ class TestRole(TruncationTestCase):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.default_role: Role = Role(name="default", default=True)
-        self.custom_roles = [Role(name=str(i)) for i in range(0, 10)]
+        self.default_role: Role
+        self.custom_roles: list[Role]
 
     async def asyncSetUp(self):
         """Creates database entries used in other tests"""
         await super().asyncSetUp()
-        await self.default_role.save()
-        for role in self.custom_roles:
-            await role.save()
+        self.default_role = await Role.create(name="default", default=True)
+        self.custom_roles = await generate_roles(10)
 
     async def test_get_default(self):
         """Tests the get_default method with lock set to False."""
@@ -49,51 +49,32 @@ class TestRole(TruncationTestCase):
         await test_role.save()
         assert await Role.get_default(False) == test_role
 
-    @staticmethod
-    async def __create_permissions(role: Role, permissions: list[Permission]):
-        for permission in permissions:
-            role_permission = RolePermission(permission=permission, role=role)
-            await role_permission.save()
-
     async def test_role_permissions(self):
         """Tests returning correctly roles permissions."""
-        all_permissions = [permission for permission in Permission]
-        permission_counter = 1
+        counter = 1
         for role in self.custom_roles:
-            permissions = [
-                all_permissions[i]
-                for i in range(
-                    permission_counter % len(all_permissions),
-                    len(all_permissions),
-                )
-            ]
-            await self.__create_permissions(role, permissions)
+            permissions = [Permission.list()[i] for i in range(0, counter % len(Permission) + 1)]
+            role_permissions = await generate_role_permissions(role, permissions)
             selected_role_permissions = await role.permissions
-            assert len(permissions) == len(selected_role_permissions)
-            assert all(
-                role_permission.permission in permissions
-                for role_permission in selected_role_permissions
-            )
-            permission_counter += 1
+            assert selected_role_permissions == role_permissions
+            counter += 1
 
     async def test_role_users(self):
-        """TODO write test"""
+        """Tests returning correctly users with the given role."""
+        counter = 10
+        for role in self.custom_roles:
+            users = await generate_users(counter, role)
+            selected_users = await role.users
+            assert users == selected_users
+            counter += 1
 
     async def test_acl_id_list(self):
         """Tests acl_id_list property."""
-        all_permissions = [permission for permission in Permission]
-        permission_counter = 1
+        counter = 1
         for role in self.custom_roles:
-            permissions = [
-                all_permissions[i]
-                for i in range(
-                    permission_counter % len(all_permissions),
-                    len(all_permissions),
-                )
-            ]
-            acl_id_list = [permission.acl_id for permission in permissions]
-            await self.__create_permissions(role, permissions)
+            permissions = [Permission.list()[i] for i in range(0, counter % len(Permission) + 1)]
+            role_permissions = await generate_role_permissions(role, permissions)
+            acl_id_list = [permission.acl_id for permission in role_permissions]
             selected_acl_id_list = await role.acl_id_list
-            assert len(acl_id_list) == len(selected_acl_id_list)
-            assert all(acl_id in acl_id_list for acl_id in selected_acl_id_list)
-            permission_counter += 1
+            assert acl_id_list == selected_acl_id_list
+            counter += 1
