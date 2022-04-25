@@ -2,24 +2,29 @@
 from tortoise import Tortoise
 from tortoise.transactions import in_transaction
 
-from bitrender.base.auth import hash_password
+from bitrender.auth.password import hash_password
 from bitrender.config import tortoise_config
 from bitrender.models import Permission, Role, RolePermission, User
 
 
-async def create_admin_account(username: str, password: str, email: str):
+async def create_admin_account(password: str, email: str):
     """Creates a admin account."""
     await Tortoise.init(config=tortoise_config)
     async with in_transaction():
         role = await create_admin_role()
         hashed_password = hash_password(password)
+        if await User.exists(email=email):
+            user = await User.get_by_email(email)
+            await user.delete()
         user = User(
-            username=username,
             email=email,
             hashed_password=hashed_password,
             role=role,
+            is_active=True,
+            is_verified=True,
+            is_superuser=True,
         )
-        await user.save()
+        await user.save(force_create=True, force_update=True)
 
 
 async def create_admin_role() -> Role:
@@ -38,6 +43,5 @@ async def assign_all_permissions(role: Role):
 
     Args:
         role (Role): Role to assign the permissions to."""
-    for permission_str in Permission:
-        role_permission = RolePermission(name=permission_str, role=role)
-        await role_permission.save()
+    for permission in Permission:
+        await RolePermission.create(permission=permission, role=role)

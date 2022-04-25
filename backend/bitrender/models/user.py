@@ -11,7 +11,8 @@ from tortoise.fields import (
     ForeignKeyRelation,
 )
 
-from bitrender.base.acl import AclAction, AclEntry, AclPermit, StaticAclEntries
+from bitrender.auth.acl import AclAction, AclEntry, AclPermit, StaticAclEntries
+from bitrender.models import Permission
 from bitrender.models.base import BaseModel
 
 if TYPE_CHECKING:
@@ -83,9 +84,17 @@ class User(BaseModel):
 
     @classmethod
     def __sacl__(cls) -> list[AclEntry]:
-        return [StaticAclEntries.IS_AUTHENTICATED]
+        return [
+            StaticAclEntries.IS_SUPERUSER,
+            StaticAclEntries.IS_AUTHENTICATED,
+            (
+                AclPermit.ALLOW,
+                Permission.MANAGE_USERS.acl_id,
+                [AclAction.CREATE, AclAction.VIEW, AclAction.EDIT, AclAction.DELETE],
+            ),
+        ]
 
     async def __dacl__(self) -> list[list[AclEntry]]:
         acl: list[list[AclEntry]] = [[(AclPermit.ALLOW, self.acl_id, AclAction.VIEW)]]
-        await self._extend_dacl(self.role, acl)
+        await self.extend_dacl(self.role, acl)
         return acl

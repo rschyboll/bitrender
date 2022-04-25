@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING, Type, TypeVar
 
 from tortoise.fields import BooleanField, ReverseRelation, TextField
 
-from bitrender.base.acl import AclEntry, StaticAclEntries
+from bitrender.auth.acl import AclEntry, StaticAclEntries
 from bitrender.models.base import BaseModel
 
 if TYPE_CHECKING:

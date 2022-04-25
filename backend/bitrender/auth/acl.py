@@ -29,6 +29,7 @@ AclList = list[AclEntry]
 
 EVERYONE = "system:everyone"
 AUTHENTICATED = "system:authenticated"
+SUPERUSER = "system:superuser"
 
 
 class StaticAclEntries:
@@ -37,5 +38,10 @@ class StaticAclEntries:
     IS_AUTHENTICATED = (
         AclPermit.NOTDENY,
         AUTHENTICATED,
+        [AclAction.CREATE, AclAction.VIEW, AclAction.EDIT, AclAction.DELETE],
+    )
+    IS_SUPERUSER = (
+        AclPermit.ALLOW,
+        SUPERUSER,
         [AclAction.CREATE, AclAction.VIEW, AclAction.EDIT, AclAction.DELETE],
     )

@@ -1,6 +1,7 @@
 """Contains the base class for all database models."""
 from __future__ import annotations
 
+import asyncio
 from datetime import datetime
 from typing import Type, TypeVar
 from uuid import UUID
@@ -14,7 +15,7 @@ from tortoise.fields import (
 )
 from tortoise.models import Model
 
-from bitrender.base.acl import EVERYONE, AclAction, AclEntry, AclPermit
+from bitrender.auth.acl import EVERYONE, AclAction, AclEntry, AclList, AclPermit
 
 MODEL = TypeVar("MODEL", bound="BaseModel")
 
@@ -99,8 +100,7 @@ class BaseModel(Model):
                 currently locked. Defaults to False.
 
         Returns:
-            list[_MODEL]: _description_
-        """
+            list[_MODEL]: Selected database entries."""
         if not lock:
             return await cls.all().order_by(order).offset(offset).limit(amount)
         return (
@@ -112,26 +112,33 @@ class BaseModel(Model):
         )
 
     @staticmethod
-    async def _extend_dacl(
+    async def extend_dacl(
         relation: ForeignKeyRelation[MODEL]
         | OneToOneNullableRelation[MODEL]
         | ReverseRelation[MODEL],
         acl: list[list[AclEntry]],
     ) -> list[list[AclEntry]]:
+        """TODO generate docstring"""
         if isinstance(relation, BaseModel):
             relation_acl = await relation.__dacl__()
             if relation_acl is not None:
                 acl.extend(relation_acl)
-        if isinstance(relation, ReverseRelation) and relation._fetched:  # pylint: disable=W0212
+        elif isinstance(relation, ReverseRelation) and relation._fetched:  # pylint: disable=W0212
             for item in relation:
                 relation_item_acl = await item.__dacl__()
                 if relation_item_acl is not None:
                     acl.extend(relation_item_acl)
+        elif asyncio.iscoroutine(relation):
+            model = await relation
+            if isinstance(model, BaseModel):
+                relation_acl = await model.__dacl__()
+                if relation_acl is not None:
+                    acl.extend(relation_acl)
         return acl
 
     @classmethod
-    def __sacl__(cls) -> list[AclEntry]:
+    def __sacl__(cls) -> AclList:
         return [(AclPermit.DENY, EVERYONE, AclAction.VIEW)]
 
-    async def __dacl__(self) -> list[list[AclEntry]]:
+    async def __dacl__(self) -> list[AclList]:
         return [[(AclPermit.DENY, EVERYONE, AclAction.VIEW)]]

@@ -100,3 +100,18 @@ class TestBaseModel(TruncationTestCase):
         """Tests the __dacl__ and __sacl__ methods."""
         assert len(await ExampleModel().__dacl__()) != 0
         assert len(ExampleModel.__sacl__()) != 0
+
+    async def test_extend_dacl(self):
+        """Tests the extend_dacl method."""
+
+        async def __generate__dacl__():
+            async def __dacl__():
+                pass
+
+            return __dacl__
+
+        async def relation() -> list[ExampleModel]:
+            for i in range(0, 10):
+                model = ExampleModel()
+                setattr()
+            return [ExampleModel()]

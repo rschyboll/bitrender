@@ -2,5 +2,9 @@
 from bitrender.models.base import BaseModel
 
 
+class ExampleModelRelation:
+    pass
+
+
 class ExampleModel(BaseModel):
     """Database model used only for testing methods from BaseModel."""
