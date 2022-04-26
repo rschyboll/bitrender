@@ -1,7 +1,6 @@
 """Contains the base class for all database models."""
 from __future__ import annotations
 
-import asyncio
 from datetime import datetime
 from typing import Type, TypeVar
 from uuid import UUID
@@ -121,19 +120,11 @@ class BaseModel(Model):
         """TODO generate docstring"""
         if isinstance(relation, BaseModel):
             relation_acl = await relation.__dacl__()
-            if relation_acl is not None:
-                acl.extend(relation_acl)
+            acl.extend(relation_acl)
         elif isinstance(relation, ReverseRelation) and relation._fetched:  # pylint: disable=W0212
             for item in relation:
                 relation_item_acl = await item.__dacl__()
-                if relation_item_acl is not None:
-                    acl.extend(relation_item_acl)
-        elif asyncio.iscoroutine(relation):
-            model = await relation
-            if isinstance(model, BaseModel):
-                relation_acl = await model.__dacl__()
-                if relation_acl is not None:
-                    acl.extend(relation_acl)
+                acl.extend(relation_item_acl)
         return acl
 
     @classmethod

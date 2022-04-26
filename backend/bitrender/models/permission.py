@@ -27,7 +27,7 @@ class Permission(Enum):
     @classmethod
     def list(cls):
         """TODO generate docstring"""
-        return list(map(lambda c: c.value, cls))
+        return list(Permission)
 
 
 class RolePermission(BaseModel):

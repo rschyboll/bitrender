@@ -3,7 +3,7 @@
 from enum import Enum
 
 
-class AclAction(Enum):
+class AclAction(str, Enum):
     """TODO generate docstring"""
 
     CREATE = "create"
@@ -12,7 +12,7 @@ class AclAction(Enum):
     DELETE = "delete"
 
 
-class AclPermit(Enum):
+class AclPermit(str, Enum):
     """Enum containing available actions."""
 
     ALLOW = "Allow"

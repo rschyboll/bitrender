@@ -1,9 +1,14 @@
 """Contains tests for BaseModel model from bitrender.models.base."""
 from __future__ import annotations
 
-from tortoise.contrib.test import TruncationTestCase
+import json
 
+from tortoise.contrib.test import TruncationTestCase
+from tortoise.fields import ReverseRelation
+
+from bitrender.auth.acl import EVERYONE, AclAction, AclList, AclPermit
 from tests.utils import TransactionTest
+from tests.utils.mocks import AwaitableMock
 
 from . import ExampleModel
 
@@ -103,15 +108,60 @@ class TestBaseModel(TruncationTestCase):
 
     async def test_extend_dacl(self):
         """Tests the extend_dacl method."""
+        reverse_relation_model_count = 10
+        reverse_relation_models = [ExampleModel() for _ in range(0, reverse_relation_model_count)]
+        model = ExampleModel()
+        reverse_relation_dacl: list[AclList] = [[(AclPermit.DENY, EVERYONE, AclAction.VIEW)]]
+        model_dacl: list[AclList] = [[(AclPermit.NOTALLOW, "user:test2", AclAction.EDIT)]]
 
-        async def __generate__dacl__():
-            async def __dacl__():
-                pass
+        def __generate__dacl__(dacl: list[AclList]):
+            async def __dacl__() -> list[AclList]:
+                return dacl
 
             return __dacl__
 
-        async def relation() -> list[ExampleModel]:
-            for i in range(0, 10):
-                model = ExampleModel()
-                setattr()
-            return [ExampleModel()]
+        for reverse_relation_model in reverse_relation_models:
+            setattr(reverse_relation_model, "__dacl__", __generate__dacl__(reverse_relation_dacl))
+        setattr(model, "__dacl__", __generate__dacl__(model_dacl))
+
+        reverse_relation = ReverseRelation(ExampleModel, "", ExampleModel, "")
+        reverse_relation._fetched = True  # pylint: disable=W0212
+        reverse_relation.related_objects = reverse_relation_models
+        tested_acl = [
+            *model_dacl,
+            *[reverse_relation_dacl[0] for i in range(0, reverse_relation_model_count)],
+        ]
+        test_acl: list[AclList] = []
+
+        await ExampleModel.extend_dacl(model, test_acl)
+        await ExampleModel.extend_dacl(reverse_relation, test_acl)
+
+        assert json.dumps(tested_acl) == json.dumps(test_acl)
+
+    async def test_extend_dacl_not_awaited(self):
+        """Tests the extend_dacl method with not awaited relations."""
+        reverse_relation_model_count = 10
+        reverse_relation_models = [ExampleModel() for _ in range(0, reverse_relation_model_count)]
+        model = ExampleModel()
+        reverse_relation_dacl: list[AclList] = [[(AclPermit.DENY, EVERYONE, AclAction.VIEW)]]
+        model_dacl: list[AclList] = [[(AclPermit.NOTALLOW, "user:test2", AclAction.EDIT)]]
+        foreign_relation = AwaitableMock(return_value=model)
+
+        def __generate__dacl__(dacl: list[AclList]):
+            async def __dacl__() -> list[AclList]:
+                return dacl
+
+            return __dacl__
+
+        for reverse_relation_model in reverse_relation_models:
+            setattr(reverse_relation_model, "__dacl__", __generate__dacl__(reverse_relation_dacl))
+        setattr(model, "__dacl__", __generate__dacl__(model_dacl))
+
+        reverse_relation = ReverseRelation(ExampleModel, "", ExampleModel, "")
+        reverse_relation.related_objects = reverse_relation_models
+        test_acl: list[AclList] = []
+
+        await ExampleModel.extend_dacl(foreign_relation, test_acl)
+        await ExampleModel.extend_dacl(reverse_relation, test_acl)
+
+        assert len(test_acl) == 0
