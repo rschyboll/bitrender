@@ -38,6 +38,6 @@ class TestRolePermission(TruncationTestCase):
             assert role_permission.acl_id == permission.acl_id
 
     async def test_role(self):
-        """Tests returning correctly acl_id of the permission."""
+        """Tests returning correctly role of the permission."""
         for role_permission in self.role_permissions.values():
             assert role_permission.role == self.role

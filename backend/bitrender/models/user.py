@@ -97,4 +97,6 @@ class User(BaseModel):
     async def __dacl__(self) -> list[list[AclEntry]]:
         acl: list[list[AclEntry]] = [[(AclPermit.ALLOW, self.acl_id, AclAction.VIEW)]]
         await self.extend_dacl(self.role, acl)
+        if (await self.role).default == True:
+            pass
         return acl

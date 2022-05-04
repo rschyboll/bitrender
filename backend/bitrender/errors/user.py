@@ -1,25 +1,21 @@
-from bitrender.errors.base import AppException
+from bitrender.errors.base import AppError
 
 
-class UserException(AppException):
+class UserError(AppError):
     pass
 
 
-class NoDefaultRole(UserException):
+class NoDefaultRoleError(UserError):
     pass
 
 
-class RoleDoesNotExist(UserException):
+class RoleDoesNotExistError(UserError):
     pass
 
 
-class UserAlreadyExist(UserException):
+class UserAlreadyExistError(UserError):
     pass
 
 
-class BadCredentials(UserException):
-    pass
-
-
-class UserNotVerified(UserException):
+class UserNotVerifiedError(UserError):
     pass

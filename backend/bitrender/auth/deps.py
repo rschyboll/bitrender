@@ -1,7 +1,7 @@
 import inspect
 from typing import Any, Callable, Coroutine, Type, TypeVar, get_args
 
-from fastapi import Depends, HTTPException, Request, status
+from fastapi import Depends, Request
 from fastapi.openapi.models import OAuthFlows as OAuthFlowsModel
 from fastapi.security import OAuth2
 from fastapi.security.utils import get_authorization_scheme_param
@@ -19,22 +19,9 @@ from bitrender.auth.acl import (
     AclPermit,
 )
 from bitrender.auth.jwt import decode_token, jwt
+from bitrender.errors.auth import CredentialsError, UnauthorizedError
 from bitrender.models import Permission, User
 from bitrender.models.base import BaseModel
-
-
-class CredentialsException(HTTPException):
-    """TODO generate costring"""
-
-    def __init__(
-        self,
-        status_code: int = status.HTTP_401_UNAUTHORIZED,
-        detail: Any = "Not authenticated",
-        headers: dict[str, Any] | None = None,
-    ) -> None:
-        if headers is None:
-            headers = {"WWW-Authenticate": "Bearer"}
-        super().__init__(status_code, detail, headers)
 
 
 class OAuth2PasswordBearerWithCookie(OAuth2):
@@ -47,12 +34,13 @@ class OAuth2PasswordBearerWithCookie(OAuth2):
     async def __call__(self, request: Request) -> str | None:
         authorization = request.cookies.get("access_token")
         if authorization is None:
-            raise CredentialsException()
-
+            if self.auto_error:
+                raise UnauthorizedError()
+            return None
         scheme, param = get_authorization_scheme_param(authorization)
         if scheme.lower() != "bearer":
             if self.auto_error:
-                raise CredentialsException()
+                raise UnauthorizedError()
             return None
         return param
 
@@ -131,19 +119,19 @@ class AuthCheck:
             for action in actions:
                 permit = self.__get_acllist_permit(acl_list, action)
                 if permit == AclPermit.DENY:
-                    raise CredentialsException()
+                    raise CredentialsError()
                 permits.append(permit)
         return all(permit == AclPermit.ALLOW for permit in permits)
 
     async def __dynamic_check(self, model: ReturnT, actions: list[AclAction]):
         acl_lists = await model.__dacl__()
         if acl_lists is None:
-            raise CredentialsException()
+            raise CredentialsError()
         for acl_list in acl_lists:
             for action in actions:
                 permit = self.__get_acllist_permit(acl_list, action)
                 if permit is None or permit == AclPermit.DENY:
-                    raise CredentialsException()
+                    raise CredentialsError()
 
     def __get_acllist_permit(
         self, acl_list: AclList, required_action: AclAction

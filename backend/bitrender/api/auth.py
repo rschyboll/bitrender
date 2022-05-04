@@ -8,7 +8,12 @@ from fastapi.security import OAuth2PasswordRequestForm
 from pydantic import EmailStr
 
 from bitrender.errors.http import ErrorCode, ErrorModel
-from bitrender.errors.user import BadCredentials, NoDefaultRole, UserAlreadyExist, UserNotVerified
+from bitrender.errors.user import (
+    BadCredentials,
+    NoDefaultRoleException,
+    UserAlreadyExist,
+    UserNotVerified,
+)
 from bitrender.models.user import User
 from bitrender.schemas import UserCreate, UserSchema
 from bitrender.services import user as UserService
@@ -67,7 +72,7 @@ login_responses: dict[int | str, dict[str, Any]] = {
 async def register(data: UserCreate):
     try:
         return await UserService.register(data)
-    except NoDefaultRole as error:
+    except NoDefaultRoleException as error:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail=ErrorCode.NO_DEFAULT_ROLE,
