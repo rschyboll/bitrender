@@ -4,7 +4,7 @@ from uuid import UUID
 from fastapi import APIRouter, Body, Depends
 
 from bitrender.auth.acl import AclAction
-from bitrender.auth.deps import AuthCheck
+from bitrender.auth.deps import AuthService
 from bitrender.models import User
 from bitrender.schemas.user import UserCreate, UserSchema
 from bitrender.services import user as UserService
@@ -24,13 +24,15 @@ async def update_me():
 
 @router.post("/create", response_model=UserSchema)
 async def create_user(
-    user_data: UserCreate = Body(...), role_id: UUID = Body(...), auth_check: AuthCheck = Depends()
+    user_data: UserCreate = Body(...),
+    role_id: UUID = Body(...),
+    auth_check: AuthService = Depends(),
 ):
     return await auth_check(UserService.create, AclAction.CREATE, (user_data, role_id))
 
 
 @router.get("/{user_id}", response_model=UserSchema)
-async def get_user(user_id: UUID, auth_check: AuthCheck = Depends()):
+async def get_user(user_id: UUID, auth_check: AuthService = Depends()):
     return await auth_check(User.get_by_id, AclAction.VIEW, (user_id,))
 
 

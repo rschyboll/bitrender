@@ -80,10 +80,10 @@ async def get_auth_ids(user: User | None = Depends(get_current_user_or_none)) ->
 ReturnT = TypeVar("ReturnT", bound=BaseModel)
 
 
-class AuthCheck:
+class Auth:
     """TODO generate docstring."""
 
-    def __init__(self, auth_ids: list[str] = Depends(get_auth_ids)):
+    def __init__(self, auth_ids: list[str]):
         self.auth_ids = auth_ids
 
     async def __call__(

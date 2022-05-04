@@ -4,7 +4,7 @@ from fastapi import Depends
 from fastapi.security import OAuth2PasswordRequestForm
 from tortoise.exceptions import DoesNotExist
 
-from bitrender.auth.deps import AuthCheck
+from bitrender.auth.deps import AuthService
 from bitrender.auth.jwt import create_token
 from bitrender.auth.password import hash_password, verify_password
 from bitrender.errors.auth import BadCredentialsError
@@ -17,11 +17,12 @@ from bitrender.errors.user import (
 )
 from bitrender.models import Role, User
 from bitrender.schemas.user import UserCreate
+from bitrender.services import Services
 
 
 class UserService:
-    def __init__(self, auth_check: AuthCheck = Depends()):
-        self.auth_check = auth_check
+    def __init__(self, services: Services):
+        self.services = services
 
     async def register(self, user_data: UserCreate) -> User:
         try:
