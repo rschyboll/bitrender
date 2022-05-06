@@ -4,7 +4,7 @@ from enum import Enum
 
 
 class AclAction(str, Enum):
-    """TODO generate docstring"""
+    """Enum containing available actions."""
 
     CREATE = "create"
     VIEW = "view"
@@ -13,12 +13,19 @@ class AclAction(str, Enum):
 
 
 class AclPermit(str, Enum):
-    """Enum containing available actions."""
+    """Enum containing available permits."""
 
     ALLOW = "Allow"
+    """Allows access when the user fulfills the entry."""
+
     DENY = "Deny"
+    """Denies access when the user fulfills the entry."""
+
     NOTALLOW = "NotAllow"
+    """Allows access when the user does not fulfill the entry."""
+
     NOTDENY = "NotDeny"
+    """Denies access when the user does not fulfill the entry."""
 
 
 AclId = str
@@ -32,7 +39,7 @@ AUTHENTICATED = "system:authenticated"
 SUPERUSER = "system:superuser"
 
 
-class StaticAclEntries:
+class StaticAclEntries(AclEntry, Enum):
     """Class containing static AclEntries."""
 
     IS_AUTHENTICATED = (

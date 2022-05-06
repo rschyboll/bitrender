@@ -42,16 +42,15 @@ class UserService:
                 raise RoleDoesNotExist() from error
         return await User.create(**user_data.dict(), role=role, hashed_password=hashed_password)
 
-
-async def authenticate(credentials: OAuth2PasswordRequestForm) -> str | None:
-    try:
-        user = await User.get_by_email(credentials.username)
-    except DoesNotExist as error:
-        raise BadCredentialsError() from error
-    if not verify_password(credentials.password, user.hashed_password):
-        raise BadCredentialsError()
-    if not user.is_verified:
-        raise UserNotVerifiedError()
-    if not user.is_active:
-        raise BadCredentialsError()
-    return create_token(user.id)
+    async def authenticate(self, credentials: OAuth2PasswordRequestForm) -> str | None:
+        try:
+            user = await User.get_by_email(credentials.username)
+        except DoesNotExist as error:
+            raise BadCredentialsError() from error
+        if not verify_password(credentials.password, user.hashed_password):
+            raise BadCredentialsError()
+        if not user.is_verified:
+            raise UserNotVerifiedError()
+        if not user.is_active:
+            raise BadCredentialsError()
+        return create_token(user.id)

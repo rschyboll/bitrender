@@ -80,7 +80,7 @@ async def get_auth_ids(user: User | None = Depends(get_current_user_or_none)) ->
 ReturnT = TypeVar("ReturnT", bound=BaseModel)
 
 
-class Auth:
+class QueryAuth:
     """TODO generate docstring."""
 
     def __init__(self, auth_ids: list[str]):
