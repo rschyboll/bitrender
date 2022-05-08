@@ -1,66 +1,18 @@
 """TODO generate docstring"""
 
-
-from typing import Any
-
 from fastapi import APIRouter, Depends, HTTPException, Response, status
 from fastapi.security import OAuth2PasswordRequestForm
 from pydantic import EmailStr
 
-from bitrender.errors.http import ErrorCode, ErrorModel
-from bitrender.errors.user import (
-    BadCredentials,
-    NoDefaultRoleException,
-    UserAlreadyExist,
-    UserNotVerified,
-)
+from bitrender.api.responses import ErrorCode
+from bitrender.api.responses.auth import login_responses, register_responses
+from bitrender.errors.auth import BadCredentials, NoDefaultRole, UserNotVerified
+from bitrender.errors.user import UserAlreadyExists
 from bitrender.models.user import User
 from bitrender.schemas import UserCreate, UserSchema
-from bitrender.services import user as UserService
+from bitrender.services import Services
 
 router = APIRouter(tags=["auth"])
-
-
-register_responses: dict[int | str, dict[str, Any]] = {
-    status.HTTP_400_BAD_REQUEST: {
-        "model": ErrorModel,
-        "content": {
-            "application/json": {
-                "examples": {
-                    ErrorCode.NO_DEFAULT_ROLE: {
-                        "summary": """Cannot assign role to user.
-                            No default role exists in the database.""",
-                        "value": {"detail": ErrorCode.NO_DEFAULT_ROLE},
-                    },
-                    ErrorCode.REGISTER_USER_ALREADY_EXISTS: {
-                        "summary": "A user with this email already exists.",
-                        "value": {"detail": ErrorCode.REGISTER_USER_ALREADY_EXISTS},
-                    },
-                }
-            }
-        },
-    },
-}
-
-login_responses: dict[int | str, dict[str, Any]] = {
-    status.HTTP_400_BAD_REQUEST: {
-        "model": ErrorModel,
-        "content": {
-            "application/json": {
-                "examples": {
-                    ErrorCode.LOGIN_BAD_CREDENTIALS: {
-                        "summary": "Bad credentials or the user is inactive.",
-                        "value": {"detail": ErrorCode.LOGIN_BAD_CREDENTIALS},
-                    },
-                    ErrorCode.REGISTER_USER_ALREADY_EXISTS: {
-                        "summary": "A user with this email already exists.",
-                        "value": {"detail": ErrorCode.REGISTER_USER_ALREADY_EXISTS},
-                    },
-                }
-            }
-        },
-    },
-}
 
 
 @router.post(
@@ -69,15 +21,16 @@ login_responses: dict[int | str, dict[str, Any]] = {
     status_code=status.HTTP_201_CREATED,
     responses=register_responses,
 )
-async def register(data: UserCreate):
+async def register(user_data: UserCreate, services: Services = Depends()) -> User:
+    """Registers a new user in the system."""
     try:
-        return await UserService.register(data)
-    except NoDefaultRoleException as error:
+        return await services.auth.register(user_data)
+    except NoDefaultRole as error:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail=ErrorCode.NO_DEFAULT_ROLE,
         ) from error
-    except UserAlreadyExist as error:
+    except UserAlreadyExists as error:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail=ErrorCode.REGISTER_USER_ALREADY_EXISTS,
@@ -85,9 +38,14 @@ async def register(data: UserCreate):
 
 
 @router.post("/login", responses=login_responses)
-async def login(response: Response, credentials: OAuth2PasswordRequestForm = Depends()):
+async def login(
+    response: Response,
+    credentials: OAuth2PasswordRequestForm = Depends(),
+    services: Services = Depends(),
+):
+    """TODO generate docstring"""
     try:
-        token = await UserService.authenticate(credentials)
+        token = await services.auth.authenticate(credentials)
         response.set_cookie("access_token", f"Bearer {token}", httponly=True)
     except BadCredentials as error:
         raise HTTPException(
@@ -103,19 +61,18 @@ async def login(response: Response, credentials: OAuth2PasswordRequestForm = Dep
 
 @router.post("/logout")
 async def logout(response: Response):
+    """TODO generate docstring"""
     response.delete_cookie("access_token")
 
 
 @router.post("/request-verify-token")
-async def request_verify_token(email: EmailStr):
-    pass
+async def request_verify_token(email: EmailStr, services: Services = Depends()):
+    await services.auth.request_verify(email)
 
 
 @router.post("/verify")
-async def verify(email: str):
-    user = await User.get_by_email(email)
-    user.is_verified = True
-    await user.save()
+async def verify(email: EmailStr, token: str, services: Services = Depends()):
+    await services.auth.verify(email, token)
 
 
 @router.post("/forgot-password")

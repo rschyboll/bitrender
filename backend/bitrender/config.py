@@ -24,6 +24,14 @@ class Settings(BaseSettings):
 
     models = ["bitrender.models", "aerich.models"]
 
+    email_username = ""
+    email_password = ""
+    email_from = ""
+    email_port = 587
+    email_server = ""
+    email_tls = True
+    email_ssl = False
+
     __task_dir = "tasks"
     __frames_dir = "frames"
     __subtask_dir = "subtasks"

@@ -39,7 +39,7 @@ AUTHENTICATED = "system:authenticated"
 SUPERUSER = "system:superuser"
 
 
-class StaticAclEntries(AclEntry, Enum):
+class StaticAclEntries:
     """Class containing static AclEntries."""
 
     IS_AUTHENTICATED = (

@@ -4,7 +4,7 @@
 from pydantic import BaseModel as PydanticBase
 from pydantic import EmailStr, SecretStr, validator
 
-from bitrender.auth.password import validate_password
+from bitrender.auth.password import PasswordHelper
 from bitrender.schemas.base import BaseSchema
 
 
@@ -24,4 +24,4 @@ class UserCreate(PydanticBase):
     @validator("password")
     def password_check(password: str):
         """Validates that the password is secure enough."""
-        validate_password(password)
+        PasswordHelper.validate(password)

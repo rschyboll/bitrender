@@ -13,6 +13,7 @@ from tortoise.fields import (
     UUIDField,
 )
 from tortoise.models import Model
+from tortoise.queryset import QuerySet, QuerySetSingle
 
 from bitrender.auth.acl import EVERYONE, AclAction, AclEntry, AclList, AclPermit
 
@@ -20,6 +21,8 @@ MODEL = TypeVar("MODEL", bound="BaseModel")
 
 
 class BaseModel(Model):
+    """TODO update all docstrings to querysets"""
+
     """Class that serves as the base for all database models.
 
     Attributes:
@@ -37,7 +40,7 @@ class BaseModel(Model):
         abstract = True
 
     @classmethod
-    async def get_all(cls: Type[MODEL], lock=True, skip_locked=False) -> list[MODEL]:
+    def get_all(cls: Type[MODEL], lock=True, skip_locked=False) -> QuerySet[MODEL]:
         """Returns all database entries of the given model.
 
         Args:
@@ -48,11 +51,11 @@ class BaseModel(Model):
         Returns:
             List[_MODEL]: List of entries extracted from the database"""
         if not lock:
-            return await cls.all()
-        return await cls.all().select_for_update(skip_locked=skip_locked)
+            return cls.all()
+        return cls.all().select_for_update(skip_locked=skip_locked)
 
     @classmethod
-    async def get_by_id(cls: Type[MODEL], model_id: UUID, lock=True) -> MODEL:
+    def get_by_id(cls: Type[MODEL], model_id: UUID, lock=True) -> QuerySetSingle[MODEL]:
         """Returns a database entry based on the provided id.
 
         Args:
@@ -62,11 +65,11 @@ class BaseModel(Model):
         Returns:
             _MODEL: Entry of the model extracted from the database."""
         if not lock:
-            return await cls.get(id=model_id)
-        return await cls.select_for_update().get(id=model_id)
+            return cls.get(id=model_id)
+        return cls.select_for_update().get(id=model_id)
 
     @classmethod
-    async def get_latest(cls: Type[MODEL], lock=True) -> MODEL | None:
+    def get_latest(cls: Type[MODEL], lock=True) -> QuerySetSingle[MODEL | None]:
         """Returns the last created database entry of the model.
 
         Args:
@@ -75,18 +78,18 @@ class BaseModel(Model):
         Returns:
             _MODEL: Entry of the model extracted from the database."""
         if not lock:
-            return await cls.all().order_by("-created_at").first()
-        return await cls.select_for_update().order_by("-created_at").first()
+            return cls.all().order_by("-created_at").first()
+        return cls.select_for_update().order_by("-created_at").first()
 
     @classmethod
-    async def get_amount(
+    def get_amount(
         cls: Type[MODEL],
         amount: int,
         offset: int,
         order: str = "-created_at",
         lock=True,
         skip_locked=False,
-    ) -> list[MODEL]:
+    ) -> QuerySet[MODEL]:
         """Returns a specified amount of database entries of the model.
 
         Args:
@@ -101,9 +104,9 @@ class BaseModel(Model):
         Returns:
             list[_MODEL]: Selected database entries."""
         if not lock:
-            return await cls.all().order_by(order).offset(offset).limit(amount)
+            return cls.all().order_by(order).offset(offset).limit(amount)
         return (
-            await cls.all()
+            cls.all()
             .select_for_update(skip_locked=skip_locked)
             .order_by(order)
             .offset(offset)

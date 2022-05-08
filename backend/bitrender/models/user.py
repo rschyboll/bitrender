@@ -11,7 +11,14 @@ from tortoise.fields import (
     ForeignKeyRelation,
 )
 
-from bitrender.auth.acl import AclAction, AclEntry, AclPermit, StaticAclEntries
+from bitrender.auth.acl import (
+    AUTHENTICATED,
+    EVERYONE,
+    AclAction,
+    AclEntry,
+    AclPermit,
+    StaticAclEntries,
+)
 from bitrender.models import Permission
 from bitrender.models.base import BaseModel
 
@@ -27,6 +34,7 @@ class User(BaseModel):
     email: str = CharField(255, unique=True)
     hashed_password: bytes = BinaryField()
 
+    verify_token: str | None = CharField(255, null=True)
     reset_password_token: str | None = CharField(255, null=True)
 
     is_active: bool = BooleanField(default=True)  # type: ignore
@@ -86,7 +94,11 @@ class User(BaseModel):
     def __sacl__(cls) -> list[AclEntry]:
         return [
             StaticAclEntries.IS_SUPERUSER,
-            StaticAclEntries.IS_AUTHENTICATED,
+            (
+                AclPermit.NOTDENY,
+                AUTHENTICATED,
+                [AclAction.VIEW, AclAction.EDIT, AclAction.DELETE],
+            ),
             (
                 AclPermit.ALLOW,
                 Permission.MANAGE_USERS.acl_id,
@@ -97,6 +109,7 @@ class User(BaseModel):
     async def __dacl__(self) -> list[list[AclEntry]]:
         acl: list[list[AclEntry]] = [[(AclPermit.ALLOW, self.acl_id, AclAction.VIEW)]]
         await self.extend_dacl(self.role, acl)
-        if (await self.role).default == True:
-            pass
+        if (await self.role).default:
+            acl[0].insert(0, (AclPermit.DENY, AUTHENTICATED, AclAction.CREATE))
+            acl[0].append((AclPermit.ALLOW, EVERYONE, AclAction.CREATE))
         return acl

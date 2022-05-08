@@ -1,11 +1,23 @@
 from fastapi import Depends
 
+from bitrender.auth.acl_helper import AclHelper
 from bitrender.auth.deps import get_auth_ids
+from bitrender.auth.jwt import TokenHelper
+from bitrender.auth.password import PasswordHelper
+from bitrender.config import Settings, get_settings
 from bitrender.services.auth import AuthService
+from bitrender.services.email import EmailService
 from bitrender.services.user import UserService
 
 
 class Services:
-    def __init__(self, auth_ids: list[str] = Depends(get_auth_ids)):
-        self.auth = AuthService(self, auth_ids)
-        self.user = UserService(self)
+    def __init__(
+        self,
+        auth_ids: list[str] = Depends(get_auth_ids),
+        settings: Settings = Depends(get_settings),
+    ):
+        password_helper = PasswordHelper()
+        self.settings = settings
+        self.auth = AuthService(self, password_helper, TokenHelper(), AclHelper(auth_ids))
+        self.user = UserService(self, password_helper)
+        self.email = EmailService(self, settings)

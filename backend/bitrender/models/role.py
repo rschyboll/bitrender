@@ -4,6 +4,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Type, TypeVar
 
 from tortoise.fields import BooleanField, ReverseRelation, TextField
+from tortoise.queryset import QuerySetSingle
 
 from bitrender.auth.acl import AclEntry, StaticAclEntries
 from bitrender.models.base import BaseModel
@@ -26,7 +27,7 @@ class Role(BaseModel):
     default: bool | None = BooleanField(default=None, null=True, unique=True)  # type: ignore
 
     @classmethod
-    async def get_default(cls: Type[MODEL], lock=True) -> MODEL:
+    async def get_default(cls: Type[MODEL], lock=True) -> QuerySetSingle[MODEL]:
         """Returns the current default role.
 
         Args:
@@ -40,8 +41,8 @@ class Role(BaseModel):
         Returns:
             MODEL: The default role."""
         if not lock:
-            return await cls.get(default=True)
-        return await cls.select_for_update().get(default=True)
+            return cls.get(default=True)
+        return cls.select_for_update().get(default=True)
 
     @property
     async def acl_id_list(self) -> list[str]:

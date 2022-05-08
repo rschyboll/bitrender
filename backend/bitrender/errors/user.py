@@ -5,17 +5,13 @@ class UserError(AppError):
     pass
 
 
-class NoDefaultRoleError(UserError):
+class UserAlreadyExists(UserError):
     pass
 
 
-class RoleDoesNotExistError(UserError):
+class RoleDoesNotExist(UserError):
     pass
 
 
-class UserAlreadyExistError(UserError):
-    pass
-
-
-class UserNotVerifiedError(UserError):
+class UserDoesNotExist(UserError):
     pass

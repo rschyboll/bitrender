@@ -2,7 +2,6 @@
 
 
 from datetime import datetime, timedelta
-from typing import Protocol
 from uuid import UUID
 
 from jose import jwt
@@ -21,16 +20,6 @@ class TokenData(PydanticBase):
 
     sub: UUID
     exp: int
-
-
-class TokenHelperProtocol(Protocol):
-    """TODO generate docstring"""
-
-    def create_token(self, user_id: UUID) -> str:
-        """TODO generate docstring"""
-
-    def decode_token(self, token: str) -> TokenData:
-        """TODO generate docstring"""
 
 
 class TokenHelper:
