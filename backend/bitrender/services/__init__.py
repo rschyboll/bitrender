@@ -1,4 +1,4 @@
-from fastapi import Depends
+from fastapi import BackgroundTasks, Depends
 
 from bitrender.auth.acl_helper import AclHelper
 from bitrender.auth.deps import get_auth_ids
@@ -13,10 +13,12 @@ from bitrender.services.user import UserService
 class Services:
     def __init__(
         self,
+        background_tasks: BackgroundTasks,
         auth_ids: list[str] = Depends(get_auth_ids),
         settings: Settings = Depends(get_settings),
     ):
         password_helper = PasswordHelper()
+        self.background_tasks = background_tasks
         self.settings = settings
         self.auth = AuthService(self, password_helper, TokenHelper(), AclHelper(auth_ids))
         self.user = UserService(self, password_helper)
