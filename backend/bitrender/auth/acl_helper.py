@@ -1,3 +1,4 @@
+"""Contains utilities for helping with checking acl access."""
 from typing import Sequence, Type, TypeVar
 
 from bitrender.auth.acl import AclAction, AclEntry, AclList, AclPermit
@@ -7,10 +8,10 @@ ReturnT = TypeVar("ReturnT", bound=BaseModel)
 
 
 class AclHelper:
-    """TODO generate docstring."""
+    """Class with helper methods for checking acl access."""
 
     def __init__(self, auth_ids: list[str]):
-        self.auth_ids = auth_ids
+        self.__auth_ids = auth_ids
 
     def static_check(
         self, models: Sequence[Type[BaseModel]], actions: AclAction | Sequence[AclAction]
@@ -21,14 +22,12 @@ class AclHelper:
         permits: list[AclPermit | None] = []
         for model_type in models:
             acl_list = model_type.__sacl__()
-            if acl_list is None:
-                continue
             for action in actions:
                 permit = self.__get_acllist_permit(acl_list, action)
                 if permit == AclPermit.DENY:
                     return False
                 permits.append(permit)
-        if all(permit == AclPermit.ALLOW for permit in permits):
+        if all(permit == AclPermit.ALLOW for permit in permits) and len(permits) != 0:
             return True
         return None
 
@@ -49,7 +48,7 @@ class AclHelper:
                     if permit == AclPermit.DENY:
                         return False
                     permits.append(permit)
-        if all(permit == AclPermit.ALLOW for permit in permits):
+        if all(permit == AclPermit.ALLOW for permit in permits) and len(permits) != 0:
             return True
         return None
 
@@ -72,14 +71,14 @@ class AclHelper:
             actions = [actions]
         if permit == AclPermit.NOTALLOW:
             if required_action in actions and all(
-                auth_id not in self.auth_ids for auth_id in auth_ids
+                auth_id not in self.__auth_ids for auth_id in auth_ids
             ):
                 return AclPermit.ALLOW
         if permit == AclPermit.NOTDENY:
             if required_action in actions and all(
-                auth_id not in self.auth_ids for auth_id in auth_ids
+                auth_id not in self.__auth_ids for auth_id in auth_ids
             ):
                 return AclPermit.DENY
-        if required_action in actions and all(auth_id in self.auth_ids for auth_id in auth_ids):
+        if required_action in actions and all(auth_id in self.__auth_ids for auth_id in auth_ids):
             return permit
         return None

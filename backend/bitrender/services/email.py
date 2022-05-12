@@ -1,8 +1,9 @@
 """TODO generate docstring"""
 from __future__ import annotations
 
-import logging
 from typing import TYPE_CHECKING
+
+from fastapi_mail import ConnectionConfig, FastMail, MessageSchema
 
 from bitrender.config import Settings
 
@@ -16,7 +17,22 @@ class EmailService:
     def __init__(self, services: Services, settings: Settings):
         self.services = services
         self.settings = settings
-        self.logger = logging.getLogger()
+        self.mail = FastMail(self.__get_config(settings))
 
     async def send_verify_email(self, email: str, token: str):
-        self.logger.info(f"Verify email send to: {email} with token {token}")
+        message = MessageSchema(
+            subject="Test", recipients=["hoodrobin.rs@gmail.com"], body="TEST", subtype="html"
+        )
+        await self.mail.send_message(message)
+
+    @staticmethod
+    def __get_config(settings: Settings) -> ConnectionConfig:
+        return ConnectionConfig(
+            MAIL_USERNAME=settings.email_username,
+            MAIL_PASSWORD=settings.email_password,
+            MAIL_FROM=settings.email_from,
+            MAIL_PORT=settings.email_port,
+            MAIL_SERVER=settings.email_server,
+            MAIL_TLS=settings.email_tls,
+            MAIL_SSL=settings.email_ssl,
+        )
