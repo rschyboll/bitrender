@@ -1,0 +1,29 @@
+@import '../../node_modules/primereact/resources/primereact.css';
+@import '../../node_modules/primeicons/primeicons.css';
+
+@import '../../node_modules/primeflex/primeflex.scss';
+
+$breakpoints: (
+  phone: 320px,
+  tablet: 768px,
+  desktop: 1024px,
+);
+$transition_duration: 0.2s;
+
+@import '../../node_modules/include-media/dist/include-media';
+
+body {
+  height: 100vh;
+  margin: 0;
+  background: linear-gradient(
+    180deg,
+    var(--surface-50) 0%,
+    var(--surface-b) 100%
+  );
+}
+
+#app {
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+}

@@ -1,0 +1,25 @@
+@import '@/scss/global.scss';
+
+.layout-content {
+  height: 100%;
+
+  @include media('<=desktop') {
+    margin-left: 0;
+  }
+  @include media('>desktop') {
+    margin-left: 20rem;
+  }
+}
+
+.layout-sidebar {
+  position: fixed;
+  height: 100%;
+  background-color: var();
+
+  @include media('<=desktop') {
+    display: none;
+  }
+  @include media('>desktop') {
+    width: 20rem;
+  }
+}

@@ -1,12 +1,43 @@
-import { FunctionComponent } from 'react';
+import { FC, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { BrowserRouter, Outlet, Route, Routes } from 'react-router-dom';
 
-export const App: FunctionComponent = () => {
+import { Sidebar } from '@/components/sidebar';
+import { RolesPage } from '@/pages/roles';
+import { UsersPage } from '@/pages/users';
+
+import './style.scss';
+
+export const App: FC = () => {
+  useEffect(() => {
+    const themeLink = document.getElementById('theme-link');
+    if (themeLink instanceof HTMLLinkElement) {
+      themeLink.href = 'themes/arya-orange.css';
+    }
+  }, []);
+
   return (
-    <div>
-      <h1>Bookkeeper</h1>
-      <Link to="/invoices">Invoices</Link> |{' '}
-      <Link to="/expenses">Expenses</Link>
+    <Routes>
+      <Route path="/" element={<AppBody />}>
+        <Route path="users" element={<UsersPage />} />
+        <Route path="roles" element={<RolesPage />} />
+      </Route>
+    </Routes>
+  );
+};
+
+export const AppBody: FC = () => {
+  return (
+    <div className="layout h-full">
+      <div className="layout-sidebar">
+        <Sidebar />
+      </div>
+      <div className="layout-content">
+        <div className="layout-topbar"></div>
+        <div className="layout-page">
+          <Outlet />
+        </div>
+      </div>
     </div>
   );
 };
