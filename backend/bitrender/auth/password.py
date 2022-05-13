@@ -6,8 +6,9 @@ import bcrypt
 class PasswordHelper:
     """TODO generate docstring"""
 
-    @staticmethod
-    def hash(password: str) -> bytes:
+    rounds = 14
+
+    def hash(self, password: str) -> bytes:
         """Hashes the given passoword with the brypt algorithm.
 
         Args:
@@ -15,7 +16,7 @@ class PasswordHelper:
 
         Returns:
             bytes: Hashed passowrd."""
-        return bcrypt.hashpw(password.encode(), bcrypt.gensalt(14))
+        return bcrypt.hashpw(password.encode(), bcrypt.gensalt(self.rounds))
 
     @staticmethod
     def verify(password: str, hashed_password: bytes) -> bool:

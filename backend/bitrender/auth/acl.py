@@ -1,10 +1,10 @@
-"""TODO generate docstring"""
+"""Contains types and enums used for defining acl lists."""
 
 from enum import Enum
 
 
 class AclAction(str, Enum):
-    """Enum containing available actions."""
+    """Enum containing all available acl actions."""
 
     CREATE = "create"
     VIEW = "view"
@@ -13,7 +13,7 @@ class AclAction(str, Enum):
 
 
 class AclPermit(str, Enum):
-    """Enum containing available permits."""
+    """Enum containing all available acl permits."""
 
     ALLOW = "Allow"
     """Allows access when the user fulfills the entry."""
