@@ -4,7 +4,7 @@ import bcrypt
 
 
 class PasswordHelper:
-    """TODO generate docstring"""
+    """Class with helper methods for password management."""
 
     rounds = 14
 
@@ -32,7 +32,13 @@ class PasswordHelper:
 
     @staticmethod
     def validate(password: str):
-        """TODO generate docstring"""
+        """Validates if the password is secure enough.
+
+        Args:
+            password (str): Password to validate.
+
+        Raises:
+            ValueError: Raised when the password does not meet the requirements"""
         if len(password) < 8:
             raise ValueError("Password length should be at least 8")
 
