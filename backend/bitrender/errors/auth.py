@@ -31,3 +31,15 @@ class AlreadyVerified(AuthError):
 
 class VerificationFailed(AuthError):
     pass
+
+
+class TokenError(AuthError):
+    pass
+
+
+class TokenExpiredError(TokenError):
+    pass
+
+
+class TokenCorruptedError(TokenError):
+    pass

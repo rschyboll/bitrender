@@ -1,10 +1,10 @@
-"""TODO generate docstring"""
+"""Contains tests for the AclHelper class from bitrender.auth.acl_helper"""
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 from pytest_mock import MockerFixture
 
-from bitrender.auth.acl import AUTHENTICATED, EVERYONE, AclAction, AclList, AclPermit
+from bitrender.auth.acl import AUTHENTICATED, EVERYONE, AclAction, AclEntry, AclList, AclPermit
 from bitrender.auth.acl_helper import AclHelper
 from tests.unit.models import ExampleModel
 
@@ -22,7 +22,7 @@ test_permits_parameters = [
 
 @pytest.mark.parametrize("permit,has_auth_id,result", test_permits_parameters)
 async def test_permits(permit: AclPermit, has_auth_id: bool, result: bool | None):
-    """TODO generate docstring"""
+    """Tests if checks respond correctly to given permits."""
     auth_id = "user:test"
     action = AclAction.CREATE
     acl: AclList = [(permit, auth_id, action)]
@@ -30,12 +30,44 @@ async def test_permits(permit: AclPermit, has_auth_id: bool, result: bool | None
     assert await __dynamic_check(action, [acl], [auth_id] if has_auth_id else []) == result
 
 
-async def test_acl_order():
-    pass
+test_actions_parameters = [
+    (AclAction.CREATE, (AclPermit.DENY, AUTHENTICATED, AclAction.CREATE), False),
+    (AclAction.CREATE, (AclPermit.DENY, AUTHENTICATED, AclAction.VIEW), None),
+    (AclAction.VIEW, (AclPermit.ALLOW, AUTHENTICATED, AclAction.VIEW), True),
+    (AclAction.VIEW, (AclPermit.ALLOW, AUTHENTICATED, AclAction.CREATE), None),
+]
 
 
-async def test_multiple_entries():
-    pass
+@pytest.mark.parametrize("action,acl_entry,result", test_actions_parameters)
+async def test_actions(action: AclAction, acl_entry: AclEntry, result: bool | None):
+    """Tests checks responding only to required actions."""
+    assert __static_check(action, [acl_entry], [AUTHENTICATED]) == result
+    assert await __dynamic_check(action, [[acl_entry]], [AUTHENTICATED]) == result
+
+
+test_acl_order_parameters = [
+    (
+        [
+            (AclPermit.ALLOW, AUTHENTICATED, AclAction.DELETE),
+            (AclPermit.DENY, AUTHENTICATED, AclAction.DELETE),
+        ],
+        True,
+    ),
+    (
+        [
+            (AclPermit.DENY, AUTHENTICATED, AclAction.DELETE),
+            (AclPermit.ALLOW, AUTHENTICATED, AclAction.DELETE),
+        ],
+        False,
+    ),
+]
+
+
+@pytest.mark.parametrize("acl_list,result", test_acl_order_parameters)
+async def test_acl_order(acl_list: AclList, result: bool | None):
+    """Tests if the order of acl_entries is respected."""
+    assert __static_check(AclAction.DELETE, acl_list, [AUTHENTICATED]) == result
+    assert await __dynamic_check(AclAction.DELETE, [acl_list], [AUTHENTICATED]) == result
 
 
 async def test_multiple_actions():
