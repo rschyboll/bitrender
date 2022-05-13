@@ -1,5 +1,7 @@
 """This module contains global fixtures for tests."""
 
+import asyncio
+
 import pytest
 from _pytest.fixtures import SubRequest
 from tortoise.contrib.test import finalizer, initializer
@@ -20,3 +22,8 @@ def initialize_orm(request: SubRequest) -> None:
     """Initializes database for testing and removes it when finished."""
     initializer(test_settings.models, db_url=test_settings.database_url, app_label="bitrender")
     request.addfinalizer(finalizer)
+
+
+@pytest.fixture(scope="session")
+def event_loop():
+    return asyncio.get_event_loop()
