@@ -1,6 +1,6 @@
 import { FC, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import { BrowserRouter, Outlet, Route, Routes } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
+import { Outlet, Route, Routes } from 'react-router-dom';
 
 import { Sidebar } from '@/components/sidebar';
 import { RolesPage } from '@/pages/roles';

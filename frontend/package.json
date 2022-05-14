@@ -13,6 +13,8 @@
     "typescript": "^4.6.4"
   },
   "dependencies": {
+    "i18next": "^21.8.2",
+    "i18next-browser-languagedetector": "^6.1.4",
     "include-media": "^1.4.10",
     "kea": "^3.0.0",
     "kea-typegen": "^3.0.0",
@@ -21,6 +23,7 @@
     "primereact": "^8.1.0",
     "react": "^18.1.0",
     "react-dom": "^18.1.0",
+    "react-i18next": "^11.16.9",
     "react-router-dom": "^6.3.0"
   },
   "alias": {

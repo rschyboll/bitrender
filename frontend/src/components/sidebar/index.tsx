@@ -1,127 +1,55 @@
 import { PanelMenu } from 'primereact/panelmenu';
-import { FC } from 'react';
+import { FC, useState } from 'react';
+import { useLocation } from 'react-router-dom';
 
-const items = [
-  {
-    label: 'File',
-    icon: 'pi pi-fw pi-file',
+import { SidebarGroup } from '../sidebar-group';
+import { SidebarItem } from '../sidebar-item';
+import './style.scss';
+
+const groups = {
+  user: {
+    icon: '',
+    title: '',
     items: [
-      {
-        label: 'New',
-        icon: 'pi pi-fw pi-plus',
-        items: [
-          {
-            label: 'Bookmark',
-            icon: 'pi pi-fw pi-bookmark',
-          },
-          {
-            label: 'Video',
-            icon: 'pi pi-fw pi-video',
-          },
-        ],
-      },
-      {
-        label: 'Delete',
-        icon: 'pi pi-fw pi-trash',
-      },
-      {
-        label: 'Export',
-        icon: 'pi pi-fw pi-external-link',
-      },
+      { icon: '', title: 'TEST', path: '' },
+      { icon: '', title: '', path: '' },
     ],
   },
-  {
-    label: 'Edit',
-    icon: 'pi pi-fw pi-pencil',
+  tasks: {
+    icon: '',
+    title: '',
     items: [
-      {
-        label: 'Left',
-        icon: 'pi pi-fw pi-align-left',
-      },
-      {
-        label: 'Right',
-        icon: 'pi pi-fw pi-align-right',
-      },
-      {
-        label: 'Center',
-        icon: 'pi pi-fw pi-align-center',
-      },
-      {
-        label: 'Justify',
-        icon: 'pi pi-fw pi-align-justify',
-      },
+      { icon: '', title: '', path: '' },
+      { icon: '', title: '', path: '' },
     ],
   },
-  {
-    label: 'Users',
-    icon: 'pi pi-fw pi-user',
-    items: [
-      {
-        label: 'New',
-        icon: 'pi pi-fw pi-user-plus',
-      },
-      {
-        label: 'Delete',
-        icon: 'pi pi-fw pi-user-minus',
-      },
-      {
-        label: 'Search',
-        icon: 'pi pi-fw pi-users',
-        items: [
-          {
-            label: 'Filter',
-            icon: 'pi pi-fw pi-filter',
-            items: [
-              {
-                label: 'Print',
-                icon: 'pi pi-fw pi-print',
-              },
-            ],
-          },
-          {
-            icon: 'pi pi-fw pi-bars',
-            label: 'List',
-          },
-        ],
-      },
-    ],
-  },
-  {
-    label: 'Events',
-    icon: 'pi pi-fw pi-calendar',
-    items: [
-      {
-        label: 'Edit',
-        icon: 'pi pi-fw pi-pencil',
-        items: [
-          {
-            label: 'Save',
-            icon: 'pi pi-fw pi-calendar-plus',
-          },
-          {
-            label: 'Delete',
-            icon: 'pi pi-fw pi-calendar-minus',
-          },
-        ],
-      },
-      {
-        label: 'Archieve',
-        icon: 'pi pi-fw pi-calendar-times',
-        items: [
-          {
-            label: 'Remove',
-            icon: 'pi pi-fw pi-calendar-minus',
-          },
-        ],
-      },
-    ],
-  },
-];
+};
 
 export const Sidebar: FC = () => {
+  const [openItem, setOpenItem] = useState<String | null>(null);
+  const location = useLocation();
+
   return (
-    <div>
-      <PanelMenu model={items} />
+    <div className="sidebar flex flex-column">
+      {Object.entries(groups).map((groupEntry) => {
+        return (
+          <SidebarGroup
+            key={groupEntry[0]}
+            open={groupEntry[0] == openItem}
+            onOpen={setOpenItem}
+            {...groupEntry[1]}
+          >
+            {groupEntry[1].items.map((item) => {
+              return (
+                <SidebarItem
+                  current={location.pathname == item.path}
+                  {...item}
+                />
+              );
+            })}
+          </SidebarGroup>
+        );
+      })}
     </div>
   );
 };
