@@ -25,6 +25,12 @@ class EmailService:
         )
         await self.mail.send_message(message)
 
+    async def send_reset_email(self, email: str, token: str):
+        message = MessageSchema(
+            subject="Test", recipients=["hoodrobin.rs@gmail.com"], body="TEST", subtype="html"
+        )
+        await self.mail.send_message(message)
+
     @staticmethod
     def __get_config(settings: Settings) -> ConnectionConfig:
         return ConnectionConfig(

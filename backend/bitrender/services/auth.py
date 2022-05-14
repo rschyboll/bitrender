@@ -130,6 +130,17 @@ class AuthService:
         await user.save()
         await self.services.email.send_verify_email(user.email, token)
 
+    async def request_reset(self, email: EmailStr) -> None:
+        """TODO generate docstring"""
+        try:
+            user = await User.get_by_email(email)
+        except DoesNotExist as error:
+            pass
+        token = self.token.create_token(user.id)
+        user.reset_password_token = token
+        await user.save()
+        await self.services.email.send_reset_email()
+
     async def verify(self, email: EmailStr, token: str) -> None:
         """TODO generate docstring"""
         try:
