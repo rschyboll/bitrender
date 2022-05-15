@@ -1,25 +1,87 @@
 @import '@/scss/global.scss';
 
-.layout-content {
-  height: 100%;
+$slimWidth: 6rem;
+$staticWidth: 16rem;
 
+.layout,
+.layout-content,
+.layout-sidebar {
+  height: 100%;
+}
+
+.layout-content {
+  transition: margin-left $transition-duration;
+  background-color: var(--surface-b);
+}
+
+.layout-horizontal .layout-content,
+.layout-overlay .layout-content {
+  margin-left: 0;
+}
+
+.layout-slim .layout-content {
+  @include media('<=tablet') {
+    margin-left: 0rem;
+  }
+  @include media('>tablet') {
+    margin-left: $slimWidth;
+  }
+}
+
+.layout-static .layout-content {
   @include media('<=desktop') {
-    margin-left: 0;
+    margin-left: 0rem;
   }
   @include media('>desktop') {
-    margin-left: 20rem;
+    margin-left: $staticWidth;
   }
 }
 
 .layout-sidebar {
   position: fixed;
-  height: 100%;
-  background-color: var();
+  transition: width $transition-duration;
+}
 
+.layout-horizontal .layout-sidebar,
+.layout-overlay .layout-sidebar {
+  width: 0rem;
+}
+
+.layout-overlay-active.layout-overlay .layout-sidebar {
+  width: $staticWidth;
+}
+
+.layout-slim .layout-sidebar {
+  @include media('<=tablet') {
+    width: 0rem;
+  }
+  @include media('>tablet') {
+    width: $slimWidth;
+  }
+}
+
+.layout-static .layout-sidebar {
   @include media('<=desktop') {
-    display: none;
+    width: 0rem;
   }
   @include media('>desktop') {
-    width: 20rem;
+    width: $staticWidth;
   }
+}
+
+.layout-mobile-active .layout-mask {
+  display: block;
+  opacity: 1;
+}
+
+.layout-mask {
+  display: none;
+  opacity: 0;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 998;
+  width: 100%;
+  height: 100%;
+  transition: opacity $transition-duration;
 }

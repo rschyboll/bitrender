@@ -1,5 +1,5 @@
 {
-  "common": {
-    "learnReact": "Learn React"
+  "nav": {
+    "users": "Users"
   }
 }

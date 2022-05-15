@@ -1,5 +1,4 @@
-.sidebar .p-panelmenu .p-panelmenu-header .p-panelmenu-header-link,
-.sidebar .p-panelmenu .p-panelmenu-content {
-  background-color: transparent !important;
-  border: 0px;
+.sidebar {
+  height: 100%;
+  background: var(--sidebar-background);
 }
