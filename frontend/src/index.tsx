@@ -4,6 +4,8 @@ import { BrowserRouter } from 'react-router-dom';
 import { App } from '@/app';
 import '@/scss/global.scss';
 
+import './i18n';
+
 function Init() {
   return (
     <BrowserRouter>

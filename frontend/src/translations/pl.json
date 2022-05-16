@@ -1,5 +1,7 @@
 {
-  "nav": {
-    "users": "Użytkownicy"
+  "translation": {
+    "nav": {
+      "users": "Użytkownicy"
+    }
   }
 }

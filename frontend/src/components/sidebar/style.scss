@@ -1,4 +1,49 @@
 .sidebar {
   height: 100%;
   background: var(--sidebar-background);
+  border-right: 1px solid var(--surface-border);
+  display: flex;
+  flex-direction: column;
+}
+
+.sidebar .logo {
+  padding: 1rem;
+  margin-left: 1rem;
+  margin-right: 1rem;
+  border-bottom: 1px solid var(--sidebar-spacer-color);
+}
+
+.sidebar .logo-image {
+  width: 2rem;
+  height: 2rem;
+  vertical-align: middle;
+  margin-right: 0.5rem;
+  filter: invert(75%);
+}
+
+.app-name {
+  color: var(--sidebar-title-color);
+  vertical-align: middle;
+  font-size: 1.5rem;
+  letter-spacing: 0.2px;
+}
+
+.sidebar-container {
+  padding: 1rem;
+  flex: 1;
+  list-style-type: none;
+  margin: 0;
+}
+
+.sidebar-group {
+}
+
+.sidebar-group-title {
+  text-transform: uppercase;
+  text-align: left;
+  user-select: none;
+  font-weight: 700;
+  font-size: 0.857rem;
+  padding: 0.5rem 0 1rem 0;
+  color: var(--sidebar-static-group-text-color);
 }
