@@ -1,4 +1,5 @@
 import { useValues } from 'kea';
+import { Ripple } from 'primereact/ripple';
 import { FC, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Trans } from 'react-i18next';
@@ -24,18 +25,35 @@ export const Sidebar: FC = () => {
           src={logo.toString()}
           alt="diamond layout"
         />
-        <span className="app-name">BITRENDER </span>
+        <span className="app-name">BITRENDER</span>
       </Link>
       <ul className="sidebar-container">
         {Object.entries(sidebarModel).map((entry) => {
           return (
             <li className="sidebar-group" key={entry[0]}>
               <div className="sidebar-group-title">
-                <Trans>FAVORITES</Trans>
+                <Trans>{`nav.${entry[0]}`}</Trans>
               </div>
-              {entry[1].items.map((item) => {
-                return <div key={item.path}> </div>;
-              })}
+              <div className="sidebar-group-container">
+                {entry[1].items.map((itemEntry) => {
+                  return (
+                    <Link
+                      key={itemEntry.path}
+                      className="sidebar-item p-ripple"
+                      to={itemEntry.path}
+                    >
+                      <i
+                        className={`sidebar-item-icon pi pi-fw ${itemEntry.icon}`}
+                      />
+                      <span className="sidebar-item-title">
+                        {itemEntry.title}
+                      </span>
+                      <Ripple />
+                    </Link>
+                  );
+                })}
+              </div>
+              {entry[1].spacer && <div className="sidebar-spacer" />}
             </li>
           );
         })}
