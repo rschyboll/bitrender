@@ -14,8 +14,7 @@ $staticWidth: 16rem;
   background-color: var(--surface-b);
 }
 
-.layout-horizontal .layout-content,
-.layout-overlay .layout-content {
+.layout-horizontal .layout-content {
   margin-left: 0;
 }
 
@@ -40,15 +39,16 @@ $staticWidth: 16rem;
 .layout-sidebar {
   position: fixed;
   transition: width $transition-duration;
+  background: var(--sidebar-background);
+  border-right: 1px solid var(--sidebar-border);
+  box-shadow: 0 2px 4px -1px rgb(0 0 0 / 20%), 0 4px 5px 0 rgb(0 0 0 / 14%),
+    0 1px 10px 0 rgb(0 0 0 / 12%);
 }
 
-.layout-horizontal .layout-sidebar,
-.layout-overlay .layout-sidebar {
+.layout-horizontal .layout-sidebar {
   width: 0rem;
-}
-
-.layout-overlay-active.layout-overlay .layout-sidebar {
-  width: $staticWidth;
+  border-right: 0px;
+  box-shadow: none;
 }
 
 .layout-slim .layout-sidebar {

@@ -14,7 +14,6 @@ import './style.scss';
 
 const layoutTypesClasses = {
   [SidebarType.Horizontal]: 'layout-horizontal',
-  [SidebarType.Overlay]: 'layout-overlay',
   [SidebarType.Slim]: 'layout-slim',
   [SidebarType.Static]: 'layout-static',
 };
@@ -24,6 +23,9 @@ const themeClasses = {
   [Theme.Dim]: 'dim',
   [Theme.Light]: 'light',
 };
+
+const verticalTypes = [SidebarType.Static, SidebarType.Slim];
+const horizontalTypes = [SidebarType.Horizontal];
 
 export const App: FC = () => {
   const { theme } = useValues(settingsLogic);
@@ -59,10 +61,11 @@ export const AppBody: FC = () => {
       }`}
     >
       <div className="layout-sidebar">
-        <Sidebar />
+        <Sidebar sidebarKey="sidebar-vertical" types={verticalTypes} />
       </div>
       <div className="layout-content">
         <div className="layout-topbar">
+          <Sidebar sidebarKey="sidebar-horizontal" types={horizontalTypes} />
           <Topbar />
         </div>
         <div className="layout-page">
@@ -72,10 +75,6 @@ export const AppBody: FC = () => {
         <Button
           label="Static"
           onClick={() => setSidebarType(SidebarType.Static)}
-        />
-        <Button
-          label="Overlay"
-          onClick={() => setSidebarType(SidebarType.Overlay)}
         />
         <Button
           label="Horizontal"

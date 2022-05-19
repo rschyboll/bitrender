@@ -1,6 +1,5 @@
 export enum SidebarType {
   Static,
-  Overlay,
   Slim,
   Horizontal,
 }

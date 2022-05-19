@@ -2,8 +2,10 @@
 
 :root {
   --sidebar-background: linear-gradient(180deg, #1e1e1e 10%, #1e1e1e 100%);
+  --sidebar-border: #383838;
   --sidebar-static-group-text-color: rgba(255, 255, 255, 0.6);
   --sidebar-spacer-color: #383838;
   --sidebar-title-color: rgba(255, 255, 255, 0.87);
   --sidebar-item-color: rgba(255, 255, 255, 0.87);
+  --sidebar-item-hover: rgba(255, 255, 255, 0.06);
 }
