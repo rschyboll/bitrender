@@ -1,0 +1,38 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "$(triangle-right) Watch",
+      "type": "shell",
+      "command": "yarn run watch",
+      "options": {
+        "cwd": "${workspaceFolder}",
+        "statusbar": {
+          "color": "#adbaff"
+        }
+      }
+    },
+    {
+      "label": "$(gear) Build",
+      "type": "shell",
+      "command": "yarn parcel:build",
+      "options": {
+        "cwd": "${workspaceFolder}",
+        "statusbar": {
+          "color": "#adbaff"
+        }
+      }
+    },
+    {
+      "label": "$(sync) Reload grpc",
+      "type": "shell",
+      "command": "yarn proto:compile",
+      "options": {
+        "cwd": "${workspaceFolder}",
+        "statusbar": {
+          "color": "#adbaff"
+        }
+      }
+    }
+  ]
+}

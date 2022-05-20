@@ -48,16 +48,17 @@ export const App: FC = () => {
 };
 
 export const AppBody: FC = () => {
-  const { sidebarType, theme, sidebarMobileActive, sidebarOverlayActive } =
+  const { sidebarType, theme, sidebarMobileActive, sidebarSlimActive } =
     useValues(settingsLogic);
-  const { setSidebarType, setTheme } = useActions(settingsLogic);
+  const { setSidebarType, setTheme, toggleSlimSidebar } =
+    useActions(settingsLogic);
 
   return (
     <div
       className={`layout ${layoutTypesClasses[sidebarType]} theme-${
         themeClasses[theme]
       } ${sidebarMobileActive ? 'layout-mobile-active' : ''} ${
-        sidebarOverlayActive ? 'layout-overlay-active' : ''
+        sidebarSlimActive ? 'layout-slim-active' : ''
       }`}
     >
       <div className="layout-sidebar">
@@ -82,7 +83,8 @@ export const AppBody: FC = () => {
         />
         <Button label="Dark" onClick={() => setTheme(Theme.Dark)} />
         <Button label="Dim" onClick={() => setTheme(Theme.Dim)} />
-        <Button label="Light" onClick={() => setTheme(Theme.Light)} />
+        <Button label="Light" onClick={() => setTheme(Theme.Light)} />{' '}
+        <Button label="SlimSidebar" onClick={toggleSlimSidebar} />
       </div>
       <div className="layout-content-mask" />
     </div>

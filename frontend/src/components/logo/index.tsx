@@ -5,7 +5,11 @@ import './style.scss';
 
 const logo = new URL('../../assets/logo.svg', import.meta.url);
 
-export const Logo: FC = () => {
+export interface LogoProps {
+  titleVisible?: boolean;
+}
+
+export const Logo: FC<LogoProps> = (props) => {
   return (
     <Link className="logo" to="/">
       <img
@@ -14,7 +18,7 @@ export const Logo: FC = () => {
         src={logo.toString()}
         alt="diamond layout"
       />
-      <span className="app-name">BITRENDER</span>
+      {props.titleVisible && <span className="app-name">BITRENDER</span>}
     </Link>
   );
 };

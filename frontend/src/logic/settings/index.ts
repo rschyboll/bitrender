@@ -7,7 +7,7 @@ export const settingsLogic = kea<settingsLogicType>([
   actions({
     setSidebarType: (type: SidebarType) => ({ type }),
     setTheme: (theme: Theme) => ({ theme }),
-    toggleOverlaySidebar: true,
+    toggleSlimSidebar: true,
     toggleMobileSidebar: true,
   }),
   reducers({
@@ -23,10 +23,10 @@ export const settingsLogic = kea<settingsLogicType>([
         setSidebarType: (_, { type }) => type,
       },
     ],
-    sidebarOverlayActive: [
+    sidebarSlimActive: [
       false,
       {
-        toggleOverlaySidebar: (state) => !state,
+        toggleSlimSidebar: (state) => !state,
       },
     ],
     sidebarMobileActive: [

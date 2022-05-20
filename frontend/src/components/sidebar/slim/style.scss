@@ -1,3 +1,60 @@
 .sidebar-slim {
   width: 6rem;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+
+  .sidebar-container {
+    overflow: visible;
+  }
+
+  .sidebar-group {
+    position: relative;
+  }
+
+  .sidebar-group-button {
+    width: 4rem;
+    height: 4rem;
+    border-radius: 4px;
+    padding: 0.5rem 0;
+    text-align: center;
+    cursor: pointer;
+    outline: none;
+    transition: background-color 0.2s, box-shadow 0.2s;
+    color: var(--sidebar-item-color);
+  }
+
+  .sidebar-group-icon {
+    width: 1.25rem !important;
+    height: 1.25rem !important;
+    font-size: 1.25rem !important;
+  }
+
+  .sidebar-group-button:hover {
+    background-color: var(--sidebar-item-hover);
+  }
+
+  .sidebar-group-button:focus {
+    box-shadow: var(--sidebar-item-toggle-shadow);
+  }
+
+  .sidebar-group-title {
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+  }
+
+  .sidebar-group-items {
+    display: none;
+  }
+}
+
+.layout-slim-active .sidebar-slim .sidebar-group-items {
+  display: block;
+  position: absolute;
+  width: 10rem;
+  height: 10rem;
+  background-color: var(--sidebar-background);
+  left: 5rem;
+  top: 0;
+  background-color: red;
 }
