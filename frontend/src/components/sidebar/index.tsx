@@ -26,7 +26,7 @@ export const Sidebar: FC<SidebarProps> = memo((props) => {
     <SwitchTransition key={props.sidebarKey}>
       <CSSTransition
         addEndListener={() => {}}
-        classNames={'sidebar-fade'}
+        classNames="sidebar-fade"
         key={props.sidebarKey + sidebarType.toString()}
         timeout={125}
         unmountOnExit

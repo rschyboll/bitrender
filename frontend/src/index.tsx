@@ -6,6 +6,7 @@ import { App } from '@/app';
 import '@/scss/global.scss';
 
 import './i18n';
+import './logic';
 
 PrimeReact.ripple = true;
 

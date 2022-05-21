@@ -30,10 +30,6 @@
     color: var(--sidebar-static-group-text-color);
   }
 
-  .sidebar-item-active {
-    font-weight: bold;
-  }
-
   .sidebar-group {
     display: flex;
     flex-direction: column;
@@ -42,33 +38,5 @@
   .sidebar-group-container {
     display: flex;
     flex-direction: column;
-  }
-
-  .sidebar-item {
-    color: var(--sidebar-item-color);
-    padding: 0.5rem;
-    font-size: 1rem;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: background-color 0.2s, box-shadow 0.2s;
-    width: 100%;
-    display: flex;
-    align-items: center;
-  }
-
-  .sidebar-item:hover {
-    background-color: var(--sidebar-item-hover);
-  }
-
-  .sidebar-item:focus {
-    box-shadow: var(--sidebar-item-toggle-shadow);
-    outline: none;
-  }
-
-  .sidebar-item-icon {
-    width: 1.2rem !important;
-    height: 1.2rem !important;
-    margin-right: 0.5rem;
-    font-size: 1.2rem !important;
   }
 }

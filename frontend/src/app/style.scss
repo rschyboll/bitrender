@@ -18,12 +18,23 @@ $staticWidth: 16rem;
   margin-left: 0;
 }
 
-.layout-slim .layout-content {
-  @include media('<=tablet') {
-    margin-left: 0rem;
+.layout-slim {
+  .layout-content,
+  .layout-topbar {
+    @include media('<=tablet') {
+      margin-left: 0rem;
+    }
+    @include media('>tablet') {
+      margin-left: $slimWidth;
+    }
   }
-  @include media('>tablet') {
-    margin-left: $slimWidth;
+  .layout-sidebar {
+    @include media('<=tablet') {
+      width: 0rem;
+    }
+    @include media('>tablet') {
+      width: $slimWidth;
+    }
   }
 }
 
@@ -43,6 +54,7 @@ $staticWidth: 16rem;
   border-right: 1px solid var(--sidebar-border);
   box-shadow: 0 2px 4px -1px rgb(0 0 0 / 20%), 0 4px 5px 0 rgb(0 0 0 / 14%),
     0 1px 10px 0 rgb(0 0 0 / 12%);
+  z-index: 10;
 }
 
 .layout-horizontal .layout-sidebar {
@@ -51,18 +63,10 @@ $staticWidth: 16rem;
   box-shadow: none;
 }
 
-.layout-slim .layout-sidebar {
-  @include media('<=tablet') {
-    width: 0rem;
-  }
-  @include media('>tablet') {
-    width: $slimWidth;
-  }
-}
-
 .layout-static .layout-sidebar {
   @include media('<=desktop') {
     width: 0rem;
+    overflow: hidden;
   }
   @include media('>desktop') {
     width: $staticWidth;

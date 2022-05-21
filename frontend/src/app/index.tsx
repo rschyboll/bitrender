@@ -48,27 +48,27 @@ export const App: FC = () => {
 };
 
 export const AppBody: FC = () => {
-  const { sidebarType, theme, sidebarMobileActive, sidebarSlimActive } =
-    useValues(settingsLogic);
-  const { setSidebarType, setTheme, toggleSlimSidebar } =
+  const { sidebarType, theme, sidebarMobileActive } = useValues(settingsLogic);
+  const { setSidebarType, setTheme, setSlimSidebarState } =
     useActions(settingsLogic);
 
   return (
     <div
       className={`layout ${layoutTypesClasses[sidebarType]} theme-${
         themeClasses[theme]
-      } ${sidebarMobileActive ? 'layout-mobile-active' : ''} ${
-        sidebarSlimActive ? 'layout-slim-active' : ''
-      }`}
+      } ${sidebarMobileActive ? 'layout-mobile-active' : ''}`}
     >
       <div className="layout-sidebar">
         <Sidebar sidebarKey="sidebar-vertical" types={verticalTypes} />
       </div>
-      <div className="layout-content">
-        <div className="layout-topbar">
-          <Sidebar sidebarKey="sidebar-horizontal" types={horizontalTypes} />
-          <Topbar />
-        </div>
+      <div className="layout-topbar">
+        <Sidebar sidebarKey="sidebar-horizontal" types={horizontalTypes} />
+        <Topbar />
+      </div>
+      <div
+        onClick={() => setSlimSidebarState(false)}
+        className="layout-content"
+      >
         <div className="layout-page">
           <Outlet />
         </div>
@@ -84,7 +84,6 @@ export const AppBody: FC = () => {
         <Button label="Dark" onClick={() => setTheme(Theme.Dark)} />
         <Button label="Dim" onClick={() => setTheme(Theme.Dim)} />
         <Button label="Light" onClick={() => setTheme(Theme.Light)} />{' '}
-        <Button label="SlimSidebar" onClick={toggleSlimSidebar} />
       </div>
       <div className="layout-content-mask" />
     </div>

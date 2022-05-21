@@ -1,11 +1,17 @@
 .topbar {
-  background: var(--sidebar-background);
-  background-color: white;
+  background-color: var(--surface-a);
   height: 100%;
   transition: background-color 1.2s;
 }
 
 .layout-horizontal .topbar {
-  background: var(--sidebar-background);
   border-bottom: 1px solid var(--surface-border);
+}
+
+.topbar-sidebar-background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
 }

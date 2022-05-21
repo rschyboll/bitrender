@@ -2722,6 +2722,11 @@ json5@^2.1.2, json5@^2.2.0, json5@^2.2.1:
   resolved "https://registry.yarnpkg.com/json5/-/json5-2.2.1.tgz#655d50ed1e6f95ad1a3caababd2b0efda10b395c"
   integrity sha512-1hqLFMSrGHRHxav9q9gNjJ5EXznIxGVO09xQRrwplcS8qs28pZ8s8hupZAmqDwZUmVZ2Qb2jnyPOWcDH8m8dlA==
 
+kea-localstorage@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/kea-localstorage/-/kea-localstorage-3.0.0.tgz#eae89f0ff4f90006efecee02ac2ef19224193091"
+  integrity sha512-5g/7Sb5HjXLVTTYB9aUgizISUmnQZHqFm7ab+K3sLLh6gp3UEaKJMs5yq2rFPAfr7QR8OpMkfhKA0Ykg5UaOMQ==
+
 kea-typegen@^3.0.0:
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/kea-typegen/-/kea-typegen-3.0.0.tgz#da461a6e5cd41c2442a5590d381b97687a2ee559"

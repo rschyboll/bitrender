@@ -2,7 +2,7 @@
   "compilerOptions": {
     "jsx": "react-jsx",
     "module": "ES2022",
-    "target": "es6",
+    "target": "esnext",
     "moduleResolution": "node",
     "esModuleInterop": true,
     "resolveJsonModule": true,
