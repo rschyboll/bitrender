@@ -51,7 +51,7 @@ interface SidebarSlimGroupProps extends Group {
   active: boolean;
   groupItemActive: boolean;
 }
-
+//TODO split to two components
 const SidebarSlimGroup: FC<SidebarSlimGroupProps> = memo((props) => {
   const { setSlimSidebarState } = useActions(settingsLogic);
   const { sidebarSlimActive } = useValues(settingsLogic);
@@ -102,4 +102,8 @@ const SidebarSlimGroup: FC<SidebarSlimGroupProps> = memo((props) => {
       {props.spacer && <div className="sidebar-spacer" />}
     </>
   );
+});
+
+const SidebarSlimGroupDialog: FC = memo(() => {
+  return <div></div>;
 });
