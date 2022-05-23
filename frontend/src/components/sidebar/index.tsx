@@ -33,15 +33,15 @@ export const Sidebar: FC<SidebarProps> = memo((props) => {
         mountOnEnter
       >
         <>
-          {sidebarType == SidebarType.Horizontal &&
-          sidebarType in props.types ? (
+          {sidebarType === SidebarType.Horizontal &&
+          props.types.includes(sidebarType) ? (
             <SidebarHorizontal />
           ) : null}
-          {sidebarType == SidebarType.Slim &&
+          {sidebarType === SidebarType.Slim &&
           props.types.includes(sidebarType) ? (
             <SidebarSlim />
           ) : null}
-          {sidebarType == SidebarType.Static &&
+          {sidebarType === SidebarType.Static &&
           props.types.includes(sidebarType) ? (
             <SidebarWide />
           ) : null}

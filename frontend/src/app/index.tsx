@@ -25,7 +25,6 @@ const themeClasses = {
 };
 
 const verticalTypes = [SidebarType.Static, SidebarType.Slim];
-const horizontalTypes = [SidebarType.Horizontal];
 
 export const App: FC = () => {
   const { theme } = useValues(settingsLogic);
@@ -62,7 +61,6 @@ export const AppBody: FC = () => {
         <Sidebar sidebarKey="sidebar-vertical" types={verticalTypes} />
       </div>
       <div className="layout-topbar">
-        <Sidebar sidebarKey="sidebar-horizontal" types={horizontalTypes} />
         <Topbar />
       </div>
       <div

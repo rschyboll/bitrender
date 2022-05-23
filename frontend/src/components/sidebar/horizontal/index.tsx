@@ -13,8 +13,10 @@ export const SidebarHorizontal: FC = () => {
 
   return (
     <div className="sidebar-horizontal">
-      TEST
       <Logo />
+      <ul className="sidebar-container"></ul>
     </div>
   );
 };
+
+const SidebarHorizontalGroup: FC = () => {};
