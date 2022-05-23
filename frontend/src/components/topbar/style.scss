@@ -1,0 +1,24 @@
+.topbar {
+  background-color: var(--surface-a);
+  height: 100%;
+}
+
+.topbar-sidebar-background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 4rem;
+  transition: opacity 0.2s;
+  background: var(--sidebar-background);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.layout-horizontal .topbar-sidebar-background {
+  opacity: 1;
+}
+
+.topbar-container {
+  height: 100%;
+}

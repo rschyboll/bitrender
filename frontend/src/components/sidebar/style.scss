@@ -1,5 +1,48 @@
-.sidebar .p-panelmenu .p-panelmenu-header .p-panelmenu-header-link,
-.sidebar .p-panelmenu .p-panelmenu-content {
-  background-color: transparent !important;
-  border: 0px;
+.layout-sidebar {
+  user-select: none;
+}
+
+.logo-image {
+  width: 2rem;
+  height: 2rem;
+  vertical-align: middle;
+  margin-right: 0.5rem;
+  filter: invert(75%);
+}
+
+.logo {
+  padding: 1rem;
+  margin-left: 1rem;
+  margin-right: 1rem;
+  border-bottom: 1px solid var(--sidebar-spacer-color);
+}
+
+.sidebar-container {
+  list-style-type: none;
+  overflow: auto;
+  margin: 0;
+  padding: 1rem;
+  flex: 1;
+}
+
+.sidebar-spacer {
+  border-top: 1px solid var(--sidebar-spacer-color);
+  margin: 1rem 0;
+}
+
+.sidebar-fade-enter {
+  opacity: 0;
+}
+.sidebar-fade-exit {
+  opacity: 1;
+}
+.sidebar-fade-enter-active {
+  opacity: 1;
+}
+.sidebar-fade-exit-active {
+  opacity: 0;
+}
+.sidebar-fade-enter-active,
+.sidebar-fade-exit-active {
+  transition: opacity 125ms;
 }

@@ -1,55 +1,52 @@
-import { PanelMenu } from 'primereact/panelmenu';
-import { FC, useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useValues } from 'kea';
+import { Ripple } from 'primereact/ripple';
+import { FC, memo, useEffect, useState } from 'react';
+import { CSSTransition, SwitchTransition } from 'react-transition-group';
 
-import { SidebarGroup } from '../sidebar-group';
-import { SidebarItem } from '../sidebar-item';
+import { settingsLogic } from '@/logic/settings';
+import { SidebarType } from '@/logic/settings/types';
+
+import { SidebarHorizontal } from './horizontal';
+import { sidebarModel } from './model';
+import { SidebarSlim } from './slim';
 import './style.scss';
+import { SidebarWide } from './wide';
 
-const groups = {
-  user: {
-    icon: '',
-    title: '',
-    items: [
-      { icon: '', title: 'TEST', path: '' },
-      { icon: '', title: '', path: '' },
-    ],
-  },
-  tasks: {
-    icon: '',
-    title: '',
-    items: [
-      { icon: '', title: '', path: '' },
-      { icon: '', title: '', path: '' },
-    ],
-  },
-};
+const logo = new URL('../../assets/logo.svg', import.meta.url);
 
-export const Sidebar: FC = () => {
-  const [openItem, setOpenItem] = useState<String | null>(null);
-  const location = useLocation();
+export interface SidebarProps {
+  sidebarKey: string;
+  types: SidebarType[];
+}
+
+export const Sidebar: FC<SidebarProps> = memo((props) => {
+  const { sidebarType } = useValues(settingsLogic);
 
   return (
-    <div className="sidebar flex flex-column">
-      {Object.entries(groups).map((groupEntry) => {
-        return (
-          <SidebarGroup
-            key={groupEntry[0]}
-            open={groupEntry[0] == openItem}
-            onOpen={setOpenItem}
-            {...groupEntry[1]}
-          >
-            {groupEntry[1].items.map((item) => {
-              return (
-                <SidebarItem
-                  current={location.pathname == item.path}
-                  {...item}
-                />
-              );
-            })}
-          </SidebarGroup>
-        );
-      })}
-    </div>
+    <SwitchTransition key={props.sidebarKey}>
+      <CSSTransition
+        addEndListener={() => {}}
+        classNames="sidebar-fade"
+        key={props.sidebarKey + sidebarType.toString()}
+        timeout={125}
+        unmountOnExit
+        mountOnEnter
+      >
+        <>
+          {sidebarType === SidebarType.Horizontal &&
+          props.types.includes(sidebarType) ? (
+            <SidebarHorizontal />
+          ) : null}
+          {sidebarType === SidebarType.Slim &&
+          props.types.includes(sidebarType) ? (
+            <SidebarSlim />
+          ) : null}
+          {sidebarType === SidebarType.Static &&
+          props.types.includes(sidebarType) ? (
+            <SidebarWide />
+          ) : null}
+        </>
+      </CSSTransition>
+    </SwitchTransition>
   );
-};
+});

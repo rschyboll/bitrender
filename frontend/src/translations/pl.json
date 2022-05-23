@@ -1,5 +1,7 @@
 {
-  "common": {
-    "learnReact": "Lernen React"
+  "translation": {
+    "nav": {
+      "users": "Użytkownicy"
+    }
   }
 }

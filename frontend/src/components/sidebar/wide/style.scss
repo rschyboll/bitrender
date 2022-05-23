@@ -1,0 +1,42 @@
+.sidebar-wide {
+  height: 100%;
+  width: 16rem;
+  display: flex;
+  flex-direction: column;
+
+  .app-name {
+    color: var(--sidebar-title-color);
+    vertical-align: middle;
+    font-size: 1.5rem;
+    letter-spacing: 0.2px;
+  }
+
+  ::-webkit-scrollbar {
+    width: 0.75rem;
+    background-color: transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background-color: var(--sidebar-spacer-color);
+    border-radius: 1rem;
+  }
+
+  .sidebar-group-title {
+    text-transform: uppercase;
+    text-align: left;
+    font-weight: 700;
+    font-size: 0.857rem;
+    padding: 0.5rem 0 1rem 0;
+    color: var(--sidebar-static-group-text-color);
+  }
+
+  .sidebar-group {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .sidebar-group-container {
+    display: flex;
+    flex-direction: column;
+  }
+}

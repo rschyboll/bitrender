@@ -12,8 +12,20 @@ const resources = {
 
 export const availableLanguages = Object.keys(resources);
 
-i18n.use(initReactI18next).use(LanguageDetector).init({
-  resources,
-  defaultNS: 'common',
-  fallbackLng: 'en',
-});
+i18n
+  .use(LanguageDetector)
+  .use(initReactI18next)
+  .init({
+    resources,
+    fallbackLng: 'en',
+    react: {
+      bindI18n: 'languageChanged',
+      bindI18nStore: '',
+      transEmptyNodeValue: '',
+      transSupportBasicHtmlNodes: true,
+      transKeepBasicHtmlNodesFor: ['br', 'strong', 'i'],
+      useSuspense: false,
+    },
+  });
+
+export default i18n;
