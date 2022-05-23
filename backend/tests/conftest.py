@@ -13,7 +13,7 @@ settings = get_settings()
 test_settings = Settings(
     database_url="postgres://postgres:@localhost:5433/bitrender-TEST",
     data_dir="/data-TEST",
-    models=[*settings.models, "tests.unit.models"],
+    models=[*settings.models, "tests.utils.models"],
 )
 
 

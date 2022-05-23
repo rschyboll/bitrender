@@ -6,7 +6,7 @@ from pytest_mock import MockerFixture
 
 from bitrender.auth.acl import AUTHENTICATED, EVERYONE, AclAction, AclEntry, AclList, AclPermit
 from bitrender.auth.acl_helper import AclHelper
-from tests.unit.models import ExampleModel
+from tests.utils.models import ExampleModel
 
 test_permits_parameters = [
     (AclPermit.ALLOW, True, True),
@@ -70,12 +70,63 @@ async def test_acl_order(acl_list: AclList, result: bool | None):
     assert await __dynamic_check(AclAction.DELETE, [acl_list], [AUTHENTICATED]) == result
 
 
-async def test_multiple_actions():
+test_multiple_required_actions_parameters = [
+    (
+        [
+            (AclPermit.ALLOW, AUTHENTICATED, AclAction.DELETE),
+            (AclPermit.ALLOW, AUTHENTICATED, AclAction.CREATE),
+        ],
+        [AclAction.DELETE, AclAction.CREATE],
+        True,
+    ),
+    (
+        [
+            (AclPermit.ALLOW, AUTHENTICATED, AclAction.DELETE),
+            (AclPermit.DENY, AUTHENTICATED, AclAction.CREATE),
+        ],
+        [AclAction.DELETE, AclAction.CREATE],
+        False,
+    ),
+    (
+        [
+            (AclPermit.ALLOW, AUTHENTICATED, AclAction.DELETE),
+            (AclPermit.ALLOW, "Test", AclAction.CREATE),
+            (AclPermit.ALLOW, AUTHENTICATED, AclAction.VIEW),
+        ],
+        [AclAction.DELETE, AclAction.CREATE, AclAction.VIEW],
+        None,
+    ),
+    (
+        [
+            (AclPermit.ALLOW, AUTHENTICATED, AclAction.DELETE),
+            (AclPermit.NOTALLOW, "Test", AclAction.CREATE),
+            (AclPermit.ALLOW, AUTHENTICATED, AclAction.VIEW),
+        ],
+        [AclAction.DELETE, AclAction.CREATE, AclAction.VIEW],
+        True,
+    ),
+]
+
+
+@pytest.mark.parametrize("acl_list,actions,result", test_multiple_required_actions_parameters)
+async def test_multiple_required_actions(
+    acl_list: AclList, actions: list[AclAction], result: bool | None
+):
+    """Tests correctly checking if multiple actions are required"""
+    assert __static_check(actions, acl_list, [AUTHENTICATED]) == result
+    assert await __dynamic_check(actions, [acl_list], [AUTHENTICATED]) == result
+
+
+test_multiple_auth_ids_parameters = []
+
+
+@pytest.mark.parametrize("", test_multiple_auth_ids_parameters)
+async def test_multiple_auth_ids():
     pass
 
 
 def __static_check(actions: list[AclAction] | AclAction, sacl: AclList, auth_ids: list[str]):
-    with patch("tests.unit.models.ExampleModel.__sacl__", new=MagicMock(return_value=sacl)):
+    with patch("tests.utils.models.ExampleModel.__sacl__", new=MagicMock(return_value=sacl)):
         acl_helper = AclHelper(auth_ids)
         return acl_helper.static_check([ExampleModel], actions)
 
@@ -83,7 +134,7 @@ def __static_check(actions: list[AclAction] | AclAction, sacl: AclList, auth_ids
 async def __dynamic_check(
     actions: list[AclAction] | AclAction, dacl: list[AclList], auth_ids: list[str]
 ):
-    with patch("tests.unit.models.ExampleModel.__dacl__", new=AsyncMock(return_value=dacl)):
+    with patch("tests.utils.models.ExampleModel.__dacl__", new=AsyncMock(return_value=dacl)):
         acl_helper = AclHelper(auth_ids)
         model = ExampleModel()
         return await acl_helper.dynamic_check(model, actions)
@@ -289,4 +340,4 @@ def __test_sacl(
 
 def __mock_sacl(sacl: AclList, mocker: MockerFixture):
     mock = MagicMock(return_value=sacl)
-    mocker.patch("tests.unit.models.ExampleModel.__sacl__", new=mock)
+    mocker.patch("tests.utils.models.ExampleModel.__sacl__", new=mock)

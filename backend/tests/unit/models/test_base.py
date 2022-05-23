@@ -9,8 +9,7 @@ from tortoise.fields import ReverseRelation
 from bitrender.auth.acl import EVERYONE, AclAction, AclList, AclPermit
 from tests.utils import TransactionTest
 from tests.utils.mocks import AwaitableMock
-
-from . import ExampleModel
+from tests.utils.models import ExampleModel
 
 
 class TestBaseModel(TruncationTestCase):
@@ -45,7 +44,6 @@ class TestBaseModel(TruncationTestCase):
     async def test_get_by_id(self):
         """Tests the get_by_id method with lock set to False."""
         for model in self.test_models:
-            test = ExampleModel.get_by_id(model.id, False)
             db_model = await ExampleModel.get_by_id(model.id, False)
             assert model == db_model
 

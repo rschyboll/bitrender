@@ -22,6 +22,9 @@ class Settings(BaseSettings):
     database_url = "postgres://postgres:@localhost/bitrender-DEV"
     data_dir = "/data-DEV"
 
+    frontend_url = "127.0.0.1:1234"
+    reset_password_url = f"{frontend_url}/reset_password"
+
     models = ["bitrender.models", "aerich.models"]
 
     email_username = ""
