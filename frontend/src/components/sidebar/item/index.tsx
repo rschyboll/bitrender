@@ -1,10 +1,11 @@
-import { useActions } from 'kea';
+import { useActions, useValues } from 'kea';
 import { Ripple } from 'primereact/ripple';
-import { FC, memo } from 'react';
+import { FC, memo, useCallback } from 'react';
 import { Trans } from 'react-i18next';
 import { Link, useLocation } from 'react-router-dom';
 
 import { settingsLogic } from '@/logic/settings';
+import { SidebarType } from '@/logic/settings/types';
 
 import { Item } from '../model';
 import './style.scss';
@@ -12,12 +13,17 @@ import './style.scss';
 export interface SidebarItemProps extends Item {}
 
 export const SidebarItem: FC<SidebarItemProps> = memo((props) => {
+  const { toggleSidebar } = useActions(settingsLogic);
+
   const location = useLocation();
-  const { setSlimSidebarState } = useActions(settingsLogic);
+
+  const onClick = useCallback(() => {
+    toggleSidebar(false);
+  }, []);
 
   return (
     <Link
-      onClick={() => setSlimSidebarState(false)}
+      onClick={onClick}
       draggable={false}
       className={`sidebar-item p-ripple ${
         location.pathname == props.path && 'sidebar-item-active'

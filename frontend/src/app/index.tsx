@@ -1,3 +1,4 @@
+import { useInjection } from 'inversify-react';
 import { useActions, useValues } from 'kea';
 import { Button } from 'primereact/button';
 import { FC, useEffect } from 'react';
@@ -5,7 +6,8 @@ import { Outlet, Route, Routes } from 'react-router-dom';
 
 import { Sidebar } from '@/components/sidebar';
 import { Topbar } from '@/components/topbar';
-import { settingsLogic } from '@/logic/settings';
+import { SERVICE } from '@/deps';
+import { SettingsLogic } from '@/logic/interfaces/settings';
 import { SidebarType, Theme } from '@/logic/settings/types';
 import { RolesPage } from '@/pages/roles';
 import { UsersPage } from '@/pages/users';
@@ -27,6 +29,7 @@ const themeClasses = {
 const verticalTypes = [SidebarType.Static, SidebarType.Slim];
 
 export const App: FC = () => {
+  const settingsLogic: SettingsLogic = useInjection(SERVICE.SETTINGS_LOGIC);
   const { theme } = useValues(settingsLogic);
 
   useEffect(() => {
@@ -47,15 +50,16 @@ export const App: FC = () => {
 };
 
 export const AppBody: FC = () => {
-  const { sidebarType, theme, sidebarMobileActive } = useValues(settingsLogic);
-  const { setSidebarType, setTheme, setSlimSidebarState } =
-    useActions(settingsLogic);
+  const settingsLogic: SettingsLogic = useInjection(SERVICE.SETTINGS_LOGIC);
+
+  const { sidebarType, theme, sidebarActive } = useValues(settingsLogic);
+  const { setSidebarType, setTheme, toggleSidebar } = useActions(settingsLogic);
 
   return (
     <div
       className={`layout ${layoutTypesClasses[sidebarType]} theme-${
         themeClasses[theme]
-      } ${sidebarMobileActive ? 'layout-mobile-active' : ''}`}
+      } ${sidebarActive ? 'layout-mobile-active' : ''}`}
     >
       <div className="layout-sidebar">
         <Sidebar sidebarKey="sidebar-vertical" types={verticalTypes} />
@@ -63,10 +67,7 @@ export const AppBody: FC = () => {
       <div className="layout-topbar">
         <Topbar />
       </div>
-      <div
-        onClick={() => setSlimSidebarState(false)}
-        className="layout-content"
-      >
+      <div onClick={() => toggleSidebar(false)} className="layout-content">
         <div className="layout-page">
           <Outlet />
         </div>

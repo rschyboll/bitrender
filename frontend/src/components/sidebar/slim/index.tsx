@@ -3,11 +3,11 @@ import { Ripple } from 'primereact/ripple';
 import { FC, memo, useMemo, useState } from 'react';
 import { Trans } from 'react-i18next';
 import { useLocation } from 'react-router-dom';
-import { CSSTransition, SwitchTransition } from 'react-transition-group';
 
 import { Logo } from '@/components/logo';
 import { settingsLogic } from '@/logic/settings';
 
+import { SidebarDialog } from '../dialog';
 import { SidebarItem } from '../item';
 import { Group, sidebarModel } from '../model';
 import './style.scss';
@@ -51,10 +51,10 @@ interface SidebarSlimGroupProps extends Group {
   active: boolean;
   groupItemActive: boolean;
 }
-//TODO split to two components
+
 const SidebarSlimGroup: FC<SidebarSlimGroupProps> = memo((props) => {
-  const { setSlimSidebarState } = useActions(settingsLogic);
-  const { sidebarSlimActive } = useValues(settingsLogic);
+  const { toggleSidebar } = useActions(settingsLogic);
+  const { sidebarActive } = useValues(settingsLogic);
 
   return (
     <>
@@ -63,41 +63,22 @@ const SidebarSlimGroup: FC<SidebarSlimGroupProps> = memo((props) => {
           props.groupItemActive && 'sidebar-group-active'
         }`}
       >
-        <div
+        <button
           onMouseOver={() => props.onMouseOver(props.groupKey)}
           className="sidebar-group-button p-ripple"
-          onClick={() => setSlimSidebarState(!sidebarSlimActive)}
+          onClick={() => toggleSidebar()}
         >
           <i className={`sidebar-group-icon pi pi-fw ${props.icon}`} />
           <div className="sidebar-group-title">
             <Trans>{props.title}</Trans>
           </div>
           <Ripple />
-        </div>
-        <SwitchTransition>
-          <CSSTransition
-            addEndListener={() => {}}
-            classNames="sidebar-items-fade"
-            key={
-              props.active && sidebarSlimActive
-                ? props.groupKey
-                : `${props.groupKey}-hidden`
-            }
-            timeout={75}
-            unmountOnExit
-            mountOnEnter
-          >
-            {props.active && sidebarSlimActive ? (
-              <div className="sidebar-group-items">
-                {props.items.map((itemModel) => {
-                  return <SidebarItem key={itemModel.path} {...itemModel} />;
-                })}
-              </div>
-            ) : (
-              <div />
-            )}
-          </CSSTransition>
-        </SwitchTransition>
+        </button>
+        <SidebarDialog active={props.active && sidebarActive}>
+          {props.items.map((itemModel) => {
+            return <SidebarItem key={itemModel.path} {...itemModel} />;
+          })}
+        </SidebarDialog>
       </li>
       {props.spacer && <div className="sidebar-spacer" />}
     </>

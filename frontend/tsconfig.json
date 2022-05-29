@@ -16,11 +16,13 @@
     "noImplicitAny": true,
     "noErrorTruncation": true,
     "allowSyntheticDefaultImports": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
     "baseUrl": "./src",
     "paths": {
       "@/*": ["./*"]
     },
-    "types": ["node"]
+    "types": ["node", "reflect-metadata"]
   },
   "include": ["src/**/*"]
 }

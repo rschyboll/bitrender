@@ -1,10 +1,13 @@
+import { Provider as InversifyProvider } from 'inversify-react';
 import PrimeReact from 'primereact/api';
 import ReactDOMClient from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
 
 import { App } from '@/app';
 import '@/scss/global.scss';
+import '@/scss/main.scss';
 
+import { Dependencies } from './deps';
 import './i18n';
 import './logic';
 
@@ -12,9 +15,11 @@ PrimeReact.ripple = true;
 
 function Init() {
   return (
-    <BrowserRouter>
-      <App />
-    </BrowserRouter>
+    <InversifyProvider container={Dependencies}>
+      <BrowserRouter>
+        <App />
+      </BrowserRouter>
+    </InversifyProvider>
   );
 }
 

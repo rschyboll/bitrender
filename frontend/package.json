@@ -20,6 +20,8 @@
     "i18next": "^21.8.4",
     "i18next-browser-languagedetector": "^6.1.4",
     "include-media": "^1.4.10",
+    "inversify": "^6.0.1",
+    "inversify-react": "^1.0.2",
     "kea": "^3.0.1",
     "kea-localstorage": "^3.0.0",
     "kea-typegen": "^3.0.0",
@@ -31,6 +33,7 @@
     "react-i18next": "^11.16.9",
     "react-router-dom": "^6.3.0",
     "react-transition-group": "^4.4.2",
+    "reflect-metadata": "^0.1.13",
     "remixicon": "^2.5.0"
   },
   "alias": {

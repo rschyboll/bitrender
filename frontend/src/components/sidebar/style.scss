@@ -29,20 +29,3 @@
   border-top: 1px solid var(--sidebar-spacer-color);
   margin: 1rem 0;
 }
-
-.sidebar-fade-enter {
-  opacity: 0;
-}
-.sidebar-fade-exit {
-  opacity: 1;
-}
-.sidebar-fade-enter-active {
-  opacity: 1;
-}
-.sidebar-fade-exit-active {
-  opacity: 0;
-}
-.sidebar-fade-enter-active,
-.sidebar-fade-exit-active {
-  transition: opacity 125ms;
-}

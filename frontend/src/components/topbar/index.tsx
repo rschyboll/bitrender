@@ -1,3 +1,4 @@
+import { Button } from 'primereact/button';
 import { FC } from 'react';
 
 import { SidebarType } from '@/logic/settings/types';
@@ -16,7 +17,9 @@ export const Topbar: FC = () => {
             types={[SidebarType.Horizontal]}
           />
         </div>
-        <div className="topbar-content"></div>
+        <div className="topbar-content">
+          <Button className="mobile-sidebar-button" icon="ri-menu-line" />
+        </div>
       </div>
     </div>
   );

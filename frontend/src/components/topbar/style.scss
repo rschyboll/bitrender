@@ -1,6 +1,13 @@
+@import '@/scss/global.scss';
+
 .topbar {
   background-color: var(--surface-a);
   height: 100%;
+  border-bottom: 1px solid var(--surface-d);
+}
+
+.layout-horizontal .topbar {
+  border-bottom: 0px solid transparent;
 }
 
 .topbar-sidebar-background {
@@ -21,4 +28,50 @@
 
 .topbar-container {
   height: 100%;
+  display: flex;
+  align-items: center;
+}
+
+.topbar-sidebar {
+  height: 100%;
+}
+
+.topbar-content {
+  padding: 0 2rem;
+}
+
+.layout-slim {
+  .mobile-sidebar-button {
+    @include media('>tablet') {
+      display: none;
+    }
+  }
+}
+
+.layout-static,
+.layout-horizontal {
+  .mobile-sidebar-button {
+    @include media('>desktop') {
+      display: none;
+    }
+  }
+}
+
+.mobile-sidebar-button.p-button.p-component {
+  font-size: 1.5rem;
+  width: 2.5rem;
+  height: 2.5rem;
+  background-color: var(--surface-a);
+  border: 0;
+  color: var(--text-color);
+}
+
+.mobile-sidebar-button.p-button.p-component:hover {
+  background-color: var(--surface-100);
+  color: var(--text-color);
+}
+
+.mobile-sidebar-button.p-button.p-component:focus {
+  box-shadow: var(--sidebar-topbar-button-shadow);
+  color: var(--text-color);
 }

@@ -1,4 +1,4 @@
-import { FC } from 'react';
+import { FC, memo } from 'react';
 import { Trans } from 'react-i18next';
 
 import { Logo } from '@/components/logo';
@@ -7,7 +7,7 @@ import { SidebarItem } from '../item';
 import { Group, sidebarModel } from '../model';
 import './style.scss';
 
-export const SidebarWide: FC = () => {
+export const SidebarWide: FC = memo(() => {
   return (
     <div className="sidebar-wide select-none">
       <Logo titleVisible={true} />
@@ -18,11 +18,11 @@ export const SidebarWide: FC = () => {
       </ul>
     </div>
   );
-};
+});
 
 interface SidebarWideGroupProps extends Group {}
 
-const SidebarWideGroup: FC<SidebarWideGroupProps> = (props) => {
+const SidebarWideGroup: FC<SidebarWideGroupProps> = memo((props) => {
   return (
     <li className="sidebar-group">
       <span className="sidebar-group-title">
@@ -36,4 +36,4 @@ const SidebarWideGroup: FC<SidebarWideGroupProps> = (props) => {
       {props.spacer && <div className="sidebar-spacer" />}
     </li>
   );
-};
+});

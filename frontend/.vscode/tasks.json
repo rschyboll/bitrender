@@ -22,17 +22,6 @@
           "color": "#adbaff"
         }
       }
-    },
-    {
-      "label": "$(sync) Reload grpc",
-      "type": "shell",
-      "command": "yarn proto:compile",
-      "options": {
-        "cwd": "${workspaceFolder}",
-        "statusbar": {
-          "color": "#adbaff"
-        }
-      }
     }
   ]
 }
