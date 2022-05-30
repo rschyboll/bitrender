@@ -5,7 +5,16 @@ from pydantic import BaseModel as PydanticBase
 from pydantic import EmailStr, SecretStr, validator
 
 from bitrender.auth.password import PasswordHelper
+from bitrender.models.permission import Permission
 from bitrender.schemas.base import BaseSchema
+
+
+class UserView(BaseSchema):
+    """Class containing all user data required for the frontend."""
+
+    email: EmailStr
+    role: str
+    permissions: list[Permission]
 
 
 class UserSchema(BaseSchema):

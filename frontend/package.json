@@ -17,6 +17,7 @@
   },
   "dependencies": {
     "@fontsource/nunito": "^4.5.9",
+    "ajv": "^8.11.0",
     "i18next": "^21.8.4",
     "i18next-browser-languagedetector": "^6.1.4",
     "include-media": "^1.4.10",
