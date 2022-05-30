@@ -3,10 +3,10 @@ import { Ripple } from 'primereact/ripple';
 import { FC, memo, useMemo, useState } from 'react';
 import { Trans } from 'react-i18next';
 import { useLocation } from 'react-router-dom';
-import { isPropertySignature } from 'typescript';
 
 import { Logo } from '@/components/logo';
-import { settingsLogic } from '@/logic/settings';
+import Dependencies from '@/deps';
+import { ISettingsLogic } from '@/logic/interfaces';
 
 import { SidebarDialog } from '../dialog';
 import { SidebarItem } from '../item';
@@ -14,6 +14,8 @@ import { Group, sidebarModel } from '../model';
 import './style.scss';
 
 export const SidebarHorizontal: FC = memo(() => {
+  const settingsLogic: ISettingsLogic = Dependencies.use('LOGIC', 'SETTINGS');
+
   const [activeGroup, setActiveGroup] = useState<string | null>(null);
   const location = useLocation();
 
@@ -56,6 +58,8 @@ interface SidebarHorizontalGroupProps extends Group {
 
 const SidebarHorizontalGroup: FC<SidebarHorizontalGroupProps> = memo(
   (props) => {
+    const settingsLogic: ISettingsLogic = Dependencies.use('LOGIC', 'SETTINGS');
+
     const { toggleSidebar } = useActions(settingsLogic);
     const { sidebarActive } = useValues(settingsLogic);
 

@@ -1,27 +1,43 @@
 import { Container } from 'inversify';
-import { useInjection as useReactInjection } from 'inversify-react';
+import { useInjection } from 'inversify-react';
 
-import { SettingsLogic } from './logic/interfaces/settings';
+import { ISettingsLogic } from './logic/interfaces';
 import { settingsLogic } from './logic/settings';
 
-export const SERVICE = {
-  SETTINGS_LOGIC: Symbol.for('Settings logic'),
+type DepTypes = {
+  LOGIC: {
+    SETTINGS: ISettingsLogic;
+  };
 };
 
-const SERVICES = {
-  [SERVICE.SETTINGS_LOGIC]: settingsLogic,
+const Deps = {
+  LOGIC: {
+    SETTINGS: Symbol.for('LOGIC/SETTINGS'),
+  },
 };
 
-export const Dependencies = new Container();
+export const DepContainer = new Container();
 
-Dependencies.bind<SettingsLogic>(SERVICE.SETTINGS_LOGIC).toConstantValue(
+DepContainer.bind<ISettingsLogic>(Deps.LOGIC.SETTINGS).toConstantValue(
   settingsLogic,
 );
 
-const useInjection = <Key extends keyof typeof SERVICE>(
-  id: Key,
-): typeof SERVICES[typeof SERVICE[Key]] => {
-  return Dependencies.get(id);
-};
+class Dependencies {
+  public static use<
+    Key extends keyof typeof Deps & keyof DepTypes,
+    ID extends keyof typeof Deps[Key] & keyof DepTypes[Key],
+  >(key: Key, id: ID): DepTypes[Key][ID] {
+    return useInjection(Deps[key][id] as unknown as symbol);
+  }
 
-const test = useInjection('SETTINGS_LOGIC');
+  public static get<
+    Key extends keyof typeof Deps & keyof DepTypes,
+    ID extends keyof typeof Deps[Key] & keyof DepTypes[Key],
+  >(key: Key, id: ID): DepTypes[Key][ID] {
+    return DepContainer.get(Deps[key][id] as unknown as symbol);
+  }
+}
+
+export default Dependencies;
+
+export { Dependencies };

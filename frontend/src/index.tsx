@@ -7,7 +7,7 @@ import { App } from '@/app';
 import '@/scss/global.scss';
 import '@/scss/main.scss';
 
-import { Dependencies } from './deps';
+import { DepContainer } from './deps';
 import './i18n';
 import './logic';
 
@@ -15,7 +15,7 @@ PrimeReact.ripple = true;
 
 function Init() {
   return (
-    <InversifyProvider container={Dependencies}>
+    <InversifyProvider container={DepContainer}>
       <BrowserRouter>
         <App />
       </BrowserRouter>

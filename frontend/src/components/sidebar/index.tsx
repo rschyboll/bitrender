@@ -1,10 +1,12 @@
 import { useValues } from 'kea';
 import { FC, memo } from 'react';
 
-import { settingsLogic } from '@/logic/settings';
+import Dependencies from '@/deps';
+import { ISettingsLogic } from '@/logic/interfaces';
 import { SidebarType } from '@/logic/settings/types';
 
 import { SidebarHorizontal } from './horizontal';
+import { SidebarMobile } from './mobile';
 import { SidebarSlim } from './slim';
 import './style.scss';
 import { SidebarWide } from './wide';
@@ -15,10 +17,12 @@ export interface SidebarProps {
 }
 
 export const Sidebar: FC<SidebarProps> = memo((props) => {
+  const settingsLogic: ISettingsLogic = Dependencies.use('LOGIC', 'SETTINGS');
   const { sidebarType } = useValues(settingsLogic);
 
   return (
     <>
+      <SidebarMobile />
       <div
         className={
           sidebarType === SidebarType.Horizontal &&

@@ -11,6 +11,8 @@ services:
     init: true
     command: sleep infinity
     user: node
-  
+    ports:
+      - '1234:1234'
+
 volumes:
   frontend-DEV-fish:

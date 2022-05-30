@@ -7,7 +7,9 @@
 }
 
 .layout-horizontal .topbar {
-  border-bottom: 0px solid transparent;
+  @include media('>desktop') {
+    border-bottom: 0px solid transparent;
+  }
 }
 
 .topbar-sidebar-background {
@@ -41,6 +43,18 @@
 }
 
 .layout-slim {
+  .topbar-sidebar {
+    @include media('<=tablet') {
+      display: none;
+    }
+  }
+
+  .topbar-sidebar-background {
+    @include media('<=tablet') {
+      opacity: 0;
+    }
+  }
+
   .mobile-sidebar-button {
     @include media('>tablet') {
       display: none;
@@ -50,6 +64,18 @@
 
 .layout-static,
 .layout-horizontal {
+  .topbar-sidebar {
+    @include media('<=desktop') {
+      display: none;
+    }
+  }
+
+  .topbar-sidebar-background {
+    @include media('<=desktop') {
+      opacity: 0;
+    }
+  }
+
   .mobile-sidebar-button {
     @include media('>desktop') {
       display: none;

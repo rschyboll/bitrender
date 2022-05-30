@@ -2,7 +2,7 @@ import { Logic, LogicWrapper } from 'kea';
 
 import { SidebarType, Theme } from '../settings/types';
 
-interface Settings extends Logic {
+interface ISettings extends Logic {
   readonly actions: {
     readonly setSidebarType: (type: SidebarType) => void;
     readonly setTheme: (theme: Theme) => void;
@@ -15,4 +15,4 @@ interface Settings extends Logic {
   };
 }
 
-export type SettingsLogic = LogicWrapper<Settings>;
+export type ISettingsLogic = LogicWrapper<ISettings>;

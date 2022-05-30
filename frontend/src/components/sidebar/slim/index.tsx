@@ -5,7 +5,8 @@ import { Trans } from 'react-i18next';
 import { useLocation } from 'react-router-dom';
 
 import { Logo } from '@/components/logo';
-import { settingsLogic } from '@/logic/settings';
+import Dependencies from '@/deps';
+import { ISettingsLogic } from '@/logic/interfaces';
 
 import { SidebarDialog } from '../dialog';
 import { SidebarItem } from '../item';
@@ -13,6 +14,8 @@ import { Group, sidebarModel } from '../model';
 import './style.scss';
 
 export const SidebarSlim: FC = memo(() => {
+  const settingsLogic: ISettingsLogic = Dependencies.use('LOGIC', 'SETTINGS');
+
   const [activeGroup, setActiveGroup] = useState<string | null>(null);
   const location = useLocation();
 
@@ -53,6 +56,8 @@ interface SidebarSlimGroupProps extends Group {
 }
 
 const SidebarSlimGroup: FC<SidebarSlimGroupProps> = memo((props) => {
+  const settingsLogic: ISettingsLogic = Dependencies.use('LOGIC', 'SETTINGS');
+
   const { toggleSidebar } = useActions(settingsLogic);
   const { sidebarActive } = useValues(settingsLogic);
 

@@ -1,4 +1,3 @@
-import { useInjection } from 'inversify-react';
 import { useActions, useValues } from 'kea';
 import { Button } from 'primereact/button';
 import { FC, useEffect } from 'react';
@@ -6,8 +5,8 @@ import { Outlet, Route, Routes } from 'react-router-dom';
 
 import { Sidebar } from '@/components/sidebar';
 import { Topbar } from '@/components/topbar';
-import { SERVICE } from '@/deps';
-import { SettingsLogic } from '@/logic/interfaces/settings';
+import Dependencies from '@/deps';
+import { ISettingsLogic } from '@/logic/interfaces';
 import { SidebarType, Theme } from '@/logic/settings/types';
 import { RolesPage } from '@/pages/roles';
 import { UsersPage } from '@/pages/users';
@@ -29,7 +28,7 @@ const themeClasses = {
 const verticalTypes = [SidebarType.Static, SidebarType.Slim];
 
 export const App: FC = () => {
-  const settingsLogic: SettingsLogic = useInjection(SERVICE.SETTINGS_LOGIC);
+  const settingsLogic: ISettingsLogic = Dependencies.use('LOGIC', 'SETTINGS');
   const { theme } = useValues(settingsLogic);
 
   useEffect(() => {
@@ -50,7 +49,7 @@ export const App: FC = () => {
 };
 
 export const AppBody: FC = () => {
-  const settingsLogic: SettingsLogic = useInjection(SERVICE.SETTINGS_LOGIC);
+  const settingsLogic: ISettingsLogic = Dependencies.use('LOGIC', 'SETTINGS');
 
   const { sidebarType, theme, sidebarActive } = useValues(settingsLogic);
   const { setSidebarType, setTheme, toggleSidebar } = useActions(settingsLogic);
@@ -84,7 +83,10 @@ export const AppBody: FC = () => {
         <Button label="Dim" onClick={() => setTheme(Theme.Dim)} />
         <Button label="Light" onClick={() => setTheme(Theme.Light)} />{' '}
       </div>
-      <div className="layout-content-mask" />
+      <div
+        onClick={() => toggleSidebar(false)}
+        className="layout-content-mask"
+      />
     </div>
   );
 };
