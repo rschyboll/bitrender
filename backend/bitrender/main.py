@@ -7,9 +7,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from tortoise.contrib.fastapi import register_tortoise
 
-from bitrender.api.auth import router as auth_router
-from bitrender.api.role import router as role_router
-from bitrender.api.user import router as user_router
+from bitrender.api import api_router
 from bitrender.config import tortoise_config
 from bitrender.data import create_admin_account
 from bitrender.models import init_db, migrate
@@ -30,9 +28,7 @@ def run():
         allow_methods=["*"],
         allow_headers=["*"],
     )
-    app.include_router(auth_router)
-    app.include_router(user_router)
-    app.include_router(role_router)
+    app.include_router(api_router)
     register_tortoise(app, config=tortoise_config, add_exception_handlers=True)
     uvicorn.run(app, host="0.0.0.0", port=8000)
 

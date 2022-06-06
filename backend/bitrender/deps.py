@@ -1,10 +1,11 @@
-"""Containers module."""
-
 from dependency_injector import containers, providers
+
+from bitrender.services.interfaces.user import IUserService
+from bitrender.services.user import UserService
 
 
 class Container(containers.DeclarativeContainer):
 
-    wiring_config = containers.WiringConfiguration(modules=[".endpoints"])
+    config = providers.Configuration()
 
-    config = providers.Configuration(yaml_files=["config.yml"])
+    api_client: providers.Provider[IUserService] = providers.Singleton(UserService)
