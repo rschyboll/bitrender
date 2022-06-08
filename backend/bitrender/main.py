@@ -5,6 +5,7 @@ import asyncio
 import uvicorn
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from starlette_context.middleware import RawContextMiddleware
 from tortoise.contrib.fastapi import register_tortoise
 
 from bitrender.api import api_router
@@ -29,6 +30,7 @@ def run():
         allow_headers=["*"],
     )
     app.include_router(api_router)
+    app.add_middleware(RawContextMiddleware)
     register_tortoise(app, config=tortoise_config, add_exception_handlers=True)
     uvicorn.run(app, host="0.0.0.0", port=8000)
 

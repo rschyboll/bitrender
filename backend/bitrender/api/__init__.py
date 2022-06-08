@@ -1,7 +1,7 @@
 """Contains api router definition."""
 from fastapi import APIRouter
 
-from bitrender.api.frontend import frontend_router
+from bitrender.api.user import frontend_router
 from bitrender.api.worker import worker_router
 
 api_router = APIRouter(prefix="/api")

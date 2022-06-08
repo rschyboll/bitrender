@@ -7,7 +7,6 @@ from bitrender.auth.password import PasswordHelper
 from bitrender.config import Settings, get_settings
 from bitrender.services.auth import AuthService
 from bitrender.services.email import EmailService
-from bitrender.services.user import UserService
 
 
 class Services:
@@ -21,5 +20,4 @@ class Services:
         self.background_tasks = background_tasks
         self.settings = settings
         self.auth = AuthService(self, password_helper, TokenHelper(), AclHelper(auth_ids))
-        self.user = UserService(self, password_helper)
         self.email = EmailService(self, settings)
