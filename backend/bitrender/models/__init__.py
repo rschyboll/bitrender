@@ -1,4 +1,4 @@
-# pylint: disable=missing-module-docstring
+"""TODO generate docstring"""
 
 import aerich
 

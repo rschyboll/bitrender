@@ -8,6 +8,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from starlette_context.middleware import RawContextMiddleware
 from tortoise.contrib.fastapi import register_tortoise
 
+import bitrender.services.deps  # pylint: disable=unused-import # noqa: F401
 from bitrender.api import api_router
 from bitrender.config import tortoise_config
 from bitrender.data import create_admin_account

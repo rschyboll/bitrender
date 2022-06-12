@@ -1,6 +1,7 @@
 """Contains types and enums used for defining acl lists."""
 
 from enum import Enum
+from typing import Protocol
 
 
 class AclAction(str, Enum):
@@ -37,6 +38,17 @@ AclList = list[AclEntry]
 EVERYONE = "system:everyone"
 AUTHENTICATED = "system:authenticated"
 SUPERUSER = "system:superuser"
+
+
+class AclResource(Protocol):
+    """Protocol describing a resource, protected with an access control list."""
+
+    @classmethod
+    def __sacl__(cls) -> AclList:
+        ...
+
+    async def __dacl__(self) -> list[AclList]:
+        ...
 
 
 class StaticAclEntries:

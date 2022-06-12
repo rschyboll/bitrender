@@ -21,6 +21,7 @@ from bitrender.auth.acl import (
 )
 from bitrender.models import Permission
 from bitrender.models.base import BaseModel
+from bitrender.schemas import UserView
 
 if TYPE_CHECKING:
     from bitrender.models import Role
@@ -89,6 +90,22 @@ class User(BaseModel):
     def acl_id(self) -> str:
         """TODO create docstring"""
         return f"user:{self.id}"
+
+    async def to_view(self) -> UserView:
+        """Converts the user model to pydantic UserView.
+
+        Returns:
+            UserView: View used by fronend to display user data."""
+        role = await self.role
+        permissions = [role_permission.permission for role_permission in (await role.permissions)]
+        return UserView(
+            id=self.id,
+            created_at=self.created_at,
+            modified_at=self.modified_at,
+            email=self.email,
+            role=role.name,
+            permissions=permissions,
+        )
 
     @classmethod
     def __sacl__(cls) -> list[AclEntry]:

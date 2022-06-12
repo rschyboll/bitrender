@@ -3,13 +3,14 @@ from abc import ABC, abstractmethod
 from antidote import inject, wire
 from fastapi import Depends
 
-from bitrender.services.user.api.user import UserService  # noqa: F401
 from bitrender.services.user.context import UserContext
 from bitrender.services.user.interfaces.user import IUserService
 
 
 class IUserServices(ABC):
     """TODO generate docstring"""
+
+    context: UserContext
 
     @property
     @abstractmethod
