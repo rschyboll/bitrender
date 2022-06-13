@@ -1,3 +1,5 @@
+"""TODO generate docstring"""
+from abc import abstractmethod
 from typing import Type, TypeVar, overload
 
 from antidote import interface
@@ -30,6 +32,7 @@ class IAuthService(IService):
     ) -> MODEL:
         ...
 
+    @abstractmethod
     async def query(
         self,
         query: QuerySet[MODEL] | QuerySetSingle[MODEL],

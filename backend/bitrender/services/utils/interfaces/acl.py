@@ -1,6 +1,6 @@
 """Contains interface for the acl helper implementations."""
 from abc import ABC
-from typing import Sequence, Type
+from typing import Type
 
 from antidote import interface
 from pyparsing import abstractmethod
@@ -15,8 +15,8 @@ class IACLHelper(ABC):
     @abstractmethod
     def static(
         self,
-        resources: Sequence[Type[AclResource]],
-        actions: AclAction | Sequence[AclAction],
+        resource_types: list[Type[AclResource]],
+        actions: AclAction | list[AclAction],
         auth_ids: list[str],
     ) -> bool | None:
         """Checks if provided auth_ids fulfil the static acl of the provided resources.
@@ -33,8 +33,8 @@ class IACLHelper(ABC):
     @abstractmethod
     async def dynamic(
         self,
-        resources: AclResource | Sequence[AclResource],
-        actions: AclAction | Sequence[AclAction],
+        resources: AclResource | list[AclResource],
+        actions: AclAction | list[AclAction],
         auth_ids: list[str],
     ) -> bool | None:
         """Checks if provided auth_ids fulfil the dynamic acl of the provided resources.
