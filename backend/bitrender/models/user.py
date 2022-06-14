@@ -11,7 +11,7 @@ from tortoise.fields import (
     ForeignKeyRelation,
 )
 
-from bitrender.auth.acl import (
+from bitrender.core.acl import (
     AUTHENTICATED,
     EVERYONE,
     AclAction,

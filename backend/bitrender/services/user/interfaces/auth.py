@@ -1,15 +1,17 @@
 """TODO generate docstring"""
 from abc import abstractmethod
-from typing import Type, TypeVar, overload
+from typing import Any, Callable, Coroutine, Type, TypeVar, overload
 
 from antidote import interface
 from tortoise.queryset import QuerySet, QuerySetSingle
 
+from bitrender.core.acl import AclAction
 from bitrender.models.base import BaseModel
 
 from . import IService
 
 MODEL = TypeVar("MODEL", bound=BaseModel)
+RETURNT = TypeVar("RETURNT", bound=BaseModel | list[BaseModel])
 
 
 @interface
@@ -20,7 +22,7 @@ class IAuthService(IService):
     async def query(
         self,
         query: QuerySet[MODEL],
-        additional_static_models: list[Type[BaseModel]] | None = ...,
+        additional_types: list[Type[BaseModel]] | None = ...,
     ) -> list[MODEL]:
         ...
 
@@ -28,7 +30,7 @@ class IAuthService(IService):
     async def query(
         self,
         query: QuerySetSingle[MODEL],
-        additional_static_models: list[Type[BaseModel]] | None = ...,
+        additional_types: list[Type[BaseModel]] | None = ...,
     ) -> MODEL:
         ...
 
@@ -36,6 +38,16 @@ class IAuthService(IService):
     async def query(
         self,
         query: QuerySet[MODEL] | QuerySetSingle[MODEL],
-        additional_static_models: list[Type[BaseModel]] | None = None,
+        additional_types: list[Type[BaseModel]] | None,
     ) -> list[MODEL] | MODEL:
+        """TODO generate docstring"""
+
+    @abstractmethod
+    async def action(
+        self,
+        action: Callable[..., Coroutine[Any, Any, RETURNT]],
+        acl_actions: AclAction | list[AclAction],
+        args: tuple | dict = (),
+        additional_static_models: list[Type[BaseModel]] = None,
+    ) -> RETURNT:
         """TODO generate docstring"""

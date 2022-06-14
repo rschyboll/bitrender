@@ -15,7 +15,7 @@ from tortoise.fields import (
 from tortoise.models import Model
 from tortoise.queryset import QuerySet, QuerySetSingle
 
-from bitrender.auth.acl import EVERYONE, AclAction, AclEntry, AclList, AclPermit
+from bitrender.core.acl import EVERYONE, AclAction, AclEntry, AclList, AclPermit
 
 MODEL = TypeVar("MODEL", bound="BaseModel")
 
