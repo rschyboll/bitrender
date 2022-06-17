@@ -14,8 +14,8 @@ class UserContext:
 
     def __init__(
         self,
-        current_user: User = Depends(get_current_user_or_none),
+        current_user: User | None = Depends(get_current_user_or_none),
         auth_ids: list[str] = Depends(get_auth_ids),
     ) -> None:
-        self.current_user: User = current_user
+        self.current_user: User | None = current_user
         self.auth_ids: list[str] = auth_ids

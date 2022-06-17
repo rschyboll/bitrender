@@ -1,5 +1,5 @@
 import inspect
-from typing import Any, Callable, Coroutine, Type, TypeVar, get_args, overload
+from typing import Any, Callable, Coroutine, Sequence, Type, TypeVar, get_args, overload
 
 from antidote import implements, inject, wire
 from tortoise.queryset import QuerySet, QuerySetSingle
@@ -47,6 +47,8 @@ class AuthService(Service, IAuthService):
         query: QuerySet[MODEL] | QuerySetSingle[MODEL],
         additional_types: list[Type[BaseModel]] | None = None,
     ) -> list[MODEL] | MODEL:
+        if additional_types is None:
+            additional_types = []
         return_type = self.__get_query_return_type(query)
         types = [*additional_types, return_type]
         static_check_result = self.__acl_helper.static(types, AclAction.VIEW)
@@ -71,13 +73,14 @@ class AuthService(Service, IAuthService):
     async def action(
         self,
         action: Callable[..., Coroutine[Any, Any, RETURNT]],
-        acl_actions: AclAction | list[AclAction],
+        acl_actions: AclAction | Sequence[AclAction],
         args: tuple | dict = (),
-        additional_static_models: list[Type[BaseModel]] = None,
+        additional_static_models: Sequence[Type[BaseModel]] = None,
     ) -> RETURNT:
         """TODO generate docstring"""
+        auth_ids = self.services.context.auth_ids
         static_types = self.__get_action_return_type(action, additional_static_models)
-        static_result = self.__acl_helper.static(static_types, acl_actions)
+        static_result = self.__acl_helper.static(static_types, acl_actions, auth_ids)
         if static_result:
             return await (action(*args) if isinstance(args, tuple) else action(**args))
         if static_result is None:
@@ -89,8 +92,8 @@ class AuthService(Service, IAuthService):
 
     @staticmethod
     def __get_action_return_type(
-        action: Callable, types: list[Type[BaseModel]] | None
-    ) -> list[Type[BaseModel]]:
+        action: Callable, types: Sequence[Type[BaseModel]] | None
+    ) -> Sequence[Type[BaseModel]]:
         if types is None:
             types = []
         signature = inspect.signature(action)

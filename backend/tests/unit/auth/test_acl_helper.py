@@ -4,8 +4,8 @@ from unittest.mock import AsyncMock, MagicMock, patch
 import pytest
 from pytest_mock import MockerFixture
 
-from bitrender.auth.acl import AUTHENTICATED, EVERYONE, AclAction, AclEntry, AclList, AclPermit
 from bitrender.auth.acl_helper import AclHelper
+from bitrender.core.acl import AUTHENTICATED, EVERYONE, AclAction, AclEntry, AclList, AclPermit
 from tests.utils.models import ExampleModel
 
 test_permits_parameters = [

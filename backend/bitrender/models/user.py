@@ -95,7 +95,7 @@ class User(BaseModel):
         """Converts the user model to pydantic UserView.
 
         Returns:
-            UserView: View used by fronend to display user data."""
+            UserView: View used by frontend to display user data."""
         role = await self.role
         permissions = [role_permission.permission for role_permission in (await role.permissions)]
         return UserView(

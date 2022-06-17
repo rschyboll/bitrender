@@ -16,7 +16,7 @@ RETURNT = TypeVar("RETURNT", bound=BaseModel | list[BaseModel])
 
 @interface
 class IAuthService(IService):
-    """Service used for authorizing user access."""
+    """Service used for authorizing user access to resources."""
 
     @overload
     async def query(
@@ -38,7 +38,7 @@ class IAuthService(IService):
     async def query(
         self,
         query: QuerySet[MODEL] | QuerySetSingle[MODEL],
-        additional_types: list[Type[BaseModel]] | None,
+        additional_types: list[Type[BaseModel]] | None = None,
     ) -> list[MODEL] | MODEL:
         """TODO generate docstring"""
 

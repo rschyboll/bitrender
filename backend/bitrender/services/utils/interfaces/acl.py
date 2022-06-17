@@ -1,6 +1,6 @@
 """Contains interface for the acl helper implementations."""
 from abc import ABC
-from typing import Type
+from typing import Sequence, Type
 
 from antidote import interface
 from pyparsing import abstractmethod
@@ -15,16 +15,16 @@ class IACLHelper(ABC):
     @abstractmethod
     def static(
         self,
-        resource_types: list[Type[AclResource]],
-        actions: AclAction | list[AclAction],
-        auth_ids: list[str],
+        resource_types: Sequence[Type[AclResource]],
+        actions: AclAction | Sequence[AclAction],
+        auth_ids: Sequence[str],
     ) -> bool | None:
         """Checks if provided auth_ids fulfil the static acl of the provided resources.
 
         Args:
             resources (Sequence[Type[AclResource]]): Resources with the static acl list.
             actions (AclAction | Sequence[AclAction]): Actions which access needs to be checked.
-            auth_ids (list[str]): Authentication id's of the entity requiring the access.
+            auth_ids (Sequence[str]): Authentication id's of the entity requiring the access.
 
         Returns:
             bool | None: True if the access is granted, false if denied, none if could not be \
@@ -33,16 +33,16 @@ class IACLHelper(ABC):
     @abstractmethod
     async def dynamic(
         self,
-        resources: AclResource | list[AclResource],
-        actions: AclAction | list[AclAction],
-        auth_ids: list[str],
+        resources: AclResource | Sequence[AclResource],
+        actions: AclAction | Sequence[AclAction],
+        auth_ids: Sequence[str],
     ) -> bool | None:
         """Checks if provided auth_ids fulfil the dynamic acl of the provided resources.
 
         Args:
             resources (AclResource | Sequence[AclResource]):  Resources with the dynamic acl list.
             actions (AclAction | Sequence[AclAction]): Actions which access needs to be checked.
-            auth_ids (list[str]): Authentication id's of the entity requiring the access.
+            auth_ids (Sequence[str]): Authentication id's of the entity requiring the access.
 
         Returns:
             bool | None: True if the access is granted, false if denied, none if could not be \

@@ -2,7 +2,7 @@ from abc import abstractmethod
 
 from antidote import interface
 
-from bitrender.models import User
+from bitrender.schemas import UserView
 
 from . import IService
 
@@ -12,5 +12,5 @@ class IUserService(IService):
     """TODO generate docstring"""
 
     @abstractmethod
-    def get_current(self) -> User:
+    async def get_current(self) -> UserView | None:
         """TODO generate docstring"""

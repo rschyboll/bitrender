@@ -16,7 +16,7 @@ class AclHelper(IACLHelper):
         self,
         resource_types: Sequence[Type[AclResource]],
         actions: AclAction | Sequence[AclAction],
-        auth_ids: list[str],
+        auth_ids: Sequence[str],
     ) -> bool | None:
         if isinstance(actions, AclAction):
             actions = [actions]
@@ -34,13 +34,13 @@ class AclHelper(IACLHelper):
 
     async def dynamic(
         self,
-        resources: AclResource | list[AclResource],
-        actions: AclAction | list[AclAction],
-        auth_ids: list[str],
+        resources: AclResource | Sequence[AclResource],
+        actions: AclAction | Sequence[AclAction],
+        auth_ids: Sequence[str],
     ) -> bool | None:
-        if not isinstance(actions, list):
+        if isinstance(actions, AclAction):
             actions = [actions]
-        if not isinstance(resources, list):
+        if not isinstance(resources, Sequence):
             resources = [resources]
         permits: list[AclPermit | None] = []
         for resource in resources:
@@ -56,7 +56,7 @@ class AclHelper(IACLHelper):
         return None
 
     def __get_acllist_permit(
-        self, auth_ids: list[str], acl_list: AclList, required_action: AclAction
+        self, auth_ids: Sequence[str], acl_list: AclList, required_action: AclAction
     ) -> AclPermit | None:
         for entry in acl_list:
             permit = self.__get_acl_permit(auth_ids, entry, required_action)
@@ -65,7 +65,7 @@ class AclHelper(IACLHelper):
         return None
 
     def __get_acl_permit(
-        self, auth_ids: list[str], entry: AclEntry, required_action: AclAction
+        self, auth_ids: Sequence[str], entry: AclEntry, required_action: AclAction
     ) -> AclPermit | None:
         permit = entry[0]
         required_auth_ids = entry[1]

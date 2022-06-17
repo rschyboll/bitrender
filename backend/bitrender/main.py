@@ -8,7 +8,6 @@ from fastapi.middleware.cors import CORSMiddleware
 from starlette_context.middleware import RawContextMiddleware
 from tortoise.contrib.fastapi import register_tortoise
 
-import bitrender.services.deps  # pylint: disable=unused-import # noqa: F401
 from bitrender.api import api_router
 from bitrender.config import tortoise_config
 from bitrender.data import create_admin_account
@@ -18,6 +17,12 @@ origins = [
     "http://127.0.0.1:3000",
     "http://localhost:3000",
 ]
+
+
+def init_deps():
+    """Imports all interface implementations to allow them to be recognized by antidote"""
+    import bitrender.services.user.deps  # noqa: F401 # pylint: disable=unused-import
+    import bitrender.services.utils.deps  # noqa: F401 # pylint: disable=unused-import
 
 
 def run():

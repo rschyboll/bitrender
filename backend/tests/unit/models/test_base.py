@@ -6,7 +6,7 @@ import json
 from tortoise.contrib.test import TruncationTestCase
 from tortoise.fields import ReverseRelation
 
-from bitrender.auth.acl import EVERYONE, AclAction, AclList, AclPermit
+from bitrender.core.acl import EVERYONE, AclAction, AclList, AclPermit
 from tests.utils import TransactionTest
 from tests.utils.mocks import AwaitableMock
 from tests.utils.models import ExampleModel

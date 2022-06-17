@@ -4,27 +4,47 @@ from antidote import inject, wire
 from fastapi import Depends
 
 from bitrender.services.user.context import UserContext
+from bitrender.services.user.interfaces.auth import IAuthService
 from bitrender.services.user.interfaces.user import IUserService
 
 
 class IUserServices(ABC):
-    """TODO generate docstring"""
+    """Interface for UserServices class"""
 
     context: UserContext
 
     @property
     @abstractmethod
     def user(self) -> IUserService:
-        """TODO generate docstring"""
+        """Returns current IUserService implementation provided by antidote
+
+        Returns:
+            IUserService: Current implementation of the user service"""
+
+    @property
+    @abstractmethod
+    def auth(self) -> IAuthService:
+        """Returns current IAuthService implementation provided by antidote
+
+        Returns:
+            IAuthService: Current implementation of the authentication service"""
 
 
 @wire
 class UserServices(IUserServices):
-    """TODO generate docstring"""
+    """Container class for all services related to requests made by users
+
+    Allows routes from users api to access services, and allows services to access other services
+    All services all injected with the antidote library through their interfaces
+
+    Properties:
+        user: IUserService - implementation of the user service
+        auth: IAuthService - implementation of the auth service"""
 
     def __init__(self, context: UserContext = Depends()):
         self.context = context
         self.__user: IUserService | None = None
+        self.__auth: IAuthService | None = None
 
     @property
     def user(self) -> IUserService:
@@ -36,3 +56,14 @@ class UserServices(IUserServices):
         self.__user = user_service
         user_service.init(self)
         return user_service
+
+    @property
+    def auth(self) -> IAuthService:
+        if self.__auth is None:
+            return self.__inject_auth_service()
+        return self.__auth
+
+    def __inject_auth_service(self, auth_service: IAuthService = inject.me()) -> IAuthService:
+        self.__auth = auth_service
+        auth_service.init(self)
+        return auth_service
