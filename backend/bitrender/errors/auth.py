@@ -1,5 +1,3 @@
-from fastapi import Request
-
 from bitrender.errors import AppError
 
 
@@ -10,13 +8,13 @@ class AuthError(AppError):
 class UnauthorizedError(AuthError):
     """Raised if the entity requesting a resource has no access to it"""
 
-
-async def unauthorized_error_handler(request: Request, error: UnauthorizedError):
-    pass
+    code = "NOT_AUTHORIZED"
 
 
 class UnauthenticatedError(AuthError):
     """Raised, when there is no entity authenticated when accessing a resource"""
+
+    code = "NOT_AUTHENTICATED"
 
 
 class TokenCorruptedError(AuthError):
@@ -25,7 +23,3 @@ class TokenCorruptedError(AuthError):
 
 class TokenExpiredError(AuthError):
     """Raised when the received auth token is expired"""
-
-
-def add_exception_handlers():
-    pass
