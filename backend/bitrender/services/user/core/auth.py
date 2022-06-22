@@ -6,7 +6,7 @@ from tortoise.queryset import QuerySet, QuerySetSingle
 from tortoise.transactions import atomic
 
 from bitrender.core.acl import AclAction
-from bitrender.errors.auth import CredentialsError
+from bitrender.errors.user import CredentialsError
 from bitrender.models.base import BaseModel
 from bitrender.services.user import IUserServices
 from bitrender.services.user.core import Service

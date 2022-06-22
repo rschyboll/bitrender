@@ -6,7 +6,7 @@ from uuid import UUID
 from jose import ExpiredSignatureError, JWTError, jwt
 from pydantic import BaseModel as PydanticBase
 
-from bitrender.errors.auth import TokenCorruptedError, TokenExpiredError
+from bitrender.errors.user import TokenCorruptedError, TokenExpiredError
 
 SECRET_KEY = "bb2a5daf96fd0cd95493b9a5f12ca4badadc5425663a0e391a2ed0f088b03026"
 ALGORITHM = "HS256"

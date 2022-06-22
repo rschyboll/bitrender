@@ -6,9 +6,9 @@ from fastapi.security.utils import get_authorization_scheme_param
 from pydantic import ValidationError
 from tortoise.exceptions import DoesNotExist
 
-from bitrender.auth.jwt import TokenHelper
 from bitrender.core.acl import AUTHENTICATED, EVERYONE, SUPERUSER
-from bitrender.errors.auth import TokenCorruptedError, TokenExpiredError, UnauthenticatedError
+from bitrender.core.jwt import JWT
+from bitrender.errors.user import TokenCorruptedError, TokenExpiredError, UnauthenticatedError
 from bitrender.models import User
 
 
@@ -46,11 +46,10 @@ async def get_current_user_or_none(token: str | None = Depends(oauth2_scheme)) -
 
     Returns:
         User | None: Current user, or None, if no user could be authenticated."""
-    token_helper = TokenHelper()
     if token is None:
         return None
     try:
-        token_data = token_helper.decode_token(token)
+        token_data = JWT.decode_token(token)
         user = await User.get_by_id(token_data.sub, False)
         return user
     except (TokenCorruptedError, TokenExpiredError, ValidationError, DoesNotExist):
@@ -69,8 +68,7 @@ async def get_current_user(user: User | None = Depends(get_current_user_or_none)
         UnauthenticatedError: Raised if no user could be authenticated.
 
     Returns:
-        User: The current user.
-    """
+        User: The current user."""
     if user is None:
         raise UnauthenticatedError()
     return user

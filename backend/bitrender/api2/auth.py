@@ -6,8 +6,7 @@ from pydantic import EmailStr
 
 from bitrender.api.responses import ErrorCode
 from bitrender.api.responses.auth import login_responses, register_responses
-from bitrender.errors.auth import BadCredentials, NoDefaultRole, UserNotVerified
-from bitrender.errors.user import UserAlreadyExists
+from bitrender.errors.user import BadCredentials, NoDefaultRole, UserAlreadyExists, UserNotVerified
 from bitrender.models.user import User
 from bitrender.schemas import UserCreate, UserSchema
 from bitrender.services import Services

@@ -9,6 +9,8 @@ from starlette_context.middleware import RawContextMiddleware
 from tortoise.contrib.fastapi import register_tortoise
 
 from bitrender.api import api_router
+from bitrender.api.handlers import register_library_error_handlers
+from bitrender.api.handlers.auth import register_auth_error_handlers
 from bitrender.config import tortoise_config
 from bitrender.data import create_admin_account
 from bitrender.models import init_db, migrate
@@ -37,7 +39,9 @@ def run():
     )
     app.include_router(api_router)
     app.add_middleware(RawContextMiddleware)
-    register_tortoise(app, config=tortoise_config, add_exception_handlers=True)
+    register_tortoise(app, config=tortoise_config)
+    register_auth_error_handlers(app)
+    register_library_error_handlers(app)
     uvicorn.run(app, host="0.0.0.0", port=8000)
 
 

@@ -1,9 +1,5 @@
-from enum import Enum
-
-
-class ErrorCode(str, Enum):
-    """Error codes returned by errors"""
+"""Contains errors raised by services in the app."""
 
 
 class AppError(Exception):
-    pass
+    """Base error for all errors raised by the app services."""

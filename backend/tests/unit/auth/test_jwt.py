@@ -8,7 +8,7 @@ import pytest
 from pytest_mock import MockerFixture
 
 from bitrender.auth.jwt import ACCESS_TOKEN_EXPIRE_MINUTES, TokenHelper
-from bitrender.errors.auth import TokenCorruptedError, TokenExpiredError
+from bitrender.errors.user import TokenCorruptedError, TokenExpiredError
 
 token_helper = TokenHelper()
 
