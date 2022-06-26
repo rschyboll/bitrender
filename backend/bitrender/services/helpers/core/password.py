@@ -3,7 +3,7 @@
 import bcrypt
 from antidote import implements
 
-from bitrender.services.utils.interfaces.password import IPasswordHelper
+from bitrender.services.helpers.interfaces.password import IPasswordHelper
 
 
 @implements(IPasswordHelper).by_default

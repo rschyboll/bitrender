@@ -1,11 +1,20 @@
 """TODO generate docstring"""
 
 
+from uuid import UUID
+
 from pydantic import BaseModel as PydanticBase
 from pydantic import EmailStr, SecretStr, validator
 
 from bitrender.models.permission import Permission
 from bitrender.schemas.base import BaseSchema
+
+
+class UserTokenData(PydanticBase):
+    """Class containing data stored in a user token."""
+
+    sub: UUID
+    exp: int
 
 
 class UserView(BaseSchema):
@@ -32,4 +41,3 @@ class UserCreate(PydanticBase):
     @validator("password")
     def password_check(password: str):
         """Validates that the password is secure enough."""
-        pass

@@ -12,9 +12,9 @@ from bitrender.errors.user import (
 )
 from bitrender.models import Role, RolePermission, User
 from bitrender.schemas import UserView
+from bitrender.services.helpers import IServiceHelpers
 from bitrender.services.user.core import Service
 from bitrender.services.user.interfaces.user import IUserService
-from bitrender.services.utils import IPasswordHelper
 
 
 @implements(IUserService).by_default
@@ -38,8 +38,8 @@ class UserService(Service, IUserService):
         self,
         email: str,
         password: str,
-        password_helper: IPasswordHelper = inject.me(),
-    ) -> UUID:
+        helpers: IServiceHelpers = inject.me(),
+    ) -> str:
         try:
             user = await User.get_by_email(email)
         except DoesNotExist as error:
@@ -48,8 +48,8 @@ class UserService(Service, IUserService):
             raise UserNotVerified()
         if not user.is_active:
             raise UserNotActive()
-        if password_helper.verify(password, user.hashed_password):
-            return user.id
+        if helpers.password.verify(password, user.hashed_password):
+            return helpers.token.create_user_token(user.id)
         raise CredentialsError()
 
     async def __fetch_user_with_credentials(self, user_id: UUID) -> User:

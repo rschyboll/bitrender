@@ -2,10 +2,12 @@
 
 from uuid import UUID
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException, Response, status
+from fastapi.security import OAuth2PasswordRequestForm
 
 from bitrender.api.deps.user import get_current_user
-from bitrender.api.user.responses import user_by_id_responses, user_me_responses
+from bitrender.api.user.responses import error_codes, user_by_id_responses, user_me_responses
+from bitrender.errors.user import UserNotVerified
 from bitrender.schemas import UserView
 from bitrender.services.user import UserServices
 
@@ -23,8 +25,13 @@ async def get_me(services: UserServices = Depends()) -> UserView:
 
 
 @user_router.post("/login")
-async def login():
-    pass
+async def login(
+    response: Response,
+    credentials: OAuth2PasswordRequestForm = Depends(),
+    services: UserServices = Depends(),
+):
+    token = await services.user.authenticate(credentials.username, credentials.password)
+    response.set_cookie("access_token", f"Bearer {token}", httponly=True)
 
 
 @user_router.get(

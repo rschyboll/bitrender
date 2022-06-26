@@ -4,8 +4,14 @@ from fastapi import status
 from pydantic import BaseModel
 from tortoise.exceptions import DoesNotExist
 
-from bitrender.api.handlers import error_codes
-from bitrender.errors.user import UnauthenticatedError, UnauthorizedError
+from bitrender.errors.user import UnauthenticatedError, UnauthorizedError, UserNotVerified
+
+error_codes = {
+    DoesNotExist: "RESOURCE_NOT_FOUND",
+    UnauthenticatedError: "NOT_AUTHENTICATED",
+    UnauthorizedError: "NOT_AUTHORIZED",
+    UserNotVerified: "USER_NOT_VERIFIED",
+}
 
 
 class ErrorResponseModel(BaseModel):
@@ -39,7 +45,7 @@ user_by_id_responses: dict[int | str, dict[str, Any]] = {
             "application/json": {
                 "examples": {
                     error_codes[DoesNotExist]: {
-                        "summary": "The user does not exist.",
+                        "summary": "The requested user does not exist.",
                         "value": {"detail": error_codes[DoesNotExist]},
                     }
                 }
@@ -63,4 +69,20 @@ user_by_id_responses: dict[int | str, dict[str, Any]] = {
             }
         },
     },
+}
+
+user_login_responses: dict[int | str, dict[str, Any]] = {
+    status.HTTP_400_BAD_REQUEST: {
+        "model": ErrorResponseModel,
+        "content": {
+            "application/json": {
+                "examples": {
+                    error_codes[UserNotVerified]: {
+                        "summary": "The user is not verified",
+                        "value": {"detail": error_codes[UserNotVerified]},
+                    },
+                }
+            }
+        },
+    }
 }

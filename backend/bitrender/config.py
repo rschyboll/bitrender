@@ -3,9 +3,11 @@ import os
 from functools import lru_cache
 from uuid import UUID
 
+from antidote import injectable
 from pydantic import BaseSettings
 
 
+@injectable
 class Settings(BaseSettings):
     """Class containing all static launch settings for the system.
 
@@ -38,6 +40,8 @@ class Settings(BaseSettings):
     __task_dir = "tasks"
     __frames_dir = "frames"
     __subtask_dir = "subtasks"
+
+    user_token_expire_minutes = 30
 
     @property
     def task_dir(self) -> str:

@@ -36,6 +36,7 @@ class UserServices(IUserServices):
 
     Allows routes from users api to access services, and allows services to access other services
     All services all injected with the antidote library through their interfaces
+    The class is required to connect the FastAPI dependency system with the antidote system
 
     Properties:
         user: IUserService - implementation of the user service

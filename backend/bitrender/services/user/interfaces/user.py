@@ -21,7 +21,7 @@ class IUserService(IService):
         """TODO generate docstring"""
 
     @abstractmethod
-    async def authenticate(self, email: str, password: str) -> UUID:
+    async def authenticate(self, email: str, password: str) -> str:
         """_summary_
 
         Args:
@@ -34,5 +34,4 @@ class IUserService(IService):
             UserNotActive: User that was beeing authenticated is not active.
 
         Returns:
-            UUID: Id of the authenticated user+"""
-        raise Exception()
+            str: Token containing the authentiated users data."""

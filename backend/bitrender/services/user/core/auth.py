@@ -8,10 +8,10 @@ from tortoise.transactions import atomic
 from bitrender.core.acl import AclAction
 from bitrender.errors.user import CredentialsError
 from bitrender.models.base import BaseModel
+from bitrender.services.helpers import IACLHelper
 from bitrender.services.user import IUserServices
 from bitrender.services.user.core import Service
 from bitrender.services.user.interfaces.auth import IAuthService
-from bitrender.services.utils import IACLHelper
 
 MODEL = TypeVar("MODEL", bound=BaseModel)
 RETURNT = TypeVar("RETURNT", bound=BaseModel | list[BaseModel])

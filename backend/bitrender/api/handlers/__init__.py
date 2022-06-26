@@ -4,13 +4,7 @@ from fastapi import FastAPI, Response, status
 from fastapi.responses import JSONResponse
 from tortoise.exceptions import DoesNotExist
 
-from bitrender.errors.user import UnauthenticatedError, UnauthorizedError
-
-error_codes = {
-    DoesNotExist: "RESOURCE_NOT_FOUND",
-    UnauthenticatedError: "NOT_AUTHENTICATED",
-    UnauthorizedError: "NOT_AUTHORIZED",
-}
+from bitrender.errors.user import UnauthenticatedError, UnauthorizedError, UserNotVerified
 
 
 def register_library_error_handlers(app: FastAPI):

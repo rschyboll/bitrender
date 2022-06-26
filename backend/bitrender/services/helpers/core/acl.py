@@ -5,7 +5,7 @@ from typing import Sequence, Type
 from antidote import implements
 
 from bitrender.core.acl import AclAction, AclEntry, AclList, AclPermit, AclResource
-from bitrender.services.utils.interfaces.acl import IACLHelper
+from bitrender.services.helpers.interfaces.acl import IACLHelper
 
 
 @implements(IACLHelper).by_default

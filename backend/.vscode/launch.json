@@ -5,9 +5,10 @@
             "name": "Python: FastAPI",
             "type": "python",
             "request": "launch",
-            "program": "bitrender/main.py",
+            "module": "uvicorn",
             "args": [
-                "run",
+                "bitrender.app:app",
+                "--reload"
             ],
             "console": "integratedTerminal",
             "justMyCode": false,
