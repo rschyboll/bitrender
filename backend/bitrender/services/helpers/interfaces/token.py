@@ -1,5 +1,5 @@
 """Contains interface for the token helper implementations."""
-from abc import ABC
+from abc import ABC, abstractmethod
 from datetime import timedelta
 from uuid import UUID
 
@@ -12,6 +12,7 @@ from bitrender.schemas.user import UserTokenData
 class ITokenHelper(ABC):
     """Interface for classes for creating and managing web tokens."""
 
+    @abstractmethod
     def create(self, data: dict, expires_delta: timedelta) -> str:
         """Creates a JWT token containing the given data.
 
@@ -24,6 +25,7 @@ class ITokenHelper(ABC):
         Returns:
             str: Created JWT"""
 
+    @abstractmethod
     def decode(self, token: str) -> dict:
         """Decodes the token and returns the data that was in it.
 
@@ -37,6 +39,7 @@ class ITokenHelper(ABC):
         Returns:
             dict: Data that was contained within the JWT"""
 
+    @abstractmethod
     def create_user_token(self, sub: UUID) -> str:
         """Creates a JWT token containing user id data.
 
@@ -49,6 +52,7 @@ class ITokenHelper(ABC):
         Returns:
             str: Created JWT"""
 
+    @abstractmethod
     def decode_user_token(self, token: str) -> UserTokenData:
         """Decodes the user JWT token and returns the signed user data.
 

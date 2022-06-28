@@ -8,19 +8,10 @@ from bitrender.data import create_admin_account
 from bitrender.models import init_db, migrate
 
 
-def init_deps():
-    """Imports all interface implementations to allow them to be recognized by antidote"""
-    # pylint: disable=unused-import,import-outside-toplevel
-    import bitrender.services.helpers.deps  # noqa: F401
-
-    # pylint: disable=unused-import,import-outside-toplevel
-    import bitrender.services.user.deps  # noqa: F401
-
-
 def run():
     """Runs the server."""
     # pylint: disable=import-outside-toplevel
-    from .app import app
+    from bitrender.app import app
 
     uvicorn.run(app, host="0.0.0.0", port=8000)
 

@@ -6,6 +6,13 @@ from tortoise.exceptions import DoesNotExist
 
 from bitrender.errors.user import UnauthenticatedError, UnauthorizedError, UserNotVerified
 
+error_codes = {
+    DoesNotExist: "RESOURCE_NOT_FOUND",
+    UnauthenticatedError: "NOT_AUTHENTICATED",
+    UnauthorizedError: "NOT_AUTHORIZED",
+    UserNotVerified: "USER_NOT_VERIFIED",
+}
+
 
 def register_library_error_handlers(app: FastAPI):
     """Registers all library error handlers."""

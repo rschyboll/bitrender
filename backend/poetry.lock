@@ -65,7 +65,7 @@ python-versions = "*"
 
 [[package]]
 name = "antidote"
-version = "1.4.1"
+version = "1.4.2"
 description = "Dependency injection."
 category = "main"
 optional = false
@@ -1139,7 +1139,7 @@ full = ["itsdangerous", "jinja2", "python-multipart", "pyyaml", "requests"]
 
 [[package]]
 name = "starlette-context"
-version = "0.3.3"
+version = "0.3.4"
 description = "Access context in Starlette"
 category = "main"
 optional = false
@@ -1232,7 +1232,7 @@ python-versions = "!=3.0.*,!=3.1.*,!=3.2.*,!=3.3.*,!=3.4.*,>=2.7"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.10"
-content-hash = "f626a662379a63173e88d6d5d95b2d27b73eca15a71f4ee6a1878475e958b98d"
+content-hash = "71e835574829239e362dd1962319692d00b8e17f4bd03390d656d3cecd2f2da2"
 
 [metadata.files]
 aerich = [
@@ -1256,19 +1256,11 @@ alabaster = [
     {file = "alabaster-0.7.12.tar.gz", hash = "sha256:a661d72d58e6ea8a57f7a86e37d86716863ee5e92788398526d58b26a4e4dc02"},
 ]
 antidote = [
-    {file = "antidote-1.4.1-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.manylinux_2_24_x86_64.whl", hash = "sha256:230ab86e5f6a4281c7345951f567bd078afa83333ca6fbf7dc3fc179e46e804f"},
-    {file = "antidote-1.4.1-cp310-cp310-manylinux_2_5_i686.manylinux1_i686.manylinux_2_24_i686.whl", hash = "sha256:5769bdd7260319935d603fa37dd867223514480094914a44f0cafb2c1cc93a54"},
-    {file = "antidote-1.4.1-cp310-cp310-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_12_x86_64.manylinux2010_x86_64.whl", hash = "sha256:8c2ce56fc69551441620309e59c35546e62588aad07607bebfb89cf963f9354c"},
-    {file = "antidote-1.4.1-cp37-cp37m-manylinux_2_17_x86_64.manylinux2014_x86_64.manylinux_2_24_x86_64.whl", hash = "sha256:68502d5af679b2375493c80b59d28365dba13117b863e2a14bfd39e51bdaba6d"},
-    {file = "antidote-1.4.1-cp37-cp37m-manylinux_2_5_i686.manylinux1_i686.manylinux_2_24_i686.whl", hash = "sha256:37846134dc1da4c7557684db4f71a122668404a11f0f40b779368a196f6a4f52"},
-    {file = "antidote-1.4.1-cp37-cp37m-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_12_x86_64.manylinux2010_x86_64.whl", hash = "sha256:495b21d990a078bbdc12d59b6eea87557e968634e91a250c4226ce0779c38731"},
-    {file = "antidote-1.4.1-cp38-cp38-manylinux_2_17_x86_64.manylinux2014_x86_64.manylinux_2_24_x86_64.whl", hash = "sha256:88197a09178b7669586eec830d9f4ce52331047cb5738e1488198a0ec321ac5d"},
-    {file = "antidote-1.4.1-cp38-cp38-manylinux_2_5_i686.manylinux1_i686.manylinux_2_24_i686.whl", hash = "sha256:2833b21d517d325ad21df9d65e97a49f509073a160be22d8e8ffd261b89a07c0"},
-    {file = "antidote-1.4.1-cp38-cp38-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_12_x86_64.manylinux2010_x86_64.whl", hash = "sha256:1bf9746d69b88494d4bf0381b6c365a863a083ee7f133356e238a510938f3ce9"},
-    {file = "antidote-1.4.1-cp39-cp39-manylinux_2_17_x86_64.manylinux2014_x86_64.manylinux_2_24_x86_64.whl", hash = "sha256:dfa6f9afa6452ab8f58f7092641c7b7daede5ff49e265cd7bdb3a6d62f59e771"},
-    {file = "antidote-1.4.1-cp39-cp39-manylinux_2_5_i686.manylinux1_i686.manylinux_2_24_i686.whl", hash = "sha256:0a7006caf9d5b91fd9f7ebec5928e2a33b26fd295608eaf645036fcd9e82a57f"},
-    {file = "antidote-1.4.1-cp39-cp39-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_12_x86_64.manylinux2010_x86_64.whl", hash = "sha256:47a84b22074ebd7517fc53855221e0b9b5ae0498c4625b120fc0cc25e30571fd"},
-    {file = "antidote-1.4.1.tar.gz", hash = "sha256:890408c8640cb99f1678c20d3ed948e70c16ab69a4c635e1caf0a9b77f8cfa9f"},
+    {file = "antidote-1.4.2-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.manylinux_2_24_x86_64.whl", hash = "sha256:dd3467f51c1773256b64473511bba78839ec83dd536eeb53f669ea650ec02221"},
+    {file = "antidote-1.4.2-cp37-cp37m-manylinux_2_17_x86_64.manylinux2014_x86_64.manylinux_2_24_x86_64.whl", hash = "sha256:15adb2a5f0fdb75899c13ca69ddd642d2e9cae2b4f10e843d19a401850e0cf30"},
+    {file = "antidote-1.4.2-cp38-cp38-manylinux_2_17_x86_64.manylinux2014_x86_64.manylinux_2_24_x86_64.whl", hash = "sha256:c9a3925e336d4dec73baefb1b6ec1f26d9388faa7783a1495e5a172f55c8be41"},
+    {file = "antidote-1.4.2-cp39-cp39-manylinux_2_17_x86_64.manylinux2014_x86_64.manylinux_2_24_x86_64.whl", hash = "sha256:f45d571729293ee6d799150f6ab55b957739071f5e9160c8662a4ff9a8ecb34e"},
+    {file = "antidote-1.4.2.tar.gz", hash = "sha256:98ce045bcb9fffa444d37ad541bf12c777b6796bc34206e2e3dcf57f512b2014"},
 ]
 anyio = [
     {file = "anyio-3.5.0-py3-none-any.whl", hash = "sha256:b5fa16c5ff93fa1046f2eeb5bbff2dad4d3514d6cda61d02816dba34fa8c3c2e"},
@@ -1935,8 +1927,8 @@ starlette = [
     {file = "starlette-0.17.1.tar.gz", hash = "sha256:57eab3cc975a28af62f6faec94d355a410634940f10b30d68d31cb5ec1b44ae8"},
 ]
 starlette-context = [
-    {file = "starlette_context-0.3.3-py37-none-any.whl", hash = "sha256:7090b613d24b5ebd5d07682a503d883af40347076f466603a6493f3d0ce67f25"},
-    {file = "starlette_context-0.3.3.tar.gz", hash = "sha256:1c900380d08c872461aa76e9ae4d7b454bf53724ac2355104f191845a3c9947d"},
+    {file = "starlette_context-0.3.4-py37-none-any.whl", hash = "sha256:b16bf17bd3ead7ded2f458aebf7f913744b9cf28305e16c69b435a6c6ddf1135"},
+    {file = "starlette_context-0.3.4.tar.gz", hash = "sha256:2d28e1838302fb5d5adacadc10fb73fb2d5cca1f0aa1e279698701cc96f1567c"},
 ]
 tomli = [
     {file = "tomli-2.0.1-py3-none-any.whl", hash = "sha256:939de3e7a6161af0c887ef91b7d41a53e7c5a1ca976325f429cb46ea9bc30ecc"},

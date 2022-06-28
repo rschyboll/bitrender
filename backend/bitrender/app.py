@@ -9,12 +9,22 @@ from bitrender.api.handlers import register_library_error_handlers
 from bitrender.api.handlers.user import register_auth_error_handlers
 from bitrender.config import tortoise_config
 
+
+def init_deps():
+    """Imports all interface implementations to allow them to be recognized by antidote"""
+    # pylint: disable=unused-import,import-outside-toplevel
+    import bitrender.services.helpers.deps  # noqa: F401
+
+    # pylint: disable=unused-import,import-outside-toplevel
+    import bitrender.services.user.deps  # noqa: F401
+
+
 origins = [
     "http://127.0.0.1:3000",
     "http://localhost:3000",
 ]
 
-
+init_deps()
 app = FastAPI()
 app.add_middleware(
     CORSMiddleware,

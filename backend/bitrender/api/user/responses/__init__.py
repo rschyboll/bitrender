@@ -4,14 +4,8 @@ from fastapi import status
 from pydantic import BaseModel
 from tortoise.exceptions import DoesNotExist
 
+from bitrender.api.handlers import error_codes
 from bitrender.errors.user import UnauthenticatedError, UnauthorizedError, UserNotVerified
-
-error_codes = {
-    DoesNotExist: "RESOURCE_NOT_FOUND",
-    UnauthenticatedError: "NOT_AUTHENTICATED",
-    UnauthorizedError: "NOT_AUTHORIZED",
-    UserNotVerified: "USER_NOT_VERIFIED",
-}
 
 
 class ErrorResponseModel(BaseModel):

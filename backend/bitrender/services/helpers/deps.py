@@ -3,3 +3,4 @@
 
 from .core.acl import AclHelper  # noqa: F401
 from .core.password import BCryptHelper  # noqa: F401
+from .core.token import TokenHelper  # noqa: F401
