@@ -25,12 +25,6 @@ class UserView(BaseSchema):
     permissions: list[Permission]
 
 
-class UserSchema(BaseSchema):
-    """TODO generate docstring"""
-
-    email: EmailStr
-
-
 class UserCreate(PydanticBase):
     """TODO generate docstring"""
 
@@ -39,5 +33,5 @@ class UserCreate(PydanticBase):
 
     @staticmethod
     @validator("password")
-    def password_check(password: str):
+    def password_check(password: str) -> None:
         """Validates that the password is secure enough."""

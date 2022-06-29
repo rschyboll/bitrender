@@ -1,12 +1,9 @@
 from abc import ABC, abstractmethod
-from typing import Type, TypeVar, cast
 
-from antidote import inject, wire, world
-from antidote.core.typing import Dependency
+from antidote import inject, wire
 from fastapi import Depends
 
 from bitrender.services.user.context import UserContext
-from bitrender.services.user.interfaces import IService
 from bitrender.services.user.interfaces.auth import IAuthService
 from bitrender.services.user.interfaces.user import IUserService
 
@@ -41,6 +38,7 @@ class UserServices(IUserServices):
     All services all injected with the antidote library through their interfaces
     The class is required to connect the FastAPI dependency system with the antidote system
     It's an ugly soulution, so hopefully it will be replaced with something better in the future
+
     Properties:
         user: IUserService - implementation of the user service
         auth: IAuthService - implementation of the auth service"""

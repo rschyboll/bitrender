@@ -47,7 +47,7 @@ class IAuthService(IService):
         self,
         action: Callable[..., Coroutine[Any, Any, RETURNT]],
         acl_actions: AclAction | list[AclAction],
-        args: tuple | dict = (),
-        additional_static_models: list[Type[BaseModel]] = None,
+        args: list[Any] | dict[Any, Any] | None = None,
+        additional_static_models: list[Type[BaseModel]] | None = None,
     ) -> RETURNT:
         """TODO generate docstring"""

@@ -35,8 +35,8 @@ class User(BaseModel):
     email: str = CharField(255, unique=True)
     hashed_password: bytes = BinaryField()
 
-    verify_token: str | None = CharField(255, null=True)
-    reset_password_token: str | None = CharField(255, null=True)
+    verify_token: str | None = CharField(255, null=True, default=None)
+    reset_password_token: str | None = CharField(255, null=True, default=None)
 
     is_active: bool = BooleanField(default=True)  # type: ignore
     is_superuser: bool = BooleanField(default=False)  # type: ignore

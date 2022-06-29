@@ -51,7 +51,7 @@ class ServiceHelpers(IServiceHelpers):
     Properties:
         password: IPasswordServices"""
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.__password: IPasswordHelper | None = None
         self.__acl: IACLHelper | None = None
         self.__token: ITokenHelper | None = None

@@ -24,3 +24,15 @@ class UserNotVerified(UserError):
 
 class UserNotActive(UserError):
     """Raised when the user is not active"""
+
+
+class UserAlreadyExists(UserError):
+    """Raised when creating user, and a user with the name/email already exists."""
+
+
+class NoDefaultRole(UserError):
+    """Raised when creating user, and no default role is selected"""
+
+
+class RoleDoesNotExist(UserError):
+    """Raised when creating user, and the selected role for the new user does not exist"""
