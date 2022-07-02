@@ -1,24 +1,18 @@
 """Contains base interface for user services."""
 from __future__ import annotations
 
-from abc import ABC, abstractmethod
-from typing import TYPE_CHECKING
+from abc import ABC
 
 from antidote import interface
 
-if TYPE_CHECKING:
-    from bitrender.services.user import IUserServices
+from bitrender.services.inject import InjectInService
+from bitrender.services.user.context import UserContextProtocol
 
 
 @interface
 class IService(ABC):
     """Base interface for all user services."""
 
-    @property
-    @abstractmethod
-    def services(self) -> IUserServices:
-        """Instance of IUserSevices class for accessing other services"""
-
-    @abstractmethod
-    def init(self, services: IUserServices):
-        """Initializes the service and injects the services instance"""
+    def __init__(self) -> None:
+        self.context: UserContextProtocol
+        self.inject_service = InjectInService(self.context, "context")

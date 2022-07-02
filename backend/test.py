@@ -1,22 +1,9 @@
-from typing import List, get
-
-from antidote import implements, inject, interface
+from typing import Any, List
 
 
-@interface
-class ITestClass:
-    def static(self, actions: str | List[str]) -> bool | None:
-        pass
+class TestClass:
+    def __new__(cls, actions: int) -> Any:
+        return cls(actions)
 
 
-@implements(ITestClass).by_default
-class TestClass(ITestClass):
-    def static(self, actions: str | List[str]) -> bool | None:
-        pass
-
-
-def test(aclHelper: ITestClass = inject.me()):
-    print(ITestClass)
-
-
-test()
+TestClass()
