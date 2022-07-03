@@ -1,8 +1,7 @@
 """Contains interface for the password helper implementations."""
-from abc import ABC
+from abc import ABC, abstractmethod
 
 from antidote import interface
-from pyparsing import abstractmethod
 
 
 @interface
@@ -31,7 +30,7 @@ class IPasswordHelper(ABC):
             bool: If the password corresponds to the hash."""
 
     @abstractmethod
-    def validate(self, password: str):
+    def validate(self, password: str) -> None:
         """Validates if the password is secure enough.
 
         Args:

@@ -1,29 +1,28 @@
 import inspect
-from typing import Any, Callable, Coroutine, Sequence, Type, TypeVar, get_args, overload
+from typing import Any, Callable, Coroutine, Type, TypeVar, get_args, overload
 
 from antidote import implements, inject, wire
 from tortoise.queryset import QuerySet, QuerySetSingle
 from tortoise.transactions import atomic
 
-from bitrender.core.acl import AclAction
-from bitrender.errors.user import CredentialsError
+from bitrender.core.acl import AclAction, AclResource
+from bitrender.errors.user import BadCredentials
 from bitrender.models.base import BaseModel
 from bitrender.services.helpers import IACLHelper
-from bitrender.services.user import IUserServices
-from bitrender.services.user.core import Service
+from bitrender.services.user.core import BaseUserService
 from bitrender.services.user.interfaces.auth import IAuthService
 
 MODEL = TypeVar("MODEL", bound=BaseModel)
-RETURNT = TypeVar("RETURNT", bound=BaseModel | list[BaseModel])
+RESOURCE = TypeVar("RESOURCE", bound=AclResource | list[AclResource])
 
 
 @wire
 @implements(IAuthService).by_default
-class AuthService(Service, IAuthService):
+class AuthService(BaseUserService, IAuthService):
     """TODO generate docstring"""
 
-    def __init__(self, services: IUserServices | None = None, acl_helper: IACLHelper = inject.me()):
-        Service.__init__(self, services)
+    def __init__(self, acl_helper: IACLHelper = inject.me()):
+        BaseUserService.__init__(self)
         self.__acl_helper = acl_helper
 
     @overload
@@ -49,20 +48,26 @@ class AuthService(Service, IAuthService):
     ) -> list[MODEL] | MODEL:
         if additional_types is None:
             additional_types = []
+        auth_ids = self.context.auth_ids
         return_type = self.__get_query_return_type(query)
+        if return_type is None:
+            raise BadCredentials()
         types = [*additional_types, return_type]
-        static_check_result = self.__acl_helper.static(types, AclAction.VIEW)
+        static_check_result = self.__acl_helper.static(types, AclAction.VIEW, auth_ids)
         if static_check_result:
-            return await query
+            query_result: list[MODEL] | MODEL = await query
+            return query_result
         if static_check_result is None:
             query_result = await query
-            dynamic_result = await self.__acl_helper.dynamic(query_result, AclAction.VIEW)
+            dynamic_result = await self.__acl_helper.dynamic(query_result, AclAction.VIEW, auth_ids)
             if dynamic_result:
                 return query_result
-        raise CredentialsError()
+        raise BadCredentials()
 
     @staticmethod
-    def __get_query_return_type(query: QuerySet | QuerySetSingle) -> Type[BaseModel] | None:
+    def __get_query_return_type(
+        query: QuerySet[MODEL] | QuerySetSingle[MODEL],
+    ) -> Type[BaseModel] | None:
         if isinstance(query, QuerySet):
             query_type = query.model
             if issubclass(query_type, BaseModel):
@@ -72,28 +77,29 @@ class AuthService(Service, IAuthService):
     @atomic()
     async def action(
         self,
-        action: Callable[..., Coroutine[Any, Any, RETURNT]],
-        acl_actions: AclAction | Sequence[AclAction],
-        args: tuple | dict = (),
-        additional_static_models: Sequence[Type[BaseModel]] = None,
-    ) -> RETURNT:
-        """TODO generate docstring"""
-        auth_ids = self.services.context.auth_ids
-        static_types = self.__get_action_return_type(action, additional_static_models)
+        action: Callable[..., Coroutine[Any, Any, RESOURCE]],
+        acl_actions: AclAction | list[AclAction],
+        args: list[Any] | dict[Any, Any] | None = None,
+        additional_static_resources: list[Type[AclResource]] | None = None,
+    ) -> RESOURCE:
+        if args is None:
+            args = []
+        auth_ids = self.context.auth_ids
+        static_types = self.__get_action_return_type(action, additional_static_resources)
         static_result = self.__acl_helper.static(static_types, acl_actions, auth_ids)
         if static_result:
-            return await (action(*args) if isinstance(args, tuple) else action(**args))
+            return await (action(*args) if isinstance(args, list) else action(**args))
         if static_result is None:
-            action_result = await (action(*args) if isinstance(args, tuple) else action(**args))
-            dynamic_result = await self.__acl_helper.dynamic(action_result, acl_actions)
+            action_result = await (action(*args) if isinstance(args, list) else action(**args))
+            dynamic_result = await self.__acl_helper.dynamic(action_result, acl_actions, auth_ids)
             if dynamic_result:
                 return action_result
-        raise CredentialsError()
+        raise BadCredentials()
 
     @staticmethod
     def __get_action_return_type(
-        action: Callable, types: Sequence[Type[BaseModel]] | None
-    ) -> Sequence[Type[BaseModel]]:
+        action: Callable[..., Coroutine[Any, Any, RESOURCE]], types: list[Type[AclResource]] | None
+    ) -> list[Type[AclResource]]:
         if types is None:
             types = []
         signature = inspect.signature(action)

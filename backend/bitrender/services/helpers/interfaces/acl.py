@@ -1,9 +1,8 @@
 """Contains interface for the acl helper implementations."""
-from abc import ABC
+from abc import ABC, abstractmethod
 from typing import Sequence, Type
 
 from antidote import interface
-from pyparsing import abstractmethod
 
 from bitrender.core.acl import AclAction, AclResource
 

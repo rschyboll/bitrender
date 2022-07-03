@@ -1,58 +1,79 @@
 from uuid import UUID
 
-from antidote import implements, inject
+from antidote import implements, inject, world
 from tortoise.exceptions import DoesNotExist
 
 from bitrender.core.acl import AclAction
 from bitrender.errors.user import (
-    CredentialsError,
+    BadCredentials,
     NoDefaultRole,
     UnauthenticatedError,
     UserAlreadyExists,
-    UserNotActive,
     UserNotVerified,
 )
 from bitrender.models import Role, RolePermission, User
 from bitrender.schemas import UserCreate, UserView
-from bitrender.services.helpers import IPasswordHelper, IServiceHelpers
-from bitrender.services.user.core import Service
-from bitrender.services.user.interfaces.user import IUserService
+from bitrender.services.helpers import IPasswordHelper, ITokenHelper
+from bitrender.services.user import IAuthService, IUserService
+from bitrender.services.user.core import BaseUserService
 
 
 @implements(IUserService).by_default
-class UserService(Service, IUserService):
+class UserService(BaseUserService, IUserService):
+    @property
+    def password(self) -> IPasswordHelper:
+        """Property for easier accessing the IPasswordHelper, without injecting it in every method
+
+        Returns:
+            IPasswordHelper: Injected implementation of the IPasswordHelper interface."""
+        password_helper: IPasswordHelper = world.get(IPasswordHelper)  # type: ignore
+        return password_helper
+
+    @property
+    def token(self) -> ITokenHelper:
+        """Property for easier accessing the ITokenHelper, without injecting it in every method
+
+        Returns:
+            ITokenHelper: Injected implementation of the ITokenHelper interface."""
+        token_helper: ITokenHelper = world.get(ITokenHelper)  # type: ignore
+        return token_helper
+
+    @property
+    def auth(self) -> IAuthService:
+        """Property for easier accessing the IAuthService, without injecting it in every method
+
+        Returns:
+            IAuthService: Injected implementation of the IAuthService interface."""
+        auth_service: IAuthService = self.inject(IAuthService)
+        return auth_service
+
     async def get_current(self) -> UserView:
-        user = self.services.context.current_user
+        user = self.context.current_user
         if user is None:
             raise UnauthenticatedError()
-        await self.services.auth.action(
+        await self.auth.action(
             self.__fetch_user_credentials, AclAction.VIEW, [user], [Role, RolePermission]
         )
         return await user.to_view()
 
     async def get_by_id(self, user_id: UUID) -> UserView:
-        user = await self.services.auth.action(
+        user = await self.auth.action(
             self.__fetch_user_with_credentials, AclAction.VIEW, [user_id], [Role, RolePermission]
         )
         return await user.to_view()
 
-    async def authenticate(
-        self,
-        email: str,
-        password: str,
-        helpers: IServiceHelpers = inject.me(),
-    ) -> str:
+    async def authenticate(self, email: str, password: str) -> str:
         try:
             user = await User.get_by_email(email)
         except DoesNotExist as error:
-            raise CredentialsError() from error
+            raise BadCredentials() from error
         if not user.is_verified:
             raise UserNotVerified()
         if not user.is_active:
-            raise UserNotActive()
-        if helpers.password.verify(password, user.hashed_password):
-            return helpers.token.create_user_token(user.id)
-        raise CredentialsError()
+            raise BadCredentials()
+        if self.password.verify(password, user.hashed_password):
+            return self.token.create_user_token(user.id)
+        raise BadCredentials()
 
     async def register(self, user_data: UserCreate) -> UserView:
         default_role = await self.__get_default_role()
@@ -63,9 +84,7 @@ class UserService(Service, IUserService):
             raise UserAlreadyExists()
         if not isinstance(role, Role):
             role = await Role.get_by_id(role, False)
-        user = await self.services.auth.action(
-            self.__create_user, AclAction.CREATE, [user_data, role]
-        )
+        user = await self.auth.action(self.__create_user, AclAction.CREATE, [user_data, role])
         return await user.to_view()
 
     @inject
@@ -75,7 +94,7 @@ class UserService(Service, IUserService):
         role: Role,
         password_helper: IPasswordHelper = inject.me(),
     ) -> User:
-        hashed_password = password_helper.hash(user_data.password)
+        hashed_password = password_helper.hash(user_data.password.get_secret_value())
         user = await User.create(email=user_data.email, hashed_password=hashed_password, role=role)
         return user
 

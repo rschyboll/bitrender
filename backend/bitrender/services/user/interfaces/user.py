@@ -6,11 +6,9 @@ from antidote import interface
 
 from bitrender.schemas import UserCreate, UserView
 
-from . import IService
-
 
 @interface
-class IUserService(IService):
+class IUserService:
     """TODO generate docstring"""
 
     @abstractmethod

@@ -14,16 +14,12 @@ class UnauthenticatedError(UserError):
     """Raised, when there is no entity authenticated when accessing a resource"""
 
 
-class CredentialsError(UserError):
+class BadCredentials(UserError):
     """Raised, when the provided credentials were wrong."""
 
 
 class UserNotVerified(UserError):
     """Raised when the user is not verified"""
-
-
-class UserNotActive(UserError):
-    """Raised when the user is not active"""
 
 
 class UserAlreadyExists(UserError):

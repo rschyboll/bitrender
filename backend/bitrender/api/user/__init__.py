@@ -8,8 +8,7 @@ from bitrender.api.deps.user import UserContext, get_current_user
 from bitrender.api.user.responses import user_by_id_responses, user_me_responses
 from bitrender.schemas import UserView
 from bitrender.services.inject import InjectInRoute
-from bitrender.services.user import IUserService, UserServices
-from bitrender.services.user.context import UserContext
+from bitrender.services.user import IUserService
 
 user_router = APIRouter(prefix="/user")
 
@@ -18,9 +17,9 @@ user_router = APIRouter(prefix="/user")
 async def login(
     response: Response,
     credentials: OAuth2PasswordRequestForm = Depends(),
-    services: UserServices = Depends(),
+    user_service: IUserService = Depends(InjectInRoute(IUserService, UserContext, "context")),
 ) -> None:
-    token = await services.user.authenticate(credentials.username, credentials.password)
+    token = await user_service.authenticate(credentials.username, credentials.password)
     response.set_cookie("access_token", f"Bearer {token}", httponly=True)
 
 
@@ -37,8 +36,10 @@ async def register(
     response_model=UserView,
     responses=user_me_responses,
 )
-async def get_me(services: UserServices = Depends()) -> UserView:
-    return await services.user.get_current()
+async def get_me(
+    user_service: IUserService = Depends(InjectInRoute(IUserService, UserContext, "context")),
+) -> UserView:
+    return await user_service.get_current()
 
 
 @user_router.get(
@@ -47,5 +48,8 @@ async def get_me(services: UserServices = Depends()) -> UserView:
     response_model=UserView,
     responses=user_by_id_responses,
 )
-async def get_by_id(user_id: UUID, services: UserServices = Depends()) -> UserView:
-    return await services.user.get_by_id(user_id)
+async def get_by_id(
+    user_id: UUID,
+    user_service: IUserService = Depends(InjectInRoute(IUserService, UserContext, "context")),
+) -> UserView:
+    return await user_service.get_by_id(user_id)

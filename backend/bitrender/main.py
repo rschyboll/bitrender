@@ -8,7 +8,7 @@ from bitrender.data import create_admin_account
 from bitrender.models import init_db, migrate
 
 
-def run():
+def run() -> None:
     """Runs the server."""
     # pylint: disable=import-outside-toplevel
     from bitrender.app import app

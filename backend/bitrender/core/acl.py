@@ -1,7 +1,7 @@
 """Contains types and enums used for defining acl lists."""
 
 from enum import Enum
-from typing import Protocol
+from typing import Protocol, runtime_checkable
 
 
 class AclAction(str, Enum):
@@ -40,6 +40,7 @@ AUTHENTICATED = "system:authenticated"
 SUPERUSER = "system:superuser"
 
 
+@runtime_checkable
 class AclResource(Protocol):
     """Protocol describing a resource, protected with an access control list."""
 

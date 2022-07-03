@@ -5,7 +5,12 @@ from pydantic import BaseModel
 from tortoise.exceptions import DoesNotExist
 
 from bitrender.api.handlers import error_codes
-from bitrender.errors.user import UnauthenticatedError, UnauthorizedError, UserNotVerified
+from bitrender.errors.user import (
+    BadCredentials,
+    UnauthenticatedError,
+    UnauthorizedError,
+    UserNotVerified,
+)
 
 
 class ErrorResponseModel(BaseModel):
@@ -74,6 +79,10 @@ user_login_responses: dict[int | str, dict[str, Any]] = {
                     error_codes[UserNotVerified]: {
                         "summary": "The user is not verified",
                         "value": {"detail": error_codes[UserNotVerified]},
+                    },
+                    error_codes[BadCredentials]: {
+                        "summary": "Could not authenticate a user with those credentials",
+                        "value": {"detail": error_codes[BadCredentials]},
                     },
                 }
             }

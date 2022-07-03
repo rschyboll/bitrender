@@ -1,26 +1,11 @@
 """Contains user service implementation."""
-from typing import TYPE_CHECKING
 
-from antidote import implements
-
-from bitrender.services.user.interfaces import IService
-
-if TYPE_CHECKING:
-    from bitrender.services.user import IUserServices
-else:
-    IUserServices = object
+from bitrender.services import Service
+from bitrender.services.user.context import UserContextProtocol
 
 
-@implements(IService)
-class Service(IService):
-    def __init__(self, services: IUserServices | None = None):
-        self.__services = services
+class BaseUserService(Service[UserContextProtocol]):
+    """TODO generate docstring"""
 
-    def init(self, services: IUserServices):
-        self.__services = services
-
-    @property
-    def services(self) -> IUserServices:
-        if self.__services is None:
-            raise Exception()
-        return self.__services
+    def __init__(self) -> None:
+        super().__init__()

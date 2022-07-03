@@ -1,6 +1,7 @@
 """Contains implementation for the ITokenHelper interface."""
 
 from datetime import datetime, timedelta
+from typing import Any
 from uuid import UUID
 
 from antidote import implements, inject, wire
@@ -16,21 +17,21 @@ ALGORITHM = "HS256"
 
 
 @wire
-@implements(ITokenHelper).by_default
+@implements(ITokenHelper)
 class TokenHelper(ITokenHelper):
     """Helper class containing implementation for creating and decrypting web tokens."""
 
-    def create(self, data: dict, expires_delta: timedelta) -> str:
+    def create(self, data: dict[str, Any], expires_delta: timedelta) -> str:
         try:
             expire = datetime.utcnow() + expires_delta
-            encoded_jwt = jwt.encode({**data, "exp": expire}, SECRET_KEY, algorithm=ALGORITHM)
+            encoded_jwt: str = jwt.encode({**data, "exp": expire}, SECRET_KEY, algorithm=ALGORITHM)
             return encoded_jwt
         except Exception as error:
             raise TokenCreateError() from error
 
-    def decode(self, token: str) -> dict:
+    def decode(self, token: str) -> dict[str, Any]:
         try:
-            payload: dict = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+            payload: dict[str, Any] = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
             return payload
         except ExpiredSignatureError as error:
             raise TokenExpiredError() from error
