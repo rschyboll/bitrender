@@ -20,12 +20,12 @@ class Permission(Enum):
     MANAGE_ROLES = "manage_roles"
 
     @property
-    def acl_id(self):
+    def acl_id(self) -> str:
         """TODO generate docstring"""
         return f"permission:{self.value}"
 
     @classmethod
-    def list(cls):
+    def list(cls) -> list[Permission]:
         """TODO generate docstring"""
         return list(Permission)
 

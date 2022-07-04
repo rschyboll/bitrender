@@ -27,7 +27,7 @@ class Role(BaseModel):
     default: bool | None = BooleanField(default=None, null=True, unique=True)  # type: ignore
 
     @classmethod
-    def get_default(cls: Type[MODEL], lock=True) -> QuerySetSingle[MODEL]:
+    def get_default(cls: Type[MODEL], lock: bool = True) -> QuerySetSingle[MODEL]:
         """Returns the current default role.
 
         Args:

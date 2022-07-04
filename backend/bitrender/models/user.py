@@ -45,7 +45,7 @@ class User(BaseModel):
     role: ForeignKeyRelation[Role] = ForeignKeyField("bitrender.Role")
 
     @classmethod
-    async def get_by_username(cls: Type[MODEL], username: str, lock=True) -> MODEL:
+    async def get_by_username(cls: Type[MODEL], username: str, lock: bool = True) -> MODEL:
         """Returns a user based on the provided username.
 
         Args:
@@ -63,7 +63,7 @@ class User(BaseModel):
         return await cls.select_for_update().get(username=username)
 
     @classmethod
-    async def get_by_email(cls: Type[MODEL], email: str, lock=True) -> MODEL:
+    async def get_by_email(cls: Type[MODEL], email: str, lock: bool = True) -> MODEL:
         """Returns a user based on the provided email.
 
         Args:

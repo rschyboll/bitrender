@@ -20,6 +20,16 @@
             },
             "type": "shell",
             "command": "pytest --cov=bitrender tests/",
+        },
+        {
+            "label": "Check imports",
+            "options": {
+                "statusbar": {
+                    "color": "#22C1D6"
+                }
+            },
+            "type": "shell",
+            "command": "lint-imports",
         }
     ]
 }

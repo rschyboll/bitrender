@@ -13,13 +13,13 @@ from bitrender.errors.user import (
 )
 from bitrender.models import Role, RolePermission, User
 from bitrender.schemas import UserCreate, UserView
+from bitrender.services.app import IAuthService, IUserService
+from bitrender.services.app.core import BaseAppService
 from bitrender.services.helpers import IPasswordHelper, ITokenHelper
-from bitrender.services.user import IAuthService, IUserService
-from bitrender.services.user.core import BaseUserService
 
 
 @implements(IUserService).by_default
-class UserService(BaseUserService, IUserService):
+class UserService(BaseAppService, IUserService):
     @property
     def password(self) -> IPasswordHelper:
         """Property for easier accessing the IPasswordHelper, without injecting it in every method
@@ -51,6 +51,10 @@ class UserService(BaseUserService, IUserService):
         user = self.context.current_user
         if user is None:
             raise UnauthenticatedError()
+        if not user.is_active:
+            raise UnauthenticatedError()
+        if not user.is_verified:
+            raise UserNotVerified()
         await self.auth.action(
             self.__fetch_user_credentials, AclAction.VIEW, [user], [Role, RolePermission]
         )

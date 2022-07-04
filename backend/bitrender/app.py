@@ -13,10 +13,9 @@ from bitrender.config import tortoise_config
 def init_deps() -> None:
     """Imports all interface implementations to allow them to be recognized by antidote"""
     # pylint: disable=unused-import,import-outside-toplevel
-    import bitrender.services.helpers.deps  # noqa: F401
-
     # pylint: disable=unused-import,import-outside-toplevel
-    import bitrender.services.user.deps  # noqa: F401
+    import bitrender.services.app.deps  # noqa: F401
+    import bitrender.services.helpers.deps  # noqa: F401
 
 
 origins = [

@@ -18,7 +18,7 @@ class BCryptHelper(IPasswordHelper):
     def verify(self, password: str, hashed_password: bytes) -> bool:
         return bcrypt.checkpw(password.encode(), hashed_password)
 
-    def validate(self, password: str):
+    def validate(self, password: str) -> None:
         if len(password) < 8:
             raise ValueError("Password length should be at least 8")
 

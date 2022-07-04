@@ -6,11 +6,12 @@ from fastapi.security.utils import get_authorization_scheme_param
 from pydantic import ValidationError
 from tortoise.exceptions import DoesNotExist
 
+from bitrender.api.inject import InjectInRoute
 from bitrender.core.acl import AUTHENTICATED, EVERYONE, SUPERUSER
 from bitrender.errors.token import TokenCorruptedError, TokenExpiredError
 from bitrender.errors.user import UnauthenticatedError
 from bitrender.models import User
-from bitrender.services.helpers import ServiceHelpers
+from bitrender.services.helpers import ITokenHelper
 
 
 class OAuth2PasswordBearerWithCookie(OAuth2):
@@ -39,7 +40,7 @@ oauth2_scheme = OAuth2PasswordBearerWithCookie("/login", False)
 
 async def get_current_user_or_none(
     token: str | None = Depends(oauth2_scheme),
-    service_helpers: ServiceHelpers = Depends(),
+    token_helper: ITokenHelper = Depends(InjectInRoute(ITokenHelper)),
 ) -> User | None:
     """Extracts user data from the JWT, validates it and returns the current user.
     Returns None, if the token is expired, is corrupted, or when the user does not exist.
@@ -53,7 +54,7 @@ async def get_current_user_or_none(
     if token is None:
         return None
     try:
-        token_data = service_helpers.token.decode_user_token(token)
+        token_data = token_helper.decode_user_token(token)
         user = await User.get_by_id(token_data.sub, False)
         return user
     except (TokenCorruptedError, TokenExpiredError, ValidationError, DoesNotExist):

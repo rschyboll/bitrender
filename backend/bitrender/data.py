@@ -6,7 +6,7 @@ from bitrender.config import tortoise_config
 from bitrender.models import Permission, Role, RolePermission, User
 
 
-async def create_admin_account(password: str, email: str):
+async def create_admin_account(password: str, email: str) -> None:
     """Creates a admin account."""
     await Tortoise.init(config=tortoise_config)
     async with in_transaction():
@@ -37,7 +37,7 @@ async def create_admin_role() -> Role:
     return role
 
 
-async def assign_all_permissions(role: Role):
+async def assign_all_permissions(role: Role) -> None:
     """Assigns all available permissions to the provided role.
 
     Args:

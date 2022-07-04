@@ -40,7 +40,7 @@ class BaseModel(Model):
         abstract = True
 
     @classmethod
-    def get_all(cls: Type[MODEL], lock=True, skip_locked=False) -> QuerySet[MODEL]:
+    def get_all(cls: Type[MODEL], lock: bool = True, skip_locked: bool = False) -> QuerySet[MODEL]:
         """Returns all database entries of the given model.
 
         Args:
@@ -55,7 +55,7 @@ class BaseModel(Model):
         return cls.all().select_for_update(skip_locked=skip_locked)
 
     @classmethod
-    def get_by_id(cls: Type[MODEL], model_id: UUID, lock=True) -> QuerySetSingle[MODEL]:
+    def get_by_id(cls: Type[MODEL], model_id: UUID, lock: bool = True) -> QuerySetSingle[MODEL]:
         """Returns a database entry based on the provided id.
 
         Args:
@@ -69,7 +69,7 @@ class BaseModel(Model):
         return cls.select_for_update().get(id=model_id)
 
     @classmethod
-    def get_latest(cls: Type[MODEL], lock=True) -> QuerySetSingle[MODEL | None]:
+    def get_latest(cls: Type[MODEL], lock: bool = True) -> QuerySetSingle[MODEL | None]:
         """Returns the last created database entry of the model.
 
         Args:
@@ -87,8 +87,8 @@ class BaseModel(Model):
         amount: int,
         offset: int,
         order: str = "-created_at",
-        lock=True,
-        skip_locked=False,
+        lock: bool = True,
+        skip_locked: bool = False,
     ) -> QuerySet[MODEL]:
         """Returns a specified amount of database entries of the model.
 

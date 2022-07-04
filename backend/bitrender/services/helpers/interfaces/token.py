@@ -1,6 +1,7 @@
 """Contains interface for the token helper implementations."""
 from abc import ABC, abstractmethod
 from datetime import timedelta
+from typing import Any
 from uuid import UUID
 
 from antidote import interface
@@ -13,11 +14,11 @@ class ITokenHelper(ABC):
     """Interface for classes for creating and managing web tokens."""
 
     @abstractmethod
-    def create(self, data: dict, expires_delta: timedelta) -> str:
+    def create(self, data: dict[str, Any], expires_delta: timedelta) -> str:
         """Creates a JWT token containing the given data.
 
         Args:
-            data (dict): Dict to include in the token.
+            data (dict[str, Any]): Dict to include in the token.
 
         Raises:
             TokenCreateError: If there is an error creating the token.
@@ -26,7 +27,7 @@ class ITokenHelper(ABC):
             str: Created JWT"""
 
     @abstractmethod
-    def decode(self, token: str) -> dict:
+    def decode(self, token: str) -> dict[str, Any]:
         """Decodes the token and returns the data that was in it.
 
         Args:
@@ -37,7 +38,7 @@ class ITokenHelper(ABC):
             TokenCorruptedError: Raised when could not decode the token.
 
         Returns:
-            dict: Data that was contained within the JWT"""
+            dict[str, Any]: Data that was contained within the JWT"""
 
     @abstractmethod
     def create_user_token(self, sub: UUID) -> str:

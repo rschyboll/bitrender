@@ -6,11 +6,11 @@ from tortoise.queryset import QuerySet, QuerySetSingle
 from tortoise.transactions import atomic
 
 from bitrender.core.acl import AclAction, AclResource
-from bitrender.errors.user import BadCredentials
+from bitrender.errors.user import UnauthorizedError
 from bitrender.models.base import BaseModel
+from bitrender.services.app.core import BaseAppService
+from bitrender.services.app.interfaces.auth import IAuthService
 from bitrender.services.helpers import IACLHelper
-from bitrender.services.user.core import BaseUserService
-from bitrender.services.user.interfaces.auth import IAuthService
 
 MODEL = TypeVar("MODEL", bound=BaseModel)
 RESOURCE = TypeVar("RESOURCE", bound=AclResource | list[AclResource])
@@ -18,11 +18,11 @@ RESOURCE = TypeVar("RESOURCE", bound=AclResource | list[AclResource])
 
 @wire
 @implements(IAuthService).by_default
-class AuthService(BaseUserService, IAuthService):
+class AuthService(BaseAppService, IAuthService):
     """TODO generate docstring"""
 
     def __init__(self, acl_helper: IACLHelper = inject.me()):
-        BaseUserService.__init__(self)
+        BaseAppService.__init__(self)
         self.__acl_helper = acl_helper
 
     @overload
@@ -51,7 +51,7 @@ class AuthService(BaseUserService, IAuthService):
         auth_ids = self.context.auth_ids
         return_type = self.__get_query_return_type(query)
         if return_type is None:
-            raise BadCredentials()
+            raise UnauthorizedError()
         types = [*additional_types, return_type]
         static_check_result = self.__acl_helper.static(types, AclAction.VIEW, auth_ids)
         if static_check_result:
@@ -62,7 +62,7 @@ class AuthService(BaseUserService, IAuthService):
             dynamic_result = await self.__acl_helper.dynamic(query_result, AclAction.VIEW, auth_ids)
             if dynamic_result:
                 return query_result
-        raise BadCredentials()
+        raise UnauthorizedError()
 
     @staticmethod
     def __get_query_return_type(
@@ -94,7 +94,7 @@ class AuthService(BaseUserService, IAuthService):
             dynamic_result = await self.__acl_helper.dynamic(action_result, acl_actions, auth_ids)
             if dynamic_result:
                 return action_result
-        raise BadCredentials()
+        raise UnauthorizedError()
 
     @staticmethod
     def __get_action_return_type(
