@@ -4,13 +4,13 @@ from uuid import UUID
 from fastapi import APIRouter, Depends, Response
 from fastapi.security import OAuth2PasswordRequestForm
 
-from bitrender.api.app.responses import user_by_id_responses, user_me_responses
+from bitrender.api.app.responses.user import user_by_id_responses, user_me_responses
 from bitrender.api.deps.user import UserContext, get_current_user
 from bitrender.api.inject import InjectInRoute
 from bitrender.schemas import UserView
 from bitrender.services.app import IUserService
 
-user_router = APIRouter(prefix="/app")
+user_router = APIRouter(prefix="/user", responses=user_me_responses)
 
 
 @user_router.post("/login")
