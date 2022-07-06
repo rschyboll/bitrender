@@ -46,7 +46,7 @@ class IUserService:
             UserNotVerified: User that was beeing authenticated is not verified.
 
         Returns:
-            str: Token containing the authentiated users data."""
+            str: Token containing the authenticated users data."""
 
     @abstractmethod
     async def register(self, user_data: UserCreate) -> UserView:

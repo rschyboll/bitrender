@@ -13,8 +13,10 @@ def InjectInRoute(
 
         def linker(background_tasks: BackgroundTasks) -> Any:
             inject_instance: Any = world.get(inject_type)
-            if hasattr(inject_instance, "background"):
+            instance_property_names = dir(inject_instance)
+            if "background" in instance_property_names:
                 setattr(inject_instance, "background", background_tasks)
+            return inject_instance
 
         return linker
 
@@ -23,7 +25,8 @@ def InjectInRoute(
         dependency_instance: Any = Depends(dependency),
     ) -> Any:
         inject_instance: Any = world.get(inject_type)
-        if hasattr(inject_instance, "background"):
+        instance_property_names = dir(inject_instance)
+        if "background" in instance_property_names:
             setattr(inject_instance, "background", background_tasks)
         if dependency_key is not None:
             setattr(inject_instance, dependency_key, dependency_instance)

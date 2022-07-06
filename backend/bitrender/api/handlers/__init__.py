@@ -6,17 +6,23 @@ from tortoise.exceptions import DoesNotExist
 
 from bitrender.errors.user import (
     BadCredentials,
+    NoDefaultRole,
     UnauthenticatedError,
     UnauthorizedError,
+    UserAlreadyExists,
     UserNotVerified,
 )
 
 error_codes = {
+    # Global system errors
     DoesNotExist: "RESOURCE_NOT_FOUND",
+    # User errors
     UnauthenticatedError: "NOT_AUTHENTICATED",
     UnauthorizedError: "NOT_AUTHORIZED",
     UserNotVerified: "USER_NOT_VERIFIED",
     BadCredentials: "BAD_CREDENTIALS",
+    UserAlreadyExists: "USER_ALREADY_EXISTS",
+    NoDefaultRole: "NO_DEFAULT_ROLE",
 }
 
 
