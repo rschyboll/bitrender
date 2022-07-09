@@ -71,7 +71,7 @@ user_me_responses: dict[int | str, dict[str, Any]] = {
             "application/json": {
                 "examples": {
                     error_codes[UnauthenticatedError]: {
-                        "summary": "User could not be authenticated",
+                        "summary": "User is not authenticated",
                         "value": {"detail": error_codes[UnauthenticatedError]},
                     },
                     error_codes[UnauthorizedError]: {

@@ -27,12 +27,14 @@
     "kea": "^3.0.1",
     "kea-localstorage": "^3.0.0",
     "kea-typegen": "^3.0.0",
+    "ky": "^0.31.0",
     "primeflex": "^3.2.0",
     "primeicons": "^5.0.0",
     "primereact": "^8.1.1",
     "react": "^18.1.0",
     "react-dom": "^18.1.0",
     "react-i18next": "^11.16.9",
+    "react-icons": "^4.4.0",
     "react-router-dom": "^6.3.0",
     "react-transition-group": "^4.4.2",
     "reflect-metadata": "^0.1.13",
@@ -43,6 +45,7 @@
   },
   "scripts": {
     "parcel:watch": "parcel --host 0.0.0.0 ./src/index.html ./src/themes/*",
+    "parcel:build": "parcel build ./src/index.html ./src/themes/*",
     "watch": "concurrently \"yarn parcel:watch\" \"yarn kea:watch\" -n APP,KEA -c blue,green",
     "kea:watch": "kea-typegen watch -r ./src -c ./tsconfig.json"
   },

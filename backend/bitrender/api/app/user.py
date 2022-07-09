@@ -85,6 +85,17 @@ async def register(
 async def get_me(
     user_service: IUserService = Depends(InjectInRoute(IUserService, UserContext, "context")),
 ) -> UserView:
+    """
+    Returns the data (name, email, role, permissions etc.) of the current authenticated user.
+    This route could be used as a check on app startup, to check if the user is logged in.
+
+    Returns an instance of the UserView schema.
+    When no user is currently authenticated, the server responds with a 401 status code, \
+        and a NOT_AUTHENTICATED error code.
+
+    When the user has no access to it's data (which suggests some kind of server error), \
+        the server responds with a 401 status code and a NOT_AUTHORIZED error code.
+    """
     return await user_service.get_current()
 
 

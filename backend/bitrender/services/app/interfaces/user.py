@@ -22,7 +22,6 @@ class IUserService:
         Raises:
             UnauthenticatedError: No user present in the context.
             UnauthorizedError: User cannot read it's own data.
-            UserNotVerified: User is not verified.
 
         Returns:
             UserView - Data of the current user"""

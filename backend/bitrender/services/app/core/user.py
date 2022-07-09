@@ -51,10 +51,8 @@ class UserService(BaseAppService, IUserService):
         user = self.context.current_user
         if user is None:
             raise UnauthenticatedError()
-        if not user.is_active:
+        if not user.is_active or not user.is_verified:
             raise UnauthenticatedError()
-        if not user.is_verified:
-            raise UserNotVerified()
         await self.auth.action(
             self.__fetch_user_credentials, AclAction.VIEW, [user], [Role, RolePermission]
         )
