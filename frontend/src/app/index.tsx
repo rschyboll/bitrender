@@ -6,8 +6,8 @@ import { Outlet, Route, Routes } from 'react-router-dom';
 import { Sidebar } from '@/components/sidebar';
 import { Topbar } from '@/components/topbar';
 import Dependencies from '@/deps';
+import { SidebarType, Theme } from '@/logic/core/settings/types';
 import { ISettingsLogic } from '@/logic/interfaces';
-import { SidebarType, Theme } from '@/logic/settings/types';
 import { RolesPage } from '@/pages/roles';
 import { UsersPage } from '@/pages/users';
 

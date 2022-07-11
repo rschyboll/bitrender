@@ -2,8 +2,8 @@ import { useValues } from 'kea';
 import { FC, memo } from 'react';
 
 import Dependencies from '@/deps';
+import { SidebarType } from '@/logic/core/settings/types';
 import { ISettingsLogic } from '@/logic/interfaces';
-import { SidebarType } from '@/logic/settings/types';
 
 import { SidebarHorizontal } from './horizontal';
 import { SidebarMobile } from './mobile';

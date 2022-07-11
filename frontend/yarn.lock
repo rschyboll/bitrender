@@ -2872,6 +2872,13 @@ kea-localstorage@^3.0.0:
   resolved "https://registry.yarnpkg.com/kea-localstorage/-/kea-localstorage-3.0.0.tgz#eae89f0ff4f90006efecee02ac2ef19224193091"
   integrity sha512-5g/7Sb5HjXLVTTYB9aUgizISUmnQZHqFm7ab+K3sLLh6gp3UEaKJMs5yq2rFPAfr7QR8OpMkfhKA0Ykg5UaOMQ==
 
+kea-router@^3.0.1:
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/kea-router/-/kea-router-3.0.1.tgz#f987c551222b84c351c90c5bfdbd0d4191812f65"
+  integrity sha512-PGS+Lp+KZXrxAExzFDSMzOu5SLdZ+gp05XLIaavYu0ZWNJR9ZS9bfPqfUoKZtAYw8mflDvt6CqTA6yvI5SKEqQ==
+  dependencies:
+    url-pattern "^1.0.3"
+
 kea-typegen@^3.0.0:
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/kea-typegen/-/kea-typegen-3.0.0.tgz#da461a6e5cd41c2442a5590d381b97687a2ee559"
@@ -3697,6 +3704,11 @@ uri-js@^4.2.2:
   integrity sha512-7rKUyy33Q1yc98pQ1DAmLtwX109F7TIfWlW1Ydo8Wl1ii1SeHieeh0HHfPeL2fMXK6z0s8ecKs9frCuLJvndBg==
   dependencies:
     punycode "^2.1.0"
+
+url-pattern@^1.0.3:
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/url-pattern/-/url-pattern-1.0.3.tgz#0409292471b24f23c50d65a47931793d2b5acfc1"
+  integrity sha512-uQcEj/2puA4aq1R3A2+VNVBgaWYR24FdWjl7VNW83rnWftlhyzOZ/tBjezRiC2UkIzuxC8Top3IekN3vUf1WxA==
 
 use-sync-external-store@^1.0.0:
   version "1.1.0"

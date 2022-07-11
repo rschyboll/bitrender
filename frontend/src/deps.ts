@@ -1,8 +1,8 @@
 import { Container } from 'inversify';
 import { useInjection } from 'inversify-react';
 
+import { settingsLogic } from './logic/core/settings';
 import { ISettingsLogic } from './logic/interfaces';
-import { settingsLogic } from './logic/settings';
 
 type DepTypes = {
   LOGIC: {

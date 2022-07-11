@@ -2,13 +2,35 @@
   "version": "2.0.0",
   "tasks": [
     {
-      "label": "$(triangle-right) Watch",
+      "label": "$(timeline-refresh) Watch",
       "type": "shell",
       "command": "yarn run watch",
       "options": {
         "cwd": "${workspaceFolder}",
         "statusbar": {
-          "color": "#adbaff"
+          "color": "#adffbb"
+        }
+      }
+    },
+    {
+      "label": "Kea",
+      "type": "shell",
+      "command": "yarn run kea:watch",
+      "options": {
+        "cwd": "${workspaceFolder}",
+        "statusbar": {
+          "color": "#adffbb"
+        }
+      }
+    },
+    {
+      "label": "Parcel",
+      "type": "shell",
+      "command": "yarn run parcel:watch",
+      "options": {
+        "cwd": "${workspaceFolder}",
+        "statusbar": {
+          "color": "#adffbb"
         }
       }
     },

@@ -1,6 +1,6 @@
 import { Logic, LogicWrapper } from 'kea';
 
-import { SidebarType, Theme } from '../settings/types';
+import { SidebarType, Theme } from '../core/settings/types';
 
 interface ISettings extends Logic {
   readonly actions: {

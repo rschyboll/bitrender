@@ -3,8 +3,8 @@ import { Button } from 'primereact/button';
 import { FC } from 'react';
 
 import Dependencies from '@/deps';
+import { SidebarType } from '@/logic/core/settings/types';
 import { ISettingsLogic } from '@/logic/interfaces';
-import { SidebarType } from '@/logic/settings/types';
 
 import { Sidebar } from '../sidebar';
 import './style.scss';

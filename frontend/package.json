@@ -26,6 +26,7 @@
     "inversify-react": "^1.0.2",
     "kea": "^3.0.1",
     "kea-localstorage": "^3.0.0",
+    "kea-router": "^3.0.1",
     "kea-typegen": "^3.0.0",
     "ky": "^0.31.0",
     "primeflex": "^3.2.0",
