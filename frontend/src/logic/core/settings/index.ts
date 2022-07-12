@@ -1,9 +1,9 @@
 import { actions, kea, path, reducers } from 'kea';
 
-import type { settingsLogicType } from './indexType';
+import type { logicType } from './indexType';
 import { SidebarType, Theme } from './types';
 
-const logic = kea<settingsLogicType>([
+const logic = kea<logicType>([
   path(['settings']),
   actions({
     setSidebarType: (type: SidebarType) => ({ type }),
