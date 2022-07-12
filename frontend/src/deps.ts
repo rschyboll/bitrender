@@ -1,43 +1,22 @@
 import { Container } from 'inversify';
-import { useInjection } from 'inversify-react';
+import 'reflect-metadata';
 
-import { settingsLogic } from './logic/core/settings';
-import { ISettingsLogic } from './logic/interfaces';
+import { settingsLogic } from '@/logic/core';
+import { ISettingsLogic } from '@/logic/interfaces';
+import { UserService } from '@/services/api';
+import { IUserService } from '@/services/interfaces';
+import { ServiceValidators, UserValidators } from '@/validators/core';
+import { IServiceValidators, IUserValidators } from '@/validators/interfaces';
 
-type DepTypes = {
-  LOGIC: {
-    SETTINGS: ISettingsLogic;
-  };
-};
+const Dependencies = new Container();
 
-const Deps = {
-  LOGIC: {
-    SETTINGS: Symbol.for('LOGIC/SETTINGS'),
-  },
-};
+Dependencies.bind(IUserValidators.$).to(UserValidators).inSingletonScope();
+Dependencies.bind(IServiceValidators.$)
+  .to(ServiceValidators)
+  .inSingletonScope();
 
-export const DepContainer = new Container();
+Dependencies.bind(ISettingsLogic.$).toConstantValue(settingsLogic);
 
-DepContainer.bind<ISettingsLogic>(Deps.LOGIC.SETTINGS).toConstantValue(
-  settingsLogic,
-);
-
-class Dependencies {
-  public static use<
-    Key extends keyof typeof Deps & keyof DepTypes,
-    ID extends keyof typeof Deps[Key] & keyof DepTypes[Key],
-  >(key: Key, id: ID): DepTypes[Key][ID] {
-    return useInjection(Deps[key][id] as unknown as symbol);
-  }
-
-  public static get<
-    Key extends keyof typeof Deps & keyof DepTypes,
-    ID extends keyof typeof Deps[Key] & keyof DepTypes[Key],
-  >(key: Key, id: ID): DepTypes[Key][ID] {
-    return DepContainer.get(Deps[key][id] as unknown as symbol);
-  }
-}
+Dependencies.bind(IUserService.$).to(UserService).inSingletonScope();
 
 export default Dependencies;
-
-export { Dependencies };

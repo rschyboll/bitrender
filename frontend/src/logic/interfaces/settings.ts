@@ -1,3 +1,4 @@
+import { interfaces } from 'inversify';
 import { Logic, LogicWrapper } from 'kea';
 
 import { SidebarType, Theme } from '../core/settings/types';
@@ -15,4 +16,9 @@ interface ISettings extends Logic {
   };
 }
 
-export type ISettingsLogic = LogicWrapper<ISettings>;
+export interface ISettingsLogic extends LogicWrapper<ISettings> {}
+
+export namespace ISettingsLogic {
+  export const $: interfaces.ServiceIdentifier<ISettingsLogic> =
+    Symbol('ISettingsLogic');
+}

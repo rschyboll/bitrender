@@ -3,7 +3,7 @@ import { actions, kea, path, reducers } from 'kea';
 import type { settingsLogicType } from './indexType';
 import { SidebarType, Theme } from './types';
 
-export const settingsLogic = kea<settingsLogicType>([
+const logic = kea<settingsLogicType>([
   path(['settings']),
   actions({
     setSidebarType: (type: SidebarType) => ({ type }),
@@ -34,3 +34,5 @@ export const settingsLogic = kea<settingsLogicType>([
     ],
   }),
 ]);
+
+export const settingsLogic = logic;

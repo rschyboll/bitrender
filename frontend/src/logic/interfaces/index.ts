@@ -1,1 +1,1 @@
-export * from './settings';
+export { ISettingsLogic } from './settings';

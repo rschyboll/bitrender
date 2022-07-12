@@ -1,12 +1,18 @@
-import { Base } from './base';
+import { BaseView, BaseViewResponse } from '.';
 
-export interface User extends Base {
+export enum Permission {
+  MANAGE_USERS = 'manage_users',
+  MANAGE_ROLES = 'manage_roles',
+}
+
+export interface UserViewResponse extends BaseViewResponse {
   email: string;
   role: string;
   permissions: Permission[];
 }
 
-export enum Permission {
-  MANAGE_USERS = 'manage_users',
-  MANAGE_ROLES = 'manage_roles',
+export interface UserView extends BaseView {
+  email: string;
+  role: string;
+  permissions: Permission[];
 }

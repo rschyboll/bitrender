@@ -1,0 +1,1 @@
+export { settingsLogic } from './settings';
