@@ -19,6 +19,11 @@ from bitrender.services.app import IUserService
 user_router = APIRouter(prefix="/user", responses=user_me_responses)
 
 
+@user_router.get("/test")
+async def test() -> int:
+    return 1
+
+
 @user_router.post("/login", responses=user_login_responses)
 async def login(
     response: Response,

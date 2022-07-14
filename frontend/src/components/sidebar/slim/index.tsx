@@ -1,11 +1,11 @@
+import { useInjection } from 'inversify-react';
 import { useActions, useValues } from 'kea';
 import { Ripple } from 'primereact/ripple';
-import { FC, memo, useMemo, useState } from 'react';
+import { memo, useMemo, useState } from 'react';
 import { Trans } from 'react-i18next';
 import { useLocation } from 'react-router-dom';
 
 import { Logo } from '@/components/logo';
-import Dependencies from '@/deps';
 import { ISettingsLogic } from '@/logic/interfaces';
 
 import { SidebarDialog } from '../dialog';
@@ -13,9 +13,7 @@ import { SidebarItem } from '../item';
 import { Group, sidebarModel } from '../model';
 import './style.scss';
 
-export const SidebarSlim: FC = memo(() => {
-  const settingsLogic: ISettingsLogic = Dependencies.use('LOGIC', 'SETTINGS');
-
+export const SidebarSlim = memo(function SidebarSlim() {
   const [activeGroup, setActiveGroup] = useState<string | null>(null);
   const location = useLocation();
 
@@ -55,8 +53,10 @@ interface SidebarSlimGroupProps extends Group {
   groupItemActive: boolean;
 }
 
-const SidebarSlimGroup: FC<SidebarSlimGroupProps> = memo((props) => {
-  const settingsLogic: ISettingsLogic = Dependencies.use('LOGIC', 'SETTINGS');
+const SidebarSlimGroup = memo(function SidebarSlimGroup(
+  props: SidebarSlimGroupProps,
+) {
+  const settingsLogic = useInjection(ISettingsLogic.$);
 
   const { toggleSidebar } = useActions(settingsLogic);
   const { sidebarActive } = useValues(settingsLogic);
@@ -88,8 +88,4 @@ const SidebarSlimGroup: FC<SidebarSlimGroupProps> = memo((props) => {
       {props.spacer && <div className="sidebar-spacer" />}
     </>
   );
-});
-
-const SidebarSlimGroupDialog: FC = memo(() => {
-  return <div></div>;
 });

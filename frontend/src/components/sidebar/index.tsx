@@ -1,7 +1,7 @@
+import { useInjection } from 'inversify-react';
 import { useValues } from 'kea';
-import { FC, memo } from 'react';
+import { memo } from 'react';
 
-import Dependencies from '@/deps';
 import { SidebarType } from '@/logic/core/settings/types';
 import { ISettingsLogic } from '@/logic/interfaces';
 
@@ -16,8 +16,8 @@ export interface SidebarProps {
   types: SidebarType[];
 }
 
-export const Sidebar: FC<SidebarProps> = memo((props) => {
-  const settingsLogic: ISettingsLogic = Dependencies.use('LOGIC', 'SETTINGS');
+export const Sidebar = memo(function Sidebar(props: SidebarProps) {
+  const settingsLogic = useInjection(ISettingsLogic.$);
   const { sidebarType } = useValues(settingsLogic);
 
   return (

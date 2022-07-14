@@ -1,4 +1,4 @@
-import { FC, memo } from 'react';
+import { memo } from 'react';
 
 import './style.scss';
 
@@ -7,7 +7,9 @@ export interface SidebarDialogProps {
   children: JSX.Element[];
 }
 
-export const SidebarDialog: FC<SidebarDialogProps> = memo((props) => {
+export const SidebarDialog = memo(function SidebarDialog(
+  props: SidebarDialogProps,
+) {
   return (
     <div className={props.active ? '' : 'hidden'}>
       <div

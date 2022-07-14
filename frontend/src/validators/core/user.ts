@@ -1,15 +1,15 @@
 import { Permission, UserViewResponse } from '@/types/user';
 
-import { JSONSchemaType, ValidateFunction, Validators } from '.';
 import { IUserValidators } from '../interfaces';
+import { JSONSchemaType, ValidateFunction, Validators } from './base';
 
 export class UserValidators extends Validators implements IUserValidators {
   userViewResponseSchema: JSONSchemaType<UserViewResponse> = {
     type: 'object',
     properties: {
       id: { type: 'string', format: 'uuid' },
-      created_at: { type: 'string', format: 'timestamp' },
-      modified_at: { type: 'string', format: 'timestamp' },
+      created_at: { type: 'string', format: 'date' },
+      modified_at: { type: 'string', format: 'date' },
       email: { type: 'string', format: 'email' },
       role: { type: 'string' },
       permissions: {

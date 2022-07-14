@@ -2,15 +2,15 @@ import { useActions } from 'kea';
 import { Button } from 'primereact/button';
 import { FC } from 'react';
 
-import Dependencies from '@/deps';
 import { SidebarType } from '@/logic/core/settings/types';
 import { ISettingsLogic } from '@/logic/interfaces';
 
 import { Sidebar } from '../sidebar';
 import './style.scss';
+import { useInjection } from 'inversify-react';
 
 export const Topbar: FC = () => {
-  const settingsLogic: ISettingsLogic = Dependencies.use('LOGIC', 'SETTINGS');
+  const settingsLogic = useInjection(ISettingsLogic.$);
   const { toggleSidebar } = useActions(settingsLogic);
 
   return (

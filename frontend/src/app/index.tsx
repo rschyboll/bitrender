@@ -5,13 +5,13 @@ import { Outlet, Route, Routes } from 'react-router-dom';
 
 import { Sidebar } from '@/components/sidebar';
 import { Topbar } from '@/components/topbar';
-import Dependencies from '@/deps';
 import { SidebarType, Theme } from '@/logic/core/settings/types';
 import { ISettingsLogic } from '@/logic/interfaces';
 import { RolesPage } from '@/pages/roles';
 import { UsersPage } from '@/pages/users';
 
 import './style.scss';
+import { useInjection } from 'inversify-react';
 
 const layoutTypesClasses = {
   [SidebarType.Horizontal]: 'layout-horizontal',
@@ -28,7 +28,7 @@ const themeClasses = {
 const verticalTypes = [SidebarType.Static, SidebarType.Slim];
 
 export const App: FC = () => {
-  const settingsLogic: ISettingsLogic = Dependencies.use('LOGIC', 'SETTINGS');
+  const settingsLogic = useInjection(ISettingsLogic.$);
   const { theme } = useValues(settingsLogic);
 
   useEffect(() => {
@@ -49,7 +49,7 @@ export const App: FC = () => {
 };
 
 export const AppBody: FC = () => {
-  const settingsLogic: ISettingsLogic = Dependencies.use('LOGIC', 'SETTINGS');
+  const settingsLogic = useInjection(ISettingsLogic.$);
 
   const { sidebarType, theme, sidebarActive } = useValues(settingsLogic);
   const { setSidebarType, setTheme, toggleSidebar } = useActions(settingsLogic);

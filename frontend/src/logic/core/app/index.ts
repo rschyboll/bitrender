@@ -1,5 +1,4 @@
-import { actions, kea, listeners, props, reducers } from 'kea';
-import { actionToUrl } from 'kea-router';
+import { actions, afterMount, kea, listeners, props, reducers } from 'kea';
 
 import Dependencies from '@/deps';
 import { injectDepsToLogic } from '@/logic/utils';
@@ -22,8 +21,12 @@ const logic = kea<logicType>([
   listeners(({ props }) => ({
     loadCurrentUser: async () => {
       const me = await props.deps.userService.getMe();
+      console.log(me);
     },
   })),
+  afterMount(({ actions }) => {
+    actions.loadCurrentUser();
+  }),
 ]);
 
 export const appLogic = injectDepsToLogic(logic, () => ({

@@ -16,7 +16,7 @@ interface ISettings extends Logic {
   };
 }
 
-export interface ISettingsLogic extends LogicWrapper<ISettings> {}
+export type ISettingsLogic = LogicWrapper<ISettings>;
 
 export namespace ISettingsLogic {
   export const $: interfaces.ServiceIdentifier<ISettingsLogic> =

@@ -1,4 +1,4 @@
-import { FC, memo } from 'react';
+import { memo } from 'react';
 import { Trans } from 'react-i18next';
 
 import { Logo } from '@/components/logo';
@@ -7,7 +7,7 @@ import { SidebarItem } from '../item';
 import { Group, sidebarModel } from '../model';
 import './style.scss';
 
-export const SidebarMobile: FC = memo(() => {
+export const SidebarMobile = memo(function SidebarMobile() {
   return (
     <div className="sidebar-mobile select-none">
       <Logo titleVisible={true} />
@@ -20,9 +20,11 @@ export const SidebarMobile: FC = memo(() => {
   );
 });
 
-interface SidebarMobileGroupProps extends Group {}
+type SidebarMobileGroupProps = Group;
 
-const SidebarMobileGroup: FC<SidebarMobileGroupProps> = memo((props) => {
+const SidebarMobileGroup = memo(function SidebarMobileGroup(
+  props: SidebarMobileGroupProps,
+) {
   return (
     <li className="sidebar-group">
       <span className="sidebar-group-title">

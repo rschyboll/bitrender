@@ -14,7 +14,7 @@ export function injectDepsToLogic<TWrappedLogic extends LogicWrapper<Logic>>(
   depsBuilder: () => TWrappedLogic['props']['deps'],
 ): RemoveDepsType<TWrappedLogic> {
   const oldBuild = logic.build;
-  logic.build = (props: any) => {
+  logic.build = (props: Record<string, unknown>) => {
     return oldBuild({ ...props, deps: depsBuilder() });
   };
 

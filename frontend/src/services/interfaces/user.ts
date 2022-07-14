@@ -1,10 +1,10 @@
 import { interfaces } from 'inversify';
 
-import type { Response } from '@/services';
+import type { Response } from '@/types/service';
 import { UserView } from '@/types/user';
 
 export interface IUserService {
-  getMe: () => Promise<Response<UserView>>;
+  getCurrentUser: () => Promise<Response<UserView>>;
 }
 
 export namespace IUserService {

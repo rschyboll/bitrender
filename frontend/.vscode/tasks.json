@@ -44,6 +44,28 @@
           "color": "#adbaff"
         }
       }
+    },
+    {
+      "label": "$(settings-remove) Clear parcel cache",
+      "type": "shell",
+      "command": "rm -rf ./.parcel-cache ./dist",
+      "options": {
+        "cwd": "${workspaceFolder}",
+        "statusbar": {
+          "color": "#ffadad"
+        }
+      }
+    },
+    {
+      "label": "$(extensions-info-message) ESLint",
+      "type": "shell",
+      "command": "yarn run eslint ./src --ext .ts,.tsx",
+      "options": {
+        "cwd": "${workspaceFolder}",
+        "statusbar": {
+          "color": "#fffaad"
+        }
+      }
     }
   ]
 }

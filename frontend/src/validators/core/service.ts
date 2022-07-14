@@ -1,7 +1,7 @@
 import { ApiError, ApiErrorCodes } from '@/types/service';
 import { IServiceValidators } from '@/validators/interfaces';
 
-import { JSONSchemaType, ValidateFunction, Validators } from '.';
+import { JSONSchemaType, ValidateFunction, Validators } from './base';
 
 export class ServiceValidators
   extends Validators

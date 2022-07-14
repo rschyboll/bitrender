@@ -1,13 +1,14 @@
-import { inject } from 'inversify';
-import { HTTPError } from 'ky';
+import { inject, injectable } from 'inversify';
 
-import type { Response } from '@/services';
+import type { Response } from '@/types/service';
+import { ServiceErrorType } from '@/types/service';
 import { UserView, UserViewResponse } from '@/types/user';
 import { IUserValidators } from '@/validators/interfaces';
 
-import { Service } from '.';
 import { IUserService } from '../interfaces';
+import { Service } from './base';
 
+@injectable()
 export class UserService extends Service implements IUserService {
   private userValidator: IUserValidators;
 
@@ -16,21 +17,24 @@ export class UserService extends Service implements IUserService {
     this.userValidator = userValidator;
   }
 
-  public async getMe(): Promise<Response<UserView>> {
+  public async getCurrentUser(): Promise<Response<UserView>> {
     try {
-      const response = await this.api.get('/me').json();
-    } catch (error) {
-      console.log(error);
+      const response = await this.api.get('user/me').json();
+      if (this.userValidator.validateUserViewResponse(response)) {
+        return {
+          success: true,
+          data: this.userViewResponseToUserView(response),
+        };
+      }
+      return {
+        success: false,
+        error: {
+          type: ServiceErrorType.ValidationError,
+        },
+      };
+    } catch (error: unknown) {
+      return this.parseAPIError(error);
     }
-
-    const testt = 1;
-
-    return {
-      success: false,
-      error: {
-        detail: '',
-      },
-    };
   }
 
   private userViewResponseToUserView(user: UserViewResponse): UserView {

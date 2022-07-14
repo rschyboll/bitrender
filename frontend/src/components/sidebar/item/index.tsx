@@ -1,19 +1,19 @@
+import { useInjection } from 'inversify-react';
 import { useActions } from 'kea';
 import { Ripple } from 'primereact/ripple';
-import { FC, memo, useCallback } from 'react';
+import { memo, useCallback } from 'react';
 import { Trans } from 'react-i18next';
 import { Link, useLocation } from 'react-router-dom';
 
-import Dependencies from '@/deps';
 import { ISettingsLogic } from '@/logic/interfaces';
 
 import { Item } from '../model';
 import './style.scss';
 
-export interface SidebarItemProps extends Item {}
+export type SidebarItemProps = Item;
 
-export const SidebarItem: FC<SidebarItemProps> = memo((props) => {
-  const settingsLogic: ISettingsLogic = Dependencies.use('LOGIC', 'SETTINGS');
+export const SidebarItem = memo(function SidebarItem(props: SidebarItemProps) {
+  const settingsLogic = useInjection(ISettingsLogic.$);
 
   const { toggleSidebar } = useActions(settingsLogic);
 
@@ -21,7 +21,7 @@ export const SidebarItem: FC<SidebarItemProps> = memo((props) => {
 
   const onClick = useCallback(() => {
     toggleSidebar(false);
-  }, []);
+  }, [toggleSidebar]);
 
   return (
     <Link
