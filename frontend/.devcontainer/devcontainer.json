@@ -17,7 +17,16 @@
   "extensions": [
     "dbaeumer.vscode-eslint",
     "esbenp.prettier-vscode",
-    "orta.vscode-jest",
-    "actboy168.tasks"
+    "anweber.vscode-httpyac",
+    "anweber.httpbook",
+    "peterj.proto",
+    "actboy168.tasks",
+    "mhutchie.git-graph",
+    "steoates.autoimport",
+    "formulahendry.auto-rename-tag",
+    "dsznajder.es7-react-js-snippets",
+    "usernamehw.errorlens",
+    "adpyke.codesnap",
+    "wix.glean"
   ]
 }

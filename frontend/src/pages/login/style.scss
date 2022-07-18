@@ -1,0 +1,91 @@
+@import '@/scss/global.scss';
+
+$card-width: 35%;
+$card-width-mobile: 90%;
+
+#login-card {
+  position: fixed;
+  top: calc(50vh);
+  left: calc(50vw);
+  transform: translate(-50%, -50%);
+  transition: width 0.5s;
+
+  @include media('<=desktop') {
+    width: $card-width-mobile;
+  }
+
+  @include media('>desktop') {
+    width: $card-width;
+  }
+
+  .logo {
+    border: 0;
+    padding-top: 0;
+    .app-name {
+      vertical-align: middle;
+      letter-spacing: 0.2px;
+      font-size: 1.5rem;
+    }
+  }
+
+  .p-card-body > .p-card-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0.5rem;
+  }
+
+  #login-card-title {
+    font-size: 1.75rem;
+    font-weight: 500;
+    margin-top: 0.5rem;
+    margin-bottom: 1rem;
+  }
+
+  #login-no-account {
+    margin-bottom: 1rem;
+  }
+
+  #login-no-account-text {
+    color: var(--text-color-secondary);
+    margin-right: 0.25rem;
+  }
+
+  #login-no-account-link {
+    color: var(--blue-500);
+    margin-right: 0.25rem;
+  }
+
+  label {
+    margin-bottom: 0.5rem;
+    width: 100%;
+    font-weight: 500;
+  }
+
+  .p-inputtext {
+    width: 100%;
+  }
+
+  #login-username {
+    margin-bottom: 1rem;
+  }
+
+  #login-password-floor {
+    display: flex;
+    width: 100%;
+    flex-direction: row-reverse;
+    margin-bottom: 1rem;
+  }
+
+  #login-forgot-password {
+    color: var(--blue-500);
+  }
+
+  #login-submit {
+    width: 100%;
+  }
+}
+
+.theme-light #login-card .logo .logo-image {
+  filter: invert(35%);
+}

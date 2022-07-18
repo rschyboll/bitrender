@@ -1,64 +1,62 @@
+import { useInjection } from 'inversify-react';
 import { useActions, useValues } from 'kea';
 import { Button } from 'primereact/button';
-import { FC, useEffect } from 'react';
+import { Slider } from 'primereact/slider';
+import { FC } from 'react';
 import { Outlet, Route, Routes } from 'react-router-dom';
 
 import { Sidebar } from '@/components/sidebar';
 import { Topbar } from '@/components/topbar';
-import { SidebarType, Theme } from '@/logic/core/settings/types';
 import { ISettingsLogic } from '@/logic/interfaces';
-import { RolesPage } from '@/pages/roles';
-import { UsersPage } from '@/pages/users';
+import { LoginPage, RolesPage, UsersPage } from '@/pages';
+import {
+  SidebarType,
+  Theme,
+  layoutTypesClasses,
+  themeClasses,
+} from '@/types/settings';
 
 import './style.scss';
-import { useInjection } from 'inversify-react';
-
-const layoutTypesClasses = {
-  [SidebarType.Horizontal]: 'layout-horizontal',
-  [SidebarType.Slim]: 'layout-slim',
-  [SidebarType.Static]: 'layout-static',
-};
-
-const themeClasses = {
-  [Theme.Dark]: 'dark',
-  [Theme.Dim]: 'dim',
-  [Theme.Light]: 'light',
-};
 
 const verticalTypes = [SidebarType.Static, SidebarType.Slim];
 
 export const App: FC = () => {
-  const settingsLogic = useInjection(ISettingsLogic.$);
-  const { theme } = useValues(settingsLogic);
-
-  useEffect(() => {
-    const themeLink = document.getElementById('theme-link');
-    if (themeLink instanceof HTMLLinkElement) {
-      themeLink.href = `themes/${themeClasses[theme]}.css`;
-    }
-  }, [theme]);
-
   return (
     <Routes>
-      <Route path="/" element={<AppBody />}>
-        <Route path="users" element={<UsersPage />} />
-        <Route path="roles" element={<RolesPage />} />
+      <Route path="/" element={<AppContainer />}>
+        <Route path="app" element={<AppLayout />}>
+          <Route path="users" element={<UsersPage />} />
+          <Route path="roles" element={<RolesPage />} />
+        </Route>
+        <Route path="login" element={<LoginPage />} />
       </Route>
     </Routes>
   );
 };
 
-export const AppBody: FC = () => {
+export const AppContainer: FC = () => {
+  const settingsLogic = useInjection(ISettingsLogic.$);
+  const { theme } = useValues(settingsLogic);
+
+  return (
+    <div className={`app-container theme-${themeClasses[theme]}`}>
+      <Outlet />
+    </div>
+  );
+};
+
+export const AppLayout: FC = () => {
   const settingsLogic = useInjection(ISettingsLogic.$);
 
-  const { sidebarType, theme, sidebarActive } = useValues(settingsLogic);
-  const { setSidebarType, setTheme, toggleSidebar } = useActions(settingsLogic);
+  const { sidebarType, sidebarActive, fontSize } = useValues(settingsLogic);
+  const { setSidebarType, setTheme, toggleSidebar, setFontSize } =
+    useActions(settingsLogic);
 
   return (
     <div
-      className={`layout ${layoutTypesClasses[sidebarType]} theme-${
-        themeClasses[theme]
-      } ${sidebarActive ? 'layout-mobile-active' : ''}`}
+      className={`layout ${layoutTypesClasses[sidebarType]} ${
+        sidebarActive ? 'layout-mobile-active' : ''
+      }`}
     >
       <div className="layout-sidebar">
         <Sidebar sidebarKey="sidebar-vertical" types={verticalTypes} />
@@ -81,7 +79,15 @@ export const AppBody: FC = () => {
         />
         <Button label="Dark" onClick={() => setTheme(Theme.Dark)} />
         <Button label="Dim" onClick={() => setTheme(Theme.Dim)} />
-        <Button label="Light" onClick={() => setTheme(Theme.Light)} />{' '}
+        <Button label="Light" onClick={() => setTheme(Theme.Light)} />
+        <Slider
+          min={6}
+          max={22}
+          value={fontSize}
+          onChange={(e) =>
+            setFontSize(typeof e.value == 'number' ? e.value : 14)
+          }
+        />
       </div>
       <div
         onClick={() => toggleSidebar(false)}

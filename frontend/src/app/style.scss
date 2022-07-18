@@ -3,6 +3,10 @@
 $slimWidth: 6rem;
 $staticWidth: 16rem;
 
+.app {
+  background-color: var(--surface-ground);
+}
+
 .layout,
 .layout-content,
 .layout-sidebar {

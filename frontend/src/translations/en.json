@@ -2,6 +2,14 @@
   "translation": {
     "nav": {
       "users": "Users"
+    },
+    "login": {
+      "welcomeBack": "Welcome back!",
+      "noAccount": "Don't have an account?",
+      "createAccont": "Create!",
+      "username": "Username",
+      "password": "Password",
+      "forgot": "Forgot password?"
     }
   }
 }

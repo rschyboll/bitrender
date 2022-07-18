@@ -2,8 +2,8 @@ import { useInjection } from 'inversify-react';
 import { useValues } from 'kea';
 import { memo } from 'react';
 
-import { SidebarType } from '@/logic/core/settings/types';
 import { ISettingsLogic } from '@/logic/interfaces';
+import { SidebarType } from '@/types/settings';
 
 import { SidebarHorizontal } from './horizontal';
 import { SidebarMobile } from './mobile';

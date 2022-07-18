@@ -1,13 +1,13 @@
+import { useInjection } from 'inversify-react';
 import { useActions } from 'kea';
 import { Button } from 'primereact/button';
 import { FC } from 'react';
 
-import { SidebarType } from '@/logic/core/settings/types';
 import { ISettingsLogic } from '@/logic/interfaces';
+import { SidebarType } from '@/types/settings';
 
 import { Sidebar } from '../sidebar';
 import './style.scss';
-import { useInjection } from 'inversify-react';
 
 export const Topbar: FC = () => {
   const settingsLogic = useInjection(ISettingsLogic.$);
