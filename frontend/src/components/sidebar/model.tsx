@@ -1,22 +1,25 @@
+import { IconType } from 'react-icons';
+import { RiGroupFill } from 'react-icons/ri';
+
 export interface Group {
-  icon: string;
+  icon: string | IconType;
   title: string;
   items: Item[];
   spacer: boolean;
 }
 
 export interface Item {
-  icon: string;
+  icon: string | IconType;
   title: string;
   path: string;
 }
 
 export const sidebarModel: Group[] = [
   {
-    icon: 'pi-users',
+    icon: RiGroupFill,
     title: 'Favorites',
     items: [
-      { icon: 'ri-home-4-line', title: 'Role', path: '/' },
+      { icon: RiGroupFill, title: 'Role', path: '/' },
       { icon: 'ri-mail-unread-line', title: 'Role2', path: '2' },
     ],
     spacer: true,

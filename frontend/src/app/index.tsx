@@ -29,6 +29,8 @@ export const App: FC = () => {
           <Route path="roles" element={<RolesPage />} />
         </Route>
         <Route path="login" element={<LoginPage />} />
+        <Route path="register" element={<LoginPage />} />{' '}
+        <Route path="recovery" element={<LoginPage />} />
       </Route>
     </Routes>
   );

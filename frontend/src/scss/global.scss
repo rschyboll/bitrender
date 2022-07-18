@@ -1,35 +1,11 @@
-$breakpoints: (
-  phone: 320px,
-  tablet: 768px,
-  desktop: 1024px,
-);
-$transition_duration: 0.2s;
-
-@import '../../node_modules/include-media/dist/include-media';
-
-body {
-  height: 100vh;
-  margin: 0;
-  background: linear-gradient(
-    180deg,
-    var(--surface-50) 0%,
-    var(--surface-b) 100%
-  );
-  font-family: 'Nunito';
-  font-style: normal;
-  font-weight: 400;
-}
-
-a {
-  text-decoration: none;
-}
-
-#app {
-  height: 100%;
-  width: 100%;
-  overflow: hidden;
+.hidden {
+  display: none;
 }
 
 .v-hidden {
   visibility: hidden;
+}
+
+.shadow-2 {
+  box-shadow: 0 4px 10px #00000008, 0 0 2px #0000000f, 0 2px 6px #0000001f !important;
 }

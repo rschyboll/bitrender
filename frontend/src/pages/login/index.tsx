@@ -1,6 +1,5 @@
 import { Button } from 'primereact/button';
 import { Card } from 'primereact/card';
-import { Checkbox } from 'primereact/checkbox';
 import { InputText } from 'primereact/inputtext';
 import { FC } from 'react';
 import { Trans, useTranslation } from 'react-i18next';

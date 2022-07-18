@@ -1,2 +1,3 @@
 export { ISettingsLogic } from './settings';
 export { IAppLogic } from './app';
+export { ILoginLogic } from './login';
