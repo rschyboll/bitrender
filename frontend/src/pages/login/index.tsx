@@ -1,14 +1,14 @@
 import { Button } from 'primereact/button';
 import { Card } from 'primereact/card';
 import { InputText } from 'primereact/inputtext';
-import { FC } from 'react';
+import { memo } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
 import { Logo } from '@/components/logo';
 
 import './style.scss';
 
-export const LoginPage: FC = () => {
+const LoginPage = memo(function LoginPage() {
   const { t } = useTranslation();
 
   return (
@@ -44,4 +44,6 @@ export const LoginPage: FC = () => {
       <Button label={t('login.submit')} id="login-submit" />
     </Card>
   );
-};
+});
+
+export default LoginPage;

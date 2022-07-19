@@ -1,8 +1,7 @@
 import { Provider as InversifyProvider } from 'inversify-react';
 import PrimeReact from 'primereact/api';
 import { useEffect } from 'react';
-import ReactDOMClient from 'react-dom/client';
-import { BrowserRouter } from 'react-router-dom';
+import { createRoot } from 'react-dom/client';
 
 import { App } from '@/app';
 import { startGlobalLogics, startKea } from '@/logic';
@@ -12,6 +11,7 @@ import '@/scss/main.scss';
 import Dependencies from './deps';
 import './i18n';
 import './logic';
+import { HistoryRouter } from './route';
 
 PrimeReact.ripple = true;
 
@@ -24,13 +24,11 @@ function Init() {
 
   return (
     <InversifyProvider container={Dependencies}>
-      <BrowserRouter>
+      <HistoryRouter>
         <App />
-      </BrowserRouter>
+      </HistoryRouter>
     </InversifyProvider>
   );
 }
 
-ReactDOMClient.createRoot(document.getElementById('app') as HTMLElement).render(
-  <Init />,
-);
+createRoot(document.getElementById('app') as HTMLElement).render(<Init />);

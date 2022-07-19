@@ -1,4 +1,4 @@
-import { FC } from 'react';
+import { memo } from 'react';
 import { Link } from 'react-router-dom';
 
 import './style.scss';
@@ -9,7 +9,7 @@ export interface LogoProps {
   titleVisible?: boolean;
 }
 
-export const Logo: FC<LogoProps> = (props) => {
+export const Logo = memo(function Logo(props: LogoProps) {
   return (
     <Link className="logo" to="/">
       <img
@@ -21,4 +21,4 @@ export const Logo: FC<LogoProps> = (props) => {
       {props.titleVisible && <span className="app-name">BITRENDER</span>}
     </Link>
   );
-};
+});

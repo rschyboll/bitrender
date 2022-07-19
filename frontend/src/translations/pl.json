@@ -1,8 +1,6 @@
 {
   "translation": {
-    "nav": {
-      "users": "Użytkownicy"
-    },
+    "nav": { "system": "System", "users": "Użytkownicy", "roles": "Role" },
     "login": {
       "welcomeBack": "Witaj spowrotem!",
       "noAccount": "Nie posiadasz jeszcze konta?",

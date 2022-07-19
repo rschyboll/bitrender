@@ -1,7 +1,7 @@
 import { useInjection } from 'inversify-react';
 import { useActions } from 'kea';
 import { Ripple } from 'primereact/ripple';
-import { isValidElement, memo, useCallback } from 'react';
+import { memo, useCallback } from 'react';
 import { Trans } from 'react-i18next';
 import { Link, useLocation } from 'react-router-dom';
 
@@ -32,11 +32,23 @@ export const SidebarItem = memo(function SidebarItem(props: SidebarItemProps) {
       }`}
       to={props.path}
     >
-      {typeof props.icon == 'string' ? (
-        <i className={`sidebar-item-icon pi pi-fw ${props.icon}`} />
-      ) : (
-        <props.icon className="sidebar-item-icon pi pi-fw" />
-      )}
+      <div className="sidebar-item-icon-container">
+        <props.icon
+          style={{
+            top:
+              props.iconSize != null
+                ? `calc((1.2rem - ${props.iconSize})/2)`
+                : undefined,
+            left:
+              props.iconSize != null
+                ? `calc((1.2rem - ${props.iconSize})/2)`
+                : undefined,
+          }}
+          size={props.iconSize != null ? props.iconSize : '1.2rem'}
+          className="sidebar-item-icon"
+        />
+      </div>
+
       <span className="sidebar-item-title">
         <Trans>{props.title}</Trans>
       </span>

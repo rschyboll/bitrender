@@ -1,26 +1,14 @@
 import { createBrowserHistory } from 'history';
-import { FC, useLayoutEffect, useState } from 'react';
-import { HistoryRouterProps, Router } from 'react-router-dom';
+import { FC } from 'react';
+import { unstable_HistoryRouter as ReactHistoryRouter } from 'react-router-dom';
 
-export const history = createBrowserHistory();
+export const history = createBrowserHistory({ window: window });
 
-export const HistoryRouter: FC<HistoryRouterProps> = ({
-  history,
-  ...props
-}) => {
-  const [state, setState] = useState({
-    action: history.action,
-    location: history.location,
-  });
 
-  useLayoutEffect(() => history.listen(setState), [history]);
-
+export const HistoryRouter: FC<{ children: JSX.Element[] | JSX.Element }> = (
+  props,
+) => {
   return (
-    <Router
-      {...props}
-      location={state.location}
-      navigationType={state.action}
-      navigator={history}
-    />
+    <ReactHistoryRouter history={history}>{props.children}</ReactHistoryRouter>
   );
 };

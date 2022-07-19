@@ -3,6 +3,8 @@ import { FC } from 'react';
 
 import './style.scss';
 
-export const RecoveryPage: FC = () => {
+const RecoveryPage: FC = () => {
   return <Card id="recovery-card" className="shadow-2"></Card>;
 };
+
+export default RecoveryPage;

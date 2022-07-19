@@ -1,7 +1,9 @@
 {
   "translation": {
     "nav": {
-      "users": "Users"
+      "system": "System",
+      "users": "Users",
+      "roles": "Roles"
     },
     "login": {
       "welcomeBack": "Welcome back!",

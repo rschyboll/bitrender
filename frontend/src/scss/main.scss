@@ -1,8 +1,16 @@
 @import '../../node_modules/primereact/resources/primereact.css';
 
-@import '../../node_modules/@fontsource/nunito/latin.css';
+@import '../../node_modules/@fontsource/lato/index.css';
 
 @import './global.scss';
+
+html,
+body,
+#root {
+  height: 100%;
+  font-family: lato !important;
+  width: 100%;
+}
 
 body {
   height: 100vh;
@@ -12,9 +20,11 @@ body {
     var(--surface-50) 0%,
     var(--surface-b) 100%
   );
-  font-family: 'Nunito';
-  font-style: normal;
-  font-weight: 400;
+  font-family: lato !important;
+}
+
+.p-component {
+  font-family: lato !important;
 }
 
 a {

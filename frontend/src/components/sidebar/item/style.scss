@@ -20,11 +20,15 @@
   outline: none;
 }
 
-.sidebar-item-icon {
-  width: 1.2rem !important;
-  height: 1.2rem !important;
+.sidebar-item-icon-container {
+  width: 1.2rem;
+  height: 1.2rem;
   margin-right: 0.5rem;
-  font-size: 1.2rem !important;
+  position: relative;
+}
+
+.sidebar-item-icon {
+  position: absolute;
 }
 
 .sidebar-item-active {

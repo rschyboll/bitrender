@@ -1,89 +1,56 @@
 import { IconType } from 'react-icons';
-import { RiGroupFill } from 'react-icons/ri';
+import {
+  RiAppleFill,
+  RiGroupFill,
+  RiServerFill,
+  RiShieldUserFill,
+} from 'react-icons/ri';
 
 export interface Group {
-  icon: string | IconType;
+  icon: IconType;
   title: string;
   items: Item[];
   spacer: boolean;
 }
 
 export interface Item {
-  icon: string | IconType;
+  icon: IconType;
+  iconSize?: string;
   title: string;
   path: string;
 }
 
 export const sidebarModel: Group[] = [
   {
-    icon: RiGroupFill,
+    icon: RiAppleFill,
     title: 'Favorites',
     items: [
-      { icon: RiGroupFill, title: 'Role', path: '/' },
-      { icon: 'ri-mail-unread-line', title: 'Role2', path: '2' },
+      { icon: RiAppleFill, title: 'Role', path: '/' },
+      { icon: RiAppleFill, title: 'Role2', path: '2' },
     ],
     spacer: true,
   },
   {
-    icon: 'pi-users',
+    icon: RiGroupFill,
     title: 'nav.users',
     items: [
-      { icon: 'ri-stack-line', title: 'Role', path: '1' },
-      { icon: 'ri-chat-settings-line', title: 'Role2', path: '2' },
+      { icon: RiGroupFill, title: 'nav.users', path: '1' },
+      { icon: RiAppleFill, title: 'Role2', path: '2' },
     ],
     spacer: true,
   },
   {
-    icon: 'pi-users',
-    title: 'nav.users1',
+    icon: RiServerFill,
+    title: 'nav.system',
     items: [
-      { icon: 'ri-stack-line', title: 'Role', path: '1' },
-      { icon: 'ri-chat-settings-line', title: 'Role2', path: '2' },
+      { icon: RiGroupFill, title: 'nav.users', path: '/app/users' },
+      {
+        icon: RiShieldUserFill,
+        iconSize: '1.5rem',
+        title: 'nav.roles',
+        path: '/app/roles',
+      },
     ],
     spacer: true,
-  },
-  {
-    icon: 'pi-users',
-    title: 'nav.users2',
-    items: [
-      { icon: 'ri-stack-line', title: 'Role', path: '1' },
-      { icon: 'ri-chat-settings-line', title: 'Role2', path: '2' },
-      { icon: 'ri-stack-line', title: 'Role', path: '3' },
-      { icon: 'ri-chat-settings-line', title: 'Role2', path: '6' },
-      { icon: 'ri-stack-line', title: 'Role', path: '4' },
-      { icon: 'ri-chat-settings-line', title: 'Role2', path: '5' },
-    ],
-    spacer: true,
-  },
-  {
-    icon: 'pi-users',
-    title: 'nav.users3',
-    items: [
-      { icon: 'ri-stack-line', title: 'Role', path: '1' },
-      { icon: 'ri-chat-settings-line', title: 'Role2', path: '2' },
-      { icon: 'ri-stack-line', title: 'Role', path: '3' },
-      { icon: 'ri-chat-settings-line', title: 'Role2', path: '6' },
-      { icon: 'ri-stack-line', title: 'Role', path: '4' },
-      { icon: 'ri-chat-settings-line', title: 'Role2', path: '5' },
-    ],
-    spacer: true,
-  },
-  {
-    icon: 'pi-users',
-    title: 'nav.users4',
-    items: [
-      { icon: '', title: 'Role', path: '1' },
-      { icon: '', title: 'Role2', path: '2' },
-    ],
-    spacer: true,
-  },
-  {
-    icon: 'pi-users',
-    title: 'nav.users5',
-    items: [
-      { icon: '', title: 'Role', path: '1' },
-      { icon: '', title: 'Role2', path: '2' },
-    ],
-    spacer: false,
   },
 ];

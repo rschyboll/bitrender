@@ -1,5 +1,7 @@
 import { FC } from 'react';
 
-export const RolesPage: FC = () => {
-  return <div></div>;
+const RolesPage: FC = () => {
+  return <div>Roles</div>;
 };
+
+export default RolesPage;

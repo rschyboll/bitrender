@@ -48,7 +48,7 @@ const logic = kea<logicType>([
     setTheme: ({ theme }) => {
       const themeLink = document.getElementById('theme-link');
       if (themeLink instanceof HTMLLinkElement) {
-        themeLink.href = `themes/${themeClasses[theme]}.css`;
+        themeLink.href = `/themes/${themeClasses[theme]}.css`;
       }
     },
     setFontSize: ({ fontSize }) => {

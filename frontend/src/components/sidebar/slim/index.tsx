@@ -73,7 +73,7 @@ const SidebarSlimGroup = memo(function SidebarSlimGroup(
           className="sidebar-group-button p-ripple"
           onClick={() => toggleSidebar()}
         >
-          <i className={`sidebar-group-icon pi pi-fw ${props.icon}`} />
+          <props.icon className="sidebar-group-icon pi pi-fw" />
           <div className="sidebar-group-title">
             <Trans>{props.title}</Trans>
           </div>

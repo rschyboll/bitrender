@@ -1,5 +1,5 @@
 import { actions, afterMount, kea, listeners, props, reducers } from 'kea';
-import { actionToUrl } from 'kea-router';
+import { actionToUrl, urlToAction } from 'kea-router';
 
 import Dependencies from '@/deps';
 import { injectDepsToLogic } from '@/logic/utils';
@@ -17,10 +17,22 @@ const logic = kea<logicType>([
   ),
   actionToUrl(() => ({
     openApp: () => `/app`,
+    openLoginPage: () => '/login',
+    openRegisterPage: () => '/register',
+    openUsersPage: () => '/app/users',
+    openRolesPage: () => '/app/roles',
+  })),
+  urlToAction(({ actions }) => ({
+    '/app/users': () => actions.loadCurrentUser(),
+    '/app/roles': () => actions.loadCurrentUser(),
   })),
   actions({
     loadCurrentUser: true,
     openApp: true,
+    openLoginPage: true,
+    openRegisterPage: true,
+    openUsersPage: true,
+    openRolesPage: true,
   }),
   reducers({}),
   listeners(({ props }) => ({
@@ -29,9 +41,6 @@ const logic = kea<logicType>([
       console.log(me);
     },
   })),
-  afterMount(({ actions }) => {
-    actions.loadCurrentUser();
-  }),
 ]);
 
 export const appLogic = injectDepsToLogic(logic, () => ({

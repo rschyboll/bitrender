@@ -1,5 +1,7 @@
 import { FC } from 'react';
 
-export const UsersPage: FC = () => {
-  return <div></div>;
+const UsersPage: FC = () => {
+  return <div>Users</div>;
 };
+
+export default UsersPage;

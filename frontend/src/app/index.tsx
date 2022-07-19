@@ -2,13 +2,12 @@ import { useInjection } from 'inversify-react';
 import { useActions, useValues } from 'kea';
 import { Button } from 'primereact/button';
 import { Slider } from 'primereact/slider';
-import { FC } from 'react';
-import { Outlet, Route, Routes } from 'react-router-dom';
+import { FC, Suspense, lazy } from 'react';
+import { Link, Outlet, Route, Router, Routes } from 'react-router-dom';
 
 import { Sidebar } from '@/components/sidebar';
 import { Topbar } from '@/components/topbar';
-import { ISettingsLogic } from '@/logic/interfaces';
-import { LoginPage, RolesPage, UsersPage } from '@/pages';
+import { IAppLogic, ISettingsLogic } from '@/logic/interfaces';
 import {
   SidebarType,
   Theme,
@@ -20,17 +19,58 @@ import './style.scss';
 
 const verticalTypes = [SidebarType.Static, SidebarType.Slim];
 
+const LoginPage = lazy(() => import('@/pages/login'));
+const RegisterPage = lazy(() => import('@/pages/register'));
+const RecoveryPage = lazy(() => import('@/pages/recovery'));
+const RolesPage = lazy(() => import('@/pages/roles'));
+const UsersPage = lazy(() => import('@/pages/users'));
+
 export const App: FC = () => {
   return (
     <Routes>
       <Route path="/" element={<AppContainer />}>
         <Route path="app" element={<AppLayout />}>
-          <Route path="users" element={<UsersPage />} />
-          <Route path="roles" element={<RolesPage />} />
+          <Route
+            path="users"
+            element={
+              <Suspense>
+                <UsersPage />
+              </Suspense>
+            }
+          />
+          <Route
+            path="roles"
+            element={
+              <Suspense>
+                <RolesPage />
+              </Suspense>
+            }
+          />
         </Route>
-        <Route path="login" element={<LoginPage />} />
-        <Route path="register" element={<LoginPage />} />{' '}
-        <Route path="recovery" element={<LoginPage />} />
+        <Route
+          path="login"
+          element={
+            <Suspense>
+              <LoginPage />{' '}
+            </Suspense>
+          }
+        />
+        <Route
+          path="register"
+          element={
+            <Suspense>
+              <RegisterPage />{' '}
+            </Suspense>
+          }
+        />
+        <Route
+          path="recovery"
+          element={
+            <Suspense>
+              <RecoveryPage />
+            </Suspense>
+          }
+        />
       </Route>
     </Routes>
   );
@@ -49,10 +89,12 @@ export const AppContainer: FC = () => {
 
 export const AppLayout: FC = () => {
   const settingsLogic = useInjection(ISettingsLogic.$);
+  const appLogic = useInjection(IAppLogic.$);
 
   const { sidebarType, sidebarActive, fontSize } = useValues(settingsLogic);
   const { setSidebarType, setTheme, toggleSidebar, setFontSize } =
     useActions(settingsLogic);
+  const { openUsersPage, openRolesPage } = useActions(appLogic);
 
   return (
     <div
@@ -70,6 +112,7 @@ export const AppLayout: FC = () => {
         <div className="layout-page">
           <Outlet />
         </div>
+
         <Button label="Slim" onClick={() => setSidebarType(SidebarType.Slim)} />
         <Button
           label="Static"
@@ -90,6 +133,11 @@ export const AppLayout: FC = () => {
             setFontSize(typeof e.value == 'number' ? e.value : 14)
           }
         />
+        <div>
+          <Button label="Roles" onClick={openRolesPage} />
+          <Button label="Users" onClick={openUsersPage} />
+          <Link to="/app/users">Users</Link> <Link to="/app/roles">Roles</Link>
+        </div>
       </div>
       <div
         onClick={() => toggleSidebar(false)}
@@ -97,4 +145,8 @@ export const AppLayout: FC = () => {
       />
     </div>
   );
+};
+
+export const AppPageLoading = () => {
+  return <div>LOADING</div>;
 };
