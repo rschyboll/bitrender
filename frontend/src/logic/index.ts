@@ -5,7 +5,7 @@ import { routerPlugin } from 'kea-router';
 
 import Dependencies from '@/deps';
 import { IAppLogic, ISettingsLogic } from '@/logic/interfaces';
-import { history } from '@/route';
+import { history } from '@/pages/history';
 
 export const startKea = () => {
   enableMapSet();

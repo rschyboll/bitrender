@@ -5,13 +5,14 @@ import { createRoot } from 'react-dom/client';
 
 import { App } from '@/app';
 import { startGlobalLogics, startKea } from '@/logic';
+import { history } from '@/pages/history';
+import { SuspenseRouter } from '@/pages/router';
 import '@/scss/global.scss';
 import '@/scss/main.scss';
 
 import Dependencies from './deps';
 import './i18n';
 import './logic';
-import { HistoryRouter } from './route';
 
 PrimeReact.ripple = true;
 
@@ -24,9 +25,9 @@ function Init() {
 
   return (
     <InversifyProvider container={Dependencies}>
-      <HistoryRouter>
+      <SuspenseRouter history={history}>
         <App />
-      </HistoryRouter>
+      </SuspenseRouter>
     </InversifyProvider>
   );
 }

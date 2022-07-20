@@ -2,12 +2,21 @@ import { useInjection } from 'inversify-react';
 import { useActions, useValues } from 'kea';
 import { Button } from 'primereact/button';
 import { Slider } from 'primereact/slider';
-import { FC, Suspense, lazy } from 'react';
-import { Link, Outlet, Route, Router, Routes } from 'react-router-dom';
+import {
+  FC,
+  LazyExoticComponent,
+  Suspense,
+  lazy,
+  startTransition,
+  useCallback,
+  useState,
+} from 'react';
+import { Link, Outlet, Route, Routes, useLocation } from 'react-router-dom';
 
 import { Sidebar } from '@/components/sidebar';
 import { Topbar } from '@/components/topbar';
 import { IAppLogic, ISettingsLogic } from '@/logic/interfaces';
+import { ErrorPage } from '@/pages/error';
 import {
   SidebarType,
   Theme,
@@ -22,57 +31,45 @@ const verticalTypes = [SidebarType.Static, SidebarType.Slim];
 const LoginPage = lazy(() => import('@/pages/login'));
 const RegisterPage = lazy(() => import('@/pages/register'));
 const RecoveryPage = lazy(() => import('@/pages/recovery'));
-const RolesPage = lazy(() => import('@/pages/roles'));
-const UsersPage = lazy(() => import('@/pages/users'));
+const RolesPage = lazy(async () => {
+  return import('@/pages/roles');
+});
+const usersPageFactory = (retry: () => void) =>
+  lazy(async () => {
+    try {
+      await new Promise((r) => setTimeout(r, 500));
+      return await import('@/pages/users');
+    } catch (error) {
+      return { default: () => <ErrorPage retry={retry} /> };
+    }
+  });
 
 export const App: FC = () => {
+  const usersPageRetry = useCallback(() => {
+    startTransition(() => {
+      setUsersPage(usersPageFactory(usersPageRetry));
+    });
+  }, []);
+
+  const [UsersPage, setUsersPage] = useState<LazyExoticComponent<any>>(
+    usersPageFactory(usersPageRetry),
+  );
+
   return (
-    <Routes>
-      <Route path="/" element={<AppContainer />}>
-        <Route path="app" element={<AppLayout />}>
-          <Route
-            path="users"
-            element={
-              <Suspense>
-                <UsersPage />
-              </Suspense>
-            }
-          />
-          <Route
-            path="roles"
-            element={
-              <Suspense>
-                <RolesPage />
-              </Suspense>
-            }
-          />
+    <Suspense>
+      <Routes>
+        <Route path="/" element={<AppContainer />}>
+          <Route path="app" element={<AppLayout />}>
+            <Route path="users" element={<UsersPage />} />
+            <Route path="roles" element={<RolesPage />} />
+          </Route>
+          <Route path="login" element={<LoginPage />} />
+          <Route path="register" element={<RegisterPage />} />
+          <Route path="recovery" element={<RecoveryPage />} />
+          <Route path="error" element={<>Wystąpił błąd</>} />
         </Route>
-        <Route
-          path="login"
-          element={
-            <Suspense>
-              <LoginPage />{' '}
-            </Suspense>
-          }
-        />
-        <Route
-          path="register"
-          element={
-            <Suspense>
-              <RegisterPage />{' '}
-            </Suspense>
-          }
-        />
-        <Route
-          path="recovery"
-          element={
-            <Suspense>
-              <RecoveryPage />
-            </Suspense>
-          }
-        />
-      </Route>
-    </Routes>
+      </Routes>
+    </Suspense>
   );
 };
 

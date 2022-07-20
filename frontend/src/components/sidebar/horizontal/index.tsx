@@ -3,6 +3,7 @@ import { useActions, useValues } from 'kea';
 import { Ripple } from 'primereact/ripple';
 import { FC, memo, useMemo, useState } from 'react';
 import { Trans } from 'react-i18next';
+import { RiArrowDownSLine } from 'react-icons/ri';
 import { useLocation } from 'react-router-dom';
 
 import { Logo } from '@/components/logo';
@@ -74,15 +75,16 @@ const SidebarHorizontalGroup = memo(function SidebarHorizontalGroup(
           className="sidebar-group-button p-ripple"
           onClick={() => toggleSidebar()}
         >
-          <i className={`sidebar-group-icon pi pi-fw ${props.icon}`} />
+          <props.icon className="sidebar-group-icon pi pi-fw" />
           <div className="sidebar-group-title">
             <Trans>{props.title}</Trans>
           </div>
-          <i
+          <RiArrowDownSLine
             className={`sidebar-group-arrow ${
               props.active && sidebarActive && 'sidebar-group-arrow-active'
             } pi pi-fw ri-arrow-down-s-line`}
           />
+
           <Ripple />
         </button>
         <SidebarDialog active={props.active && sidebarActive}>

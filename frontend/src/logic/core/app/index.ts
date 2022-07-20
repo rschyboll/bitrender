@@ -21,6 +21,7 @@ const logic = kea<logicType>([
     openRegisterPage: () => '/register',
     openUsersPage: () => '/app/users',
     openRolesPage: () => '/app/roles',
+    openErrorPage: () => '/error',
   })),
   urlToAction(({ actions }) => ({
     '/app/users': () => actions.loadCurrentUser(),
@@ -33,6 +34,7 @@ const logic = kea<logicType>([
     openRegisterPage: true,
     openUsersPage: true,
     openRolesPage: true,
+    openErrorPage: true,
   }),
   reducers({}),
   listeners(({ props }) => ({

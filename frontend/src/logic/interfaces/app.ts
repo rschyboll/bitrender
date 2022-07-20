@@ -8,6 +8,7 @@ interface IApp extends Logic {
     readonly openRegisterPage: () => void;
     readonly openUsersPage: () => void;
     readonly openRolesPage: () => void;
+    readonly openErrorPage: () => void;
   };
   readonly values: {};
 }

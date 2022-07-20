@@ -48,6 +48,7 @@
     "react-i18next": "^11.18.0",
     "react-icons": "^4.4.0",
     "react-router-dom": "^6.3.0",
+    "react-top-loading-bar": "^2.1.0",
     "react-transition-group": "^4.4.2",
     "reflect-metadata": "^0.1.13",
     "remixicon": "^2.5.0"
