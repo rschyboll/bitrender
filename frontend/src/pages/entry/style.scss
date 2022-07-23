@@ -1,0 +1,45 @@
+@import '@/scss/variables.scss';
+
+$card-width: 35%;
+$card-width-mobile: 90%;
+
+#entry-page-card {
+  position: fixed;
+  top: calc(50vh);
+  left: calc(50vw);
+  transform: translate(-50%, -50%);
+  transition: width 0.5s, height 0.5s;
+
+  @include media('<=desktop') {
+    width: $card-width-mobile;
+  }
+
+  @include media('>desktop') {
+    width: $card-width;
+  }
+
+  .logo {
+    border: 0;
+    padding-top: 0;
+    .app-name {
+      vertical-align: middle;
+      letter-spacing: 0.2px;
+      font-size: 1.5rem;
+    }
+  }
+
+  .p-card-body .p-card-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0.5rem;
+  }
+
+  #entry-page-card-content {
+    width: 100%;
+  }
+}
+
+.theme-light #entry-page-card .logo .logo-image {
+  filter: invert(35%);
+}

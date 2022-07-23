@@ -43,12 +43,12 @@ export const sidebarModel: Group[] = [
     icon: RiServerFill,
     title: 'nav.system',
     items: [
-      { icon: RiGroupFill, title: 'nav.users', path: '/app/users' },
+      { icon: RiGroupFill, title: 'nav.users', path: '/app/admin/users' },
       {
         icon: RiShieldUserFill,
         iconSize: '1.5rem',
         title: 'nav.roles',
-        path: '/app/roles',
+        path: '/app/admin/roles',
       },
     ],
     spacer: true,

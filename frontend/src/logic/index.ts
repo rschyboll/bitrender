@@ -4,8 +4,10 @@ import { localStoragePlugin } from 'kea-localstorage';
 import { routerPlugin } from 'kea-router';
 
 import Dependencies from '@/deps';
-import { IAppLogic, ISettingsLogic } from '@/logic/interfaces';
+import { ISettingsLogic } from '@/logic/interfaces';
 import { history } from '@/pages/history';
+
+import { IRouteLogic } from './interfaces/route';
 
 export const startKea = () => {
   enableMapSet();
@@ -37,5 +39,5 @@ export const startKea = () => {
 
 export const startGlobalLogics = () => {
   Dependencies.get(ISettingsLogic.$).mount();
-  Dependencies.get(IAppLogic.$).mount();
+  Dependencies.get(IRouteLogic.$).mount();
 };

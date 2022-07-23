@@ -5,10 +5,16 @@
       "welcomeBack": "Witaj spowrotem!",
       "noAccount": "Nie posiadasz jeszcze konta?",
       "createAccount": "Utwórz!",
-      "username": "Nazwa użytkownika",
-      "password": "Hasło",
       "forgot": "Zapomniałeś hasła?",
       "submit": "Zaloguj"
+    },
+    "register": {
+      "createYourAccount": "Zarejestruj swoje konto!",
+      "submit": "Zarejestruj"
+    },
+    "user": {
+      "username": "Nazwa użytkownika",
+      "password": "Hasło"
     }
   }
 }

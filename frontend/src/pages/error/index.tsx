@@ -21,16 +21,19 @@ export const ErrorPage = memo(function ErrorPage(props: ErrorPageProps) {
   }, [props]);
 
   useEffect(() => {
+    console.log('hmmmmmmmmmm');
     if (isPending) {
       setTimeout(() => {
         if (isPendingRef.current) {
           isTimeoutRef.current = true;
           loadingBarRef.current?.continuousStart(0, 1000);
         }
-      }, 50);
+      }, 100);
     } else {
       if (isTimeoutRef.current) {
-        loadingBarRef.current?.complete();
+        setTimeout(() => {
+          loadingBarRef.current?.complete();
+        }, 0);
         isTimeoutRef.current = false;
       }
     }

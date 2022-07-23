@@ -1,41 +1,10 @@
-@import '@/scss/variables.scss';
+#login-page {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 
-$card-width: 35%;
-$card-width-mobile: 90%;
-
-#login-card {
-  position: fixed;
-  top: calc(50vh);
-  left: calc(50vw);
-  transform: translate(-50%, -50%);
-  transition: width 0.5s;
-
-  @include media('<=desktop') {
-    width: $card-width-mobile;
-  }
-
-  @include media('>desktop') {
-    width: $card-width;
-  }
-
-  .logo {
-    border: 0;
-    padding-top: 0;
-    .app-name {
-      vertical-align: middle;
-      letter-spacing: 0.2px;
-      font-size: 1.5rem;
-    }
-  }
-
-  .p-card-body > .p-card-content {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 0.5rem;
-  }
-
-  #login-card-title {
+  #login-page-title {
     font-size: 1.75rem;
     font-weight: 500;
     margin-top: 0.5rem;
@@ -84,8 +53,4 @@ $card-width-mobile: 90%;
   #login-submit {
     width: 100%;
   }
-}
-
-.theme-light #login-card .logo .logo-image {
-  filter: invert(35%);
 }

@@ -2,8 +2,8 @@ import { Provider as InversifyProvider } from 'inversify-react';
 import PrimeReact from 'primereact/api';
 import { createRoot } from 'react-dom/client';
 
-import { App } from '@/app';
 import { startKea } from '@/logic';
+import Pages from '@/pages';
 import { history } from '@/pages/history';
 import { SuspenseRouter } from '@/pages/router';
 import '@/scss/global.scss';
@@ -21,7 +21,7 @@ function Init() {
   return (
     <InversifyProvider container={Dependencies}>
       <SuspenseRouter history={history}>
-        <App />
+        <Pages />
       </SuspenseRouter>
     </InversifyProvider>
   );

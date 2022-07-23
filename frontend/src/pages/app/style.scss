@@ -1,0 +1,113 @@
+@import '@/scss/variables.scss';
+
+$slimWidth: 6rem;
+$staticWidth: 16rem;
+
+.app {
+  background-color: var(--surface-ground);
+}
+
+.layout,
+.layout-content,
+.layout-sidebar {
+  height: 100%;
+}
+
+.layout-content {
+  transition: margin-left $transition-duration;
+  background-color: var(--surface-b);
+}
+
+.layout-horizontal .layout-content {
+  margin-left: 0;
+}
+
+.layout-slim {
+  .layout-content,
+  .layout-topbar {
+    @include media('<=tablet') {
+      margin-left: 0rem;
+    }
+    @include media('>tablet') {
+      margin-left: $slimWidth;
+    }
+  }
+  .layout-sidebar {
+    @include media('<=tablet') {
+      width: 0rem;
+      overflow: hidden;
+    }
+    @include media('>tablet') {
+      width: $slimWidth;
+      border-right: 1px solid var(--sidebar-border);
+    }
+  }
+}
+
+.layout-static .layout-content {
+  @include media('<=desktop') {
+    margin-left: 0rem;
+  }
+  @include media('>desktop') {
+    margin-left: $staticWidth;
+    border-right: 1px solid var(--sidebar-border);
+  }
+}
+
+.layout-sidebar {
+  position: fixed;
+  transition: width $transition-duration;
+  background: var(--sidebar-background);
+  box-shadow: 0 2px 4px -1px rgb(0 0 0 / 20%), 0 4px 5px 0 rgb(0 0 0 / 14%),
+    0 1px 10px 0 rgb(0 0 0 / 12%);
+  z-index: 10;
+}
+
+.layout-horizontal .layout-sidebar {
+  width: 0rem;
+  border-right: 0px;
+  box-shadow: none;
+}
+
+.layout-static .layout-sidebar {
+  @include media('<=desktop') {
+    width: 0rem;
+    overflow: hidden;
+  }
+  @include media('>desktop') {
+    width: $staticWidth;
+    border-right: 1px solid var(--sidebar-border);
+  }
+}
+
+.layout-slim.layout-mobile-active .layout-content-mask {
+  @include media('<=tablet') {
+    display: block;
+    opacity: 1;
+  }
+}
+
+.layout-horizontal.layout-mobile.active .layout-content-mask,
+.layout-static.layout-mobile.active .layout-content-mask {
+  @include media('<=desktop') {
+    display: block;
+    opacity: 1;
+  }
+}
+
+.layout-content-mask {
+  display: none;
+  opacity: 0;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 5;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.7);
+  transition: opacity $transition-duration;
+}
+
+.layout-topbar {
+  height: 4rem;
+}

@@ -2,19 +2,20 @@ import { injectable } from 'inversify';
 import ky, { HTTPError } from 'ky';
 
 import Dependencies from '@/deps';
-import { IAppLogic } from '@/logic/interfaces';
 import { ErrorResponse, ServiceErrorType } from '@/types/service';
 import { IServiceValidators } from '@/validators/interfaces';
+
+import { IRouteLogic } from './../../logic/interfaces/route';
 
 @injectable()
 export class Service {
   protected api: typeof ky;
   protected serviceValidators: IServiceValidators;
-  protected appLogic: IAppLogic;
+  protected routeLogic: IRouteLogic;
 
   constructor() {
     this.serviceValidators = Dependencies.get(IServiceValidators.$);
-    this.appLogic = Dependencies.get(IAppLogic.$);
+    this.routeLogic = Dependencies.get(IRouteLogic.$);
 
     this.api = ky.create({
       prefixUrl: 'http://127.0.0.1:8001/api/app/',
@@ -22,7 +23,7 @@ export class Service {
         beforeError: [
           async (error) => {
             const errorBody = await error.response.json();
-            this.appLogic.actions.openLoginPage();
+            this.routeLogic.actions.openLoginPage();
             return error;
           },
         ],

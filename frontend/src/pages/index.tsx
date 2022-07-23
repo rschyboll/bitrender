@@ -12,8 +12,11 @@ import {
 import { Outlet, Route, Routes } from 'react-router-dom';
 
 import { ISettingsLogic } from '@/logic/interfaces';
+import { AppPage } from '@/pages/app';
 import { ErrorPage } from '@/pages/error';
 import { themeClasses } from '@/types/settings';
+
+import EntryPage from './entry';
 
 const lazyPageFactory = (
   promise: () => Promise<{ default: FC }>,
@@ -21,8 +24,6 @@ const lazyPageFactory = (
 ) =>
   lazy(async () => {
     try {
-      await new Promise((r) => setTimeout(r, 2000));
-
       return await promise();
     } catch (error) {
       return { default: () => <ErrorPage retry={retry} /> };
@@ -65,18 +66,21 @@ export const Pages: FC = () => {
     <Suspense>
       <Routes>
         <Route path="/" element={<BasePage />}>
-          <Route path="app" element={<AppLayout />}>
+          <Route path="app" element={<AppPage />}>
             <Route path="" element={<>Test</>} />
             <Route path="admin">
               <Route path="users" element={<UsersPage />} />
               <Route path="roles" element={<RolesPage />} />
             </Route>
-
             <Route path="settings" element={<RolesPage />} />
           </Route>
-          <Route path="login" element={<LoginPage />} />
-          <Route path="register" element={<RegisterPage />} />
-          <Route path="recovery" element={<RecoveryPage />} />
+
+          <Route path="" element={<EntryPage />}>
+            <Route path="login" element={<LoginPage />} />
+            <Route path="register" element={<RegisterPage />} />
+            <Route path="recovery" element={<RecoveryPage />} />
+          </Route>
+
           <Route path="error" element={<>Wystąpił błąd</>} />
         </Route>
       </Routes>

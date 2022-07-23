@@ -1,0 +1,32 @@
+@import '@/scss/variables.scss';
+
+$card-width: 35%;
+$card-width-mobile: 90%;
+
+#register-page {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  #register-page-title {
+    font-size: 1.75rem;
+    font-weight: 500;
+    margin-top: 0.5rem;
+    margin-bottom: 1rem;
+  }
+
+  label {
+    margin-bottom: 0.5rem;
+    width: 100%;
+    font-weight: 500;
+  }
+
+  .p-inputtext {
+    width: 100%;
+  }
+
+  #register-submit {
+    width: 100%;
+  }
+}

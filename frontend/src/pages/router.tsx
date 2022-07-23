@@ -39,20 +39,22 @@ export function SuspenseRouter({ children, history }: BrowserRouterProps) {
   );
 
   useEffect(() => {
+    isPendingRef.current = isPending;
     if (isPending) {
       setTimeout(() => {
-        if (isPendingRef.current) {
+        if (isPendingRef.current && !isTimeoutRef.current) {
           isTimeoutRef.current = true;
           loadingBarRef.current?.continuousStart(0, 1000);
         }
-      }, 50);
+      }, 100);
     } else {
       if (isTimeoutRef.current) {
-        loadingBarRef.current?.complete();
+        setTimeout(() => {
+          loadingBarRef.current?.complete();
+        }, 0);
         isTimeoutRef.current = false;
       }
     }
-    isPendingRef.current = isPending;
   }, [isPending]);
 
   return (
