@@ -1,12 +1,16 @@
 """Contains interface for the token helper implementations."""
+from __future__ import annotations
+
 from abc import ABC, abstractmethod
-from datetime import timedelta
-from typing import Any
-from uuid import UUID
+from typing import TYPE_CHECKING, Any
 
 from antidote import interface
 
-from bitrender.schemas.user import UserTokenData
+if TYPE_CHECKING:
+    from datetime import timedelta
+    from uuid import UUID
+
+    from bitrender.schemas.user import UserTokenData
 
 
 @interface

@@ -1,8 +1,3 @@
-@import '@/scss/variables.scss';
-
-$card-width: 35%;
-$card-width-mobile: 90%;
-
 #register-page {
   width: 100%;
   display: flex;
@@ -24,6 +19,7 @@ $card-width-mobile: 90%;
 
   .p-inputtext {
     width: 100%;
+    margin-bottom: 1rem;
   }
 
   #register-submit {

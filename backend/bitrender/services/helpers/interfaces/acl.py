@@ -1,10 +1,15 @@
 """Contains interface for the acl helper implementations."""
+from __future__ import annotations
+
 from abc import ABC, abstractmethod
-from typing import Sequence, Type
+from typing import TYPE_CHECKING
 
 from antidote import interface
 
-from bitrender.core.acl import AclAction, AclResource
+if TYPE_CHECKING:
+    from typing import Sequence, Type
+
+    from bitrender.core.acl import AclAction, AclResource
 
 
 @interface
