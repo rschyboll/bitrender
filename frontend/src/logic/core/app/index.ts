@@ -1,5 +1,4 @@
-import { actions, afterMount, kea, listeners, props, reducers } from 'kea';
-import { actionToUrl, urlToAction } from 'kea-router';
+import { actions, kea, listeners, props, reducers } from 'kea';
 
 import Dependencies from '@/deps';
 import { injectDepsToLogic } from '@/logic/utils';
@@ -15,28 +14,9 @@ const logic = kea<logicType>([
       };
     },
   ),
-  actionToUrl(() => ({
-    openApp: () => `/app`,
-    openLoginPage: () => '/login',
-    openRegisterPage: () => '/register',
-    openUsersPage: () => '/app/users',
-    openRolesPage: () => '/app/roles',
-    openErrorPage: () => '/error',
-  })),
-  urlToAction(({ actions }) => ({
-    '/app/users': () => actions.loadCurrentUser(),
-    '/app/roles': () => actions.loadCurrentUser(),
-  })),
   actions({
     loadCurrentUser: true,
-    openApp: true,
-    openLoginPage: true,
-    openRegisterPage: true,
-    openUsersPage: true,
-    openRolesPage: true,
-    openErrorPage: true,
   }),
-  reducers({}),
   listeners(({ props }) => ({
     loadCurrentUser: async () => {
       const me = await props.deps.userService.getCurrentUser();

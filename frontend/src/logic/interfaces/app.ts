@@ -2,14 +2,7 @@ import { interfaces } from 'inversify';
 import { Logic, LogicWrapper } from 'kea';
 
 interface IApp extends Logic {
-  readonly actions: {
-    readonly openApp: () => void;
-    readonly openLoginPage: () => void;
-    readonly openRegisterPage: () => void;
-    readonly openUsersPage: () => void;
-    readonly openRolesPage: () => void;
-    readonly openErrorPage: () => void;
-  };
+  readonly actions: {};
   readonly values: {};
 }
 

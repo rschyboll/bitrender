@@ -79,11 +79,13 @@ const SidebarSlimGroup = memo(function SidebarSlimGroup(
           </div>
           <Ripple />
         </button>
-        <SidebarDialog active={props.active && sidebarActive}>
-          {props.items.map((itemModel) => {
-            return <SidebarItem key={itemModel.path} {...itemModel} />;
-          })}
-        </SidebarDialog>
+        {sidebarActive && (
+          <SidebarDialog active={props.active}>
+            {props.items.map((itemModel) => {
+              return <SidebarItem key={itemModel.path} {...itemModel} />;
+            })}
+          </SidebarDialog>
+        )}
       </li>
       {props.spacer && <div className="sidebar-spacer" />}
     </>
