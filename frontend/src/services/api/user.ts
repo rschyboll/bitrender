@@ -1,29 +1,36 @@
 import { inject, injectable } from 'inversify';
 
+import { ApiEndpoints } from '@/services/endpoints';
 import type { Response } from '@/types/service';
 import { ServiceErrorType } from '@/types/service';
-import { UserView, UserViewResponse } from '@/types/user';
+import { UserView } from '@/types/user';
 import { IUserValidators } from '@/validators/interfaces';
 
 import { IUserService } from '../interfaces';
+import { IUserConverters } from './../../converters/interfaces/user';
 import { Service } from './base';
 
 @injectable()
 export class UserService extends Service implements IUserService {
-  private userValidator: IUserValidators;
+  private userValidators: IUserValidators;
+  private userConverters: IUserConverters;
 
-  constructor(@inject(IUserValidators.$) userValidator: IUserValidators) {
+  constructor(
+    @inject(IUserValidators.$) userValidator: IUserValidators,
+    @inject(IUserConverters.$) userConverters: IUserConverters,
+  ) {
     super();
-    this.userValidator = userValidator;
+    this.userValidators = userValidator;
+    this.userConverters = userConverters;
   }
 
   public async getCurrentUser(): Promise<Response<UserView>> {
     try {
-      const response = await this.api.get('user/me').json();
-      if (this.userValidator.validateUserViewResponse(response)) {
+      const response = await this.api.get(ApiEndpoints.UserMe).json();
+      if (this.userValidators.validateUserViewResponse(response)) {
         return {
           success: true,
-          data: this.userViewResponseToUserView(response),
+          data: this.userConverters.userViewResponseToUserView(response),
         };
       }
       return {
@@ -35,13 +42,5 @@ export class UserService extends Service implements IUserService {
     } catch (error: unknown) {
       return this.parseAPIError(error);
     }
-  }
-
-  private userViewResponseToUserView(user: UserViewResponse): UserView {
-    return {
-      ...user,
-      modifiedAt: new Date(user.modified_at),
-      createdAt: new Date(user.created_at),
-    };
   }
 }

@@ -1,7 +1,11 @@
+import { useInjection } from 'inversify-react';
+import { useValues } from 'kea';
+import { Skeleton } from 'primereact/skeleton';
 import { memo } from 'react';
 import { Trans } from 'react-i18next';
 
 import { Logo } from '@/components/logo';
+import { IAppLogic } from '@/logic/interfaces';
 
 import { SidebarItem } from '../item';
 import { Group, sidebarModel } from '../model';
@@ -25,11 +29,20 @@ type SidebarWideGroupProps = Group;
 const SidebarWideGroup = memo(function SidebarWideGrup(
   props: SidebarWideGroupProps,
 ) {
+  const appLogic = useInjection(IAppLogic.$);
+
+  const { appReady } = useValues(appLogic);
+
   return (
     <li className="sidebar-group">
-      <span className="sidebar-group-title">
-        <Trans>{props.title}</Trans>
-      </span>
+      {!appReady ? (
+        <Skeleton className="sidebar-group-title-loading " />
+      ) : (
+        <span className="sidebar-group-title">
+          <Trans>{props.title}</Trans>
+        </span>
+      )}
+
       <div className="sidebar-group-container">
         {props.items.map((item) => {
           return <SidebarItem key={item.path} {...item} />;

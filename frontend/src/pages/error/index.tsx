@@ -21,7 +21,6 @@ export const ErrorPage = memo(function ErrorPage(props: ErrorPageProps) {
   }, [props]);
 
   useEffect(() => {
-    console.log('hmmmmmmmmmm');
     if (isPending) {
       setTimeout(() => {
         if (isPendingRef.current) {

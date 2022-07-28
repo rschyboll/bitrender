@@ -52,10 +52,8 @@ const logic = kea<logicType>([
       }
     },
     setFontSize: ({ fontSize }) => {
-      console.log('TEST');
       const htmlElement = document.getElementsByTagName('html')[0];
       if (htmlElement instanceof HTMLHtmlElement) {
-        console.log('TEST');
         htmlElement.style.fontSize = fontSize.toString() + 'px';
       }
     },

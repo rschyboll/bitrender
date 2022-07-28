@@ -1,19 +1,31 @@
 import { BrowserHistory, Update } from 'history';
+import { createBrowserHistory } from 'history';
+import { useInjection } from 'inversify-react';
+import { useValues } from 'kea';
 import {
+  ReactNode,
   useCallback,
   useEffect,
   useLayoutEffect,
+  useMemo,
   useRef,
   useState,
   useTransition,
 } from 'react';
-import { Router } from 'react-router-dom';
+import { Navigate, Router } from 'react-router-dom';
 import LoadingBar, { LoadingBarRef } from 'react-top-loading-bar';
+
+import { IAppLogic } from '@/logic/interfaces';
+import { Permission } from '@/types/user';
+
+import { LoadingPage } from './loading';
 
 export interface BrowserRouterProps {
   children?: React.ReactNode;
   history: BrowserHistory;
 }
+
+export const history = createBrowserHistory({ window: window });
 
 export function SuspenseRouter({ children, history }: BrowserRouterProps) {
   const [isPending, startTransition] = useTransition();
@@ -68,4 +80,38 @@ export function SuspenseRouter({ children, history }: BrowserRouterProps) {
     </Router>
   );
 }
+
 export default SuspenseRouter;
+
+export interface ProtectedRouteProps {
+  requiredPermissions: Permission[];
+  children: ReactNode;
+}
+
+export const ProtectedRoute = (props: ProtectedRouteProps) => {
+  const appLogic = useInjection(IAppLogic.$);
+
+  const { currentUser, appReady } = useValues(appLogic);
+
+  const hasPermissions = useMemo(() => {
+    if (currentUser != null) {
+      for (const permission of props.requiredPermissions) {
+        if (!currentUser.permissions.includes(permission)) {
+          return false;
+        }
+      }
+      return true;
+    }
+    return false;
+  }, [currentUser, props.requiredPermissions]);
+
+  if (currentUser == null || !appReady) {
+    return <LoadingPage />;
+  }
+
+  if (!hasPermissions) {
+    return <Navigate to={'/unauthorized'} />;
+  }
+
+  if (currentUser.permissions) return props.children;
+};

@@ -3,10 +3,11 @@ import { useActions } from 'kea';
 import { Button } from 'primereact/button';
 import { FC } from 'react';
 
+import { Avatar } from '@/components/avatar';
+import { Sidebar } from '@/components/sidebar';
 import { ISettingsLogic } from '@/logic/interfaces';
 import { SidebarType } from '@/types/settings';
 
-import { Sidebar } from '../sidebar';
 import './style.scss';
 
 export const Topbar: FC = () => {
@@ -29,6 +30,7 @@ export const Topbar: FC = () => {
             className="mobile-sidebar-button"
             icon="ri-menu-line"
           />
+          <Avatar name="TEST" />
         </div>
       </div>
     </div>

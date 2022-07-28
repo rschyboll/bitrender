@@ -2,7 +2,11 @@ import { injectable } from 'inversify';
 import ky, { HTTPError } from 'ky';
 
 import Dependencies from '@/deps';
-import { ErrorResponse, ServiceErrorType } from '@/types/service';
+import {
+  ApiErrorCodes,
+  ErrorResponse,
+  ServiceErrorType,
+} from '@/types/service';
 import { IServiceValidators } from '@/validators/interfaces';
 
 import { IRouteLogic } from './../../logic/interfaces/route';
@@ -20,15 +24,30 @@ export class Service {
     this.api = ky.create({
       prefixUrl: 'http://127.0.0.1:8001/api/app/',
       hooks: {
-        beforeError: [
-          async (error) => {
-            const errorBody = await error.response.json();
-            this.routeLogic.actions.openLoginPage();
-            return error;
-          },
-        ],
+        beforeError: [(error) => this.onError(error)],
       },
     });
+  }
+
+  private async onError(error: HTTPError): Promise<HTTPError> {
+    const errorBody = await error.response.json();
+    error.response.json = async () => errorBody;
+
+    if (this.serviceValidators.validateHttpError(errorBody)) {
+      switch (errorBody.detail) {
+        case ApiErrorCodes.NotAuthenticated:
+          await this.onUnauthenticatedError();
+          return error;
+
+        default:
+          return error;
+      }
+    }
+    return error;
+  }
+
+  private async onUnauthenticatedError() {
+    this.routeLogic().actions.openLoginPage();
   }
 
   protected async parseAPIError(error: unknown): Promise<ErrorResponse> {

@@ -1,11 +1,12 @@
 import { useInjection } from 'inversify-react';
-import { useActions } from 'kea';
+import { useActions, useValues } from 'kea';
 import { Ripple } from 'primereact/ripple';
+import { Skeleton } from 'primereact/skeleton';
 import { memo, useCallback } from 'react';
 import { Trans } from 'react-i18next';
 import { Link, useLocation } from 'react-router-dom';
 
-import { ISettingsLogic } from '@/logic/interfaces';
+import { IAppLogic, ISettingsLogic } from '@/logic/interfaces';
 
 import { Item } from '../model';
 import './style.scss';
@@ -14,14 +15,20 @@ export type SidebarItemProps = Item;
 
 export const SidebarItem = memo(function SidebarItem(props: SidebarItemProps) {
   const settingsLogic = useInjection(ISettingsLogic.$);
+  const appLogic = useInjection(IAppLogic.$);
 
   const { toggleSidebar } = useActions(settingsLogic);
+  const { appReady } = useValues(appLogic);
 
   const location = useLocation();
 
   const onClick = useCallback(() => {
     toggleSidebar(false);
   }, [toggleSidebar]);
+
+  if (!appReady) {
+    return <Skeleton className="sidebar-item-loading" />;
+  }
 
   return (
     <Link

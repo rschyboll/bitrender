@@ -5,7 +5,7 @@ import { routerPlugin } from 'kea-router';
 
 import Dependencies from '@/deps';
 import { ISettingsLogic } from '@/logic/interfaces';
-import { history } from '@/pages/history';
+import { history } from '@/pages/router';
 
 import { IRouteLogic } from './interfaces/route';
 

@@ -8,6 +8,8 @@ import { IUserService } from '@/services/interfaces';
 import { ServiceValidators, UserValidators } from '@/validators/core';
 import { IServiceValidators, IUserValidators } from '@/validators/interfaces';
 
+import { UserConverters } from './converters/core/user';
+import { IUserConverters } from './converters/interfaces/user';
 import { IRouteLogic } from './logic/interfaces/route';
 
 const Dependencies = new Container();
@@ -17,6 +19,9 @@ Dependencies.bind(IUserValidators.$).to(UserValidators).inSingletonScope();
 Dependencies.bind(IServiceValidators.$)
   .to(ServiceValidators)
   .inSingletonScope();
+
+//Converter dependencies
+Dependencies.bind(IUserConverters.$).to(UserConverters).inSingletonScope();
 
 //Logic dependencies
 Dependencies.bind(IAppLogic.$).toConstantValue(appLogic);

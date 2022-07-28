@@ -1,32 +1,30 @@
-import { actions, kea } from 'kea';
-import { actionToUrl, urlToAction } from 'kea-router';
-
-import { injectDepsToLogic } from '@/logic/utils';
+import { actions, afterMount, kea, reducers } from 'kea';
+import { actionToUrl } from 'kea-router';
 
 import type { logicType } from './indexType';
 
 const logic = kea<logicType>([
+  actions({
+    openApp: true,
+    openRegisterPage: true,
+    openLoginPage: () => {
+      console.log('TESTHMM');
+    },
+    openUsersPage: true,
+    openRolesPage: true,
+    openErrorPage: true,
+  }),
   actionToUrl(() => ({
     openApp: () => `/app`,
-    openLoginPage: () => '/login',
+    openLoginPage: () => {
+      console.log('LOGIN');
+      return '/login';
+    },
     openRegisterPage: () => '/register',
     openUsersPage: () => '/app/users',
     openRolesPage: () => '/app/roles',
     openErrorPage: () => '/error',
   })),
-  urlToAction(({ actions }) => ({
-    '/app/users': () => actions.loadCurrentUser(),
-    '/app/roles': () => actions.loadCurrentUser(),
-  })),
-  actions({
-    loadCurrentUser: true,
-    openApp: true,
-    openLoginPage: true,
-    openRegisterPage: true,
-    openUsersPage: true,
-    openRolesPage: true,
-    openErrorPage: true,
-  }),
 ]);
 
-export const routeLogic = injectDepsToLogic(logic, () => ({}));
+export const routeLogic = logic;

@@ -6,6 +6,8 @@ import {
   RiShieldUserFill,
 } from 'react-icons/ri';
 
+import { Permission } from '@/types/user';
+
 export interface Group {
   icon: IconType;
   title: string;
@@ -18,6 +20,7 @@ export interface Item {
   iconSize?: string;
   title: string;
   path: string;
+  requiredPermissions?: Permission[];
 }
 
 export const sidebarModel: Group[] = [
