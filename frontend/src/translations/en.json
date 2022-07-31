@@ -9,7 +9,12 @@
       "welcomeBack": "Welcome back!",
       "noAccount": "Don't have an account?",
       "createAccont": "Create!",
-      "forgot": "Forgot password?"
+      "forgot": "Forgot password?",
+      "submit": "Sign in",
+      "loggingIn": "Signing in...",
+      "cannotBeEmpty": "Field cannot be empty",
+      "badCredentials": "Incorrect username or password",
+      "unknownError": "Unable to log in"
     },
     "register": {
       "createYourAccount": "Register your account!",
@@ -18,6 +23,7 @@
     "user": {
       "username": "Username",
       "password": "Password"
-    }
+    },
+    "tryAgain": "Try again"
   }
 }

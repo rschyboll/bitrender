@@ -6,7 +6,11 @@
       "noAccount": "Nie posiadasz jeszcze konta?",
       "createAccount": "Utwórz!",
       "forgot": "Zapomniałeś hasła?",
-      "submit": "Zaloguj"
+      "submit": "Zaloguj",
+      "loggingIn": "Loguję...",
+      "cannotBeEmpty": "Pole nie może być puste",
+      "badCredentials": "Incorrect username or password",
+      "unknownError": "Nie udało się zalogować"
     },
     "register": {
       "createYourAccount": "Zarejestruj swoje konto!",
@@ -15,6 +19,7 @@
     "user": {
       "username": "Nazwa użytkownika",
       "password": "Hasło"
-    }
+    },
+    "tryAgain": "Spróbuj ponownie"
   }
 }

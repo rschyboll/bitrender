@@ -57,7 +57,7 @@ export class Service {
         return {
           success: false,
           error: {
-            type: ServiceErrorType.HTTPError,
+            type: ServiceErrorType.ApiError,
             detail: errorBody.detail,
             status: error.response.status,
           },
@@ -67,6 +67,7 @@ export class Service {
         success: false,
         error: {
           type: ServiceErrorType.HTTPError,
+          detail: errorBody,
           status: error.response.status,
         },
       };

@@ -7,19 +7,15 @@ const logic = kea<logicType>([
   actions({
     openApp: true,
     openRegisterPage: true,
-    openLoginPage: () => {
-      console.log('TESTHMM');
-    },
+    openLoginPage: true,
     openUsersPage: true,
     openRolesPage: true,
     openErrorPage: true,
+    replaceWithPrevious: true,
   }),
   actionToUrl(() => ({
     openApp: () => `/app`,
-    openLoginPage: () => {
-      console.log('LOGIN');
-      return '/login';
-    },
+    openLoginPage: () => '/login',
     openRegisterPage: () => '/register',
     openUsersPage: () => '/app/users',
     openRolesPage: () => '/app/roles',

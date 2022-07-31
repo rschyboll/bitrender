@@ -1,4 +1,5 @@
 import { inject, injectable } from 'inversify';
+import { HTTPError } from 'ky';
 
 import { ApiEndpoints } from '@/services/endpoints';
 import type { Response } from '@/types/service';
@@ -40,6 +41,26 @@ export class UserService extends Service implements IUserService {
         },
       };
     } catch (error: unknown) {
+      return this.parseAPIError(error);
+    }
+  }
+
+  public async login(
+    username: string,
+    password: string,
+  ): Promise<Response<undefined>> {
+    const formData = new FormData();
+    formData.append('username', username);
+    formData.append('password', password);
+    try {
+      await this.api.post(ApiEndpoints.Login, {
+        body: formData,
+      });
+      return { success: true, data: undefined };
+    } catch (error: unknown) {
+      if (error instanceof HTTPError) {
+        console.log(await error.response.json());
+      }
       return this.parseAPIError(error);
     }
   }

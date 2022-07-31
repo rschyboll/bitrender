@@ -9,6 +9,7 @@ export enum ApiErrorCodes {
 }
 
 export enum ServiceErrorType {
+  ApiError = 'API_ERROR',
   HTTPError = 'HTTP_ERROR',
   ValidationError = 'VALIDATION_ERROR',
   UnknownError = 'UNKNOWN_ERROR',
@@ -27,8 +28,13 @@ export declare type ErrorResponse = {
   success: false;
   error:
     | {
+        type: ServiceErrorType.ApiError;
+        detail: ApiErrorCodes;
+        status: number;
+      }
+    | {
         type: ServiceErrorType.HTTPError;
-        detail?: ApiErrorCodes;
+        detail: unknown;
         status: number;
       }
     | {
@@ -50,3 +56,10 @@ export declare type Response<T> =
   | UnknownResponse<T>
   | SuccessResponse<T>
   | ErrorResponse;
+
+export enum RequestStatus {
+  Idle,
+  Loading,
+  Error,
+  Success,
+}

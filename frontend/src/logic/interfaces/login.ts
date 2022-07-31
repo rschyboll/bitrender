@@ -1,18 +1,17 @@
 import { interfaces } from 'inversify';
 import { Logic, LogicWrapper } from 'kea';
 
+import { RequestStatus } from '@/types/service';
+
 interface ILogin extends Logic {
   readonly actions: {
     readonly login: (username: string, password: string) => void;
     readonly logout: () => void;
   };
   readonly values: {
-    readonly loginLoading: boolean;
-    readonly loginSuccess: boolean;
-    readonly loginFailure: boolean;
-    readonly logoutLoading: boolean;
-    readonly logoutSuccess: boolean;
-    readonly logoutFailure: boolean;
+    readonly loginStatus: RequestStatus;
+    readonly loginErrorDetail: null | unknown;
+    readonly logoutStatus: RequestStatus;
   };
 }
 

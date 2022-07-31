@@ -5,6 +5,7 @@ import { UserView } from '@/types/user';
 
 export interface IUserService {
   getCurrentUser: () => Promise<Response<UserView>>;
+  login: (username: string, password: string) => Promise<Response<undefined>>;
 }
 
 export namespace IUserService {
