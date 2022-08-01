@@ -3,7 +3,9 @@ import { createBrowserHistory } from 'history';
 import { useInjection } from 'inversify-react';
 import { useValues } from 'kea';
 import {
-  ReactNode,
+  Children,
+  ReactElement,
+  memo,
   useCallback,
   useEffect,
   useLayoutEffect,
@@ -84,16 +86,21 @@ export function SuspenseRouter({ children, history }: BrowserRouterProps) {
 export default SuspenseRouter;
 
 export interface ProtectedRouteProps {
-  requiredPermissions: Permission[];
-  children: ReactNode;
+  requiredPermissions?: Permission[];
+  children: JSX.Element;
 }
 
-export const ProtectedRoute = (props: ProtectedRouteProps) => {
+export const ProtectedRoute = memo(function ProtectedRoute(
+  props: ProtectedRouteProps,
+) {
   const appLogic = useInjection(IAppLogic.$);
 
   const { currentUser, appReady } = useValues(appLogic);
 
   const hasPermissions = useMemo(() => {
+    if (props.requiredPermissions == null) {
+      return true;
+    }
     if (currentUser != null) {
       for (const permission of props.requiredPermissions) {
         if (!currentUser.permissions.includes(permission)) {
@@ -106,6 +113,7 @@ export const ProtectedRoute = (props: ProtectedRouteProps) => {
   }, [currentUser, props.requiredPermissions]);
 
   if (currentUser == null || !appReady) {
+    console.log('TEST');
     return <LoadingPage />;
   }
 
@@ -113,5 +121,5 @@ export const ProtectedRoute = (props: ProtectedRouteProps) => {
     return <Navigate to={'/unauthorized'} />;
   }
 
-  if (currentUser.permissions) return props.children;
-};
+  return props.children;
+});

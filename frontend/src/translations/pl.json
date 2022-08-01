@@ -20,6 +20,7 @@
       "username": "Nazwa użytkownika",
       "password": "Hasło"
     },
-    "tryAgain": "Spróbuj ponownie"
+    "tryAgain": "Spróbuj ponownie",
+    "loading": "Ładowanie"
   }
 }

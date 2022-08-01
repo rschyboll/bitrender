@@ -17,6 +17,7 @@ import { ErrorPage } from '@/pages/error';
 import { themeClasses } from '@/types/settings';
 
 import EntryPage from './entry';
+import { ProtectedRoute } from './router';
 
 const lazyPageFactory = (
   promise: () => Promise<{ default: FC }>,
@@ -49,7 +50,7 @@ const BasePage: FC = () => {
   const { theme } = useValues(settingsLogic);
 
   return (
-    <div className={`theme-${themeClasses[theme]}`}>
+    <div style={{ height: '100%' }} className={`theme-${themeClasses[theme]}`}>
       <Outlet />
     </div>
   );
@@ -67,9 +68,15 @@ export const Pages: FC = () => {
       <Routes>
         <Route path="/" element={<BasePage />}>
           <Route path="app" element={<AppPage />}>
-            <Route path="" element={<>Test</>} />
             <Route path="admin">
-              <Route path="users" element={<UsersPage />} />
+              <Route
+                path="users"
+                element={
+                  <ProtectedRoute>
+                    <UsersPage />
+                  </ProtectedRoute>
+                }
+              />
               <Route path="roles" element={<RolesPage />} />
             </Route>
             <Route path="settings" element={<RolesPage />} />

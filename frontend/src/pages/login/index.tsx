@@ -61,8 +61,6 @@ const LoginPage = memo(function LoginPage() {
     }
   }, [loginStatus]);
 
-  console.log(loginStatus);
-
   return (
     <div id="login-page">
       <span id="login-page-title">

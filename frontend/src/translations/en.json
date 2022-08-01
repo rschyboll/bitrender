@@ -24,6 +24,7 @@
       "username": "Username",
       "password": "Password"
     },
-    "tryAgain": "Try again"
+    "tryAgain": "Try again",
+    "loading": "Loading"
   }
 }
