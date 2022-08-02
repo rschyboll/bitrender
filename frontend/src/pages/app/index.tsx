@@ -1,5 +1,6 @@
 import { useInjection } from 'inversify-react';
 import { useActions, useValues } from 'kea';
+import { useEffect } from 'react';
 import { Outlet } from 'react-router-dom';
 
 import { Sidebar } from '@/components/sidebar';
@@ -16,6 +17,12 @@ export const AppPage = () => {
 
   const { sidebarType, sidebarActive } = useValues(settingsLogic);
   const { toggleSidebar } = useActions(settingsLogic);
+
+  useEffect(() => {
+    return () => {
+      console.log('TEST');
+    };
+  }, []);
 
   return (
     <div

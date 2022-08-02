@@ -26,6 +26,9 @@ export class Service {
       hooks: {
         beforeError: [(error) => this.onError(error)],
       },
+      mode: 'cors',
+      credentials: 'include',
+      keepalive: true,
     });
   }
 
@@ -34,8 +37,10 @@ export class Service {
     error.response.json = async () => errorBody;
 
     if (this.serviceValidators.validateHttpError(errorBody)) {
+      console.log(errorBody.detail);
       switch (errorBody.detail) {
         case ApiErrorCodes.NotAuthenticated:
+          console.log('HELP');
           await this.onUnauthenticatedError();
           return error;
 
@@ -47,6 +52,7 @@ export class Service {
   }
 
   private async onUnauthenticatedError() {
+    console.log('HMM');
     this.routeLogic().actions.openLoginPage();
   }
 

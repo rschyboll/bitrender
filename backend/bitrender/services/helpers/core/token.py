@@ -39,7 +39,7 @@ class TokenHelper(ITokenHelper):
             raise TokenCorruptedError() from error
 
     def create_user_token(self, sub: UUID, settings: Settings = inject.me()) -> str:
-        return self.create({"sub": sub}, timedelta(minutes=settings.user_token_expire_minutes))
+        return self.create({"sub": sub.hex}, timedelta(minutes=settings.user_token_expire_minutes))
 
     def decode_user_token(self, token: str) -> UserTokenData:
         try:

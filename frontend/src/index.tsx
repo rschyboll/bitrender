@@ -17,12 +17,9 @@ import './logic';
 PrimeReact.ripple = true;
 
 startKea();
+startGlobalLogics();
 
 function Init() {
-  useEffect(() => {
-    startGlobalLogics();
-  }, []);
-
   return (
     <InversifyProvider container={Dependencies}>
       <SuspenseRouter history={history}>

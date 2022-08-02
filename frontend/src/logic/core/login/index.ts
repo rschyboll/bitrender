@@ -1,6 +1,7 @@
 import { actions, kea, listeners, props, reducers } from 'kea';
 
 import Dependencies from '@/deps';
+import { IRouteLogic } from '@/logic/interfaces/route';
 import { injectDepsToLogic } from '@/logic/utils';
 import { IUserService } from '@/services/interfaces';
 import { RequestStatus } from '@/types/service';
@@ -11,6 +12,7 @@ const logic = kea<logicType>([
   props(
     {} as {
       deps: {
+        routeLogic: IRouteLogic;
         userService: IUserService;
       };
     },
@@ -61,9 +63,13 @@ const logic = kea<logicType>([
         }
       }
     },
+    loginSuccess: () => {
+      props.deps.routeLogic.actions.returnToBeforeLogin();
+    },
   })),
 ]);
 
 export const loginLogic = injectDepsToLogic(logic, () => ({
+  routeLogic: Dependencies.get(IRouteLogic.$),
   userService: Dependencies.get(IUserService.$),
 }));

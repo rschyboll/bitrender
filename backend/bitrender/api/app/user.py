@@ -44,7 +44,14 @@ async def login(
         USER_NOT_VERIFIED error code.
     """
     token = await user_service.authenticate(credentials.username, credentials.password)
-    response.set_cookie("access_token", f"Bearer {token}", httponly=True)
+    response.set_cookie(
+        "access_token",
+        f"Bearer {token}",
+        secure=True,
+        httponly=True,
+        samesite="None",
+        expires=60 * 60 * 24,
+    )
 
 
 @user_router.post("/register", responses=user_register_responses)
