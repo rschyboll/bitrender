@@ -22,7 +22,8 @@
     "paths": {
       "@/*": ["./*"]
     },
-    "types": ["node", "reflect-metadata"]
+    "types": ["node", "reflect-metadata"],
+    "typeRoots": ["./node_modules/@types", "./src/@types/**"]
   },
   "include": ["src/**/*"]
 }

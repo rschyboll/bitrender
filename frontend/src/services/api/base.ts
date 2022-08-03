@@ -1,7 +1,9 @@
 import { injectable } from 'inversify';
 import ky, { HTTPError } from 'ky';
 
+import { IUtilityConverters } from '@/converters/interfaces';
 import Dependencies from '@/deps';
+import { IRouteLogic } from '@/logic/interfaces/route';
 import {
   ApiErrorCodes,
   ErrorResponse,
@@ -9,15 +11,15 @@ import {
 } from '@/types/service';
 import { IServiceValidators } from '@/validators/interfaces';
 
-import { IRouteLogic } from './../../logic/interfaces/route';
-
 @injectable()
 export class Service {
   protected api: typeof ky;
+  protected utilityConverters: IUtilityConverters;
   protected serviceValidators: IServiceValidators;
   protected routeLogic: IRouteLogic;
 
   constructor() {
+    this.utilityConverters = Dependencies.get(IUtilityConverters.$);
     this.serviceValidators = Dependencies.get(IServiceValidators.$);
     this.routeLogic = Dependencies.get(IRouteLogic.$);
 
@@ -25,6 +27,8 @@ export class Service {
       prefixUrl: 'http://127.0.0.1:8001/api/app/',
       hooks: {
         beforeError: [(error) => this.onError(error)],
+        beforeRequest: [requestToSnakeCase],
+        afterResponse: [responseToCamelCase],
       },
       mode: 'cors',
       credentials: 'include',
@@ -37,10 +41,8 @@ export class Service {
     error.response.json = async () => errorBody;
 
     if (this.serviceValidators.validateHttpError(errorBody)) {
-      console.log(errorBody.detail);
       switch (errorBody.detail) {
         case ApiErrorCodes.NotAuthenticated:
-          console.log('HELP');
           await this.onUnauthenticatedError();
           return error;
 
@@ -52,7 +54,6 @@ export class Service {
   }
 
   private async onUnauthenticatedError() {
-    console.log('HMM');
     this.routeLogic().actions.openLoginPage();
   }
 

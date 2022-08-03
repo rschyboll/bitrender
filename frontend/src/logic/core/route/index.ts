@@ -34,7 +34,7 @@ const logic = kea<logicType>([
   }),
   listeners(({ values }) => ({
     openLoginPage: () => {
-      console.log('TEST');
+      console.log('OPEN LOGIN PAGE');
     },
     returnToBeforeLogin: () => {
       if (values.beforeLoginPage != null) {

@@ -2,7 +2,7 @@
 from __future__ import annotations
 
 from datetime import datetime
-from typing import Type, TypeVar
+from typing import Any, Type, TypeVar, overload
 from uuid import UUID
 
 from tortoise.fields import (
@@ -115,9 +115,7 @@ class BaseModel(Model):
 
     @staticmethod
     async def extend_dacl(
-        relation: ForeignKeyRelation[MODEL]
-        | OneToOneNullableRelation[MODEL]
-        | ReverseRelation[MODEL],
+        relation: ForeignKeyRelation[Any] | OneToOneNullableRelation[Any] | ReverseRelation[Any],
         acl: list[list[AclEntry]],
     ) -> list[list[AclEntry]]:
         """TODO generate docstring"""
@@ -126,8 +124,9 @@ class BaseModel(Model):
             acl.extend(relation_acl)
         elif isinstance(relation, ReverseRelation) and relation._fetched:  # pylint: disable=W0212
             for item in relation:
-                relation_item_acl = await item.__dacl__()
-                acl.extend(relation_item_acl)
+                if isinstance(item, BaseModel):
+                    relation_item_acl = await item.__dacl__()
+                    acl.extend(relation_item_acl)
         return acl
 
     @classmethod

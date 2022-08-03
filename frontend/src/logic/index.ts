@@ -22,14 +22,20 @@ export const startKea = () => {
             _: string,
             url: string,
           ) => {
-            history.replace(url, state);
+            //Workaround, without this, kea changes routes when components in react are still rendering
+            //which can cause a logic from kea to not unmount properly
+            setTimeout(() => {
+              history.replace(url, state);
+            }, 0);
           },
           pushState: (
             state: Record<string, unknown>,
             _: string,
             url: string,
           ) => {
-            history.push(url, state);
+            setTimeout(() => {
+              history.push(url, state);
+            }, 0);
           },
         } as unknown as undefined,
       }),

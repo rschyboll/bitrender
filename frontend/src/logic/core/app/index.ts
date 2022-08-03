@@ -1,4 +1,13 @@
-import { actions, afterMount, kea, listeners, props, reducers } from 'kea';
+import {
+  actions,
+  afterMount,
+  beforeUnmount,
+  kea,
+  listeners,
+  path,
+  props,
+  reducers,
+} from 'kea';
 
 import Dependencies from '@/deps';
 import { injectDepsToLogic } from '@/logic/utils';
@@ -9,6 +18,7 @@ import { sleep } from '@/utils/async';
 import type { logicType } from './indexType';
 
 const logic = kea<logicType>([
+  path(['app']),
   props(
     {} as {
       deps: {
@@ -37,8 +47,11 @@ const logic = kea<logicType>([
   }),
   listeners(({ props, actions }) => ({
     loadCurrentUser: async () => {
+      console.log('LOAD CURRENT USER');
       const response = await props.deps.userService.getCurrentUser();
+      console.log(response);
       if (response.success) {
+        console.log(response.data);
         actions.loadCurrentUserSuccess(response.data);
       } else {
         actions.loadCurrentUserFailure();
@@ -50,8 +63,11 @@ const logic = kea<logicType>([
     },
   })),
   afterMount(({ actions }) => {
+    console.log('APP LOGIC MOUNTED');
     actions.loadCurrentUser();
-    console.log('TESTTTTTT');
+  }),
+  beforeUnmount(() => {
+    console.log('APP LOGIC UNMOUNTED');
   }),
 ]);
 

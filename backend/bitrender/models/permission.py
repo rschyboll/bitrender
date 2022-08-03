@@ -6,6 +6,7 @@ from typing import TYPE_CHECKING
 
 from tortoise.fields import CharEnumField, ForeignKeyField, ForeignKeyRelation
 
+from bitrender.core.acl import AclAction, AclEntry, AclPermit, StaticAclEntries
 from bitrender.models.base import BaseModel
 
 if TYPE_CHECKING:
@@ -47,3 +48,11 @@ class RolePermission(BaseModel):
         Returns:
             str: Auth id."""
         return self.permission.acl_id
+
+    @classmethod
+    def __sacl__(cls) -> list[AclEntry]:
+        return [StaticAclEntries.IS_AUTHENTICATED]
+
+    async def __dacl__(self) -> list[list[AclEntry]]:
+        acl: list[list[AclEntry]] = [[(AclPermit.ALLOW, self.acl_id, AclAction.VIEW)]]
+        return acl

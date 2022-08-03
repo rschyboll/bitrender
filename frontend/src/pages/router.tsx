@@ -113,7 +113,6 @@ export const ProtectedRoute = memo(function ProtectedRoute(
   }, [currentUser, props.requiredPermissions]);
 
   if (currentUser == null || !appReady) {
-    console.log('TEST');
     return <LoadingPage />;
   }
 

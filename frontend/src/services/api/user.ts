@@ -41,6 +41,7 @@ export class UserService extends Service implements IUserService {
         },
       };
     } catch (error: unknown) {
+      console.log(error);
       return this.parseAPIError(error);
     }
   }

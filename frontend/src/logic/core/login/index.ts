@@ -24,6 +24,9 @@ const logic = kea<logicType>([
     logout: true,
     logoutSuccess: true,
     logoutFailure: (errorDetail?: unknown) => ({ errorDetail }),
+    register: (username: string, password: string) => ({ username, password }),
+    registerSuccess: true,
+    registerFailure: true,
   }),
   reducers({
     loginStatus: [
@@ -47,6 +50,14 @@ const logic = kea<logicType>([
         logout: () => RequestStatus.Loading,
         logoutSuccess: () => RequestStatus.Success,
         logoutFailure: () => RequestStatus.Error,
+      },
+    ],
+    registerStatus: [
+      RequestStatus.Idle as RequestStatus,
+      {
+        register: () => RequestStatus.Loading,
+        registerSuccess: () => RequestStatus.Success,
+        registerFailure: () => RequestStatus.Error,
       },
     ],
   }),

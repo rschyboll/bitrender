@@ -112,5 +112,6 @@ class UserService(BaseAppService, IUserService):
         return user
 
     async def __fetch_user_credentials(self, user: User) -> User:
-        await user.fetch_related("role__permissions")
+        await user.fetch_related("role")
+        await (await user.role).fetch_related("permissions")
         return user

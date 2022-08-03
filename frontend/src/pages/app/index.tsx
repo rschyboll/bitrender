@@ -1,5 +1,5 @@
 import { useInjection } from 'inversify-react';
-import { useActions, useValues } from 'kea';
+import { useActions, useMountedLogic, useValues } from 'kea';
 import { useEffect } from 'react';
 import { Outlet } from 'react-router-dom';
 
@@ -15,15 +15,16 @@ const verticalTypes = [SidebarType.Static, SidebarType.Slim];
 export const AppPage = () => {
   const settingsLogic = useInjection(ISettingsLogic.$);
 
-  const { sidebarType, sidebarActive } = useValues(settingsLogic);
-  const { toggleSidebar } = useActions(settingsLogic);
-
   useEffect(() => {
+    console.log('APP PAGE');
+
     return () => {
-      console.log('TEST');
+      console.log('APP PAGE CLEANUP');
     };
   }, []);
 
+  const { sidebarType, sidebarActive } = useValues(settingsLogic);
+  const { toggleSidebar } = useActions(settingsLogic);
   return (
     <div
       className={`layout ${layoutTypesClasses[sidebarType]} ${

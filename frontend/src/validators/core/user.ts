@@ -8,8 +8,8 @@ export class UserValidators extends Validators implements IUserValidators {
     type: 'object',
     properties: {
       id: { type: 'string', format: 'uuid' },
-      created_at: { type: 'string', format: 'date' },
-      modified_at: { type: 'string', format: 'date' },
+      created_at: { type: 'string', format: 'date-time' },
+      modified_at: { type: 'string', format: 'date-time' },
       email: { type: 'string', format: 'email' },
       role: { type: 'string' },
       permissions: {

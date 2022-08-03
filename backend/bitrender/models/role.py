@@ -6,7 +6,7 @@ from typing import TYPE_CHECKING, Type, TypeVar
 from tortoise.fields import BooleanField, ReverseRelation, TextField
 from tortoise.queryset import QuerySetSingle
 
-from bitrender.core.acl import AclEntry, StaticAclEntries
+from bitrender.core.acl import AclAction, AclEntry, AclPermit, StaticAclEntries
 from bitrender.models.base import BaseModel
 
 if TYPE_CHECKING:
@@ -55,3 +55,8 @@ class Role(BaseModel):
     @classmethod
     def __sacl__(cls) -> list[AclEntry]:
         return [StaticAclEntries.IS_AUTHENTICATED]
+
+    async def __dacl__(self) -> list[list[AclEntry]]:
+        acl: list[list[AclEntry]] = []
+        await self.extend_dacl(self.permissions, acl)
+        return acl
