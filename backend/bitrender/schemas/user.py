@@ -21,6 +21,7 @@ class UserView(BaseSchema):
     """Class containing all user data required for the frontend."""
 
     email: EmailStr
+    username: str
     role: str
     permissions: list[Permission]
 
@@ -29,6 +30,7 @@ class UserCreate(PydanticBase):
     """TODO generate docstring"""
 
     email: EmailStr
+    username: str
     password: SecretStr
 
     @staticmethod

@@ -23,7 +23,7 @@ const LoginPage = memo(function LoginPage() {
   const { t } = useTranslation();
 
   const { loginStatus, loginErrorDetail } = useValues(loginLogic);
-  const { login } = useActions(loginLogic);
+  const { login, checkLoggedIn } = useActions(loginLogic);
 
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -60,6 +60,10 @@ const LoginPage = memo(function LoginPage() {
       setTryAgainVisible(false);
     }
   }, [loginStatus]);
+
+  useEffect(() => {
+    checkLoggedIn();
+  }, [checkLoggedIn]);
 
   return (
     <div id="login-page">
@@ -106,13 +110,13 @@ const LoginPage = memo(function LoginPage() {
             className={noPasswordError ? 'p-invalid' : undefined}
           />
           {passwordVisible ? (
-            <RiEyeLine
+            <RiEyeOffLine
               id="login-password-view-button"
               onClick={() => setPasswordVisible(false)}
               className="login-field-icon"
             />
           ) : (
-            <RiEyeOffLine
+            <RiEyeLine
               id="login-password-view-button"
               onClick={() => setPasswordVisible(true)}
               className="login-field-icon"

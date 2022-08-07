@@ -3,6 +3,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Type, TypeVar
 
+from tortoise.expressions import Q
 from tortoise.fields import (
     BinaryField,
     BooleanField,
@@ -10,6 +11,7 @@ from tortoise.fields import (
     ForeignKeyField,
     ForeignKeyRelation,
 )
+from tortoise.queryset import QuerySetSingle
 
 from bitrender.core.acl import (
     AUTHENTICATED,
@@ -33,6 +35,7 @@ class User(BaseModel):
     """TODO create docstring"""
 
     email: str = CharField(255, unique=True)
+    username: str = CharField(255, unique=True)
     hashed_password: bytes = BinaryField()
 
     verify_token: str | None = CharField(255, null=True, default=None)
@@ -45,7 +48,29 @@ class User(BaseModel):
     role: ForeignKeyRelation[Role] = ForeignKeyField("bitrender.Role")
 
     @classmethod
-    async def get_by_username(cls: Type[MODEL], username: str, lock: bool = True) -> MODEL:
+    def get_by_username_or_email(
+        cls: Type[MODEL], username_email: str, lock: bool = True
+    ) -> QuerySetSingle[MODEL]:
+        """Returns a user based on the provided username or email.
+
+        Args:
+            username_email (str): Username or email of the user that should be selected.
+            lock (bool, optional): Specifies if the entry should be locked, \
+                adds FOR UPDATE to the query. Defaults to True.
+
+        Raises:
+            DoesNotExist: Raised if no user with the provided username exists.
+
+        Returns:
+            MODEL: User entry selected from the database."""
+        if not lock:
+            return cls.get(Q(username=username_email) | Q(email=username_email))
+        return cls.select_for_update().get(Q(username=username_email) | Q(email=username_email))
+
+    @classmethod
+    def get_by_username(
+        cls: Type[MODEL], username: str, lock: bool = True
+    ) -> QuerySetSingle[MODEL]:
         """Returns a user based on the provided username.
 
         Args:
@@ -59,11 +84,11 @@ class User(BaseModel):
         Returns:
             MODEL: User entry selected from the database."""
         if not lock:
-            return await cls.get(username=username)
-        return await cls.select_for_update().get(username=username)
+            return cls.get(username=username)
+        return cls.select_for_update().get(username=username)
 
     @classmethod
-    async def get_by_email(cls: Type[MODEL], email: str, lock: bool = True) -> MODEL:
+    def get_by_email(cls: Type[MODEL], email: str, lock: bool = True) -> QuerySetSingle[MODEL]:
         """Returns a user based on the provided email.
 
         Args:
@@ -77,8 +102,8 @@ class User(BaseModel):
         Returns:
             MODEL: User entry selected from the database."""
         if not lock:
-            return await cls.get(email=email)
-        return await cls.select_for_update().get(email=email)
+            return cls.get(email=email)
+        return cls.select_for_update().get(email=email)
 
     @property
     async def acl_id_list(self) -> list[str]:
@@ -103,6 +128,7 @@ class User(BaseModel):
             created_at=self.created_at,
             modified_at=self.modified_at,
             email=self.email,
+            username=self.username,
             role=role.name,
             permissions=permissions,
         )

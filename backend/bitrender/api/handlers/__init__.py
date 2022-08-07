@@ -6,10 +6,11 @@ from tortoise.exceptions import DoesNotExist
 
 from bitrender.errors.user import (
     BadCredentials,
+    EmailTaken,
     NoDefaultRole,
     UnauthenticatedError,
     UnauthorizedError,
-    UserAlreadyExists,
+    UsernameTaken,
     UserNotVerified,
 )
 
@@ -21,7 +22,8 @@ error_codes = {
     UnauthorizedError: "NOT_AUTHORIZED",
     UserNotVerified: "USER_NOT_VERIFIED",
     BadCredentials: "BAD_CREDENTIALS",
-    UserAlreadyExists: "USER_ALREADY_EXISTS",
+    EmailTaken: "EMAIL_TAKEN",
+    UsernameTaken: "USERNAME_TAKEN",
     NoDefaultRole: "NO_DEFAULT_ROLE",
 }
 

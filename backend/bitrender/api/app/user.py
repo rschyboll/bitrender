@@ -6,6 +6,7 @@ from fastapi.security import OAuth2PasswordRequestForm
 
 from bitrender.api.app.responses.user import (
     user_by_id_responses,
+    user_logged_responses,
     user_login_responses,
     user_me_responses,
     user_register_responses,
@@ -29,7 +30,7 @@ async def login(
     Authenticates a user, and stores his web token as a http only cookie.
     To login, the user needs to provide the following data:
 
-    - **email**: unique email of that user
+    - **username/email**: unique email or username of that user
     - **password**: password of that user
 
     When the user could not be authenticated for one of the following reasons:
@@ -38,7 +39,6 @@ async def login(
     - the user is not active
 
     The server responds with a 401 status code and a BAD_CREDENTIALS error code.
-
 
     When the user is not yet verified, the server responds with a 401 status code and a \
         USER_NOT_VERIFIED error code.
@@ -67,7 +67,10 @@ async def register(
     - **password**: password for the new user
 
     When a user with the provided email already exists, the server responds with a 409 status, \
-        and a USER_ALREADY_EXISTS error code.
+        and a EMAIL_TAKEN error code.
+
+    When a user with the provided username already exists, the server responds with a 409 status, \
+        and a USERNAME_TAKEN error code.
 
     When no default role is selected in the system, the server responds with a 503 status, \
         and a NO_DEFAULT_ROLE error code.
@@ -87,7 +90,7 @@ async def register(
     "/me",
     dependencies=[Depends(get_current_user)],
     response_model=UserView,
-    responses=user_me_responses,
+    responses=user_logged_responses,
 )
 async def get_me(
     user_service: IUserService = Depends(InjectInRoute(IUserService, UserContext, "context")),
@@ -100,10 +103,26 @@ async def get_me(
     When no user is currently authenticated, the server responds with a 401 status code, \
         and a NOT_AUTHENTICATED error code.
 
-    When the user has no access to it's data (which suggests some kind of server error), \
+    When the user has no access to it's data (which suggests some kind of server bug), \
         the server responds with a 401 status code and a NOT_AUTHORIZED error code.
     """
     return await user_service.get_current()
+
+
+@user_router.get(
+    "/logged",
+    responses=user_me_responses,
+)
+async def logged(
+    user_service: IUserService = Depends(InjectInRoute(IUserService, UserContext, "context")),
+) -> bool:
+    """Returns a boolean, that shows if there is an user current authenticated.
+
+    Can be used, to check the authentication, without the need to check the http status code.
+    Useful when there are autmatic mechanisms that listen for the 401 status code, and a \
+        NOT_AUTHENTICATED error code.
+    """
+    return await user_service.logged()
 
 
 @user_router.get(

@@ -3,8 +3,6 @@ import { createBrowserHistory } from 'history';
 import { useInjection } from 'inversify-react';
 import { useValues } from 'kea';
 import {
-  Children,
-  ReactElement,
   memo,
   useCallback,
   useEffect,
@@ -18,7 +16,7 @@ import { Navigate, Router } from 'react-router-dom';
 import LoadingBar, { LoadingBarRef } from 'react-top-loading-bar';
 
 import { IAppLogic } from '@/logic/interfaces';
-import { Permission } from '@/types/user';
+import { Permission } from '@/schemas/user';
 
 import { LoadingPage } from './loading';
 

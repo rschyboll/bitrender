@@ -27,16 +27,23 @@ class IUserService:
             UserView - Data of the current user"""
 
     @abstractmethod
+    async def logged(self) -> bool:
+        """Returns if there is an user currently authenticated.
+
+        Returns:
+            bool - If there is an user authenticated"""
+
+    @abstractmethod
     async def get_by_id(self, user_id: UUID) -> UserView:
         """TODO generate docstring"""
 
     @abstractmethod
-    async def authenticate(self, email: str, password: str) -> str:
+    async def authenticate(self, username: str, password: str) -> str:
         """Tries to authenticate a user with the given credentials,\
             and creates a web token with the user id when the authentication was successful.
 
         Args:
-            email (str): Email of the user.
+            username (str): Username or email of the user.
             password (str): Password of the user.
 
         Raises:

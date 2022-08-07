@@ -6,10 +6,11 @@ from tortoise.exceptions import DoesNotExist
 from bitrender.api.handlers import error_codes
 from bitrender.errors.user import (
     BadCredentials,
+    EmailTaken,
     NoDefaultRole,
     UnauthenticatedError,
     UnauthorizedError,
-    UserAlreadyExists,
+    UsernameTaken,
     UserNotVerified,
 )
 
@@ -41,9 +42,13 @@ user_register_responses: dict[int | str, dict[str, Any]] = {
         "content": {
             "application/json": {
                 "examples": {
-                    error_codes[UserAlreadyExists]: {
+                    error_codes[UsernameTaken]: {
+                        "summary": "User with that username already exists",
+                        "value": {"detail": error_codes[UsernameTaken]},
+                    },
+                    error_codes[EmailTaken]: {
                         "summary": "User with that email already exists",
-                        "value": {"detail": error_codes[UserAlreadyExists]},
+                        "value": {"detail": error_codes[EmailTaken]},
                     },
                 }
             }
@@ -83,6 +88,8 @@ user_me_responses: dict[int | str, dict[str, Any]] = {
         },
     }
 }
+
+user_logged_responses: dict[int | str, dict[str, Any]] = {}
 
 user_by_id_responses: dict[int | str, dict[str, Any]] = {
     status.HTTP_404_NOT_FOUND: {

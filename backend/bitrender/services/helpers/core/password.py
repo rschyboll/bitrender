@@ -11,6 +11,7 @@ class BCryptHelper(IPasswordHelper):
     """Helper class containing implementation for hashing, verifying and validating passwords."""
 
     rounds = 14
+    special_characters = """!@#$%^&*()-+?_=,<>/"""
 
     def hash(self, password: str) -> bytes:
         return bcrypt.hashpw(password.encode(), bcrypt.gensalt(self.rounds))
@@ -24,6 +25,9 @@ class BCryptHelper(IPasswordHelper):
 
         if not any(char.isdigit() for char in password):
             raise ValueError("Password should have at least one numeral")
+
+        if not any(char in self.special_characters for char in password):
+            raise ValueError("Password should have at least one special character")
 
         if not any(char.isupper() for char in password):
             raise ValueError("Password should have at least one uppercase letter")

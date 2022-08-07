@@ -1,37 +1,32 @@
 import { inject, injectable } from 'inversify';
 import { HTTPError } from 'ky';
 
+import { UserView } from '@/schemas/user';
+import { UserCreate } from '@/schemas/user';
 import { ApiEndpoints } from '@/services/endpoints';
 import type { Response } from '@/types/service';
 import { ServiceErrorType } from '@/types/service';
-import { UserView } from '@/types/user';
 import { IUserValidators } from '@/validators/interfaces';
 
 import { IUserService } from '../interfaces';
-import { IUserConverters } from './../../converters/interfaces/user';
 import { Service } from './base';
 
 @injectable()
 export class UserService extends Service implements IUserService {
   private userValidators: IUserValidators;
-  private userConverters: IUserConverters;
 
-  constructor(
-    @inject(IUserValidators.$) userValidator: IUserValidators,
-    @inject(IUserConverters.$) userConverters: IUserConverters,
-  ) {
+  constructor(@inject(IUserValidators.$) userValidator: IUserValidators) {
     super();
     this.userValidators = userValidator;
-    this.userConverters = userConverters;
   }
 
   public async getCurrentUser(): Promise<Response<UserView>> {
     try {
       const response = await this.api.get(ApiEndpoints.UserMe).json();
-      if (this.userValidators.validateUserViewResponse(response)) {
+      if (this.userValidators.validateUserView(response)) {
         return {
           success: true,
-          data: this.userConverters.userViewResponseToUserView(response),
+          data: response,
         };
       }
       return {
@@ -41,7 +36,6 @@ export class UserService extends Service implements IUserService {
         },
       };
     } catch (error: unknown) {
-      console.log(error);
       return this.parseAPIError(error);
     }
   }
@@ -56,6 +50,33 @@ export class UserService extends Service implements IUserService {
     try {
       await this.api.post(ApiEndpoints.Login, {
         body: formData,
+      });
+      return { success: true, data: undefined };
+    } catch (error: unknown) {
+      return this.parseAPIError(error);
+    }
+  }
+
+  public async logged(): Promise<Response<boolean>> {
+    try {
+      const response = await this.api.get(ApiEndpoints.Logged).json();
+      if (typeof response == 'boolean') {
+        return { success: true, data: response };
+      } else {
+        return {
+          success: false,
+          error: { type: ServiceErrorType.UnknownError },
+        };
+      }
+    } catch (error: unknown) {
+      return this.parseAPIError(error);
+    }
+  }
+
+  public async register(userCreate: UserCreate): Promise<Response<undefined>> {
+    try {
+      await this.api.post(ApiEndpoints.Register, {
+        json: userCreate,
       });
       return { success: true, data: undefined };
     } catch (error: unknown) {

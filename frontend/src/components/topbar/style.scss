@@ -39,10 +39,37 @@
 }
 
 .topbar-content {
+  width: 100%;
+  height: 100%;
   padding: 0 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.topbar-content-left {
+  flex: 1;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: left;
+}
+
+.topbar-content-right {
+  flex: 1;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: right;
 }
 
 .layout-slim {
+  .topbar-container {
+    @include media('>tablet') {
+      margin-left: 3rem;
+    }
+  }
+
   .topbar-sidebar {
     @include media('<=tablet') {
       display: none;
@@ -58,6 +85,14 @@
   .mobile-sidebar-button {
     @include media('>tablet') {
       display: none;
+    }
+  }
+}
+
+.layout-static {
+  .topbar-container {
+    @include media('>phone') {
+      margin-left: 16rem;
     }
   }
 }
@@ -80,6 +115,13 @@
     @include media('>desktop') {
       display: none;
     }
+  }
+
+  .topbar-spacer {
+    border-left: 1px solid var(--sidebar-spacer-color);
+    height: 60%;
+    margin-left: 0.5rem;
+    margin-right: 0.5rem;
   }
 }
 

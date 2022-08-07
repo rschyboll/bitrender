@@ -1,7 +1,7 @@
 import { interfaces } from 'inversify';
 import { Logic, LogicWrapper } from 'kea';
 
-import { UserView } from '@/types/user';
+import { UserView } from '@/schemas/user';
 
 interface IApp extends Logic {
   readonly actions: {};

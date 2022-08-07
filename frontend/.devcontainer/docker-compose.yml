@@ -1,18 +1,20 @@
 version: '3.8'
 services:
   app:
-    container_name: frontend-DEV
+    image: 'bitrenderfrontenddev'
+    container_name: bitrender-frontend-DEV
     build:
       context: ..
       dockerfile: .devcontainer/Dockerfile
     volumes:
       - ..:/workspace:cached
-      - frontend-DEV-fish:/home/node/.local/share/fish
+      - bitrender-frontend-DEV-fish:/home/node/.local/share/fish
     init: true
     command: sleep infinity
     user: node
-    ports:
-      - '1234:1234'
+    expose:
+      - '1234'
+      - '1235'
 
 volumes:
-  frontend-DEV-fish:
+  bitrender-frontend-DEV-fish:

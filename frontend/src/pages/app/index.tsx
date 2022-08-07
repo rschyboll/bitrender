@@ -5,7 +5,7 @@ import { Outlet } from 'react-router-dom';
 
 import { Sidebar } from '@/components/sidebar';
 import { Topbar } from '@/components/topbar';
-import { ISettingsLogic } from '@/logic/interfaces';
+import { IAppLogic, ISettingsLogic } from '@/logic/interfaces';
 import { SidebarType, layoutTypesClasses } from '@/types/settings';
 
 import './style.scss';
@@ -14,14 +14,9 @@ const verticalTypes = [SidebarType.Static, SidebarType.Slim];
 
 export const AppPage = () => {
   const settingsLogic = useInjection(ISettingsLogic.$);
+  const appLogic = useInjection(IAppLogic.$);
 
-  useEffect(() => {
-    console.log('APP PAGE');
-
-    return () => {
-      console.log('APP PAGE CLEANUP');
-    };
-  }, []);
+  useMountedLogic(appLogic);
 
   const { sidebarType, sidebarActive } = useValues(settingsLogic);
   const { toggleSidebar } = useActions(settingsLogic);

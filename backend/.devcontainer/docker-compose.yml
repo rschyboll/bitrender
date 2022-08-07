@@ -2,32 +2,34 @@ version: '3.8'
 
 services:
   app:
-    container_name: backend-DEV
+    image: 'bitrenderbackenddev'
+    container_name: bitrender-backend-DEV
     build:
       context: ..
       dockerfile: .devcontainer/Dockerfile
     volumes:
-      - ..:/workspace:cached 
-      - backend-data-DEV:/data
-      - backend-DEV-fish:/home/vscode/.local/share/fish
+      - ..:/workspace:cached
+      - bitrender-backend-DEV-data:/data
+      - bitrender-backend-DEV-fish:/home/vscode/.local/share/fish
     init: true
     command: sleep infinity
     user: vscode
 
   db:
-    container_name: database-DEV
+    container_name: bitrender-database-DEV
     image: postgres:latest
     restart: unless-stopped
     volumes:
-      - database-DEV:/var/lib/postgresql/data
+      - bitrender-database-DEV:/var/lib/postgresql/data
     environment:
       POSTGRES_USER: postgres
       POSTGRES_DB: bitrender-DEV
       POSTGRES_PASSWORD: postgres
     network_mode: service:app
+    command: -p 5432
 
   db-test:
-    container_name: database-TEST
+    container_name: bitrender-database-TEST
     image: postgres:latest
     restart: unless-stopped
     environment:
@@ -38,6 +40,6 @@ services:
     command: -p 5433
 
 volumes:
-  backend-data-DEV:
-  database-DEV:
-  backend-DEV-fish:
+  bitrender-backend-DEV-data:
+  bitrender-database-DEV:
+  bitrender-backend-DEV-fish:

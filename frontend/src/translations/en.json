@@ -18,10 +18,20 @@
     },
     "register": {
       "createYourAccount": "Register your account!",
-      "submit": "Register"
+      "haveAccount": "Already have an account?",
+      "login": "Sign in!",
+      "submit": "Register",
+      "weakPassword": "Password is too weak",
+      "cannotBeEmpty": "Field cannot be empty",
+      "wrongEmail": "Not a valid email",
+      "inProcess": "Registering",
+      "unknownError": "Unable to register",
+      "emailTaken": "Email is already taken",
+      "usernameTaken": "Username is already taken"
     },
     "user": {
       "username": "Username",
+      "email": "Email",
       "password": "Password"
     },
     "tryAgain": "Try again",

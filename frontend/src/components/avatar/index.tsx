@@ -1,15 +1,30 @@
+import { Button } from 'primereact/button';
+import { Skeleton } from 'primereact/skeleton';
 import { memo } from 'react';
+import { RiUserFill } from 'react-icons/ri';
+
+import './style.scss';
 
 export interface AvatarProps {
   onClick?: () => void;
-  image?: string;
   name?: string;
 }
 
 export const Avatar = memo(function Avatar(props: AvatarProps) {
+  if (props.name == null) {
+    return <Skeleton />;
+  }
+
   return (
-    <button className="avatar" onClick={props.onClick}>
-      {props.image != null ? <img className="avatar-image" /> : null}
-    </button>
+    <Button
+      className="avatar p-button-text p-button-secondary"
+      onClick={props.onClick}
+      label={props.name}
+      icon={
+        <div className="avatar-image">
+          <RiUserFill className="avatar-icon" />
+        </div>
+      }
+    />
   );
 });

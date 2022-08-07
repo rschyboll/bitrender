@@ -14,10 +14,20 @@
     },
     "register": {
       "createYourAccount": "Zarejestruj swoje konto!",
-      "submit": "Zarejestruj"
+      "haveAccount": "Posiadasz już konto?",
+      "login": "Zaloguj się!",
+      "submit": "Zarejestruj",
+      "weakPassword": "Hasło jest zbyt słabe",
+      "cannotBeEmpty": "Pole nie może być puste",
+      "wrongEmail": "Nieprawidłowy email",
+      "inProcess": "Rejestruję",
+      "unknownError": "Nie udało się zarejestrować",
+      "emailTaken": "Email jest już zajęty",
+      "usernameTaken": "Nazwa użytkownika jest już zajęta"
     },
     "user": {
       "username": "Nazwa użytkownika",
+      "email": "Email",
       "password": "Hasło"
     },
     "tryAgain": "Spróbuj ponownie",

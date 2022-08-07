@@ -13,7 +13,7 @@ init_deps()
 
 @inject
 async def create_admin_account(
-    password: str, email: str, password_helper: IPasswordHelper = inject.me()
+    password: str, email: str, username: str, password_helper: IPasswordHelper = inject.me()
 ) -> None:
     """Creates an admin account."""
     await Tortoise.init(config=tortoise_config)
@@ -26,6 +26,7 @@ async def create_admin_account(
         user = User(
             email=email,
             hashed_password=hashed_password,
+            username=username,
             role=role,
             is_active=True,
             is_verified=True,

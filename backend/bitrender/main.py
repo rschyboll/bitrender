@@ -24,6 +24,7 @@ migrate_parser = subparsers.add_parser("migrate")
 create_admin_parser = subparsers.add_parser("create-admin")
 create_admin_parser.add_argument("password")
 create_admin_parser.add_argument("email")
+create_admin_parser.add_argument("username")
 
 args = parser.parse_args()
 
@@ -33,6 +34,6 @@ if __name__ == "__main__":
     elif args.action == "migrate":
         asyncio.run(migrate())
     elif args.action == "create-admin":
-        asyncio.run(create_admin_account(args.password, args.email))
+        asyncio.run(create_admin_account(args.password, args.email, args.username))
     elif args.action == "run":
         run()

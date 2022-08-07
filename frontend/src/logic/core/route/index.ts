@@ -33,9 +33,6 @@ const logic = kea<logicType>([
     ],
   }),
   listeners(({ values }) => ({
-    openLoginPage: () => {
-      console.log('OPEN LOGIN PAGE');
-    },
     returnToBeforeLogin: () => {
       if (values.beforeLoginPage != null) {
         router.actions.replace(values.beforeLoginPage);

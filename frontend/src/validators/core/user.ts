@@ -1,16 +1,17 @@
-import { Permission, UserViewResponse } from '@/types/user';
+import { Permission, UserView } from '@/schemas/user';
 
 import { IUserValidators } from '../interfaces';
 import { JSONSchemaType, ValidateFunction, Validators } from './base';
 
 export class UserValidators extends Validators implements IUserValidators {
-  userViewResponseSchema: JSONSchemaType<UserViewResponse> = {
+  userViewSchema: JSONSchemaType<UserView> = {
     type: 'object',
     properties: {
       id: { type: 'string', format: 'uuid' },
-      created_at: { type: 'string', format: 'date-time' },
-      modified_at: { type: 'string', format: 'date-time' },
+      createdAt: { type: 'string', format: 'date-time' },
+      modifiedAt: { type: 'string', format: 'date-time' },
       email: { type: 'string', format: 'email' },
+      username: { type: 'string' },
       role: { type: 'string' },
       permissions: {
         type: 'array',
@@ -19,25 +20,43 @@ export class UserValidators extends Validators implements IUserValidators {
     },
     required: [
       'id',
-      'created_at',
-      'modified_at',
+      'createdAt',
+      'modifiedAt',
       'email',
+      'username',
       'role',
       'permissions',
     ],
   };
-  userViewResponseValidator: ValidateFunction<UserViewResponse>;
+  userViewValidator: ValidateFunction<UserView>;
+
+  public mediumPasswordRegExp = new RegExp(
+    '^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.{8,})',
+  );
+  public strongPasswordRegExp = new RegExp(
+    '^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.{10,})',
+  );
+  userEmailSchema: JSONSchemaType<string> = {
+    type: 'string',
+    format: 'email',
+  };
+  userEmailValidator: ValidateFunction<string>;
 
   constructor() {
     super();
-    this.userViewResponseValidator = this.ajv.compile(
-      this.userViewResponseSchema,
-    );
+    this.userViewValidator = this.ajv.compile(this.userViewSchema);
+    this.userEmailValidator = this.ajv.compile(this.userEmailSchema);
   }
 
-  public validateUserViewResponse(
-    response: unknown,
-  ): response is UserViewResponse {
-    return this.userViewResponseValidator(response);
+  public validateUserView(response: unknown): response is UserView {
+    return this.userViewValidator(response);
+  }
+
+  public validateUserPasswordStrength(password: string): boolean {
+    return this.mediumPasswordRegExp.test(password);
+  }
+
+  public validateUserEmail(email: string): boolean {
+    return this.userEmailValidator(email);
   }
 }

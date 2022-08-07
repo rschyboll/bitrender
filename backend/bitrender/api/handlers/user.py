@@ -5,10 +5,11 @@ from fastapi.responses import JSONResponse
 from bitrender.api.handlers import error_codes
 from bitrender.errors.user import (
     BadCredentials,
+    EmailTaken,
     NoDefaultRole,
     UnauthenticatedError,
     UnauthorizedError,
-    UserAlreadyExists,
+    UsernameTaken,
     UserNotVerified,
 )
 
@@ -19,7 +20,8 @@ def register_auth_error_handlers(app: FastAPI) -> None:
     app.add_exception_handler(UnauthorizedError, unauthorized_error_handler)
     app.add_exception_handler(UserNotVerified, user_not_verified_handler)
     app.add_exception_handler(BadCredentials, credentials_error_handler)
-    app.add_exception_handler(UserAlreadyExists, user_already_exists_handler)
+    app.add_exception_handler(UsernameTaken, username_taken_handler)
+    app.add_exception_handler(EmailTaken, email_taken_handler)
     app.add_exception_handler(NoDefaultRole, no_default_role_handler)
 
 
@@ -55,11 +57,19 @@ async def credentials_error_handler(_: Response, __: BadCredentials) -> JSONResp
     )
 
 
-async def user_already_exists_handler(_: Response, __: UserAlreadyExists) -> JSONResponse:
+async def username_taken_handler(_: Response, __: UsernameTaken) -> JSONResponse:
     """Error handler for UserAlreadyExists"""
     return JSONResponse(
         status_code=status.HTTP_409_CONFLICT,
-        content={"detail": error_codes[UserAlreadyExists]},
+        content={"detail": error_codes[UsernameTaken]},
+    )
+
+
+async def email_taken_handler(_: Response, __: EmailTaken) -> JSONResponse:
+    """Error handler for UserAlreadyExists"""
+    return JSONResponse(
+        status_code=status.HTTP_409_CONFLICT,
+        content={"detail": error_codes[EmailTaken]},
     )
 
 

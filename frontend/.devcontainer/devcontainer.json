@@ -1,5 +1,5 @@
 {
-  "name": "Frontend",
+  "name": "bitrender-frontend-DEV",
   "dockerComposeFile": "docker-compose.yml",
   "service": "app",
   "workspaceFolder": "/workspace",

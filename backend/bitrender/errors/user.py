@@ -22,8 +22,12 @@ class UserNotVerified(UserError):
     """Raised when the user is not verified"""
 
 
-class UserAlreadyExists(UserError):
-    """Raised when creating user, and a user with the name/email already exists."""
+class UsernameTaken(UserError):
+    """Raised when creating user, and a user with the name already exists."""
+
+
+class EmailTaken(UserError):
+    """Raised when creating user, and a user with the email already exists."""
 
 
 class NoDefaultRole(UserError):

@@ -4,7 +4,8 @@ export enum ApiErrorCodes {
   NotAuthorized = 'NOT_AUTHORIZED',
   UserNotVerified = 'USER_NOT_VERIFIED',
   BadCredentials = 'BAD_CREDENTIALS',
-  UserAlreadyExists = 'USER_ALREADY_EXISTS',
+  EmailTaken = 'EMAIL_TAKEN',
+  UsernameTaken = 'USERNAME_TAKEN',
   NoDefaultRole = 'NO_DEFAULT_ROLE',
 }
 

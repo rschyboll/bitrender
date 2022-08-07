@@ -1,0 +1,24 @@
+.avatar.p-button {
+  padding: 0rem;
+  border: 0px !important;
+}
+
+.avatar {
+  .avatar-image {
+    width: 2.5rem;
+    height: 2.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--surface-50);
+  }
+
+  .avatar-icon {
+    width: 1.5rem !important;
+    height: 1.5rem !important;
+  }
+
+  .p-button-label {
+    margin-left: 0.25rem;
+  }
+}

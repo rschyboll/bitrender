@@ -1,5 +1,5 @@
 {
-    "name": "Bitrender",
+    "name": "bitrender_backend_devcontainer",
     "dockerComposeFile": "docker-compose.yml",
     "service": "app",
     "workspaceFolder": "/workspace",
@@ -12,8 +12,13 @@
                 "path": "/usr/bin/fish"
             }
         },
-        "terminal.integrated.defaultProfile.linux": "fish",
+        "terminal.integrated.defaultProfile.linux": "fish"
     },
+    "forwardPorts": [
+        8000,
+        5433,
+        5432
+    ],
     "extensions": [
         "ms-python.python",
         "ms-python.vscode-pylance",

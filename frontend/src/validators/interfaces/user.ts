@@ -1,9 +1,13 @@
 import { interfaces } from 'inversify';
 
-import { UserViewResponse } from '@/types/user';
+import { UserView } from '@/schemas/user';
 
 export interface IUserValidators {
-  validateUserViewResponse: (response: unknown) => response is UserViewResponse;
+  validateUserView: (response: unknown) => response is UserView;
+  mediumPasswordRegExp: RegExp;
+  strongPasswordRegExp: RegExp;
+  validateUserPasswordStrength: (password: string) => boolean;
+  validateUserEmail: (email: string) => boolean;
 }
 
 export namespace IUserValidators {

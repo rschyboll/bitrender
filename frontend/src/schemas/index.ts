@@ -1,5 +1,5 @@
 export interface BaseView {
   id: string;
-  createdAt: Date;
-  modifiedAt: Date;
+  createdAt: string;
+  modifiedAt: string;
 }

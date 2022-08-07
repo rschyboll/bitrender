@@ -6,9 +6,10 @@ from tortoise.exceptions import DoesNotExist
 from bitrender.core.acl import AclAction
 from bitrender.errors.user import (
     BadCredentials,
+    EmailTaken,
     NoDefaultRole,
     UnauthenticatedError,
-    UserAlreadyExists,
+    UsernameTaken,
     UserNotVerified,
 )
 from bitrender.models import Role, RolePermission, User
@@ -58,15 +59,21 @@ class UserService(BaseAppService, IUserService):
         )
         return await user.to_view()
 
+    async def logged(self) -> bool:
+        user = self.context.current_user
+        if user is not None and user.is_active and user.is_verified:
+            return True
+        return False
+
     async def get_by_id(self, user_id: UUID) -> UserView:
         user = await self.auth.action(
             self.__fetch_user_with_credentials, AclAction.VIEW, [user_id], [Role, RolePermission]
         )
         return await user.to_view()
 
-    async def authenticate(self, email: str, password: str) -> str:
+    async def authenticate(self, username: str, password: str) -> str:
         try:
-            user = await User.get_by_email(email)
+            user = await User.get_by_username_or_email(username)
         except DoesNotExist as error:
             raise BadCredentials() from error
         if not user.is_verified:
@@ -83,7 +90,9 @@ class UserService(BaseAppService, IUserService):
 
     async def create(self, user_data: UserCreate, role: UUID | Role) -> UserView:
         if await User.exists(email=user_data.email):
-            raise UserAlreadyExists()
+            raise EmailTaken()
+        if await User.exists(username=user_data.username):
+            raise UsernameTaken()
         if not isinstance(role, Role):
             role = await Role.get_by_id(role, False)
         user = await self.auth.action(self.__create_user, AclAction.CREATE, [user_data, role])
@@ -97,7 +106,12 @@ class UserService(BaseAppService, IUserService):
         password_helper: IPasswordHelper = inject.me(),
     ) -> User:
         hashed_password = password_helper.hash(user_data.password.get_secret_value())
-        user = await User.create(email=user_data.email, hashed_password=hashed_password, role=role)
+        user = await User.create(
+            email=user_data.email,
+            username=user_data.username,
+            hashed_password=hashed_password,
+            role=role,
+        )
         return user
 
     async def __get_default_role(self) -> Role:

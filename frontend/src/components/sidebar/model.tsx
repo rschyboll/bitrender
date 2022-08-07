@@ -6,7 +6,7 @@ import {
   RiShieldUserFill,
 } from 'react-icons/ri';
 
-import { Permission } from '@/types/user';
+import { Permission } from '@/schemas/user';
 
 export interface Group {
   icon: IconType;
