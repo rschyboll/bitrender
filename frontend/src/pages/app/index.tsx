@@ -1,25 +1,26 @@
 import { useInjection } from 'inversify-react';
 import { useActions, useMountedLogic, useValues } from 'kea';
-import { useEffect } from 'react';
+import { memo } from 'react';
 import { Outlet } from 'react-router-dom';
 
 import { Sidebar } from '@/components/sidebar';
 import { Topbar } from '@/components/topbar';
-import { IAppLogic, ISettingsLogic } from '@/logic/interfaces';
+import { testLogic } from '@/logic/core/test';
+import { ISettingsLogic } from '@/logic/interfaces';
 import { SidebarType, layoutTypesClasses } from '@/types/settings';
 
 import './style.scss';
 
 const verticalTypes = [SidebarType.Static, SidebarType.Slim];
 
-export const AppPage = () => {
+export const AppPage = memo(function AppPage() {
   const settingsLogic = useInjection(ISettingsLogic.$);
-  const appLogic = useInjection(IAppLogic.$);
-
-  useMountedLogic(appLogic);
 
   const { sidebarType, sidebarActive } = useValues(settingsLogic);
   const { toggleSidebar } = useActions(settingsLogic);
+
+  useMountedLogic(testLogic);
+
   return (
     <div
       className={`layout ${layoutTypesClasses[sidebarType]} ${
@@ -43,4 +44,4 @@ export const AppPage = () => {
       />
     </div>
   );
-};
+});

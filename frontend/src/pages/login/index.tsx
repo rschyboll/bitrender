@@ -1,5 +1,5 @@
 import { useInjection } from 'inversify-react';
-import { useActions, useValues } from 'kea';
+import { useActions, useMountedLogic, useValues } from 'kea';
 import { Button } from 'primereact/button';
 import { InputText } from 'primereact/inputtext';
 import { memo, useCallback, useEffect, useRef, useState } from 'react';
@@ -12,6 +12,7 @@ import {
 } from 'react-icons/ri';
 import { Link } from 'react-router-dom';
 
+import { testLogic } from '@/logic/core/test';
 import { ILoginLogic } from '@/logic/interfaces';
 import { ApiErrorCodes, RequestStatus } from '@/types/service';
 

@@ -20,8 +20,6 @@ export const SidebarItem = memo(function SidebarItem(props: SidebarItemProps) {
   const { toggleSidebar } = useActions(settingsLogic);
   const { appReady } = useValues(appLogic);
 
-  const location = useLocation();
-
   const onClick = useCallback(() => {
     toggleSidebar(false);
   }, [toggleSidebar]);

@@ -12,7 +12,7 @@ export interface AvatarProps {
 
 export const Avatar = memo(function Avatar(props: AvatarProps) {
   if (props.name == null) {
-    return <Skeleton />;
+    return <Skeleton width="8rem" height="2.5rem" />;
   }
 
   return (

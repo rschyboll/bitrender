@@ -125,6 +125,29 @@ async def logged(
     return await user_service.logged()
 
 
+@user_router.get("/request-validation")
+async def request_validation(
+    user_service: IUserService = Depends(InjectInRoute(IUserService, UserContext, "context")),
+) -> UserView:
+    pass
+
+
+@user_router.post("/validate")
+async def validate(
+    token: str,
+    user_service: IUserService = Depends(InjectInRoute(IUserService, UserContext, "context")),
+) -> UserView:
+    pass
+
+
+@user_router.post("/validate/{token}")
+async def validate_with_key(
+    token: str,
+    user_service: IUserService = Depends(InjectInRoute(IUserService, UserContext, "context")),
+) -> UserView:
+    pass
+
+
 @user_router.get(
     "/{user_id}",
     dependencies=[Depends(get_current_user)],

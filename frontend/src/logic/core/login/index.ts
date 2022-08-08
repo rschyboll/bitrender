@@ -1,4 +1,4 @@
-import { actions, kea, listeners, props, reducers } from 'kea';
+import { actions, kea, listeners, path, props, reducers } from 'kea';
 
 import Dependencies from '@/deps';
 import { IRouteLogic } from '@/logic/interfaces/route';
@@ -11,6 +11,7 @@ import { IUserValidators } from '@/validators/interfaces';
 import type { logicType } from './indexType';
 
 const logic = kea<logicType>([
+  path(['login']),
   props(
     {} as {
       deps: {

@@ -53,7 +53,6 @@ export class Service {
     if (this.serviceValidators.validateHttpError(errorBody)) {
       switch (errorBody.detail) {
         case ApiErrorCodes.NotAuthenticated:
-          await this.onUnauthenticatedError();
           return error;
 
         default:
