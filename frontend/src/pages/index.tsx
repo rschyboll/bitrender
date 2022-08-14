@@ -1,20 +1,23 @@
 import { useInjection } from 'inversify-react';
-import { useValues } from 'kea';
+import { getContext, useValues } from 'kea';
 import {
   FC,
   LazyExoticComponent,
   Suspense,
   lazy,
+  memo,
   startTransition,
   useCallback,
+  useEffect,
   useState,
 } from 'react';
-import { Outlet, Route, Routes } from 'react-router-dom';
+import { Outlet, Route, Routes, useLocation } from 'react-router-dom';
 
 import { ISettingsLogic } from '@/logic/interfaces';
 import { AppPage } from '@/pages/app';
 import { ErrorPage } from '@/pages/error';
 import { themeClasses } from '@/types/settings';
+import { sleep } from '@/utils/async';
 
 import EntryPage from './entry';
 import { ProtectedRoute } from './router';
@@ -45,18 +48,30 @@ const useLazyPage = (promise: () => Promise<{ default: FC }>) => {
   return page;
 };
 
-const BasePage: FC = () => {
+const BasePage: FC = memo(function BasePage() {
   const settingsLogic = useInjection(ISettingsLogic.$);
   const { theme } = useValues(settingsLogic);
+
+  useEffect(() => {
+    const test = async () => {
+      while (true) {
+        await sleep(1000);
+        const context = getContext();
+
+        console.log(context.mount.counter);
+      }
+    };
+    test();
+  }, []);
 
   return (
     <div style={{ height: '100%' }} className={`theme-${themeClasses[theme]}`}>
       <Outlet />
     </div>
   );
-};
+});
 
-export const Pages: FC = () => {
+export const Pages: FC = memo(function Pages() {
   const UsersPage = useLazyPage(() => import('@/pages/users'));
   const RolesPage = useLazyPage(() => import('@/pages/roles'));
   const LoginPage = useLazyPage(() => import('@/pages/login'));
@@ -66,23 +81,15 @@ export const Pages: FC = () => {
   return (
     <Suspense>
       <Routes>
-        <Route path="/" element={<BasePage />}>
-          <Route path="app" element={<AppPage />}>
+        <Route key="/" path="/" element={<BasePage />}>
+          <Route key="app" path="app" element={<AppPage />}>
             <Route path="admin">
-              <Route
-                path="users"
-                element={
-                  <ProtectedRoute>
-                    <UsersPage />
-                  </ProtectedRoute>
-                }
-              />
-              <Route path="roles" element={<RolesPage />} />
+              <Route key="users" path="users" element={<UsersPage />} />
+              <Route key="roles" path="roles" element={<RolesPage />} />
             </Route>
-            <Route path="settings" element={<RolesPage />} />
           </Route>
 
-          <Route path="" element={<EntryPage />}>
+          <Route element={<EntryPage />}>
             <Route path="login" element={<LoginPage />} />
             <Route path="register" element={<RegisterPage />} />
             <Route path="recovery" element={<RecoveryPage />} />
@@ -93,6 +100,6 @@ export const Pages: FC = () => {
       </Routes>
     </Suspense>
   );
-};
+});
 
 export default Pages;

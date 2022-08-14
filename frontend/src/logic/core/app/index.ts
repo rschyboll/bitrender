@@ -1,6 +1,7 @@
 import {
   actions,
   afterMount,
+  beforeUnmount,
   kea,
   listeners,
   path,
@@ -61,6 +62,7 @@ const logic = kea<logicType>([
   afterMount(({ actions }) => {
     actions.loadCurrentUser();
   }),
+  beforeUnmount(() => {}),
 ]);
 
 export const appLogic = injectDepsToLogic(logic, () => ({
