@@ -1,10 +1,13 @@
-import { actions, kea, listeners, reducers } from 'kea';
-import { actionToUrl } from 'kea-router';
+import { actions, afterMount, kea, listeners, path, reducers } from 'kea';
+import { actionToUrl, decodeParams } from 'kea-router';
 import { router } from 'kea-router';
+
+import { history } from '@/pages/router';
 
 import type { logicType } from './indexType';
 
 const logic = kea<logicType>([
+  path(['route']),
   actions({
     openApp: true,
     openRegisterPage: true,
@@ -20,8 +23,8 @@ const logic = kea<logicType>([
     openApp: () => `/app`,
     openLoginPage: () => '/login',
     openRegisterPage: () => '/register',
-    openUsersPage: () => '/app/users',
-    openRolesPage: () => '/app/roles',
+    openUsersPage: () => '/app/admin/users',
+    openRolesPage: () => '/app/admin/roles',
     openErrorPage: () => '/error',
   })),
   reducers({
@@ -41,6 +44,23 @@ const logic = kea<logicType>([
       }
     },
   })),
+  afterMount(() => {
+    history.listen((update) => {
+      if (
+        update.location.pathname != router.values.location.pathname ||
+        update.location.search != router.values.location.search ||
+        update.location.hash != router.values.location.hash
+      ) {
+        router.actions.locationChanged({
+          method: update.action,
+          ...update.location,
+          url: update.location.pathname,
+          hashParams: decodeParams(update.location.hash),
+          searchParams: decodeParams(update.location.search),
+        });
+      }
+    });
+  }),
 ]);
 
 export const routeLogic = logic;

@@ -1,6 +1,8 @@
+import './wdyr';
+
 import { Provider as InversifyProvider } from 'inversify-react';
 import PrimeReact from 'primereact/api';
-import { useEffect } from 'react';
+import React from 'react';
 import { createRoot } from 'react-dom/client';
 
 import { startGlobalLogics, startKea } from '@/logic';
