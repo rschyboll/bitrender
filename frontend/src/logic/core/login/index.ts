@@ -99,7 +99,7 @@ const logic = kea<logicType>([
       if (response.success && response.data) {
         props.deps.routeLogic.actions.openApp();
       } else if (!response.success) {
-        await sleep(250);
+        await sleep(1000);
         actions.checkLoggedIn();
       }
     },

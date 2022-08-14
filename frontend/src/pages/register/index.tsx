@@ -3,7 +3,7 @@ import { useActions, useValues } from 'kea';
 import { Button } from 'primereact/button';
 import { InputText } from 'primereact/inputtext';
 import { Password } from 'primereact/password';
-import { memo, useCallback, useEffect, useState } from 'react';
+import { memo, useCallback, useEffect, useRef, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import {
   RiEyeLine,
@@ -14,6 +14,8 @@ import {
 } from 'react-icons/ri';
 import { Link } from 'react-router-dom';
 
+import { PasswordField } from '@/components/passwordField';
+import { TextField } from '@/components/textField';
 import { ILoginLogic } from '@/logic/interfaces';
 import { ApiErrorCodes, RequestStatus } from '@/types/service';
 import { IUserValidators } from '@/validators/interfaces';
@@ -37,12 +39,13 @@ const RegisterPage = memo(function RegisterPage() {
   const [email, setEmail] = useState('');
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [passwordVisible, setPasswordVisible] = useState(false);
 
   const [noEmailError, setNoEmailError] = useState(false);
   const [noUsernameError, setNoUsernameError] = useState(false);
   const [noPasswordError, setNoPasswordError] = useState(false);
   const [tryAgainVisible, setTryAgainVisible] = useState(false);
+
+  const registerStatusRef = useRef(registerStatus);
 
   const submit = useCallback(() => {
     if (email == '') {
@@ -66,20 +69,19 @@ const RegisterPage = memo(function RegisterPage() {
   }, [email, password, register, username]);
 
   useEffect(() => {
-    const passwordInput =
-      document.getElementById('register-password')?.firstChild;
-    if (passwordInput instanceof HTMLInputElement) {
-      if (passwordVisible) {
-        passwordInput.type = 'text';
-      } else {
-        passwordInput.type = 'password';
-      }
-    }
-  }, [passwordVisible]);
-
-  useEffect(() => {
     checkLoggedIn();
   }, [checkLoggedIn]);
+
+  useEffect(() => {
+    registerStatusRef.current = registerStatus;
+    if (registerStatus == RequestStatus.Error) {
+      setTimeout(() => {
+        setTryAgainVisible(true);
+      }, 3000);
+    } else {
+      setTryAgainVisible(false);
+    }
+  }, [registerStatus]);
 
   return (
     <div id="register-page">
@@ -102,100 +104,50 @@ const RegisterPage = memo(function RegisterPage() {
           submit();
         }}
       >
-        <div id="register-email-field" className="field">
-          <label htmlFor="register-email">
-            <Trans>user.email</Trans>
-          </label>
-          <span className="p-input-icon-left">
-            <RiMailFill className="register-field-icon" />
-            <InputText
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              id="register-email"
-              className={
-                noEmailError || registerWrongEmail ? 'p-invalid' : undefined
-              }
-            />
-          </span>
-          <small className="p-error register-field-error-text">
-            <Trans>
-              {noEmailError
-                ? 'register.cannotBeEmpty'
-                : registerWrongEmail
-                ? 'register.wrongEmail'
-                : registerErrorDetail == ApiErrorCodes.EmailTaken
-                ? 'register.emailTaken'
-                : ''}
-            </Trans>
-          </small>
-        </div>
+        <TextField
+          id="register-username-field"
+          inputId="register-username"
+          value={username}
+          onChange={setUsername}
+          label="user.username"
+          leftIcon={RiUserFill}
+          errorMessage={noUsernameError ? 'login.cannotBeEmpty' : undefined}
+        />
 
-        <div id="register-username-field" className="field">
-          <label htmlFor="register-username">
-            <Trans>user.username</Trans>
-          </label>
-          <span className="p-input-icon-left">
-            <RiUserFill className="register-field-icon" />
-            <InputText
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              id="register-username"
-              className={noUsernameError ? 'p-invalid' : undefined}
-            />
-          </span>
-          <small className="p-error register-field-error-text">
-            <Trans>
-              {noUsernameError
-                ? 'register.cannotBeEmpty'
-                : registerErrorDetail == ApiErrorCodes.UsernameTaken
-                ? 'register.usernameTaken'
-                : ''}
-            </Trans>
-          </small>
-        </div>
+        <TextField
+          id="register-email-field"
+          inputId="register-email"
+          value={email}
+          onChange={setEmail}
+          label="user.email"
+          leftIcon={RiMailFill}
+          errorMessage={
+            noEmailError
+              ? 'register.cannotBeEmpty'
+              : registerWrongEmail
+              ? 'register.wrongEmail'
+              : registerErrorDetail == ApiErrorCodes.EmailTaken
+              ? 'register.emailTaken'
+              : undefined
+          }
+        />
 
-        <div id="register-password-field" className="field">
-          <label htmlFor="register-password">
-            <Trans>user.password</Trans>
-          </label>
-          <span className="p-input-icon-left p-input-icon-right">
-            <RiLockFill className="register-field-icon" />
-            <Password
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              id="register-password"
-              mediumRegex={userValidators.mediumPasswordRegExp.source}
-              strongRegex={userValidators.strongPasswordRegExp.source}
-              className={
-                registerWeakPassword || noPasswordError
-                  ? 'p-invalid'
-                  : undefined
-              }
-            />
-            {passwordVisible ? (
-              <RiEyeOffLine
-                id="register-password-view-button"
-                onClick={() => setPasswordVisible(false)}
-                className="register-field-icon"
-              />
-            ) : (
-              <RiEyeLine
-                id="register-password-view-button"
-                onClick={() => setPasswordVisible(true)}
-                className="register-field-icon"
-              />
-            )}
-          </span>
-          <small className="p-error register-field-error-text">
-            <Trans>
-              {noPasswordError
-                ? 'register.cannotBeEmpty'
-                : registerWeakPassword
-                ? 'register.weakPassword'
-                : ''}
-            </Trans>
-          </small>
-        </div>
+        <PasswordField
+          id="register-password-field"
+          inputId="register-password"
+          value={password}
+          onChange={setPassword}
+          label="user.password"
+          mediumRegex={userValidators.mediumPasswordRegExp.source}
+          strongRegex={userValidators.strongPasswordRegExp.source}
+          errorMessage={
+            noPasswordError
+              ? 'register.cannotBeEmpty'
+              : registerWeakPassword
+              ? 'register.weakPassword'
+              : undefined
+          }
+        />
 
         <Button
           className={

@@ -16,6 +16,7 @@ import './style.scss';
 
 export const SidebarHorizontal: FC = memo(function SidebarHorizontal() {
   const [activeGroup, setActiveGroup] = useState<string | null>(null);
+  const location = useLocation();
 
   const currentGroup = useMemo(() => {
     return Object.values(sidebarModel).find((group) => {

@@ -16,6 +16,9 @@ import './style.scss';
 export const SidebarSlim = memo(function SidebarSlim() {
   const [activeGroup, setActiveGroup] = useState<string | null>(null);
 
+  const location = useLocation();
+
+
   const currentGroup = useMemo(() => {
     return Object.values(sidebarModel).find((group) => {
       return (

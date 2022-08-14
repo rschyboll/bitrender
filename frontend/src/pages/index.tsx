@@ -1,23 +1,20 @@
 import { useInjection } from 'inversify-react';
-import { getContext, useValues } from 'kea';
+import { useValues } from 'kea';
 import {
   FC,
   LazyExoticComponent,
   Suspense,
   lazy,
-  memo,
   startTransition,
   useCallback,
-  useEffect,
   useState,
 } from 'react';
-import { Outlet, Route, Routes, useLocation } from 'react-router-dom';
+import { Outlet, Route, Routes } from 'react-router-dom';
 
 import { ISettingsLogic } from '@/logic/interfaces';
 import { AppPage } from '@/pages/app';
 import { ErrorPage } from '@/pages/error';
 import { themeClasses } from '@/types/settings';
-import { sleep } from '@/utils/async';
 
 import EntryPage from './entry';
 import { ProtectedRoute } from './router';
@@ -48,51 +45,49 @@ const useLazyPage = (promise: () => Promise<{ default: FC }>) => {
   return page;
 };
 
-const BasePage: FC = memo(function BasePage() {
+const BasePage: FC = () => {
   const settingsLogic = useInjection(ISettingsLogic.$);
   const { theme } = useValues(settingsLogic);
-
-  useEffect(() => {
-    const test = async () => {
-      while (true) {
-        await sleep(1000);
-        const context = getContext();
-
-        console.log(context.mount.counter);
-      }
-    };
-    test();
-  }, []);
 
   return (
     <div style={{ height: '100%' }} className={`theme-${themeClasses[theme]}`}>
       <Outlet />
     </div>
   );
-});
+};
 
-export const Pages: FC = memo(function Pages() {
+export const Pages: FC = () => {
   const UsersPage = useLazyPage(() => import('@/pages/users'));
   const RolesPage = useLazyPage(() => import('@/pages/roles'));
   const LoginPage = useLazyPage(() => import('@/pages/login'));
   const RegisterPage = useLazyPage(() => import('@/pages/register'));
   const RecoveryPage = useLazyPage(() => import('@/pages/recovery'));
+  const VerifyPage = useLazyPage(() => import('@/pages/verify'));
 
   return (
     <Suspense>
       <Routes>
-        <Route key="/" path="/" element={<BasePage />}>
-          <Route key="app" path="app" element={<AppPage />}>
+        <Route path="/" element={<BasePage />}>
+          <Route path="app" element={<AppPage />}>
             <Route path="admin">
-              <Route key="users" path="users" element={<UsersPage />} />
-              <Route key="roles" path="roles" element={<RolesPage />} />
+              <Route
+                path="users"
+                element={
+                  <ProtectedRoute>
+                    <UsersPage />
+                  </ProtectedRoute>
+                }
+              />
+              <Route path="roles" element={<RolesPage />} />
             </Route>
+            <Route path="settings" element={<RolesPage />} />
           </Route>
 
-          <Route element={<EntryPage />}>
+          <Route path="" element={<EntryPage />}>
             <Route path="login" element={<LoginPage />} />
             <Route path="register" element={<RegisterPage />} />
             <Route path="recovery" element={<RecoveryPage />} />
+            <Route path="verify" element={<VerifyPage />} />
           </Route>
 
           <Route path="error" element={<>Wystąpił błąd</>} />
@@ -100,6 +95,6 @@ export const Pages: FC = memo(function Pages() {
       </Routes>
     </Suspense>
   );
-});
+};
 
 export default Pages;

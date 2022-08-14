@@ -25,6 +25,9 @@
       "emailTaken": "Email jest już zajęty",
       "usernameTaken": "Nazwa użytkownika jest już zajęta"
     },
+    "verify": {
+      "account": "Zweryfikuj swoje konto"
+    },
     "user": {
       "username": "Nazwa użytkownika",
       "email": "Email",

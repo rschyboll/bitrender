@@ -1,11 +1,11 @@
 import { useInjection } from 'inversify-react';
-import { useActions, useValues } from 'kea';
+import { useActions } from 'kea';
 import { Button } from 'primereact/button';
 import { FC } from 'react';
 
 import { Avatar } from '@/components/avatar';
 import { Sidebar } from '@/components/sidebar';
-import { IAppLogic, IRouteLogic, ISettingsLogic } from '@/logic/interfaces';
+import { ISettingsLogic } from '@/logic/interfaces';
 import { SidebarType } from '@/types/settings';
 
 import { SidebarDialog } from '../sidebar/dialog';
@@ -13,9 +13,6 @@ import './style.scss';
 
 export const Topbar: FC = () => {
   const settingsLogic = useInjection(ISettingsLogic.$);
-  const routeLogic = useInjection(IRouteLogic.$);
-
-  const { openUsersPage, openRolesPage } = useActions(routeLogic);
 
   const { toggleSidebar } = useActions(settingsLogic);
 
@@ -31,8 +28,6 @@ export const Topbar: FC = () => {
         </div>
         <div className="topbar-content">
           <div className="topbar-content-left">
-            <Button onClick={openRolesPage}>Roles</Button>
-            <Button onClick={openUsersPage}>Users</Button>
             <Button
               onClick={() => toggleSidebar()}
               className="mobile-sidebar-button"

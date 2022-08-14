@@ -29,28 +29,7 @@ $field-icon-size: 1.2rem;
     margin-right: 0.25rem;
   }
 
-  label {
-    margin-bottom: 0.5rem;
-    width: 100%;
-    font-weight: 500;
-    display: block;
-  }
-
-  .login-field-error-text {
-    height: 0.75rem;
-    display: block;
-  }
-
-  .field {
-    width: 100%;
-
-    .p-input-icon-left,
-    .p-input-icon-right {
-      width: 100%;
-    }
-  }
-
-  .p-inputtext {
+  #login-page-form {
     width: 100%;
   }
 
@@ -58,12 +37,8 @@ $field-icon-size: 1.2rem;
     margin-bottom: 0.25rem;
   }
 
-  #login-password-floor {
-    display: flex;
-    width: 100%;
-    flex-direction: row-reverse;
-    margin-bottom: 1rem;
-    justify-content: space-between;
+  #login-password-field {
+    margin-bottom: 0.75rem;
   }
 
   #login-forgot-password {
@@ -72,15 +47,5 @@ $field-icon-size: 1.2rem;
 
   #login-submit {
     width: 100%;
-  }
-
-  #login-password-view-button {
-    cursor: pointer;
-  }
-
-  .login-field-icon {
-    width: $field-icon-size;
-    height: $field-icon-size;
-    transform: translateY(math.div(-($field-icon-size - 1), 2));
   }
 }

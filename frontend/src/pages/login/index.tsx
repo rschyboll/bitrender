@@ -1,18 +1,24 @@
 import { useInjection } from 'inversify-react';
-import { useActions, useMountedLogic, useValues } from 'kea';
+import { useActions, useValues } from 'kea';
 import { Button } from 'primereact/button';
-import { InputText } from 'primereact/inputtext';
-import { memo, useCallback, useEffect, useRef, useState } from 'react';
+import {
+  FormEvent,
+  memo,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import {
-  RiEyeLine,
-  RiEyeOffLine,
+  RiEyeFill,
+  RiEyeOffFill,
   RiLockFill,
   RiUserFill,
 } from 'react-icons/ri';
 import { Link } from 'react-router-dom';
 
-import { testLogic } from '@/logic/core/test';
+import { TextField } from '@/components/textField';
 import { ILoginLogic } from '@/logic/interfaces';
 import { ApiErrorCodes, RequestStatus } from '@/types/service';
 
@@ -35,21 +41,25 @@ const LoginPage = memo(function LoginPage() {
 
   const loginStatusRef = useRef(loginStatus);
 
-  const submit = useCallback(async () => {
-    if (username == '') {
-      setNoUsernameError(true);
-    } else {
-      setNoUsernameError(false);
-    }
-    if (password == '') {
-      setNoPasswordError(true);
-    } else {
-      setNoPasswordError(false);
-    }
-    if (username != '' && password != '') {
-      login(username, password);
-    }
-  }, [username, password, login]);
+  const submit = useCallback(
+    async (e: FormEvent) => {
+      e.preventDefault();
+      if (username == '') {
+        setNoUsernameError(true);
+      } else {
+        setNoUsernameError(false);
+      }
+      if (password == '') {
+        setNoPasswordError(true);
+      } else {
+        setNoPasswordError(false);
+      }
+      if (username != '' && password != '') {
+        login(username, password);
+      }
+    },
+    [username, password, login],
+  );
 
   useEffect(() => {
     loginStatusRef.current = loginStatus;
@@ -66,6 +76,10 @@ const LoginPage = memo(function LoginPage() {
     checkLoggedIn();
   }, [checkLoggedIn]);
 
+  const togglePasswordVisibility = useCallback(() => {
+    setPasswordVisible(!passwordVisible);
+  }, [setPasswordVisible, passwordVisible]);
+
   return (
     <div id="login-page">
       <span id="login-page-title">
@@ -79,83 +93,58 @@ const LoginPage = memo(function LoginPage() {
           <Trans>login.createAccount</Trans>
         </Link>
       </div>
-      <div id="login-username-field" className="field">
-        <label htmlFor="login-username">
-          <Trans>user.username</Trans>
-        </label>
-        <span className="p-input-icon-left">
-          <RiUserFill className="login-field-icon" />
-          <InputText
-            id="login-username"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            className={noUsernameError ? 'p-invalid' : undefined}
-          />
-        </span>
-        <small className="p-error login-field-error-text">
-          {noUsernameError ? <Trans>login.cannotBeEmpty</Trans> : ''}
-        </small>
-      </div>
 
-      <div id="login-password-field" className="field">
-        <label htmlFor="login-password">
-          <Trans>user.password</Trans>
-        </label>
-        <span className="p-input-icon-left p-input-icon-right">
-          <RiLockFill className="login-field-icon" />
-          <InputText
-            id="login-password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            type={passwordVisible ? 'text' : 'password'}
-            className={noPasswordError ? 'p-invalid' : undefined}
-          />
-          {passwordVisible ? (
-            <RiEyeOffLine
-              id="login-password-view-button"
-              onClick={() => setPasswordVisible(false)}
-              className="login-field-icon"
-            />
-          ) : (
-            <RiEyeLine
-              id="login-password-view-button"
-              onClick={() => setPasswordVisible(true)}
-              className="login-field-icon"
-            />
-          )}
-        </span>
-      </div>
+      <form id="login-page-form" onSubmit={submit}>
+        <TextField
+          id="login-username-field"
+          inputId="login-username"
+          value={username}
+          onChange={setUsername}
+          label="user.username"
+          leftIcon={RiUserFill}
+          errorMessage={noUsernameError ? 'login.cannotBeEmpty' : undefined}
+        />
 
-      <div id="login-password-floor">
-        <a href="" id="login-forgot-password">
-          <Trans>login.forgot</Trans>
-        </a>
-        <small className="p-error">
-          {noPasswordError ? <Trans>login.cannotBeEmpty</Trans> : ''}
-        </small>
-      </div>
+        <TextField
+          id="login-password-field"
+          inputId="login-password"
+          value={password}
+          onChange={setPassword}
+          label="user.password"
+          type={passwordVisible ? 'text' : 'password'}
+          leftIcon={RiLockFill}
+          rightIcon={passwordVisible ? RiEyeOffFill : RiEyeFill}
+          onRightIconClick={togglePasswordVisibility}
+          errorMessage={noPasswordError ? 'login.cannotBeEmpty' : undefined}
+          floorRightContent={
+            <a href="" id="login-forgot-password">
+              <Trans>login.forgot</Trans>
+            </a>
+          }
+        />
 
-      <Button
-        className={
-          loginStatus == RequestStatus.Error && !tryAgainVisible
-            ? 'p-button-danger'
-            : ''
-        }
-        disabled={loginStatus == RequestStatus.Loading}
-        label={
-          loginStatus == RequestStatus.Loading
-            ? t('login.loggingIn')
-            : loginStatus == RequestStatus.Error
-            ? tryAgainVisible
-              ? t('tryAgain')
-              : loginErrorDetail == ApiErrorCodes.BadCredentials
-              ? t('login.badCredentials')
-              : t('login.unknownError')
-            : t('login.submit')
-        }
-        id="login-submit"
-        onClick={submit}
-      />
+        <Button
+          className={
+            loginStatus == RequestStatus.Error && !tryAgainVisible
+              ? 'p-button-danger'
+              : ''
+          }
+          disabled={loginStatus == RequestStatus.Loading}
+          label={
+            loginStatus == RequestStatus.Loading
+              ? t('login.loggingIn')
+              : loginStatus == RequestStatus.Error
+              ? tryAgainVisible
+                ? t('tryAgain')
+                : loginErrorDetail == ApiErrorCodes.BadCredentials
+                ? t('login.badCredentials')
+                : t('login.unknownError')
+              : t('login.submit')
+          }
+          id="login-submit"
+          type="submit"
+        />
+      </form>
     </div>
   );
 });

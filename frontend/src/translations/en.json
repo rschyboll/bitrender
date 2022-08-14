@@ -29,6 +29,9 @@
       "emailTaken": "Email is already taken",
       "usernameTaken": "Username is already taken"
     },
+    "verify": {
+      "account": "Verify your account"
+    },
     "user": {
       "username": "Username",
       "email": "Email",

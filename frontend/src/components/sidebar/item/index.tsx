@@ -27,6 +27,8 @@ export const SidebarItem = memo(function SidebarItem(props: SidebarItemProps) {
   if (!appReady) {
     return <Skeleton className="sidebar-item-loading" />;
   }
+  
+  const location = useLocation();
 
   return (
     <Link
