@@ -1,15 +1,4 @@
-import {
-  actions,
-  afterMount,
-  kea,
-  listeners,
-  path,
-  props,
-  reducers,
-  sharedListeners,
-} from 'kea';
-import { actionToUrl, decodeParams } from 'kea-router';
-import { router } from 'kea-router';
+import { actions, kea, listeners, path, props, sharedListeners } from 'kea';
 import { NavigateFunction } from 'react-router-dom';
 
 import Dependencies from '@/deps';
@@ -56,22 +45,21 @@ const logic = kea<logicType>([
   }),
   sharedListeners(({ props }) => ({
     pushRoute: (payload: { url: string; state?: object }) => {
-      console.log(payload);
-      props.navigate(payload.url, {
-        replace: false,
-        state: { ...payload.state, lastLocation: { ...history.location } },
+      history.push(payload.url, {
+        ...payload.state,
+        lastLocation: { ...history.location },
       });
     },
     replaceWithPrevious: () => {
       if (
         props.deps.routeValidators.stateHasLastLocation(history.location.state)
       ) {
-        props.navigate(history.location.state.lastLocation.pathname, {
-          replace: true,
-          state: history.location.state.lastLocation.state,
-        });
+        history.replace(
+          history.location.state.lastLocation.pathname,
+          history.location.state.lastLocation.state,
+        );
       } else {
-        props.navigate('/app');
+        history.replace('/app');
       }
     },
   })),

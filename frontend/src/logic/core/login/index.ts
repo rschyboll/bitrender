@@ -104,18 +104,16 @@ const logic = kea<logicType>([
       }
     },
     login: async ({ username, password }) => {
-      actions.loginSuccess();
-      return;
       const response = await props.deps.userService.login(username, password);
-      //if (response.success) {
-      //  actions.loginSuccess();
-      //} else {
-      //  if ('detail' in response.error) {
-      //    actions.loginFailure(response.error.detail);
-      // } else {
-      //    actions.loginFailure();
-      //  }
-      // }
+      if (response.success) {
+        actions.loginSuccess();
+      } else {
+        if ('detail' in response.error) {
+          actions.loginFailure(response.error.detail);
+        } else {
+          actions.loginFailure();
+        }
+      }
     },
     loginSuccess: () => {
       props.deps.routeLogic.actions.returnToBeforeLogin();

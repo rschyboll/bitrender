@@ -24,11 +24,11 @@ export const SidebarItem = memo(function SidebarItem(props: SidebarItemProps) {
     toggleSidebar(false);
   }, [toggleSidebar]);
 
+  const location = useLocation();
+
   if (!appReady) {
     return <Skeleton className="sidebar-item-loading" />;
   }
-  
-  const location = useLocation();
 
   return (
     <Link
