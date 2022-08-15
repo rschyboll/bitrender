@@ -109,6 +109,8 @@ const logic = kea<logicType>([
         actions.loginSuccess();
       } else {
         if ('detail' in response.error) {
+          if (response.error) {
+          }
           actions.loginFailure(response.error.detail);
         } else {
           actions.loginFailure();

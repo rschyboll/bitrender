@@ -14,6 +14,7 @@ const logic = kea<logicType>([
     openLoginPage: () => ({
       currentPage: router.values.currentLocation.pathname,
     }),
+    openVerifyPage: (email: string) => ({ email }),
     openUsersPage: true,
     openRolesPage: true,
     openErrorPage: true,
@@ -23,6 +24,7 @@ const logic = kea<logicType>([
     openApp: () => `/app`,
     openLoginPage: () => '/login',
     openRegisterPage: () => '/register',
+    openVerifyPage: () => '/verify',
     openUsersPage: () => '/app/admin/users',
     openRolesPage: () => '/app/admin/roles',
     openErrorPage: () => '/error',
@@ -34,6 +36,7 @@ const logic = kea<logicType>([
         openLoginPage: (_, { currentPage }) => currentPage,
       },
     ],
+    verifyPageEmail: [null as null | string],
   }),
   listeners(({ values }) => ({
     returnToBeforeLogin: () => {

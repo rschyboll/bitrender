@@ -24,6 +24,7 @@ export const startKea = () => {
           ) => {
             //Workaround, without this, kea changes routes when components in react are still rendering
             //which can cause a logic from kea to not unmount properly
+            console.log(state);
             setTimeout(() => {
               history.replace(url, state);
             }, 0);
@@ -33,6 +34,8 @@ export const startKea = () => {
             _: string,
             url: string,
           ) => {
+            console.log(state);
+
             setTimeout(() => {
               history.push(url, state);
             }, 0);

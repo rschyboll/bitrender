@@ -6,6 +6,7 @@ interface IRoute extends Logic {
     readonly openApp: () => void;
     readonly openLoginPage: () => void;
     readonly openRegisterPage: () => void;
+    readonly openVerifyPage: (email: string) => void;
     readonly openUsersPage: () => void;
     readonly openRolesPage: () => void;
     readonly openErrorPage: () => void;
