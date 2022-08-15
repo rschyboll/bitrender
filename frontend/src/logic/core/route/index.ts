@@ -11,7 +11,6 @@ import {
 import { actionToUrl, decodeParams } from 'kea-router';
 import { router } from 'kea-router';
 import { NavigateFunction } from 'react-router-dom';
-import { useNavigate } from 'react-router-dom';
 
 import Dependencies from '@/deps';
 import { injectDepsToLogic } from '@/logic/utils';
@@ -31,61 +30,61 @@ const logic = kea<logicType>([
     },
   ),
   actions({
-    openApp: true,
-    openRegisterPage: true,
+    openApp: () => ({
+      url: '/app',
+    }),
+    openRegisterPage: () => ({
+      url: '/register',
+    }),
     openLoginPage: () => ({
       url: '/login',
-      state: { lastPage: router.values.currentLocation.pathname },
     }),
-    openVerifyPage: (email: string) => ({ email }),
-    openUsersPage: true,
-    openRolesPage: true,
-    openErrorPage: true,
+    openVerifyPage: (email: string) => ({
+      url: '/login',
+      state: { verifyEmail: email },
+    }),
+    openUsersPage: () => ({
+      url: '/app/admin/users',
+    }),
+    openRolesPage: () => ({
+      url: '/app/admin/roles',
+    }),
+    openErrorPage: () => ({
+      url: '/error',
+    }),
     returnToBeforeLogin: true,
-  }),
-  actionToUrl(() => ({
-    openApp: () => `/app`,
-    openRegisterPage: () => '/register',
-    openVerifyPage: () => '/verify',
-    openUsersPage: () => '/app/admin/users',
-    openRolesPage: () => '/app/admin/roles',
-    openErrorPage: () => '/error',
-  })),
-  reducers({
-    verifyPageEmail: [null as null | string],
   }),
   sharedListeners(({ props }) => ({
     pushRoute: (payload: { url: string; state?: object }) => {
-      history.push(payload.url, {
-        ...payload.state,
-        lastLocation: { ...history.location },
+      console.log(payload);
+      props.navigate(payload.url, {
+        replace: false,
+        state: { ...payload.state, lastLocation: { ...history.location } },
       });
     },
     replaceWithPrevious: () => {
-      console.log(history.location.state);
+      if (
+        props.deps.routeValidators.stateHasLastLocation(history.location.state)
+      ) {
+        props.navigate(history.location.state.lastLocation.pathname, {
+          replace: true,
+          state: history.location.state.lastLocation.state,
+        });
+      } else {
+        props.navigate('/app');
+      }
     },
   })),
   listeners(({ sharedListeners }) => ({
+    openApp: sharedListeners.pushRoute,
+    openRegisterPage: sharedListeners.pushRoute,
     openLoginPage: sharedListeners.pushRoute,
+    openVerifyPage: sharedListeners.pushRoute,
+    openUsersPage: sharedListeners.pushRoute,
+    openRolesPage: sharedListeners.pushRoute,
+    openErrorPage: sharedListeners.pushRoute,
     returnToBeforeLogin: sharedListeners.replaceWithPrevious,
   })),
-  afterMount(() => {
-    history.listen((update) => {
-      if (
-        update.location.pathname != router.values.location.pathname ||
-        update.location.search != router.values.location.search ||
-        update.location.hash != router.values.location.hash
-      ) {
-        router.actions.locationChanged({
-          method: update.action,
-          ...update.location,
-          url: update.location.pathname,
-          hashParams: decodeParams(update.location.hash),
-          searchParams: decodeParams(update.location.search),
-        });
-      }
-    });
-  }),
 ]);
 
 export const routeLogic = injectDepsToLogic(logic, () => ({

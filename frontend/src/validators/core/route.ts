@@ -1,17 +1,20 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { Location } from 'react-router-dom';
+
 import { IRouteValidators } from '../interfaces/route';
 import { Validators } from './base';
 
 export class RouteValidators extends Validators implements IRouteValidators {
-  public routeStateHasLastPage(state: unknown): state is { lastPage: string } {
-    if (
+  public stateHasLastLocation(state: any): state is { lastLocation: Location } {
+    return (
       typeof state == 'object' &&
       state != null &&
-      'lastPage' in state &&
-      typeof (state as any)['lastPage'] == 'string'
-    ) {
-      return true;
-    }
-    return false;
+      'lastLocation' in state &&
+      state['lastLocation'] != null &&
+      'state' in state['lastLocation'] &&
+      state['lastLocation']['state'] != null &&
+      'pathName' in state['lastLocation'] &&
+      typeof state['lastLocation']['pathName'] == 'string'
+    );
   }
 }

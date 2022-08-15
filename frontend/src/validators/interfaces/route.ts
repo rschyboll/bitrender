@@ -1,7 +1,8 @@
 import { interfaces } from 'inversify';
+import { Location } from 'react-router-dom';
 
 export interface IRouteValidators {
-  routeStateHasLastPage: (state: unknown) => state is { lastPage: string };
+  stateHasLastLocation: (state: unknown) => state is { lastLocation: Location };
 }
 
 export namespace IRouteValidators {
