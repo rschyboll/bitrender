@@ -1,5 +1,5 @@
 import { useInjection } from 'inversify-react';
-import { useValues } from 'kea';
+import { BindLogic, useValues } from 'kea';
 import {
   FC,
   LazyExoticComponent,
@@ -9,9 +9,9 @@ import {
   useCallback,
   useState,
 } from 'react';
-import { Outlet, Route, Routes } from 'react-router-dom';
+import { Outlet, Route, Routes, useNavigate } from 'react-router-dom';
 
-import { ISettingsLogic } from '@/logic/interfaces';
+import { IRouteLogic, ISettingsLogic } from '@/logic/interfaces';
 import { AppPage } from '@/pages/app';
 import { ErrorPage } from '@/pages/error';
 import { themeClasses } from '@/types/settings';
@@ -64,36 +64,41 @@ export const Pages: FC = () => {
   const RecoveryPage = useLazyPage(() => import('@/pages/recovery'));
   const VerifyPage = useLazyPage(() => import('@/pages/verify'));
 
+  const routeLogic = useInjection(IRouteLogic.$);
+  const navigate = useNavigate();
+
   return (
-    <Suspense>
-      <Routes>
-        <Route path="/" element={<BasePage />}>
-          <Route path="app" element={<AppPage />}>
-            <Route path="admin">
-              <Route
-                path="users"
-                element={
-                  <ProtectedRoute>
-                    <UsersPage />
-                  </ProtectedRoute>
-                }
-              />
-              <Route path="roles" element={<RolesPage />} />
+    <BindLogic logic={routeLogic} props={{ navigate: navigate }}>
+      <Suspense>
+        <Routes>
+          <Route path="/" element={<BasePage />}>
+            <Route path="app" element={<AppPage />}>
+              <Route path="admin">
+                <Route
+                  path="users"
+                  element={
+                    <ProtectedRoute>
+                      <UsersPage />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route path="roles" element={<RolesPage />} />
+              </Route>
+              <Route path="settings" element={<RolesPage />} />
             </Route>
-            <Route path="settings" element={<RolesPage />} />
-          </Route>
 
-          <Route path="" element={<EntryPage />}>
-            <Route path="login" element={<LoginPage />} />
-            <Route path="register" element={<RegisterPage />} />
-            <Route path="recovery" element={<RecoveryPage />} />
-            <Route path="verify" element={<VerifyPage />} />
-          </Route>
+            <Route path="" element={<EntryPage />}>
+              <Route path="login" element={<LoginPage />} />
+              <Route path="register" element={<RegisterPage />} />
+              <Route path="recovery" element={<RecoveryPage />} />
+              <Route path="verify" element={<VerifyPage />} />
+            </Route>
 
-          <Route path="error" element={<>Wystąpił błąd</>} />
-        </Route>
-      </Routes>
-    </Suspense>
+            <Route path="error" element={<>Wystąpił błąd</>} />
+          </Route>
+        </Routes>
+      </Suspense>
+    </BindLogic>
   );
 };
 

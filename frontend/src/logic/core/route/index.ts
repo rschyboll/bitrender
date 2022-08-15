@@ -1,18 +1,41 @@
-import { actions, afterMount, kea, listeners, path, reducers } from 'kea';
+import {
+  actions,
+  afterMount,
+  kea,
+  listeners,
+  path,
+  props,
+  reducers,
+  sharedListeners,
+} from 'kea';
 import { actionToUrl, decodeParams } from 'kea-router';
 import { router } from 'kea-router';
+import { NavigateFunction } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
+import Dependencies from '@/deps';
+import { injectDepsToLogic } from '@/logic/utils';
 import { history } from '@/pages/router';
+import { IRouteValidators } from '@/validators/interfaces';
 
 import type { logicType } from './indexType';
 
 const logic = kea<logicType>([
   path(['route']),
+  props(
+    {} as {
+      navigate: NavigateFunction;
+      deps: {
+        routeValidators: IRouteValidators;
+      };
+    },
+  ),
   actions({
     openApp: true,
     openRegisterPage: true,
     openLoginPage: () => ({
-      currentPage: router.values.currentLocation.pathname,
+      url: '/login',
+      state: { lastPage: router.values.currentLocation.pathname },
     }),
     openVerifyPage: (email: string) => ({ email }),
     openUsersPage: true,
@@ -22,7 +45,6 @@ const logic = kea<logicType>([
   }),
   actionToUrl(() => ({
     openApp: () => `/app`,
-    openLoginPage: () => '/login',
     openRegisterPage: () => '/register',
     openVerifyPage: () => '/verify',
     openUsersPage: () => '/app/admin/users',
@@ -30,22 +52,22 @@ const logic = kea<logicType>([
     openErrorPage: () => '/error',
   })),
   reducers({
-    beforeLoginPage: [
-      null as null | string,
-      {
-        openLoginPage: (_, { currentPage }) => currentPage,
-      },
-    ],
     verifyPageEmail: [null as null | string],
   }),
-  listeners(({ values }) => ({
-    returnToBeforeLogin: () => {
-      if (values.beforeLoginPage != null) {
-        router.actions.replace(values.beforeLoginPage);
-      } else {
-        router.actions.replace('/app');
-      }
+  sharedListeners(({ props }) => ({
+    pushRoute: (payload: { url: string; state?: object }) => {
+      history.push(payload.url, {
+        ...payload.state,
+        lastLocation: { ...history.location },
+      });
     },
+    replaceWithPrevious: () => {
+      console.log(history.location.state);
+    },
+  })),
+  listeners(({ sharedListeners }) => ({
+    openLoginPage: sharedListeners.pushRoute,
+    returnToBeforeLogin: sharedListeners.replaceWithPrevious,
   })),
   afterMount(() => {
     history.listen((update) => {
@@ -66,4 +88,6 @@ const logic = kea<logicType>([
   }),
 ]);
 
-export const routeLogic = logic;
+export const routeLogic = injectDepsToLogic(logic, () => ({
+  routeValidators: Dependencies.get(IRouteValidators.$),
+}));
