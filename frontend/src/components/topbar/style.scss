@@ -143,3 +143,17 @@
   box-shadow: var(--sidebar-topbar-button-shadow);
   color: var(--text-color);
 }
+
+.topbar-dialogs {
+  .p-overlaypanel {
+    min-width: 15rem;
+  }
+
+  .p-overlaypanel::before {
+    display: none;
+  }
+
+  .p-overlaypanel::after {
+    display: none;
+  }
+}

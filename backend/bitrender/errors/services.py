@@ -12,3 +12,7 @@ class ContextNotProvided(ServiceErrors):
 
 class BackgroundTasksNotProvided(ServiceErrors):
     """Raised when a service was injected, without providing a background tasks launcher"""
+
+
+class SettingsNotProvided(ServiceErrors):
+    """Raised, when a service was injected, without providing a Settings instance"""

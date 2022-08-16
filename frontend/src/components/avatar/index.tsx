@@ -1,12 +1,12 @@
 import { Button } from 'primereact/button';
 import { Skeleton } from 'primereact/skeleton';
-import { memo } from 'react';
+import { MouseEvent, memo } from 'react';
 import { RiUserFill } from 'react-icons/ri';
 
 import './style.scss';
 
 export interface AvatarProps {
-  onClick?: () => void;
+  onClick?: (e: MouseEvent) => void;
   name?: string;
 }
 

@@ -2,6 +2,8 @@ import { Button } from 'primereact/button';
 import { memo, useCallback, useEffect, useRef, useTransition } from 'react';
 import LoadingBar, { LoadingBarRef } from 'react-top-loading-bar';
 
+import './style.scss';
+
 export interface ErrorPageProps {
   retry?: () => void;
 }

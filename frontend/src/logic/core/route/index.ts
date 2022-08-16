@@ -1,5 +1,14 @@
-import { actions, kea, listeners, path, props, sharedListeners } from 'kea';
-import { NavigateFunction } from 'react-router-dom';
+import { Path } from 'history';
+import {
+  actions,
+  afterMount,
+  kea,
+  listeners,
+  path,
+  props,
+  sharedListeners,
+} from 'kea';
+import { decodeParams, router } from 'kea-router';
 
 import Dependencies from '@/deps';
 import { injectDepsToLogic } from '@/logic/utils';
@@ -12,43 +21,64 @@ const logic = kea<logicType>([
   path(['route']),
   props(
     {} as {
-      navigate: NavigateFunction;
       deps: {
         routeValidators: IRouteValidators;
       };
     },
   ),
   actions({
+    openRoute: (to: string | Partial<Path>, state?: object) => ({
+      to: to,
+      state: state,
+    }),
+    replaceRoute: (to: string | Partial<Path>, state?: object) => ({
+      to: to,
+      state: state,
+    }),
     openApp: () => ({
-      url: '/app',
+      to: '/app',
     }),
     openRegisterPage: () => ({
-      url: '/register',
+      to: '/register',
     }),
     openLoginPage: () => ({
-      url: '/login',
+      to: '/login',
     }),
     openVerifyPage: (email: string) => ({
-      url: '/login',
+      to: '/login',
       state: { verifyEmail: email },
     }),
     openUsersPage: () => ({
-      url: '/app/admin/users',
+      to: '/app/admin/users',
     }),
     openRolesPage: () => ({
-      url: '/app/admin/roles',
+      to: '/app/admin/roles',
     }),
     openErrorPage: () => ({
-      url: '/error',
+      to: '/error',
     }),
     returnToBeforeLogin: true,
   }),
   sharedListeners(({ props }) => ({
-    pushRoute: (payload: { url: string; state?: object }) => {
-      history.push(payload.url, {
+    pushRoute: (payload: { to: string | Partial<Path>; state?: object }) => {
+      history.push(payload.to, {
         ...payload.state,
         lastLocation: { ...history.location },
       });
+    },
+    replaceRoute: (payload: { to: string | Partial<Path>; state?: object }) => {
+      if (
+        props.deps.routeValidators.stateHasLastLocation(history.location.state)
+      ) {
+        history.replace(payload.to, {
+          ...payload.state,
+          lastLocation: { ...history.location.state.lastLocation },
+        });
+      } else {
+        history.replace(payload.to, {
+          ...payload.state,
+        });
+      }
     },
     replaceWithPrevious: () => {
       if (
@@ -64,6 +94,8 @@ const logic = kea<logicType>([
     },
   })),
   listeners(({ sharedListeners }) => ({
+    openRoute: sharedListeners.pushRoute,
+    replaceRoute: sharedListeners.replaceRoute,
     openApp: sharedListeners.pushRoute,
     openRegisterPage: sharedListeners.pushRoute,
     openLoginPage: sharedListeners.pushRoute,
@@ -73,6 +105,25 @@ const logic = kea<logicType>([
     openErrorPage: sharedListeners.pushRoute,
     returnToBeforeLogin: sharedListeners.replaceWithPrevious,
   })),
+  afterMount(() => {
+    history.listen((update) => {
+      console.log(update);
+      console.log(router);
+      if (
+        update.location.pathname != router.values.location.pathname ||
+        update.location.search != router.values.location.search ||
+        update.location.hash != router.values.location.hash
+      ) {
+        router.actions.locationChanged({
+          method: update.action,
+          ...update.location,
+          url: update.location.pathname,
+          hashParams: decodeParams(update.location.hash),
+          searchParams: decodeParams(update.location.search),
+        });
+      }
+    });
+  }),
 ]);
 
 export const routeLogic = injectDepsToLogic(logic, () => ({

@@ -27,6 +27,7 @@ export interface TextFieldProps {
   rightIcon?: IconType;
   onLeftIconClick?: () => void;
   onRightIconClick?: () => void;
+  autoComplete?: string;
 }
 
 export const TextField = memo(function TextField(props: TextFieldProps) {
@@ -42,6 +43,7 @@ export const TextField = memo(function TextField(props: TextFieldProps) {
     errorMessage,
     onLeftIconClick,
     onRightIconClick,
+    autoComplete,
   } = props;
 
   const onInputChange = useCallback(
@@ -79,6 +81,7 @@ export const TextField = memo(function TextField(props: TextFieldProps) {
           value={value}
           onChange={onInputChange}
           type={type}
+          autoComplete={autoComplete}
         />
 
         {/*   TextField right icon   */}

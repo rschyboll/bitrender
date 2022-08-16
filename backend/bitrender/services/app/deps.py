@@ -1,5 +1,7 @@
 """All interface implementations need to be imported in this file to be recognized by antidote."""
-# pylint: disable=unused-import
 
-from .core.auth import AuthService  # noqa: F401
-from .core.user import UserService  # noqa: F401
+from .core.auth import AuthService
+from .core.email import EmailService
+from .core.user import UserService
+
+__all__ = ["AuthService", "UserService", "EmailService"]

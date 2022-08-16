@@ -12,9 +12,10 @@ import {
   useState,
   useTransition,
 } from 'react';
-import { Navigate, Router } from 'react-router-dom';
+import { Router } from 'react-router-dom';
 import LoadingBar, { LoadingBarRef } from 'react-top-loading-bar';
 
+import { Navigate } from '@/components/navigate';
 import { IAppLogic } from '@/logic/interfaces';
 import { Permission } from '@/schemas/user';
 

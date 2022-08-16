@@ -1,20 +1,30 @@
 import { useInjection } from 'inversify-react';
-import { useActions } from 'kea';
+import { useActions, useValues } from 'kea';
 import { Button } from 'primereact/button';
-import { FC } from 'react';
+import { OverlayPanel, OverlayPanelEventType } from 'primereact/overlaypanel';
+import { FC, useCallback, useRef } from 'react';
 
 import { Avatar } from '@/components/avatar';
 import { Sidebar } from '@/components/sidebar';
-import { ISettingsLogic } from '@/logic/interfaces';
+import { IAppLogic, ISettingsLogic } from '@/logic/interfaces';
 import { SidebarType } from '@/types/settings';
 
-import { SidebarDialog } from '../sidebar/dialog';
 import './style.scss';
 
 export const Topbar: FC = () => {
   const settingsLogic = useInjection(ISettingsLogic.$);
+  const appLogic = useInjection(IAppLogic.$);
 
-  const { toggleSidebar } = useActions(settingsLogic);
+  const { currentUser } = useValues(appLogic);
+
+  const { toggleSidebar, setSidebarType } = useActions(settingsLogic);
+
+  const topbarDialogsRef = useRef<HTMLDivElement>(null);
+  const avatarDialogRef = useRef<OverlayPanel>(null);
+
+  const toggleAvatarDialog = useCallback((e: OverlayPanelEventType) => {
+    avatarDialogRef.current?.toggle(e);
+  }, []);
 
   return (
     <div className="topbar">
@@ -36,14 +46,20 @@ export const Topbar: FC = () => {
           </div>
           <div className="topbar-content-right">
             <div className="topbar-spacer" />
-            <Avatar name={'currentUser?.username'} />
-            <SidebarDialog active>
-              <div />
-              <div />
-            </SidebarDialog>
+            <Avatar onClick={toggleAvatarDialog} name={currentUser?.username} />
+            <Button onClick={() => setSidebarType(SidebarType.Horizontal)} />
+            <Button onClick={() => setSidebarType(SidebarType.Slim)} />
+            <Button onClick={() => setSidebarType(SidebarType.Static)} />
+            <OverlayPanel
+              appendTo={topbarDialogsRef.current}
+              ref={avatarDialogRef}
+            >
+              Test
+            </OverlayPanel>
           </div>
         </div>
       </div>
+      <div ref={topbarDialogsRef} className="topbar-dialogs" />
     </div>
   );
 };

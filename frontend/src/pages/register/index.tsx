@@ -12,8 +12,8 @@ import {
   RiMailFill,
   RiUserFill,
 } from 'react-icons/ri';
-import { Link } from 'react-router-dom';
 
+import { Link } from '@/components/link';
 import { PasswordField } from '@/components/passwordField';
 import { TextField } from '@/components/textField';
 import { ILoginLogic } from '@/logic/interfaces';
@@ -67,10 +67,6 @@ const RegisterPage = memo(function RegisterPage() {
       register(email, username, password);
     }
   }, [email, password, register, username]);
-
-  useEffect(() => {
-    checkLoggedIn();
-  }, [checkLoggedIn]);
 
   useEffect(() => {
     registerStatusRef.current = registerStatus;

@@ -4,8 +4,9 @@ import { Ripple } from 'primereact/ripple';
 import { Skeleton } from 'primereact/skeleton';
 import { memo, useCallback } from 'react';
 import { Trans } from 'react-i18next';
-import { Link, useLocation } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 
+import { Link } from '@/components/link';
 import { IAppLogic, ISettingsLogic } from '@/logic/interfaces';
 
 import { Item } from '../model';

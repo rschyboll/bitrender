@@ -16,8 +16,8 @@ import {
   RiLockFill,
   RiUserFill,
 } from 'react-icons/ri';
-import { Link } from 'react-router-dom';
 
+import { Link } from '@/components/link';
 import { TextField } from '@/components/textField';
 import { ILoginLogic } from '@/logic/interfaces';
 import { ApiErrorCodes, RequestStatus } from '@/types/service';
@@ -30,7 +30,7 @@ const LoginPage = memo(function LoginPage() {
   const { t } = useTranslation();
 
   const { loginStatus, loginErrorDetail } = useValues(loginLogic);
-  const { login, checkLoggedIn } = useActions(loginLogic);
+  const { login } = useActions(loginLogic);
 
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -71,10 +71,6 @@ const LoginPage = memo(function LoginPage() {
       setTryAgainVisible(false);
     }
   }, [loginStatus]);
-
-  useEffect(() => {
-    checkLoggedIn();
-  }, [checkLoggedIn]);
 
   const togglePasswordVisibility = useCallback(() => {
     setPasswordVisible(!passwordVisible);
@@ -117,9 +113,9 @@ const LoginPage = memo(function LoginPage() {
           onRightIconClick={togglePasswordVisibility}
           errorMessage={noPasswordError ? 'login.cannotBeEmpty' : undefined}
           floorRightContent={
-            <a href="" id="login-forgot-password">
+            <Link to="/forgot-password" id="login-forgot-password">
               <Trans>login.forgot</Trans>
-            </a>
+            </Link>
           }
         />
 

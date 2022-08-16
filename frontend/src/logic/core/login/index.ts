@@ -1,4 +1,5 @@
 import { actions, kea, listeners, path, props, reducers } from 'kea';
+import { urlToAction } from 'kea-router';
 
 import Dependencies from '@/deps';
 import { IRouteLogic } from '@/logic/interfaces/route';
@@ -8,6 +9,7 @@ import { RequestStatus } from '@/types/service';
 import { sleep } from '@/utils/async';
 import { IUserValidators } from '@/validators/interfaces';
 
+import { ApiErrorCodes } from './../../../types/service';
 import type { logicType } from './indexType';
 
 const logic = kea<logicType>([
@@ -21,6 +23,11 @@ const logic = kea<logicType>([
       };
     },
   ),
+  urlToAction(({ actions }) => ({
+    '/login': () => actions.checkLoggedIn(),
+    '/register': () => actions.checkLoggedIn(),
+    '/verify': () => actions.checkLoggedIn(),
+  })),
   actions({
     checkLoggedIn: true,
     login: (username: string, password: string) => ({ username, password }),
@@ -95,6 +102,7 @@ const logic = kea<logicType>([
   }),
   listeners(({ props, actions, values }) => ({
     checkLoggedIn: async () => {
+      console.log('CHECK LOGGED IN');
       const response = await props.deps.userService.logged();
       if (response.success && response.data) {
         props.deps.routeLogic.actions.openApp();
@@ -109,6 +117,9 @@ const logic = kea<logicType>([
         actions.loginSuccess();
       } else {
         if ('detail' in response.error) {
+          if (response.error.detail == ApiErrorCodes.UserNotVerified) {
+            props.deps.routeLogic.actions.openVerifyPage(username);
+          }
           actions.loginFailure(response.error.detail);
         } else {
           actions.loginFailure();
