@@ -1,17 +1,18 @@
 import { useInjection } from 'inversify-react';
 import { useActions, useValues } from 'kea';
 import { Ripple } from 'primereact/ripple';
+import { Skeleton } from 'primereact/skeleton';
 import { FC, memo, useMemo, useState } from 'react';
 import { Trans } from 'react-i18next';
 import { RiArrowDownSLine } from 'react-icons/ri';
 import { useLocation } from 'react-router-dom';
 
 import { Logo } from '@/components/logo';
-import { ISettingsLogic } from '@/logic/interfaces';
+import { IAppLogic, ISettingsLogic } from '@/logic/interfaces';
 
 import { SidebarDialog } from '../dialog';
 import { SidebarItem } from '../item';
-import { Group, sidebarModel } from '../model';
+import { Group, Item, filterVisibleItems, sidebarModel } from '../model';
 import './style.scss';
 
 export const SidebarHorizontal: FC = memo(function SidebarHorizontal() {
@@ -59,9 +60,25 @@ const SidebarHorizontalGroup = memo(function SidebarHorizontalGroup(
   props: SidebarHorizontalGroupProps,
 ) {
   const settingsLogic = useInjection(ISettingsLogic.$);
+  const appLogic = useInjection(IAppLogic.$);
 
   const { toggleSidebar } = useActions(settingsLogic);
   const { sidebarActive } = useValues(settingsLogic);
+
+  const { appReady, currentUser } = useValues(appLogic);
+
+  const visibleItems = useMemo(
+    () => filterVisibleItems(props.items, currentUser?.permissions),
+    [currentUser, props.items],
+  );
+
+  if (!appReady || currentUser == null) {
+    return <Skeleton className="sidebar-group-loading" />;
+  }
+
+  if (visibleItems.length == 0) {
+    return null;
+  }
 
   return (
     <>
@@ -87,11 +104,16 @@ const SidebarHorizontalGroup = memo(function SidebarHorizontalGroup(
 
           <Ripple />
         </button>
-        <SidebarDialog active={props.active && sidebarActive}>
-          {props.items.map((itemModel) => {
-            return <SidebarItem key={itemModel.path} {...itemModel} />;
-          })}
-        </SidebarDialog>
+        {sidebarActive && (
+          <SidebarDialog active={props.active && sidebarActive}>
+            {props.items.map((itemModel) => {
+              if (visibleItems.includes(itemModel)) {
+                return <SidebarItem key={itemModel.path} {...itemModel} />;
+              }
+              return <div key={itemModel.path} />;
+            })}
+          </SidebarDialog>
+        )}
       </li>
     </>
   );

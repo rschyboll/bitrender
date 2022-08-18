@@ -102,7 +102,6 @@ const logic = kea<logicType>([
   }),
   listeners(({ props, actions, values }) => ({
     checkLoggedIn: async () => {
-      console.log('CHECK LOGGED IN');
       const response = await props.deps.userService.logged();
       if (response.success && response.data) {
         props.deps.routeLogic.actions.openApp();

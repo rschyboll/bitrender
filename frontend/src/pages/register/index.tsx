@@ -1,17 +1,9 @@
 import { useInjection } from 'inversify-react';
 import { useActions, useValues } from 'kea';
 import { Button } from 'primereact/button';
-import { InputText } from 'primereact/inputtext';
-import { Password } from 'primereact/password';
 import { memo, useCallback, useEffect, useRef, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
-import {
-  RiEyeLine,
-  RiEyeOffLine,
-  RiLockFill,
-  RiMailFill,
-  RiUserFill,
-} from 'react-icons/ri';
+import { RiMailFill, RiUserFill } from 'react-icons/ri';
 
 import { Link } from '@/components/link';
 import { PasswordField } from '@/components/passwordField';
@@ -32,7 +24,7 @@ const RegisterPage = memo(function RegisterPage() {
     registerStatus,
     registerErrorDetail,
   } = useValues(loginLogic);
-  const { register, checkLoggedIn } = useActions(loginLogic);
+  const { register } = useActions(loginLogic);
 
   const { t } = useTranslation();
 

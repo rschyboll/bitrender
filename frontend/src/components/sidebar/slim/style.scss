@@ -12,6 +12,11 @@
     position: relative;
   }
 
+  .sidebar-group-loading {
+    height: 4rem !important;
+    width: 4rem !important;
+  }
+
   .sidebar-group.sidebar-group-active .sidebar-group-title {
     font-weight: 900;
   }

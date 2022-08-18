@@ -46,6 +46,11 @@
     position: relative;
   }
 
+  .sidebar-group-loading {
+    height: 2.75rem !important;
+    width: 8rem !important;
+  }
+
   .sidebar-group-button:hover {
     background-color: var(--sidebar-item-hover);
   }

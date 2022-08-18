@@ -87,8 +87,8 @@ $staticWidth: 16rem;
   }
 }
 
-.layout-horizontal.layout-mobile.active .layout-content-mask,
-.layout-static.layout-mobile.active .layout-content-mask {
+.layout-horizontal.layout-mobile-active .layout-content-mask,
+.layout-static.layout-mobile-active .layout-content-mask {
   @include media('<=desktop') {
     display: block;
     opacity: 1;
