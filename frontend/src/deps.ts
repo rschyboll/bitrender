@@ -1,8 +1,8 @@
 import { Container } from 'inversify';
 import 'reflect-metadata';
 
-import { appLogic, loginLogic, routeLogic, settingsLogic } from '@/logic/core';
-import { IAppLogic, ILoginLogic, ISettingsLogic } from '@/logic/interfaces';
+import { appLogic, authLogic, routeLogic, settingsLogic } from '@/logic/core';
+import { IAppLogic, IAuthLogic, ISettingsLogic } from '@/logic/interfaces';
 import { UserService } from '@/services/api';
 import { IUserService } from '@/services/interfaces';
 import {
@@ -38,7 +38,7 @@ Dependencies.bind(IUtilityConverters.$)
 //Logic dependencies
 Dependencies.bind(IAppLogic.$).toConstantValue(appLogic);
 Dependencies.bind(ISettingsLogic.$).toConstantValue(settingsLogic);
-Dependencies.bind(ILoginLogic.$).toConstantValue(loginLogic);
+Dependencies.bind(IAuthLogic.$).toConstantValue(authLogic);
 Dependencies.bind(IRouteLogic.$).toConstantValue(routeLogic);
 
 //Service dependencies

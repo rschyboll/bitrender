@@ -64,7 +64,7 @@
     "@/*": "./src/$1"
   },
   "scripts": {
-    "parcel:watch": "parcel --host 0.0.0.0 ./src/index.html ./src/themes/*",
+    "parcel:watch": "parcel ./src/index.html ./src/themes/*",
     "parcel:build": "parcel build --no-source-maps --config .parcelrc.build ./src/index.html ./src/themes/* ",
     "watch": "concurrently \"yarn parcel:watch\" \"yarn kea:watch\" -n APP,KEA -c blue,green",
     "kea:watch": "kea-typegen watch -r ./src -c ./tsconfig.json"

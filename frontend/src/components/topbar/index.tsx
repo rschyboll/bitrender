@@ -9,6 +9,7 @@ import { Sidebar } from '@/components/sidebar';
 import { IAppLogic, ISettingsLogic } from '@/logic/interfaces';
 import { SidebarType } from '@/types/settings';
 
+import { TopbarAvatarDialog } from './avatarDialog';
 import './style.scss';
 
 export const Topbar: FC = () => {
@@ -54,7 +55,7 @@ export const Topbar: FC = () => {
               appendTo={topbarDialogsRef.current}
               ref={avatarDialogRef}
             >
-              Test
+              <TopbarAvatarDialog />
             </OverlayPanel>
           </div>
         </div>

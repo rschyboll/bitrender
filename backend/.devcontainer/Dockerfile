@@ -7,6 +7,8 @@ RUN mkdir /data_dev
 RUN chown vscode /data_dev && chmod 777 /data_dev
 RUN chown vscode /usr/local/src && chmod 777 /usr/local/src
 
+RUN chown -R vscode /usr/local
+
 USER vscode
 
 RUN mkdir -p $HOME/.local/share/fish

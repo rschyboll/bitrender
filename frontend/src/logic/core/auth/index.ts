@@ -5,11 +5,11 @@ import Dependencies from '@/deps';
 import { IRouteLogic } from '@/logic/interfaces/route';
 import { injectDepsToLogic } from '@/logic/utils';
 import { IUserService } from '@/services/interfaces';
-import { RequestStatus } from '@/types/service';
+import { RequestStatus, ServiceErrorType } from '@/types/service';
 import { sleep } from '@/utils/async';
 import { IUserValidators } from '@/validators/interfaces';
 
-import { ApiErrorCodes } from './../../../types/service';
+import { ApiErrorCodes } from '../../../types/service';
 import type { logicType } from './indexType';
 
 const logic = kea<logicType>([
@@ -160,10 +160,23 @@ const logic = kea<logicType>([
         }
       }
     },
+    logout: async () => {
+      const response = await props.deps.userService.logout();
+      if (response.success) {
+        props.deps.routeLogic.actions.openLoginPage();
+      } else {
+        if (
+          response.error.type == ServiceErrorType.ApiError &&
+          response.error.detail == ApiErrorCodes.NotAuthenticated
+        ) {
+          props.deps.routeLogic.actions.openLoginPage();
+        }
+      }
+    },
   })),
 ]);
 
-export const loginLogic = injectDepsToLogic(logic, () => ({
+export const authLogic = injectDepsToLogic(logic, () => ({
   routeLogic: Dependencies.get(IRouteLogic.$),
   userService: Dependencies.get(IUserService.$),
   userValidators: Dependencies.get(IUserValidators.$),

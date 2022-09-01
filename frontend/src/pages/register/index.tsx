@@ -8,7 +8,7 @@ import { RiMailFill, RiUserFill } from 'react-icons/ri';
 import { Link } from '@/components/link';
 import { PasswordField } from '@/components/passwordField';
 import { TextField } from '@/components/textField';
-import { ILoginLogic } from '@/logic/interfaces';
+import { IAuthLogic } from '@/logic/interfaces';
 import { ApiErrorCodes, RequestStatus } from '@/types/service';
 import { IUserValidators } from '@/validators/interfaces';
 
@@ -16,15 +16,15 @@ import './style.scss';
 
 const RegisterPage = memo(function RegisterPage() {
   const userValidators = useInjection(IUserValidators.$);
-  const loginLogic = useInjection(ILoginLogic.$);
+  const authLogic = useInjection(IAuthLogic.$);
 
   const {
     registerWeakPassword,
     registerWrongEmail,
     registerStatus,
     registerErrorDetail,
-  } = useValues(loginLogic);
-  const { register } = useActions(loginLogic);
+  } = useValues(authLogic);
+  const { register } = useActions(authLogic);
 
   const { t } = useTranslation();
 

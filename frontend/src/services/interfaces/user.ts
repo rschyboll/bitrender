@@ -7,6 +7,7 @@ export interface IUserService {
   getCurrentUser: () => Promise<Response<UserView>>;
   login: (username: string, password: string) => Promise<Response<undefined>>;
   logged: () => Promise<Response<boolean>>;
+  logout: () => Promise<Response<undefined>>;
   register: (userCreate: UserCreate) => Promise<Response<undefined>>;
 }
 

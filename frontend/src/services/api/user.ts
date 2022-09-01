@@ -80,9 +80,15 @@ export class UserService extends Service implements IUserService {
       });
       return { success: true, data: undefined };
     } catch (error: unknown) {
-      if (error instanceof HTTPError) {
-        console.log(await error.response.json());
-      }
+      return this.parseAPIError(error);
+    }
+  }
+
+  public async logout(): Promise<Response<undefined>> {
+    try {
+      await this.api.post(ApiEndpoints.Logout);
+      return { success: true, data: undefined };
+    } catch (error: unknown) {
       return this.parseAPIError(error);
     }
   }

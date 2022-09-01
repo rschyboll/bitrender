@@ -19,18 +19,18 @@ import {
 
 import { Link } from '@/components/link';
 import { TextField } from '@/components/textField';
-import { ILoginLogic } from '@/logic/interfaces';
+import { IAuthLogic } from '@/logic/interfaces';
 import { ApiErrorCodes, RequestStatus } from '@/types/service';
 
 import './style.scss';
 
 const LoginPage = memo(function LoginPage() {
-  const loginLogic = useInjection(ILoginLogic.$);
+  const authLogic = useInjection(IAuthLogic.$);
 
   const { t } = useTranslation();
 
-  const { loginStatus, loginErrorDetail } = useValues(loginLogic);
-  const { login } = useActions(loginLogic);
+  const { loginStatus, loginErrorDetail } = useValues(authLogic);
+  const { login } = useActions(authLogic);
 
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');

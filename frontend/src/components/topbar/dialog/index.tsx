@@ -7,5 +7,5 @@ export interface TopbarDialog {
 }
 
 export const TopbarDialog = memo(function TopbarDialog(props: TopbarDialog) {
-  return <div>{props.children}</div>;
+  return <div className="topbar-dialog">{props.children}</div>;
 });

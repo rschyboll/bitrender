@@ -1,4 +1,4 @@
 export { settingsLogic } from './settings';
 export { appLogic } from './app';
-export { loginLogic } from './login';
+export { authLogic } from './auth';
 export { routeLogic } from './route';

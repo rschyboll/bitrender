@@ -107,8 +107,6 @@ const logic = kea<logicType>([
   })),
   afterMount(() => {
     history.listen((update) => {
-      console.log(update);
-      console.log(router);
       if (
         update.location.pathname != router.values.location.pathname ||
         update.location.search != router.values.location.search ||

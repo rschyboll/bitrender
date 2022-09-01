@@ -12,6 +12,7 @@
       "badCredentials": "Incorrect username or password",
       "unknownError": "Nie udało się zalogować"
     },
+    "logout": "Wyloguj się",
     "register": {
       "createYourAccount": "Zarejestruj swoje konto!",
       "haveAccount": "Posiadasz już konto?",

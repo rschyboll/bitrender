@@ -3,7 +3,7 @@ import { Logic, LogicWrapper } from 'kea';
 
 import { RequestStatus } from '@/types/service';
 
-interface ILogin extends Logic {
+interface IAuth extends Logic {
   readonly actions: {
     readonly checkLoggedIn: () => void;
     readonly login: (username: string, password: string) => void;
@@ -25,9 +25,9 @@ interface ILogin extends Logic {
   };
 }
 
-export type ILoginLogic = LogicWrapper<ILogin>;
+export type IAuthLogic = LogicWrapper<IAuth>;
 
-export namespace ILoginLogic {
-  export const $: interfaces.ServiceIdentifier<ILoginLogic> =
-    Symbol('ILoginLogic');
+export namespace IAuthLogic {
+  export const $: interfaces.ServiceIdentifier<IAuthLogic> =
+    Symbol('IAuthLogic');
 }
