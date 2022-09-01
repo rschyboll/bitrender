@@ -33,7 +33,7 @@ user_login_responses: dict[int | str, dict[str, Any]] = {
                 }
             }
         },
-    }
+    },
 }
 
 user_register_responses: dict[int | str, dict[str, Any]] = {
@@ -90,6 +90,23 @@ user_me_responses: dict[int | str, dict[str, Any]] = {
 }
 
 user_logged_responses: dict[int | str, dict[str, Any]] = {}
+
+user_logout_responses: dict[int | str, dict[str, Any]] = {
+    status.HTTP_401_UNAUTHORIZED: {
+        "model": ErrorResponseModel,
+        "content": {
+            "application/json": {
+                "examples": {
+                    error_codes[UnauthenticatedError]: {
+                        "summary": "User is not authenticated",
+                        "value": {"detail": error_codes[UnauthenticatedError]},
+                    },
+                }
+            }
+        },
+    }
+}
+
 
 user_by_id_responses: dict[int | str, dict[str, Any]] = {
     status.HTTP_404_NOT_FOUND: {

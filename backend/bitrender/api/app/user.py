@@ -1,4 +1,4 @@
-"""Contains frontend router definition."""
+"""Contains user router definition and its routes."""
 from uuid import UUID
 
 from fastapi import APIRouter, Depends, Response
@@ -8,6 +8,7 @@ from bitrender.api.app.responses.user import (
     user_by_id_responses,
     user_logged_responses,
     user_login_responses,
+    user_logout_responses,
     user_me_responses,
     user_register_responses,
 )
@@ -17,7 +18,7 @@ from bitrender.schemas import UserView
 from bitrender.schemas.user import UserCreate
 from bitrender.services.app import IUserService
 
-user_router = APIRouter(prefix="/user", responses=user_me_responses)
+user_router = APIRouter(prefix="/user")
 
 
 @user_router.post("/login", responses=user_login_responses)
@@ -119,10 +120,26 @@ async def logged(
     """Returns a boolean, that shows if there is an user current authenticated.
 
     Can be used, to check the authentication, without the need to check the http status code.
-    Useful when there are autmatic mechanisms that listen for the 401 status code, and a \
+    Usefull when there are autmatic mechanisms that listen for the 401 status code, and a \
         NOT_AUTHENTICATED error code.
     """
     return await user_service.logged()
+
+
+@user_router.post(
+    "/logout", dependencies=[Depends(get_current_user)], responses=user_logout_responses
+)
+async def logout(response: Response) -> None:
+    """Logs out a user, by removing his authentication token from cookies.
+
+    When the user is not currently authenticated, the server responds with a 401 status code, \
+        and a NOT_AUTHENTICATED error code."""
+    response.delete_cookie(
+        "access_token",
+        secure=True,
+        httponly=True,
+        samesite="None",
+    )
 
 
 @user_router.get("/request-validation")
