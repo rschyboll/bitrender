@@ -35,6 +35,7 @@
       "password": "Hasło"
     },
     "tryAgain": "Spróbuj ponownie",
-    "loading": "Ładowanie"
+    "loading": "Ładowanie",
+    "search": "Wyszukaj..."
   }
 }

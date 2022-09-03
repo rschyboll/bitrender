@@ -34,7 +34,7 @@ export const sidebarModel: Group[] = [
         iconSize: '1.5rem',
         title: 'nav.roles',
         path: '/app/admin/roles',
-        requiredPermissions: [Permission.MANAGE_ROLES, 'tess' as Permission],
+        requiredPermissions: [Permission.MANAGE_ROLES],
       },
     ],
     spacer: true,
@@ -48,7 +48,7 @@ export const filterVisibleItems = (
   const visibleItems: Item[] = [];
 
   if (permissions == null) {
-    return visibleItems;
+    return items;
   }
 
   for (const item of items) {

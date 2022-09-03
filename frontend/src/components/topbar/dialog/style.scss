@@ -1,3 +1,9 @@
 .topbar-dialog {
   min-width: 15rem;
+  padding: 1rem;
+  border-radius: 3px;
+}
+
+.theme-light .layout-horizontal .topbar-dialog {
+  background: var(--sidebar-background);
 }

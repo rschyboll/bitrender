@@ -157,3 +157,19 @@
     display: none;
   }
 }
+
+.topbar-dialogs {
+  .p-overlaypanel .p-overlaypanel-content {
+    padding: 0;
+  }
+}
+
+.theme-light .layout-horizontal .layout-topbar {
+  .p-skeleton {
+    background-color: #ffffff0f;
+  }
+
+  .p-skeleton:after {
+    background: linear-gradient(90deg, #fff0, #ffffff0a, #fff0);
+  }
+}

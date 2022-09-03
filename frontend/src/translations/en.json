@@ -39,6 +39,7 @@
       "password": "Password"
     },
     "tryAgain": "Try again",
-    "loading": "Loading"
+    "loading": "Loading",
+    "search": "Search..."
   }
 }

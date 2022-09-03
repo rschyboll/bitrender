@@ -2,6 +2,7 @@ from uuid import UUID
 
 from antidote import implements
 
+from bitrender.models import Role
 from bitrender.services.app import IAuthService, IRoleService
 from bitrender.services.app.core import BaseAppService
 
@@ -17,5 +18,5 @@ class RoleService(BaseAppService, IRoleService):
         auth_service: IAuthService = self.inject(IAuthService)
         return auth_service
 
-    def get_list(self, page: int, count: int) -> list[str]:
+    def get_list(self, page: int, count: int, search: str | None) -> list[str]:
         pass

@@ -29,3 +29,13 @@
   border-top: 1px solid var(--sidebar-spacer-color);
   margin: 1rem 0;
 }
+
+.theme-light .layout-sidebar {
+  .p-skeleton {
+    background-color: #ffffff0f;
+  }
+
+  .p-skeleton:after {
+    background: linear-gradient(90deg, #fff0, #ffffff0a, #fff0);
+  }
+}

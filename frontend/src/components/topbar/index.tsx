@@ -7,7 +7,7 @@ import { FC, useCallback, useRef } from 'react';
 import { Avatar } from '@/components/avatar';
 import { Sidebar } from '@/components/sidebar';
 import { IAppLogic, ISettingsLogic } from '@/logic/interfaces';
-import { SidebarType } from '@/types/settings';
+import { SidebarType, Theme } from '@/types/settings';
 
 import { TopbarAvatarDialog } from './avatarDialog';
 import './style.scss';
@@ -18,7 +18,7 @@ export const Topbar: FC = () => {
 
   const { currentUser } = useValues(appLogic);
 
-  const { toggleSidebar, setSidebarType } = useActions(settingsLogic);
+  const { toggleSidebar, setSidebarType, setTheme } = useActions(settingsLogic);
 
   const topbarDialogsRef = useRef<HTMLDivElement>(null);
   const avatarDialogRef = useRef<OverlayPanel>(null);
@@ -48,9 +48,22 @@ export const Topbar: FC = () => {
           <div className="topbar-content-right">
             <div className="topbar-spacer" />
             <Avatar onClick={toggleAvatarDialog} name={currentUser?.username} />
-            <Button onClick={() => setSidebarType(SidebarType.Horizontal)} />
-            <Button onClick={() => setSidebarType(SidebarType.Slim)} />
-            <Button onClick={() => setSidebarType(SidebarType.Static)} />
+            <Button
+              label="Horizontal"
+              onClick={() => setSidebarType(SidebarType.Horizontal)}
+            />
+            <Button
+              label="Slim"
+              onClick={() => setSidebarType(SidebarType.Slim)}
+            />
+            <Button
+              label="Static"
+              onClick={() => setSidebarType(SidebarType.Static)}
+            />
+            <Button label="Dark" onClick={() => setTheme(Theme.Dark)} />
+            <Button label="Dim" onClick={() => setTheme(Theme.Dim)} />
+            <Button label="Light" onClick={() => setTheme(Theme.Light)} />
+
             <OverlayPanel
               appendTo={topbarDialogsRef.current}
               ref={avatarDialogRef}

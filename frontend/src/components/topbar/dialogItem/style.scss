@@ -16,6 +16,24 @@
   background-color: var(--sidebar-item-hover);
 }
 
+.theme-light .layout-slim .topbar-dialog-item,
+.theme-light .layout-static .topbar-dialog-item {
+  color: #495057;
+}
+
+.theme-light .layout-slim .topbar-dialog-item:hover,
+.theme-light .layout-static .topbar-dialog-item:hover {
+  background-color: #e9ecef;
+}
+
+.theme-light .layout-static .topbar-dialog-item {
+  color: var(--sidebar-item-color);
+}
+
+.theme-light .layout-horizontal .topbar-dialog-item:hover {
+  background-color: var(--sidebar-item-hover);
+}
+
 .topbar-dialog-item:focus {
   box-shadow: var(--sidebar-item-toggle-shadow);
   outline: none;
