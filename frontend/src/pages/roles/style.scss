@@ -17,10 +17,6 @@
     font-weight: 500;
   }
 
-  .roles-table .p-datatable-header {
-    padding-top: 0;
-  }
-
   .roles-table-header {
     display: flex;
     justify-content: space-between;
@@ -29,5 +25,12 @@
     .search-field {
       width: 15rem;
     }
+  }
+}
+
+.theme-light {
+  .roles-table {
+    border-left: 1px solid var(--surface-c);
+    border-right: 1px solid var(--surface-c);
   }
 }
