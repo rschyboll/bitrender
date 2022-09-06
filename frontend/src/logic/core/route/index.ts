@@ -6,9 +6,10 @@ import {
   listeners,
   path,
   props,
+  selectors,
   sharedListeners,
 } from 'kea';
-import { decodeParams, router } from 'kea-router';
+import { combineUrl, decodeParams, router } from 'kea-router';
 
 import Dependencies from '@/deps';
 import { injectDepsToLogic } from '@/logic/utils';
@@ -51,8 +52,8 @@ const logic = kea<logicType>([
     openUsersPage: () => ({
       to: '/app/admin/users',
     }),
-    openRolesPage: () => ({
-      to: '/app/admin/roles',
+    openRolesPage: (page = 0, rows = 10) => ({
+      to: { pathname: `/app/admin/roles`, search: `page=${page}&rows=${rows}` },
     }),
     openErrorPage: () => ({
       to: '/error',
@@ -105,6 +106,12 @@ const logic = kea<logicType>([
     openErrorPage: sharedListeners.pushRoute,
     returnToBeforeLogin: sharedListeners.replaceWithPrevious,
   })),
+  selectors({
+    searchParams: [
+      () => [router.selectors.searchParams],
+      (searchParams) => searchParams as Record<string, unknown>,
+    ],
+  }),
   afterMount(() => {
     history.listen((update) => {
       if (
@@ -116,8 +123,8 @@ const logic = kea<logicType>([
           method: update.action,
           ...update.location,
           url: update.location.pathname,
-          hashParams: decodeParams(update.location.hash),
-          searchParams: decodeParams(update.location.search),
+          hashParams: decodeParams(update.location.hash, '#'),
+          searchParams: decodeParams(update.location.search, '?'),
         });
       }
     });

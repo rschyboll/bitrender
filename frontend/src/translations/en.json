@@ -40,6 +40,8 @@
     },
     "tryAgain": "Try again",
     "loading": "Loading",
-    "search": "Search..."
+    "search": "Search...",
+    "itemsPerPage": "Rows per page:",
+    "currentPageReport": "{{first}} - {{last}} of {{all}}"
   }
 }

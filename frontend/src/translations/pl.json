@@ -36,6 +36,8 @@
     },
     "tryAgain": "Spróbuj ponownie",
     "loading": "Ładowanie",
-    "search": "Wyszukaj..."
+    "search": "Wyszukaj...",
+    "itemsPerPage": "Liczba wierszy na stronę:",
+    "currentPageReport": "{{first}} - {{last}} z {{all}}"
   }
 }

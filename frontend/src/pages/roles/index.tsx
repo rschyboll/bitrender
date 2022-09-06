@@ -12,7 +12,10 @@ const RolesPage: FC = () => {
   return (
     <div className="roles-page">
       <Card className="roles-table-card">
-        <DataTable logicIdentifier={IRolesTableLogic.$} />
+        <DataTable
+          header={RolesPageTableHeader}
+          logicIdentifier={IRolesTableLogic.$}
+        />
       </Card>
     </div>
   );

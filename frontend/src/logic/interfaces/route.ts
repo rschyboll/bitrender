@@ -11,11 +11,19 @@ interface IRoute extends Logic {
     readonly openRegisterPage: () => void;
     readonly openVerifyPage: (email: string) => void;
     readonly openUsersPage: () => void;
-    readonly openRolesPage: () => void;
+    readonly openRolesPage: (page?: number, rows?: number) => void;
     readonly openErrorPage: () => void;
     readonly returnToBeforeLogin: () => void;
   };
-  readonly values: {};
+  readonly values: {
+    readonly searchParams: Record<string, unknown>;
+  };
+  readonly selectors: {
+    readonly searchParams: (
+      state: unknown,
+      props?: unknown,
+    ) => Record<string, unknown>;
+  };
 }
 
 export type IRouteLogic = LogicWrapper<IRoute>;
