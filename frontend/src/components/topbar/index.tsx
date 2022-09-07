@@ -11,6 +11,7 @@ import { SidebarType, Theme } from '@/types/settings';
 
 import { TopbarAvatarDialog } from './avatarDialog';
 import './style.scss';
+import { TopbarTitle } from './title';
 
 export const Topbar: FC = () => {
   const settingsLogic = useInjection(ISettingsLogic.$);
@@ -44,6 +45,7 @@ export const Topbar: FC = () => {
               className="mobile-sidebar-button"
               icon="ri-menu-line"
             />
+            <TopbarTitle />
           </div>
           <div className="topbar-content-right">
             <div className="topbar-spacer" />

@@ -52,8 +52,11 @@ const logic = kea<logicType>([
     openUsersPage: () => ({
       to: '/app/admin/users',
     }),
-    openRolesPage: (page = 0, rows = 10) => ({
-      to: { pathname: `/app/admin/roles`, search: `page=${page}&rows=${rows}` },
+    openRolesPage: (page = 0, rows = 10): { to: Partial<Path> } => ({
+      to: {
+        pathname: `/app/admin/roles`,
+        hash: `page=${page}&rows=${rows}`,
+      },
     }),
     openErrorPage: () => ({
       to: '/error',
@@ -110,6 +113,10 @@ const logic = kea<logicType>([
     searchParams: [
       () => [router.selectors.searchParams],
       (searchParams) => searchParams as Record<string, unknown>,
+    ],
+    hashParams: [
+      () => [router.selectors.hashParams],
+      (hashParams) => hashParams as Record<string, unknown>,
     ],
   }),
   afterMount(() => {

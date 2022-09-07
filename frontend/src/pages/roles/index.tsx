@@ -1,7 +1,7 @@
-import { Card } from 'primereact/card';
 import { FC } from 'react';
 import { RiSearchLine } from 'react-icons/ri';
 
+import { Card, IconCard } from '@/components/card';
 import { DataTable } from '@/components/dataTable';
 import { TextField } from '@/components/textField';
 import { IRolesTableLogic } from '@/logic/interfaces';
@@ -11,6 +11,14 @@ import './style.scss';
 const RolesPage: FC = () => {
   return (
     <div className="roles-page">
+      <IconCard
+        className="roles-default-role-card"
+        title="Orders"
+        color="#64B5F6"
+        icon={RiSearchLine}
+      >
+        Test
+      </IconCard>
       <Card className="roles-table-card">
         <DataTable
           header={RolesPageTableHeader}

@@ -31,7 +31,7 @@
     "yarn-upgrade-all": "^0.7.1"
   },
   "dependencies": {
-    "@fontsource/lato": "^4.5.8",
+    "@fontsource/nunito": "^4.5.10",
     "ajv": "^8.11.0",
     "ajv-formats": "^2.1.1",
     "fast-equals": "^4.0.1",

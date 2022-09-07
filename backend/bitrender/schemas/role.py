@@ -7,15 +7,15 @@ from bitrender.models import Permission
 from bitrender.schemas.base import BaseSchema
 
 
-class RoleSchema(BaseSchema):
+class RoleView(BaseSchema):
     name: str
-    default: bool | None
+    default: Literal[True] | None
     permissions: list[Permission]
 
 
 class RoleCreate(PydanticBase):
     name: str
-    default: bool | None
+    default: Literal[True] | None
 
 
 class RoleUpdate(PydanticBase):

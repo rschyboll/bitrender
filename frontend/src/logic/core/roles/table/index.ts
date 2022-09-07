@@ -21,10 +21,9 @@ const logic = kea<logicType>([
   }),
   selectors(({ props }) => ({
     rowsPerPage: [
-      () => [props.deps.routeLogic.selectors.searchParams],
-      (searchParams) => {
-        const rows = searchParams['rows'];
-        console.log(rows);
+      () => [props.deps.routeLogic.selectors.hashParams],
+      (hashParams) => {
+        const rows = hashParams['rows'];
         if (typeof rows == 'number') {
           return rows;
         }
@@ -32,9 +31,9 @@ const logic = kea<logicType>([
       },
     ],
     currentPage: [
-      () => [props.deps.routeLogic.selectors.searchParams],
-      (searchParams) => {
-        const page = searchParams['page'];
+      () => [props.deps.routeLogic.selectors.hashParams],
+      (hashParams) => {
+        const page = hashParams['page'];
         if (typeof page == 'number') {
           return page;
         }

@@ -1,0 +1,48 @@
+.card {
+  .p-card {
+    padding: 1.25rem;
+  }
+
+  .p-card-body {
+    padding: 0rem;
+  }
+
+  .p-card-content {
+    padding: 0rem;
+  }
+}
+.icon-card {
+  .p-card {
+    padding: 1.25rem;
+    border-left: 4px solid;
+  }
+
+  .p-card-body {
+    padding: 0rem;
+  }
+
+  .p-card-content {
+    padding: 0rem;
+  }
+
+  .icon-card-header {
+    display: flex;
+    align-items: center;
+  }
+
+  .icon-card-title {
+    margin-left: 0.5rem;
+    font-size: 1.25rem;
+    vertical-align: middle;
+    font-weight: 500;
+  }
+
+  .icon-card-icon-box {
+    border-radius: 4px;
+    width: 2rem;
+    height: 2rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+}

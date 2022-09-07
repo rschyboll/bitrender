@@ -23,6 +23,10 @@ interface IRoute extends Logic {
       state: unknown,
       props?: unknown,
     ) => Record<string, unknown>;
+    readonly hashParams: (
+      state: unknown,
+      props?: unknown,
+    ) => Record<string, unknown>;
   };
 }
 

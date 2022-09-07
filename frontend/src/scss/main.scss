@@ -1,7 +1,8 @@
 @import '../../node_modules/primereact/resources/primereact.css';
 
-@import '../../node_modules/@fontsource/lato/index.css';
-@import '../../node_modules/@fontsource/lato/300.css';
+@import '../../node_modules/@fontsource/nunito/index.css';
+@import '../../node_modules/@fontsource/nunito/300.css';
+@import '../../node_modules/@fontsource/nunito/500.css';
 
 @import './global.scss';
 
@@ -9,7 +10,7 @@ html,
 body,
 #root {
   height: 100%;
-  font-family: lato !important;
+  font-family: nunito !important;
   width: 100%;
 }
 
@@ -21,11 +22,11 @@ body {
     var(--surface-50) 0%,
     var(--surface-b) 100%
   );
-  font-family: lato !important;
+  font-family: nunito !important;
 }
 
 .p-component {
-  font-family: lato !important;
+  font-family: nunito !important;
 }
 
 a {

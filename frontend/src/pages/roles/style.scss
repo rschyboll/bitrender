@@ -1,29 +1,25 @@
 .roles-page {
-  .roles-table-card.p-card {
-    padding: 1.25rem;
-
-    .p-card-body {
-      padding: 0rem;
-    }
-
-    .p-card-content {
-      padding: 0rem;
-    }
+  .roles-table-card {
+    padding: 1rem;
   }
 
-  .roles-table-title {
-    font-size: 1.25rem;
-    line-height: 1.2;
-    font-weight: 500;
+  .roles-default-role-card {
+    padding: 1rem;
   }
+}
 
-  .roles-table-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+.roles-table-title {
+  font-size: 1.25rem;
+  line-height: 1.2;
+  font-weight: 500;
+}
 
-    .search-field {
-      width: 15rem;
-    }
+.roles-table-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  .search-field {
+    width: 15rem;
   }
 }
