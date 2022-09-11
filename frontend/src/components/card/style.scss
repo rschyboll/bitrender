@@ -10,7 +10,20 @@
   .p-card-content {
     padding: 0rem;
   }
+
+  .card-header {
+    display: flex;
+    justify-content: space-between;
+    min-height: 2.5rem;
+    margin-bottom: 1rem;
+  }
+
+  .card-title {
+    font-size: 1.5rem;
+    font-weight: 500;
+  }
 }
+
 .icon-card {
   .p-card {
     padding: 1.25rem;
@@ -44,5 +57,9 @@
     display: flex;
     justify-content: center;
     align-items: center;
+  }
+
+  .icon-card-content {
+    margin-top: 1rem;
   }
 }

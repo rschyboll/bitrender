@@ -16,7 +16,13 @@ export interface CardProps {
 export const Card = memo(function IconCard(props: CardProps) {
   return (
     <div className={`card ${props.className}`}>
-      <PrimeCard>{props.children}</PrimeCard>
+      <PrimeCard>
+        <div className="card-header">
+          <span className="card-title">{props.title}</span>
+          <div className="card-actions">{props.titleActions}</div>
+        </div>
+        {props.children}
+      </PrimeCard>
     </div>
   );
 });
@@ -42,6 +48,7 @@ export const IconCard = memo(function IconCard(props: IconCardProps) {
           >
             <props.icon
               className="icon-card-icon"
+              size={props.iconSize}
               color={'rgba(0, 0, 0, 0.75)'}
             />
           </div>
@@ -49,6 +56,7 @@ export const IconCard = memo(function IconCard(props: IconCardProps) {
             <Trans>{props.title}</Trans>
           </span>
         </div>
+        <div className="icon-card-content">{props.children}</div>
       </PrimeCard>
     </div>
   );

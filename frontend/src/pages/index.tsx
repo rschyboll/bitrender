@@ -81,7 +81,14 @@ export const Pages: FC = () => {
                   </ProtectedRoute>
                 }
               />
-              <Route path="roles" element={<RolesPage />} />
+              <Route
+                path="roles"
+                element={
+                  <ProtectedRoute>
+                    <RolesPage />
+                  </ProtectedRoute>
+                }
+              />
             </Route>
             <Route path="settings" element={<RolesPage />} />
           </Route>

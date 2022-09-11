@@ -1,3 +1,4 @@
+import { Button } from 'primereact/button';
 import { FC } from 'react';
 import { RiSearchLine } from 'react-icons/ri';
 
@@ -10,16 +11,24 @@ import './style.scss';
 
 const RolesPage: FC = () => {
   return (
-    <div className="roles-page">
+    <div className="roles-page grid">
       <IconCard
-        className="roles-default-role-card"
+        className="roles-default-role-card col-12 desktop:col-6"
         title="Orders"
         color="#64B5F6"
         icon={RiSearchLine}
       >
         Test
       </IconCard>
-      <Card className="roles-table-card">
+      <IconCard
+        className="roles-default-role-counter-card col-12 desktop:col-6"
+        title="Orders"
+        color="#64B5F6"
+        icon={RiSearchLine}
+      >
+        Test
+      </IconCard>
+      <Card className="roles-table-card col-12">
         <DataTable
           header={RolesPageTableHeader}
           logicIdentifier={IRolesTableLogic.$}
