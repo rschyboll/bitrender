@@ -1,12 +1,12 @@
 """Contains a database model describing user roles."""
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Type, TypeVar
+from typing import TYPE_CHECKING, Literal, Type, TypeVar, Union
 
 from tortoise.fields import BooleanField, ReverseRelation, TextField
-from tortoise.queryset import QuerySet, QuerySetSingle
+from tortoise.queryset import QuerySetSingle
 
-from bitrender.core.acl import AclAction, AclEntry, AclPermit, StaticAclEntries
+from bitrender.core.acl import AclEntry, StaticAclEntries
 from bitrender.models.base import BaseModel
 
 if TYPE_CHECKING:
@@ -26,6 +26,8 @@ class Role(BaseModel):
 
     default: bool | None = BooleanField(default=None, null=True, unique=True)  # type: ignore
 
+    columns = Literal["name", "default"]
+
     @classmethod
     def get_default(cls: Type[MODEL], lock: bool = True) -> QuerySetSingle[MODEL]:
         """Returns the current default role.
@@ -43,15 +45,6 @@ class Role(BaseModel):
         if not lock:
             return cls.get(default=True)
         return cls.select_for_update().get(default=True)
-
-    @classmethod
-    def get_list(
-        cls: Type[MODEL], page: int, count: int, search: str | None, lock: bool = True
-    ) -> QuerySet[MODEL]:
-        query: QuerySet[MODEL] = cls.get_amount(count, page * count, lock=lock)
-        if search is not None:
-            query = query.filter(name=search)
-        return query
 
     @property
     async def acl_id_list(self) -> list[str]:

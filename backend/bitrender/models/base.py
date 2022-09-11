@@ -2,7 +2,7 @@
 from __future__ import annotations
 
 from datetime import datetime
-from typing import Any, Type, TypeVar, overload
+from typing import Any, Literal, Type, TypeVar, overload
 from uuid import UUID
 
 from tortoise.fields import (
@@ -16,6 +16,8 @@ from tortoise.models import Model
 from tortoise.queryset import QuerySet, QuerySetSingle
 
 from bitrender.core.acl import EVERYONE, AclAction, AclEntry, AclList, AclPermit
+from bitrender.schemas import ListRequestInput, SortOrder
+from bitrender.schemas.list_request import ListRequestSearch, SearchRule
 
 MODEL = TypeVar("MODEL", bound="BaseModel")
 
@@ -33,6 +35,8 @@ class BaseModel(Model):
     id: UUID = UUIDField(pk=True)
     created_at: datetime = DatetimeField(auto_now_add=True)
     modified_at: datetime = DatetimeField(auto_now=True)
+
+    columns = Literal["id", "created_at", "modified_at"]
 
     class Meta:
         """BaseModel config."""
@@ -112,6 +116,65 @@ class BaseModel(Model):
             .offset(offset)
             .limit(amount)
         )
+
+    @classmethod
+    def get_list(
+        cls: Type[MODEL],
+        request_input: ListRequestInput[str],
+        lock: bool = True,
+    ) -> QuerySet[MODEL]:
+        """Returns a list of entries of the model, filtered, sorted and limied by the data provided
+
+        Args:
+            request_input (ListRequestInput[str]): Data used to filter, sort and limit the\
+                returned entries
+            lock (bool, optional): Specifies if the entry should be locked, \
+                adds FOR UPDATE to the query. Defaults to True
+        Returns:
+            QuerySet[MODEL]: Queryset that returns the selected database entries"""
+        query: QuerySet[MODEL]
+        if request_input.page is not None:
+            query = (
+                cls.all()
+                .offset(request_input.page.nr * request_input.page.records_per_page)
+                .limit(request_input.page.records_per_page)
+            ).select_for_update(lock)
+        else:
+            query = cls.all().select_for_update(lock)
+        if request_input.sort is not None:
+            if request_input.sort.order == SortOrder.ASC:
+                query = query.order_by(request_input.sort.column)
+            else:
+                query = query.order_by("-" + request_input.sort.column)
+        else:
+            query = query.order_by("-created_at")
+        if request_input.search is not None:
+            for search_data in request_input.search:
+                query = cls.__filter_query(query, search_data)
+        return query
+
+    @classmethod
+    def __filter_query(
+        cls: Type[MODEL], query: QuerySet[MODEL], filter_data: ListRequestSearch[str]
+    ) -> QuerySet[MODEL]:
+        new_query = query
+        if filter_data.rule == SearchRule.EQUAL:
+            new_query = query.filter(**{filter_data.column: filter_data.value})
+        elif filter_data.rule == SearchRule.NOTEQUAL:
+            new_query = query.filter(**{f"{1}__not".format(filter_data.column): filter_data.value})
+        elif filter_data.rule == SearchRule.BEGINSWITH:
+            new_query = query.filter(
+                **{f"{1}__startswith".format(filter_data.column): filter_data.value}
+            )
+        elif filter_data.rule == SearchRule.GREATER:
+            new_query = query.filter(**{f"{1}__gt".format(filter_data.column): filter_data.value})
+        elif filter_data.rule == SearchRule.GREATEROREQUAL:
+            new_query = query.filter(**{f"{1}__gte".format(filter_data.column): filter_data.value})
+        elif filter_data.rule == SearchRule.LESS:
+            new_query = query.filter(**{f"{1}__lt".format(filter_data.column): filter_data.value})
+        elif filter_data.rule == SearchRule.LESSOREQUAL:
+            new_query = query.filter(**{f"{1}__lte".format(filter_data.column): filter_data.value})
+        return new_query
 
     @staticmethod
     async def extend_dacl(

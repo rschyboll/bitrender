@@ -1,7 +1,7 @@
 """TODO create docstring"""
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Type, TypeVar
+from typing import TYPE_CHECKING, Literal, Type, TypeVar
 
 from tortoise.expressions import Q
 from tortoise.fields import (
@@ -46,6 +46,8 @@ class User(BaseModel):
     is_verified: bool = BooleanField(default=False)  # type: ignore
 
     role: ForeignKeyRelation[Role] = ForeignKeyField("bitrender.Role")
+
+    columns = Literal["id", "created_at", "modified_at", "test"]
 
     @classmethod
     def get_by_username_or_email(
