@@ -21,7 +21,7 @@ from bitrender.core.acl import (
     AclPermit,
     StaticAclEntries,
 )
-from bitrender.models import Permission
+from bitrender.enums.permission import Permission
 from bitrender.models.base import BaseModel
 from bitrender.schemas import UserView
 
@@ -119,10 +119,10 @@ class User(BaseModel):
         return f"user:{self.id}"
 
     async def to_view(self) -> UserView:
-        """Converts the user model to pydantic UserView.
+        """Converts the user model to UserView schema
 
         Returns:
-            UserView: View used by frontend to display user data."""
+            UserView: View used by the app to display user data"""
         role = await self.role
         permissions = [role_permission.permission for role_permission in (await role.permissions)]
         return UserView(

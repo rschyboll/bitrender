@@ -1,4 +1,4 @@
-"""Contains interface for the email service"""
+"""Contains the interface for the email service"""
 from antidote import interface
 
 

@@ -5,7 +5,8 @@ from tortoise.transactions import in_transaction
 
 from bitrender.app import init_deps
 from bitrender.config import tortoise_config
-from bitrender.models import Permission, Role, RolePermission, User
+from bitrender.enums.permission import Permission
+from bitrender.models import Role, RolePermission, User
 from bitrender.services.helpers.interfaces.password import IPasswordHelper
 
 init_deps()

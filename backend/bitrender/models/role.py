@@ -1,13 +1,14 @@
 """Contains a database model describing user roles."""
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Literal, Type, TypeVar, Union
+from typing import TYPE_CHECKING, Literal, Type, TypeVar
 
 from tortoise.fields import BooleanField, ReverseRelation, TextField
 from tortoise.queryset import QuerySetSingle
 
 from bitrender.core.acl import AclEntry, StaticAclEntries
 from bitrender.models.base import BaseModel
+from bitrender.schemas import RoleView
 
 if TYPE_CHECKING:
     from bitrender.models import RolePermission, User
@@ -53,6 +54,21 @@ class Role(BaseModel):
         Returns:
             list[str]: List of authentication identifiers."""
         return [permission.acl_id for permission in await self.permissions]
+
+    async def to_view(self) -> RoleView:
+        """Converts the role model to RoleView schema
+
+        Returns:
+            RoleView: View used by the app to display roles permissions and other data"""
+        role_permissions = await self.permissions
+        return RoleView(
+            id=self.id,
+            created_at=self.created_at,
+            modified_at=self.modified_at,
+            name=self.name,
+            default=self.default,
+            permissions=[role_permission.permission for role_permission in role_permissions],
+        )
 
     @classmethod
     def __sacl__(cls) -> list[AclEntry]:

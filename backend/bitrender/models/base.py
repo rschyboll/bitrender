@@ -2,7 +2,7 @@
 from __future__ import annotations
 
 from datetime import datetime
-from typing import Any, Literal, Type, TypeVar, overload
+from typing import TYPE_CHECKING, Any, Literal, Type, TypeVar
 from uuid import UUID
 
 from tortoise.fields import (
@@ -16,8 +16,10 @@ from tortoise.models import Model
 from tortoise.queryset import QuerySet, QuerySetSingle
 
 from bitrender.core.acl import EVERYONE, AclAction, AclEntry, AclList, AclPermit
-from bitrender.schemas import ListRequestInput, SortOrder
-from bitrender.schemas.list_request import ListRequestSearch, SearchRule
+from bitrender.enums.list_request import SearchRule, SortOrder
+
+if TYPE_CHECKING:
+    from bitrender.schemas.list_request import ListRequestInput, ListRequestSearch
 
 MODEL = TypeVar("MODEL", bound="BaseModel")
 

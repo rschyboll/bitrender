@@ -6,7 +6,6 @@ from uuid import UUID
 from pydantic import BaseModel as PydanticBase
 from pydantic import EmailStr, SecretStr, validator
 
-from bitrender.models.permission import Permission
 from bitrender.schemas.base import BaseSchema
 
 
@@ -23,7 +22,7 @@ class UserView(BaseSchema):
     email: EmailStr
     username: str
     role: str
-    permissions: list[Permission]
+    permissions: list[int]
 
 
 class UserCreate(PydanticBase):

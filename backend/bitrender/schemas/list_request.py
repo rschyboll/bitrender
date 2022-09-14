@@ -1,35 +1,16 @@
 """Contains schemas for list requests"""
+from __future__ import annotations
 
 from datetime import datetime
-from enum import Enum, unique
-from typing import Generic, TypeVar
+from typing import Generic, Optional, TypeVar
 from uuid import UUID
 
 from pydantic import BaseModel
 from pydantic.generics import GenericModel
 
-COLUMNS = TypeVar("COLUMNS", bound=str)
+from bitrender.enums.list_request import SearchRule, SortOrder
 
-
-@unique
-class SortOrder(Enum):
-    """Enum describing the sort order in list requests"""
-
-    ASC = 0
-    DESC = 1
-
-
-@unique
-class SearchRule(Enum):
-    """Enum describing how to search for a provided value"""
-
-    EQUAL = 0
-    NOTEQUAL = 1
-    BEGINSWITH = 2
-    GREATER = 3
-    GREATEROREQUAL = 4
-    LESS = 5
-    LESSOREQUAL = 6
+COLUMNS = TypeVar("COLUMNS", bound=str, covariant=True)
 
 
 class ListRequestSort(GenericModel, Generic[COLUMNS]):
@@ -76,6 +57,6 @@ class ListRequestInput(GenericModel, Generic[COLUMNS]):
         count: (ListRequestCount | None): How many and with what offset should the records be loaded
     """
 
-    sort: ListRequestSort[COLUMNS] | None
-    search: list[ListRequestSearch[COLUMNS]] | None
+    sort: Optional[ListRequestSort[COLUMNS]]
+    search: Optional[list[ListRequestSearch[COLUMNS]]]
     page: ListRequestPage | None

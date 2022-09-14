@@ -22,6 +22,9 @@
             "source.organizeImports": true
         }
     },
+    "material-icon-theme.folders.associations": {
+        "enums": "Utils",
+    },
     "files.exclude": {
         "**/*.pyc": true,
         "**/__pycache__": true,
@@ -29,14 +32,6 @@
         "**/.mypy_cache": true,
         "**/.coverage": true,
         "**/coverage.xml": true,
-    },
-    "editor.semanticTokenColorCustomizations": {
-        "rules": {
-            "variable:python": "#d4d4d4",
-            "variable.readonly:python": "#D19A66",
-            "selfParameter": "#6090f1",
-            "property:python": "#d4d4d4"
-        }
     },
     "sqltools.connections": [
         {
@@ -60,9 +55,6 @@
             "password": "postgres"
         }
     ],
-    "workbench.colorCustomizations": {
-        "editor.foldBackground": "#00b7ff08"
-    },
     "todo-tree.regex.enableMultiLine": true,
     "todo-tree.regex.regex": "( (//|#|\"\"\"|;|/\\*|^|^[ \\t]*(-|\\d+.))\\s*($TAGS))",
     "todo-tree.tree.showBadges": true,

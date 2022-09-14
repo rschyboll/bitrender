@@ -5,11 +5,11 @@ import aerich
 from bitrender.config import tortoise_config
 
 from .base import BaseModel
-from .permission import Permission, RolePermission
+from .permission import RolePermission
 from .role import Role
 from .user import User
 
-__all__ = ["BaseModel", "Permission", "RolePermission", "Role", "User"]
+__all__ = ["BaseModel", "RolePermission", "Role", "User"]
 
 
 async def __create_aerich_command() -> aerich.Command:
