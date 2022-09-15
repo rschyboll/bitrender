@@ -1,5 +1,7 @@
+import { useInjection } from 'inversify-react';
+import { useActions, useValues } from 'kea';
 import { Button } from 'primereact/button';
-import { FC } from 'react';
+import { FC, useCallback } from 'react';
 import { RiSearchLine } from 'react-icons/ri';
 
 import { Card, IconCard } from '@/components/card';
@@ -8,6 +10,7 @@ import { TextField } from '@/components/textField';
 import { IRolesTableLogic } from '@/logic/interfaces';
 
 import './style.scss';
+import { rolesTableModel } from './tableModel';
 
 const RolesPage: FC = () => {
   return (
@@ -28,9 +31,13 @@ const RolesPage: FC = () => {
       >
         Test
       </IconCard>
-      <Card className="roles-table-card col-12">
+      <Card
+        title="Lista roli użytkowników"
+        titleActions={<TableSearchField />}
+        className="roles-table-card col-12"
+      >
         <DataTable
-          header={RolesPageTableHeader}
+          model={rolesTableModel}
           logicIdentifier={IRolesTableLogic.$}
         />
       </Card>
@@ -38,13 +45,17 @@ const RolesPage: FC = () => {
   );
 };
 
-const RolesPageTableHeader = () => {
+const TableSearchField = () => {
+  const rolesTableLogic = useInjection(IRolesTableLogic.$);
+
+  const { localSearchString } = useValues(rolesTableLogic);
+  const { setSearchString } = useActions(rolesTableLogic);
+
   return (
     <div className="roles-table-header">
-      <span className="roles-table-title">Test</span>
       <TextField
-        value=""
-        onChange={() => {}}
+        value={localSearchString != null ? localSearchString : ''}
+        onChange={setSearchString}
         className="search-field"
         leftIcon={RiSearchLine}
         hasFloor={false}

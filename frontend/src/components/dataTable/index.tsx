@@ -10,7 +10,10 @@ import { memo, useCallback } from 'react';
 
 import { PaginatorTemplate } from '@/components/paginator';
 
+import { DataTableModel } from './model';
 import './style.scss';
+
+export { DataTableModel };
 
 interface IDataTableLogicBase extends Logic {
   readonly actions: {
@@ -28,6 +31,7 @@ export type IDataTableLogic = LogicWrapper<IDataTableLogicBase>;
 
 export interface DataTableProps {
   logicIdentifier: interfaces.ServiceIdentifier<IDataTableLogic>;
+  model: DataTableModel;
   header?: DataTableHeaderTemplateType;
 }
 

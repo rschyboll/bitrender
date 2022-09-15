@@ -2,12 +2,12 @@ import { useInjection } from 'inversify-react';
 import { useActions, useValues } from 'kea';
 import { Button } from 'primereact/button';
 import { OverlayPanel, OverlayPanelEventType } from 'primereact/overlaypanel';
-import { FC, useCallback, useRef } from 'react';
+import { FC, useCallback, useRef, useState } from 'react';
 
 import { Avatar } from '@/components/avatar';
 import { Sidebar } from '@/components/sidebar';
 import { IAppLogic, ISettingsLogic } from '@/logic/interfaces';
-import { SidebarType, Theme } from '@/types/settings';
+import { SidebarType } from '@/types/settings';
 
 import { TopbarAvatarDialog } from './avatarDialog';
 import './style.scss';
@@ -19,9 +19,10 @@ export const Topbar: FC = () => {
 
   const { currentUser } = useValues(appLogic);
 
-  const { toggleSidebar, setSidebarType, setTheme } = useActions(settingsLogic);
+  const { toggleSidebar } = useActions(settingsLogic);
 
-  const topbarDialogsRef = useRef<HTMLDivElement>(null);
+  const [topbarDialogsRef, setTopbarDialogsRef] =
+    useState<HTMLDivElement | null>(null);
   const avatarDialogRef = useRef<OverlayPanel>(null);
 
   const toggleAvatarDialog = useCallback((e: OverlayPanelEventType) => {
@@ -50,32 +51,13 @@ export const Topbar: FC = () => {
           <div className="topbar-content-right">
             <div className="topbar-spacer" />
             <Avatar onClick={toggleAvatarDialog} name={currentUser?.username} />
-            <Button
-              label="Horizontal"
-              onClick={() => setSidebarType(SidebarType.Horizontal)}
-            />
-            <Button
-              label="Slim"
-              onClick={() => setSidebarType(SidebarType.Slim)}
-            />
-            <Button
-              label="Static"
-              onClick={() => setSidebarType(SidebarType.Static)}
-            />
-            <Button label="Dark" onClick={() => setTheme(Theme.Dark)} />
-            <Button label="Dim" onClick={() => setTheme(Theme.Dim)} />
-            <Button label="Light" onClick={() => setTheme(Theme.Light)} />
-
-            <OverlayPanel
-              appendTo={topbarDialogsRef.current}
-              ref={avatarDialogRef}
-            >
+            <OverlayPanel appendTo={topbarDialogsRef} ref={avatarDialogRef}>
               <TopbarAvatarDialog />
             </OverlayPanel>
           </div>
         </div>
       </div>
-      <div ref={topbarDialogsRef} className="topbar-dialogs" />
+      <div ref={(ref) => setTopbarDialogsRef(ref)} className="topbar-dialogs" />
     </div>
   );
 };

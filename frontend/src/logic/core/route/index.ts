@@ -27,6 +27,9 @@ const logic = kea<logicType>([
       };
     },
   ),
+  reducers({
+    hashParams: [{} as Record<string, any>],
+  }),
   actions({
     openRoute: (to: string | Partial<Path>, state?: object) => ({
       to: to,
@@ -52,10 +55,16 @@ const logic = kea<logicType>([
     openUsersPage: () => ({
       to: '/app/admin/users',
     }),
-    openRolesPage: (page = 0, rows = 10): { to: Partial<Path> } => ({
+    openRolesPage: (
+      page = 0,
+      rows = 10,
+      search = null,
+    ): { to: Partial<Path> } => ({
       to: {
         pathname: `/app/admin/roles`,
-        hash: `page=${page}&rows=${rows}`,
+        hash: `page=${page}&rows=${rows}${
+          search != null && search != '' ? `&search=${search}` : ''
+        }`,
       },
     }),
     openErrorPage: () => ({
@@ -69,11 +78,13 @@ const logic = kea<logicType>([
         ...payload.state,
         lastLocation: { ...history.location },
       });
+      console.log('PUSH ROUTE');
     },
     replaceRoute: (payload: { to: string | Partial<Path>; state?: object }) => {
       if (
         props.deps.routeValidators.stateHasLastLocation(history.location.state)
       ) {
+        console.log('REPLACE ROUTE');
         history.replace(payload.to, {
           ...payload.state,
           lastLocation: { ...history.location.state.lastLocation },
@@ -98,6 +109,9 @@ const logic = kea<logicType>([
     },
   })),
   listeners(({ sharedListeners }) => ({
+    [router.actionTypes.locationChanged]: () => {
+      console.log('LOCATION CHANGED');
+    },
     openRoute: sharedListeners.pushRoute,
     replaceRoute: sharedListeners.replaceRoute,
     openApp: sharedListeners.pushRoute,
@@ -116,16 +130,22 @@ const logic = kea<logicType>([
     ],
     hashParams: [
       () => [router.selectors.hashParams],
-      (hashParams) => hashParams as Record<string, unknown>,
+      (hashParams) => {
+        console.log('ROUTE LOGIC');
+        console.log(hashParams);
+        return hashParams as Record<string, unknown>;
+      },
     ],
   }),
   afterMount(() => {
     history.listen((update) => {
+      console.log(update);
       if (
         update.location.pathname != router.values.location.pathname ||
         update.location.search != router.values.location.search ||
         update.location.hash != router.values.location.hash
       ) {
+        console.log(decodeParams(update.location.hash, '#'));
         router.actions.locationChanged({
           method: update.action,
           ...update.location,

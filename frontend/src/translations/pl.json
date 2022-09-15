@@ -26,6 +26,14 @@
       "emailTaken": "Email jest już zajęty",
       "usernameTaken": "Nazwa użytkownika jest już zajęta"
     },
+    "settings": {
+      "title": "Ustawienia",
+      "theme": {
+        "light": "Jasny",
+        "dim": "Przyciemniony",
+        "dark": "Ciemny"
+      }
+    },
     "verify": {
       "account": "Zweryfikuj swoje konto"
     },

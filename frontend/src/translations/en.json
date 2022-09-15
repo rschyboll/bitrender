@@ -30,6 +30,14 @@
       "emailTaken": "Email is already taken",
       "usernameTaken": "Username is already taken"
     },
+    "settings": {
+      "title": "Settings",
+      "theme": {
+        "light": "Light",
+        "dim": "Dim",
+        "dark": "Dark"
+      }
+    },
     "verify": {
       "account": "Verify your account"
     },

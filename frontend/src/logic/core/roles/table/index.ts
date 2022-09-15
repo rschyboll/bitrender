@@ -1,4 +1,14 @@
-import { actions, kea, listeners, path, props, reducers, selectors } from 'kea';
+import {
+  actions,
+  kea,
+  listeners,
+  path,
+  props,
+  reducers,
+  selectors,
+  sharedListeners,
+} from 'kea';
+import { subscriptions } from 'kea-subscriptions';
 
 import Dependencies from '@/deps';
 import { IRouteLogic } from '@/logic/interfaces';
@@ -15,11 +25,50 @@ const logic = kea<logicType>([
       };
     },
   ),
+  reducers({
+    localSearchString: [
+      null as string | null,
+      {
+        setSearchString: (_, { searchString }) => searchString,
+        setLocalSearchString: (_, { searchString }) => searchString,
+      },
+    ],
+  }),
   actions({
+    refresh: true,
+    loadRecords: () => ({}),
+    setLocalSearchString: (searchString: string) => ({ searchString }),
+    setSearchString: (searchString: string) => ({ searchString }),
     setCurrentPage: (currentPage: number) => ({ currentPage }),
     setRowsPerPage: (rowsPerPage: number) => ({ rowsPerPage }),
   }),
+  sharedListeners({
+    loadRecords: async () => {},
+  }),
+  subscriptions(({ actions }) => ({
+    searchString: (value, oldValue) => {
+      if (oldValue == null && value != null) {
+      }
+    },
+    rowsPerPage: (value, oldValue) => {
+      if (value != null && oldValue != null) {
+        console.log('ROWS PER PAGE CHANGED');
+        console.log(value, oldValue);
+      }
+    },
+    currentPage: (value, oldValue) => {},
+  })),
   selectors(({ props }) => ({
+    searchString: [
+      () => [props.deps.routeLogic.selectors.hashParams],
+      (hashParams) => {
+        const search = hashParams['search'];
+        if (typeof search == 'string') {
+          return search;
+        }
+        return '';
+      },
+    ],
     rowsPerPage: [
       () => [props.deps.routeLogic.selectors.hashParams],
       (hashParams) => {
@@ -45,16 +94,26 @@ const logic = kea<logicType>([
     amountOfRecords: [100 as number | null],
   }),
   listeners(({ props, values }) => ({
+    setSearchString: async ({ searchString }, breakpoint) => {
+      await breakpoint(250);
+      props.deps.routeLogic.actions.openRolesPage(
+        values.currentPage,
+        values.rowsPerPage,
+        searchString,
+      );
+    },
     setCurrentPage: ({ currentPage }) => {
       props.deps.routeLogic.actions.openRolesPage(
         currentPage,
         values.rowsPerPage,
+        values.searchString,
       );
     },
     setRowsPerPage: ({ rowsPerPage }) => {
       props.deps.routeLogic.actions.openRolesPage(
         values.currentPage,
         rowsPerPage,
+        values.searchString,
       );
     },
   })),

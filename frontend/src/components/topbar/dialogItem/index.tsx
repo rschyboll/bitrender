@@ -52,9 +52,9 @@ const TopbarDialogItemBody = ({
         <props.icon
           style={{
             top:
-              iconSize != null ? `calc((1.2rem - ${iconSize})/2)` : undefined,
+              iconSize != null ? `calc((1.15rem - ${iconSize})/2)` : undefined,
             left:
-              iconSize != null ? `calc((1.2rem - ${iconSize})/2)` : undefined,
+              iconSize != null ? `calc((1.15rem - ${iconSize})/2)` : undefined,
           }}
           size={iconSize != null ? iconSize : '1.2rem'}
           className="topbar-dialog-item-icon"

@@ -1,7 +1,7 @@
 import { useInjection } from 'inversify-react';
 import { useActions } from 'kea';
 import { memo } from 'react';
-import { RiLogoutBoxLine } from 'react-icons/ri';
+import { RiLogoutBoxLine, RiSettings4Fill } from 'react-icons/ri';
 
 import { IAuthLogic } from '@/logic/interfaces';
 
@@ -17,10 +17,16 @@ export const TopbarAvatarDialog = memo(function TopbarAvatarDialog() {
   return (
     <TopbarDialog>
       <TopbarDialogItem
+        icon={RiSettings4Fill}
+        title="settings.title"
+        iconSize="1.4rem"
+        path="settings"
+      />
+      <TopbarDialogItem
         icon={RiLogoutBoxLine}
         title="logout"
-        onClick={logout}
         iconSize="1.4rem"
+        onClick={logout}
       />
     </TopbarDialog>
   );

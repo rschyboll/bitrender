@@ -1,34 +1,16 @@
 """Contains classes/database models describing user permissions."""
 from __future__ import annotations
 
-from enum import Enum, unique
 from typing import TYPE_CHECKING
 
 from tortoise.fields import CharEnumField, ForeignKeyField, ForeignKeyRelation
 
 from bitrender.core.acl import AclAction, AclEntry, AclPermit, StaticAclEntries
+from bitrender.enums.permission import Permission
 from bitrender.models.base import BaseModel
 
 if TYPE_CHECKING:
     from bitrender.models import Role
-
-
-@unique
-class Permission(Enum):
-    """Static enum containing available user permissions."""
-
-    MANAGE_USERS = "manage_users"
-    MANAGE_ROLES = "manage_roles"
-
-    @property
-    def acl_id(self) -> str:
-        """TODO generate docstring"""
-        return f"permission:{self.value}"
-
-    @classmethod
-    def list(cls) -> list[Permission]:
-        """TODO generate docstring"""
-        return list(Permission)
 
 
 class RolePermission(BaseModel):

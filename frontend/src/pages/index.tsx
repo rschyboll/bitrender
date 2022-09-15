@@ -18,6 +18,7 @@ import { themeClasses } from '@/types/settings';
 
 import EntryPage from './entry';
 import { ProtectedRoute } from './router';
+import SettingsPage from './settings';
 
 const lazyPageFactory = (
   promise: () => Promise<{ default: FC }>,
@@ -90,7 +91,14 @@ export const Pages: FC = () => {
                 }
               />
             </Route>
-            <Route path="settings" element={<RolesPage />} />
+            <Route
+              path="settings"
+              element={
+                <ProtectedRoute>
+                  <SettingsPage />
+                </ProtectedRoute>
+              }
+            />
           </Route>
 
           <Route path="" element={<EntryPage />}>

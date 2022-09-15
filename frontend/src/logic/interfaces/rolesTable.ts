@@ -3,10 +3,13 @@ import { Logic, LogicWrapper } from 'kea';
 
 interface IRolesTable extends Logic {
   readonly actions: {
+    setSearchString: (searchString: string) => void;
     setCurrentPage: (currentPage: number) => void;
     setRowsPerPage: (rowsPerPage: number) => void;
   };
   readonly values: {
+    localSearchString: string | null;
+    searchString: string | null;
     currentPage: number;
     rowsPerPage: number;
     amountOfRecords: number | null;
