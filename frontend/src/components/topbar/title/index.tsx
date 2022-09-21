@@ -12,8 +12,6 @@ const pathNameTitles: Record<string, string | undefined> = {
 export const TopbarTitle = memo(function TopbarTitle() {
   const location = useLocation();
 
-  console.log(location);
-
   let title = pathNameTitles[location.pathname];
 
   if (title == null) {

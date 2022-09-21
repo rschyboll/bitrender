@@ -24,7 +24,7 @@ export class Service {
     this.routeLogic = Dependencies.get(IRouteLogic.$);
 
     this.api = ky.create({
-      prefixUrl: 'http://127.0.0.1:8000/api/app/',
+      prefixUrl: 'http://127.0.0.1:8001/api/app/',
       hooks: {
         beforeError: [(error) => this.onError(error)],
         beforeRequest: [

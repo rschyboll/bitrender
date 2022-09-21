@@ -8,6 +8,8 @@ from bitrender.services.app.core import BaseAppService
 
 @implements(IRoleService).by_default
 class RoleService(BaseAppService, IRoleService):
+    """Class that implements the IRoleService, used for operations on roles and permissions"""
+
     @property
     def auth(self) -> IAuthService:
         """Property for easier accessing the IAuthService, without injecting it in every method

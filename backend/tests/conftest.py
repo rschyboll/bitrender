@@ -1,0 +1,30 @@
+"""Contains global fixtures for tests"""
+
+import asyncio
+
+import pytest
+from _pytest.fixtures import SubRequest
+from tortoise.contrib.test import finalizer, initializer
+
+from bitrender.config import Settings, get_settings
+
+settings = get_settings()
+
+test_settings = Settings(
+    database_url="postgres://postgres:@localhost:5433/bitrender-TEST",
+    data_dir="/data-TEST",
+    models=[*settings.models, "tests.utils.models"],
+)
+
+
+@pytest.fixture(scope="session", autouse=True)
+def initialize_orm(request: SubRequest) -> None:
+    """Initializes database for testing and removes it when finished."""
+    initializer(test_settings.models, db_url=test_settings.database_url, app_label="bitrender")
+    request.addfinalizer(finalizer)
+
+
+@pytest.fixture(scope="session")
+def event_loop() -> asyncio.AbstractEventLoop:
+    """Fixture returning the current event loop"""
+    return asyncio.get_event_loop()

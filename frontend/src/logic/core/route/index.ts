@@ -1,4 +1,6 @@
+import { deepEqual } from 'fast-equals';
 import { Path } from 'history';
+import { Location } from 'history';
 import {
   actions,
   afterMount,
@@ -6,10 +8,11 @@ import {
   listeners,
   path,
   props,
+  reducers,
   selectors,
   sharedListeners,
 } from 'kea';
-import { combineUrl, decodeParams, router } from 'kea-router';
+import { decodeParams } from 'kea-router';
 
 import Dependencies from '@/deps';
 import { injectDepsToLogic } from '@/logic/utils';
@@ -27,10 +30,64 @@ const logic = kea<logicType>([
       };
     },
   ),
-  reducers({
-    hashParams: [{} as Record<string, any>],
+  reducers(() => ({
+    currentLocation: [
+      { ...history.location },
+      {
+        updateLocationState: (_, { location }) => {
+          console.log('REDUCER');
+          console.log(location.hash);
+          return { ...location };
+        },
+      },
+    ],
+  })),
+  selectors({
+    pathname: [
+      (selectors) => [selectors.currentLocation],
+      (currentLocation) => {
+        return currentLocation.pathname;
+      },
+    ],
+    search: [
+      (selectors) => [selectors.currentLocation],
+      (currentLocation) => {
+        return currentLocation.search;
+      },
+    ],
+    hash: [
+      (selectors) => [selectors.currentLocation],
+      (currentLocation) => {
+        return currentLocation.hash;
+      },
+    ],
+    state: [
+      (selectors) => [selectors.currentLocation],
+      (currentLocation) => {
+        return currentLocation.state;
+      },
+    ],
+    key: [
+      (selectors) => [selectors.currentLocation],
+      (currentLocation) => {
+        return currentLocation.key;
+      },
+    ],
+    searchParams: [
+      (selectors) => [selectors.search],
+      (search) => {
+        return decodeParams(search, '?') as Record<string, unknown>;
+      },
+    ],
+    hashParams: [
+      (selectors) => [selectors.hash],
+      (hash) => {
+        return decodeParams(hash, '#') as Record<string, unknown>;
+      },
+    ],
   }),
   actions({
+    updateLocationState: (location: Location) => ({ location }),
     openRoute: (to: string | Partial<Path>, state?: object) => ({
       to: to,
       state: state,
@@ -78,13 +135,11 @@ const logic = kea<logicType>([
         ...payload.state,
         lastLocation: { ...history.location },
       });
-      console.log('PUSH ROUTE');
     },
     replaceRoute: (payload: { to: string | Partial<Path>; state?: object }) => {
       if (
         props.deps.routeValidators.stateHasLastLocation(history.location.state)
       ) {
-        console.log('REPLACE ROUTE');
         history.replace(payload.to, {
           ...payload.state,
           lastLocation: { ...history.location.state.lastLocation },
@@ -109,9 +164,6 @@ const logic = kea<logicType>([
     },
   })),
   listeners(({ sharedListeners }) => ({
-    [router.actionTypes.locationChanged]: () => {
-      console.log('LOCATION CHANGED');
-    },
     openRoute: sharedListeners.pushRoute,
     replaceRoute: sharedListeners.replaceRoute,
     openApp: sharedListeners.pushRoute,
@@ -123,36 +175,10 @@ const logic = kea<logicType>([
     openErrorPage: sharedListeners.pushRoute,
     returnToBeforeLogin: sharedListeners.replaceWithPrevious,
   })),
-  selectors({
-    searchParams: [
-      () => [router.selectors.searchParams],
-      (searchParams) => searchParams as Record<string, unknown>,
-    ],
-    hashParams: [
-      () => [router.selectors.hashParams],
-      (hashParams) => {
-        console.log('ROUTE LOGIC');
-        console.log(hashParams);
-        return hashParams as Record<string, unknown>;
-      },
-    ],
-  }),
-  afterMount(() => {
+  afterMount(({ actions, values }) => {
     history.listen((update) => {
-      console.log(update);
-      if (
-        update.location.pathname != router.values.location.pathname ||
-        update.location.search != router.values.location.search ||
-        update.location.hash != router.values.location.hash
-      ) {
-        console.log(decodeParams(update.location.hash, '#'));
-        router.actions.locationChanged({
-          method: update.action,
-          ...update.location,
-          url: update.location.pathname,
-          hashParams: decodeParams(update.location.hash, '#'),
-          searchParams: decodeParams(update.location.search, '?'),
-        });
+      if (!deepEqual(update.location, values.currentLocation)) {
+        actions.updateLocationState(update.location);
       }
     });
   }),

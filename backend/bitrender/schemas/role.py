@@ -3,7 +3,7 @@ from uuid import UUID
 
 from pydantic import BaseModel as PydanticBase
 
-from bitrender.models.permission import Permission
+from bitrender.enums.permission import Permission
 from bitrender.schemas.base import BaseSchema
 
 

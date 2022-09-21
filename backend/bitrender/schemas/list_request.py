@@ -10,21 +10,21 @@ from pydantic.generics import GenericModel
 
 from bitrender.enums.list_request import SearchRule, SortOrder
 
-COLUMNS = TypeVar("COLUMNS", bound=str, covariant=True)
+COLUMNS_co = TypeVar("COLUMNS_co", bound=str, covariant=True)
 
 
-class ListRequestSort(GenericModel, Generic[COLUMNS]):
+class ListRequestSort(GenericModel, Generic[COLUMNS_co]):
     """Schema used in list requests, describes how to sort the requested data
 
     Attributes:
         column (COLUMNS): By which column the data should be sorted
         order (SortOrder): In what direction the data should be sorted"""
 
-    column: COLUMNS
+    column: COLUMNS_co
     order: SortOrder
 
 
-class ListRequestSearch(GenericModel, Generic[COLUMNS]):
+class ListRequestSearch(GenericModel, Generic[COLUMNS_co]):
     """Schema used in list requests, used to search for values in specific column
 
     Attributes:
@@ -32,7 +32,7 @@ class ListRequestSearch(GenericModel, Generic[COLUMNS]):
         rule (SearchRule): Rule describing how to search for the value
         values (list[UUID | datetime | int | str | None]): Values to search for in the column"""
 
-    column: COLUMNS
+    column: COLUMNS_co
     rule: SearchRule
     value: UUID | datetime | int | str | None
 
@@ -48,7 +48,7 @@ class ListRequestPage(BaseModel):
     nr: int
 
 
-class ListRequestInput(GenericModel, Generic[COLUMNS]):
+class ListRequestInput(GenericModel, Generic[COLUMNS_co]):
     """Schema used in list requests, used to define, how and what records should be loaded
 
     Attributes:
@@ -57,6 +57,6 @@ class ListRequestInput(GenericModel, Generic[COLUMNS]):
         count: (ListRequestCount | None): How many and with what offset should the records be loaded
     """
 
-    sort: Optional[ListRequestSort[COLUMNS]]
-    search: Optional[list[ListRequestSearch[COLUMNS]]]
-    page: ListRequestPage | None
+    sort: Optional[ListRequestSort[COLUMNS_co]]
+    search: Optional[list[ListRequestSearch[COLUMNS_co]]]
+    page: Optional[ListRequestPage]

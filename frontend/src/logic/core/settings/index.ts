@@ -51,7 +51,8 @@ const logic = kea<logicType>([
         themeLink.href = `/themes/${themeClasses[theme]}.css`;
       }
     },
-    setFontSize: ({ fontSize }) => {
+    setFontSize: async ({ fontSize }, breakpoint) => {
+      await breakpoint(200);
       const htmlElement = document.getElementsByTagName('html')[0];
       if (htmlElement instanceof HTMLHtmlElement) {
         htmlElement.style.fontSize = fontSize.toString() + 'px';

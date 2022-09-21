@@ -25,14 +25,14 @@ MODEL = TypeVar("MODEL", bound="BaseModel")
 
 
 class BaseModel(Model):
-    """TODO update all docstrings to querysets"""
-
     """Class that serves as the base for all database models.
 
     Attributes:
         id (UUID): Primary key of the database entry.
         created_at (datetime): Datetime, when the entry was created.
-        modified_at (datetime): Datetime, when the entry was modified."""
+        modified_at (datetime): Datetime, when the entry was modified.
+        columns (Literal): Columns present in the current model,\
+             used in defining pydantic schemas."""
 
     id: UUID = UUIDField(pk=True)
     created_at: datetime = DatetimeField(auto_now_add=True)
@@ -41,7 +41,7 @@ class BaseModel(Model):
     columns = Literal["id", "created_at", "modified_at"]
 
     class Meta:
-        """BaseModel config."""
+        """Additional model config"""
 
         abstract = True
 
@@ -55,7 +55,7 @@ class BaseModel(Model):
             skip_locked (bool, optional): Specifies if the query should skip all rows that are \
                 currently locked. Defaults to False.
         Returns:
-            List[_MODEL]: List of entries extracted from the database"""
+            QuerySet[_MODEL]: Queryset returning a list of entries from the database."""
         if not lock:
             return cls.all()
         return cls.all().select_for_update(skip_locked=skip_locked)
@@ -122,7 +122,7 @@ class BaseModel(Model):
     @classmethod
     def get_list(
         cls: Type[MODEL],
-        request_input: ListRequestInput[str],
+        request_input: ListRequestInput[BaseModel.columns],
         lock: bool = True,
     ) -> QuerySet[MODEL]:
         """Returns a list of entries of the model, filtered, sorted and limied by the data provided
@@ -140,9 +140,11 @@ class BaseModel(Model):
                 cls.all()
                 .offset(request_input.page.nr * request_input.page.records_per_page)
                 .limit(request_input.page.records_per_page)
-            ).select_for_update(lock)
+            )
         else:
-            query = cls.all().select_for_update(lock)
+            query = cls.all()
+        if lock:
+            query = query.select_for_update()
         if request_input.sort is not None:
             if request_input.sort.order == SortOrder.ASC:
                 query = query.order_by(request_input.sort.column)
@@ -163,19 +165,17 @@ class BaseModel(Model):
         if filter_data.rule == SearchRule.EQUAL:
             new_query = query.filter(**{filter_data.column: filter_data.value})
         elif filter_data.rule == SearchRule.NOTEQUAL:
-            new_query = query.filter(**{f"{1}__not".format(filter_data.column): filter_data.value})
+            new_query = query.filter(**{f"{filter_data.column}__not": filter_data.value})
         elif filter_data.rule == SearchRule.BEGINSWITH:
-            new_query = query.filter(
-                **{f"{1}__startswith".format(filter_data.column): filter_data.value}
-            )
+            new_query = query.filter(**{f"{filter_data.column}__startswith": filter_data.value})
         elif filter_data.rule == SearchRule.GREATER:
-            new_query = query.filter(**{f"{1}__gt".format(filter_data.column): filter_data.value})
+            new_query = query.filter(**{f"{filter_data.column}__gt": filter_data.value})
         elif filter_data.rule == SearchRule.GREATEROREQUAL:
-            new_query = query.filter(**{f"{1}__gte".format(filter_data.column): filter_data.value})
+            new_query = query.filter(**{f"{filter_data.column}__gte": filter_data.value})
         elif filter_data.rule == SearchRule.LESS:
-            new_query = query.filter(**{f"{1}__lt".format(filter_data.column): filter_data.value})
+            new_query = query.filter(**{f"{filter_data.column}__lt": filter_data.value})
         elif filter_data.rule == SearchRule.LESSOREQUAL:
-            new_query = query.filter(**{f"{1}__lte".format(filter_data.column): filter_data.value})
+            new_query = query.filter(**{f"{filter_data.column}__lte": filter_data.value})
         return new_query
 
     @staticmethod
