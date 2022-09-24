@@ -41,3 +41,8 @@ class TestRolePermission(TruncationTestCase):
         """Tests returning correctly role of the permission."""
         for role_permission in self.role_permissions.values():
             assert role_permission.role == self.role
+
+    async def test_acl(self) -> None:
+        """Tests the __dacl__ and __sacl__ methods."""
+        assert len(await RolePermission(permission=Permission.MANAGE_ROLES).__dacl__()) != 0
+        assert len(RolePermission.__sacl__()) != 0

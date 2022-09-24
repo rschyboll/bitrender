@@ -3,6 +3,8 @@ from typing import Any
 
 from tortoise.contrib.test import TruncationTestCase
 
+from bitrender.services.app.core.role import RoleService
+
 
 class TestRoleService(TruncationTestCase):
     """TestCase containing tests for Role model."""
@@ -14,5 +16,11 @@ class TestRoleService(TruncationTestCase):
         """Creates database entries used in other tests"""
         await super().asyncSetUp()
 
-    async def test_2(self) -> None:
-        assert 2 == 2
+    async def test_get_list(self) -> None:
+        service = RoleService()
+
+    async def __mock_get_list(self) -> None:
+        pass
+
+    async def __mock_auth_query(self) -> None:
+        pass

@@ -108,15 +108,15 @@ class User(BaseModel):
         return cls.select_for_update().get(email=email)
 
     @property
+    def acl_id(self) -> str:
+        """TODO create docstring"""
+        return f"user:{self.id}"
+
+    @property
     async def acl_id_list(self) -> list[str]:
         """TODO create docstring"""
         role = await self.role
         return [self.acl_id, *(await role.acl_id_list)]
-
-    @property
-    def acl_id(self) -> str:
-        """TODO create docstring"""
-        return f"user:{self.id}"
 
     async def to_view(self) -> UserView:
         """Converts the user model to UserView schema

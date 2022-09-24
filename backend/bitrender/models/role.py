@@ -60,14 +60,13 @@ class Role(BaseModel):
 
         Returns:
             RoleView: View used by the app to display roles permissions and other data"""
-        role_permissions = await self.permissions
         return RoleView(
             id=self.id,
             created_at=self.created_at,
             modified_at=self.modified_at,
             name=self.name,
             default=self.default,
-            permissions=[role_permission.permission for role_permission in role_permissions],
+            permissions=[role_permission.permission for role_permission in await self.permissions],
         )
 
     @classmethod
@@ -75,6 +74,6 @@ class Role(BaseModel):
         return [StaticAclEntries.IS_AUTHENTICATED]
 
     async def __dacl__(self) -> list[list[AclEntry]]:
-        acl: list[list[AclEntry]] = []
+        acl: list[list[AclEntry]] = [[StaticAclEntries.DENY_EVERYONE]]
         await self.extend_dacl(self.permissions, acl)
         return acl

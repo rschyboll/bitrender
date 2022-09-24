@@ -81,3 +81,22 @@ class TestRole(TruncationTestCase):
             selected_acl_id_list = await role.acl_id_list
             assert acl_id_list == selected_acl_id_list
             counter += 1
+
+    async def test_to_view(self) -> None:
+        """Tests the to_view method."""
+        for role in self.custom_roles:
+            role_permissions = [
+                role_permission.permission for role_permission in await role.permissions
+            ]
+            role_view = await role.to_view()
+            assert role_view.id == role.id
+            assert role_view.created_at == role.created_at
+            assert role_view.modified_at == role.modified_at
+            assert role_view.name == role.name
+            assert role_view.default == role.default
+            assert role_view.permissions == role_permissions
+
+    async def test_acl(self) -> None:
+        """Tests the __dacl__ and __sacl__ methods."""
+        assert len(await Role().__dacl__()) != 0
+        assert len(Role.__sacl__()) != 0

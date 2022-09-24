@@ -34,7 +34,7 @@ class ListRequestSearch(GenericModel, Generic[COLUMNS_co]):
 
     column: COLUMNS_co
     rule: SearchRule
-    value: UUID | datetime | int | str | None
+    value: UUID | int | str | None
 
 
 class ListRequestPage(BaseModel):

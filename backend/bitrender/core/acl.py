@@ -65,3 +65,8 @@ class StaticAclEntries:
         SUPERUSER,
         [AclAction.CREATE, AclAction.VIEW, AclAction.EDIT, AclAction.DELETE],
     )
+    DENY_EVERYONE = (
+        AclPermit.DENY,
+        EVERYONE,
+        [AclAction.CREATE, AclAction.VIEW, AclAction.EDIT, AclAction.DELETE],
+    )

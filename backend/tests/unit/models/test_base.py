@@ -1,7 +1,6 @@
 """Contains tests for BaseModel model from bitrender.models.base."""
 from __future__ import annotations
 
-import json
 from typing import Any, Callable, Coroutine
 
 from tortoise.contrib.test import TruncationTestCase
@@ -178,12 +177,62 @@ class TestBaseModel(TruncationTestCase):
                 )
             ]
         )
+        request_input_greater = ListRequestInput[ExampleModel.columns](
+            search=[
+                ListRequestSearch(
+                    column="int_field",
+                    rule=SearchRule.GREATER,
+                    value=self.test_models[int(len(self.test_models) / 2)].int_field,
+                )
+            ]
+        )
+        request_input_greater_or_equal = ListRequestInput[ExampleModel.columns](
+            search=[
+                ListRequestSearch(
+                    column="int_field",
+                    rule=SearchRule.GREATEROREQUAL,
+                    value=self.test_models[int(len(self.test_models) / 2)].int_field,
+                )
+            ]
+        )
+        request_input_less = ListRequestInput[ExampleModel.columns](
+            search=[
+                ListRequestSearch(
+                    column="int_field",
+                    rule=SearchRule.LESS,
+                    value=self.test_models[int(len(self.test_models) / 2)].int_field,
+                )
+            ]
+        )
+        request_input_less_or_equal = ListRequestInput[ExampleModel.columns](
+            search=[
+                ListRequestSearch(
+                    column="int_field",
+                    rule=SearchRule.LESSOREQUAL,
+                    value=self.test_models[int(len(self.test_models) / 2)].int_field,
+                )
+            ]
+        )
         db_models_equal = await ExampleModel.get_list(request_input_equal)
         db_models_not_equal = await ExampleModel.get_list(request_input_not_equal)
         db_models_begins_with = await ExampleModel.get_list(request_input_begins_with)
+        db_models_greater = await ExampleModel.get_list(request_input_greater)
+        db_models_greater_or_equal = await ExampleModel.get_list(request_input_greater_or_equal)
+        db_models_less = await ExampleModel.get_list(request_input_less)
+        db_models_less_or_equal = await ExampleModel.get_list(request_input_less_or_equal)
         assert db_models_equal == [self.test_models[0]]
         assert db_models_not_equal == self.test_models[:0:-1]
         assert db_models_begins_with == [self.test_models[0]]
+        assert (
+            db_models_greater
+            == self.test_models[len(self.test_models) : int(len(self.test_models) / 2) : -1]
+        )
+        assert (
+            db_models_greater_or_equal
+            == self.test_models[len(self.test_models) : int(len(self.test_models) / 2) - 1 : -1]
+        )
+        assert db_models_less == self.test_models[int(len(self.test_models) / 2) - 1 :: -1]
+        assert db_models_less_or_equal == self.test_models[int(len(self.test_models) / 2) :: -1]
 
     async def test_get_list_page(self) -> None:
         """Tests the get_list method with only the search parameter"""
@@ -214,7 +263,7 @@ class TestBaseModel(TruncationTestCase):
         await ExampleModel.extend_dacl(model, test_acl)
         await ExampleModel.extend_dacl(relation, test_acl)
 
-        assert json.dumps(expected_acl) == json.dumps(test_acl)
+        assert expected_acl == test_acl
 
     async def test_extend_dacl_foreing_relation_not_fetched(self) -> None:
         """Tests the extends_dacl method with a not fetched foreign_relation passed as parameter."""
@@ -227,7 +276,7 @@ class TestBaseModel(TruncationTestCase):
         await ExampleModel.extend_dacl(model, test_acl)
         await ExampleModel.extend_dacl(relation, test_acl)
 
-        assert json.dumps(expected_acl) == json.dumps(test_acl)
+        assert expected_acl == test_acl
 
     async def test_extend_dacl_reverse_relation(self) -> None:
         """Tests the extends_dacl method with a fetched reverse_relation passed as parameter."""
@@ -243,7 +292,7 @@ class TestBaseModel(TruncationTestCase):
         await ExampleModel.extend_dacl(model, test_acl)
         await ExampleModel.extend_dacl(relation, test_acl)
 
-        assert json.dumps(expected_acl) == json.dumps(test_acl)
+        assert expected_acl == test_acl
 
     async def test_extend_dacl_reverse_relation_not_fetched(self) -> None:
         """Tests the extends_dacl method with a fetched reverse_relation passed as parameter."""
@@ -256,7 +305,21 @@ class TestBaseModel(TruncationTestCase):
         await ExampleModel.extend_dacl(model, test_acl)
         await ExampleModel.extend_dacl(relation, test_acl)
 
-        assert json.dumps(expected_acl) == json.dumps(test_acl)
+        assert expected_acl == test_acl
+
+    async def test_extend_dacl_reverse_relation_not_basemodel(self) -> None:
+        """Tests the extends_dacl method with a fetched reverse_relation passed as parameter."""
+        model_acl: list[AclList] = [[(AclPermit.DENY, EVERYONE, AclAction.VIEW)]]
+        relation_acl: list[AclList] = [[(AclPermit.NOTALLOW, "user:test2", AclAction.EDIT)]]
+        model = self.__prepare_model_with_dacl(model_acl)
+        relation = self.__prepare_reverse_relation_with_dacl(relation_acl, 10, True)
+        relation.related_objects = [1, 2, 3]  # type: ignore
+        test_acl: list[AclList] = []
+        expected_acl: list[AclList] = [*model_acl]
+        await ExampleModel.extend_dacl(model, test_acl)
+        await ExampleModel.extend_dacl(relation, test_acl)
+
+        assert expected_acl == test_acl
 
     def __prepare_reverse_relation_with_dacl(
         self, relation_models_dacl: list[AclList], model_count: int, fetched: bool

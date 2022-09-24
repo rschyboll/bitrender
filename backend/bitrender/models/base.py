@@ -161,22 +161,21 @@ class BaseModel(Model):
     def __filter_query(
         cls: Type[MODEL], query: QuerySet[MODEL], filter_data: ListRequestSearch[str]
     ) -> QuerySet[MODEL]:
-        new_query = query
-        if filter_data.rule == SearchRule.EQUAL:
-            new_query = query.filter(**{filter_data.column: filter_data.value})
-        elif filter_data.rule == SearchRule.NOTEQUAL:
-            new_query = query.filter(**{f"{filter_data.column}__not": filter_data.value})
-        elif filter_data.rule == SearchRule.BEGINSWITH:
-            new_query = query.filter(**{f"{filter_data.column}__startswith": filter_data.value})
-        elif filter_data.rule == SearchRule.GREATER:
-            new_query = query.filter(**{f"{filter_data.column}__gt": filter_data.value})
-        elif filter_data.rule == SearchRule.GREATEROREQUAL:
-            new_query = query.filter(**{f"{filter_data.column}__gte": filter_data.value})
-        elif filter_data.rule == SearchRule.LESS:
-            new_query = query.filter(**{f"{filter_data.column}__lt": filter_data.value})
-        elif filter_data.rule == SearchRule.LESSOREQUAL:
-            new_query = query.filter(**{f"{filter_data.column}__lte": filter_data.value})
-        return new_query
+        match filter_data.rule:
+            case SearchRule.EQUAL:
+                return query.filter(**{filter_data.column: filter_data.value})
+            case SearchRule.NOTEQUAL:
+                return query.filter(**{f"{filter_data.column}__not": filter_data.value})
+            case SearchRule.BEGINSWITH:
+                return query.filter(**{f"{filter_data.column}__startswith": filter_data.value})
+            case SearchRule.GREATER:
+                return query.filter(**{f"{filter_data.column}__gt": filter_data.value})
+            case SearchRule.GREATEROREQUAL:
+                return query.filter(**{f"{filter_data.column}__gte": filter_data.value})
+            case SearchRule.LESS:
+                return query.filter(**{f"{filter_data.column}__lt": filter_data.value})
+            case SearchRule.LESSOREQUAL:
+                return query.filter(**{f"{filter_data.column}__lte": filter_data.value})
 
     @staticmethod
     async def extend_dacl(
