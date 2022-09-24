@@ -6,7 +6,7 @@ from antidote import implements
 from bitrender.services.helpers.interfaces.password import IPasswordHelper
 
 
-@implements(IPasswordHelper).by_default
+@implements(IPasswordHelper)
 class BCryptHelper(IPasswordHelper):
     """Helper class containing implementation for hashing, verifying and validating passwords."""
 

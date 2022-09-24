@@ -5,7 +5,7 @@ from bitrender.services.app.interfaces.email import IEmailService
 
 
 @wire
-@implements(IEmailService).by_default
+@implements(IEmailService)
 class EmailService(BaseAppService, IEmailService):
     """TODO generate docstring"""
 

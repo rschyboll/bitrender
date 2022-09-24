@@ -6,7 +6,7 @@ from bitrender.services.app import IAuthService, IRoleService
 from bitrender.services.app.core import BaseAppService
 
 
-@implements(IRoleService).by_default
+@implements(IRoleService)
 class RoleService(BaseAppService, IRoleService):
     """Class that implements the IRoleService, used for operations on roles and permissions"""
 

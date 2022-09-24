@@ -17,7 +17,7 @@ RESOURCE = TypeVar("RESOURCE", bound=AclResource | list[AclResource])
 
 
 @wire
-@implements(IAuthService).by_default
+@implements(IAuthService)
 class AuthService(BaseAppService, IAuthService):
     """TODO generate docstring"""
 

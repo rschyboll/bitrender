@@ -19,7 +19,7 @@ from bitrender.services.app.core import BaseAppService
 from bitrender.services.helpers import IPasswordHelper, ITokenHelper
 
 
-@implements(IUserService).by_default
+@implements(IUserService)
 class UserService(BaseAppService, IUserService):
     @property
     def password(self) -> IPasswordHelper:
