@@ -51,7 +51,7 @@ async def login(
         f"Bearer {token}",
         secure=True,
         httponly=True,
-        samesite="None",
+        samesite="none",
         expires=60 * 60 * 24,
     )
 
@@ -139,7 +139,7 @@ async def logout(response: Response) -> None:
         "access_token",
         secure=True,
         httponly=True,
-        samesite="None",
+        samesite="none",
     )
 
 

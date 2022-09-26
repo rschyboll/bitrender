@@ -1,7 +1,6 @@
 """This module is the entry point for the app."""
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from starlette_context.middleware import RawContextMiddleware
 from tortoise.contrib.fastapi import register_tortoise
 
 from bitrender.api import api_router
@@ -35,7 +34,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 app.include_router(api_router)
-app.add_middleware(RawContextMiddleware)
 register_tortoise(app, config=tortoise_config)
 register_auth_error_handlers(app)
 register_library_error_handlers(app)

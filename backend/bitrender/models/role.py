@@ -1,7 +1,7 @@
 """Contains a database model describing user roles."""
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Literal, Type, TypeVar
+from typing import TYPE_CHECKING, Literal, Type, TypeVar, Union
 
 from tortoise.fields import BooleanField, ReverseRelation, TextField
 from tortoise.queryset import QuerySetSingle
@@ -17,7 +17,7 @@ if TYPE_CHECKING:
 MODEL = TypeVar("MODEL", bound="Role")
 
 
-class Role(BaseModel):
+class Role(BaseModel[BaseModel.columns | Literal["name", "default"]]):
     """TODO generate docstring"""
 
     name: str = TextField()
@@ -27,7 +27,7 @@ class Role(BaseModel):
 
     default: bool | None = BooleanField(default=None, null=True, unique=True)  # type: ignore
 
-    columns = Literal["name", "default"]
+    columns = Union[BaseModel.columns, Literal["name", "default"]]
 
     @classmethod
     def get_default(cls: Type[MODEL], lock: bool = True) -> QuerySetSingle[MODEL]:
@@ -71,7 +71,7 @@ class Role(BaseModel):
 
     @classmethod
     def __sacl__(cls) -> list[AclEntry]:
-        return [StaticAclEntries.IS_AUTHENTICATED]
+        return [StaticAclEntries.IS_SUPERUSER, StaticAclEntries.IS_AUTHENTICATED]
 
     async def __dacl__(self) -> list[list[AclEntry]]:
         acl: list[list[AclEntry]] = [[StaticAclEntries.DENY_EVERYONE]]

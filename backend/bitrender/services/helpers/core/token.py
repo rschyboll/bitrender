@@ -17,7 +17,7 @@ ALGORITHM = "HS256"
 
 
 @wire
-@implements(ITokenHelper)
+@implements(ITokenHelper)  # type: ignore
 class TokenHelper(ITokenHelper):
     """Helper class containing implementation for creating and decrypting web tokens."""
 

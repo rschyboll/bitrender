@@ -1,5 +1,5 @@
 """TODO generate docstring"""
-from abc import abstractmethod
+from abc import ABC, abstractmethod
 from typing import Any, Callable, Coroutine, Type, TypeVar, overload
 
 from antidote import interface
@@ -13,7 +13,7 @@ RESOURCE = TypeVar("RESOURCE", bound=AclResource | list[AclResource])
 
 
 @interface
-class IAuthService:
+class IAuthService(ABC):
     """Service used for authorizing user access to protected resources."""
 
     @overload

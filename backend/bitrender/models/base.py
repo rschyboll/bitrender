@@ -2,7 +2,7 @@
 from __future__ import annotations
 
 from datetime import datetime
-from typing import TYPE_CHECKING, Any, Literal, Type, TypeVar
+from typing import TYPE_CHECKING, Any, Generic, Literal, Type, TypeVar
 from uuid import UUID
 
 from tortoise.fields import (
@@ -22,9 +22,10 @@ if TYPE_CHECKING:
     from bitrender.schemas.list_request import ListRequestInput, ListRequestSearch
 
 MODEL = TypeVar("MODEL", bound="BaseModel")
+COLUMNS = TypeVar("COLUMNS", bound=str)
 
 
-class BaseModel(Model):
+class BaseModel(Model, Generic[COLUMNS]):
     """Class that serves as the base for all database models.
 
     Attributes:
@@ -122,7 +123,7 @@ class BaseModel(Model):
     @classmethod
     def get_list(
         cls: Type[MODEL],
-        request_input: ListRequestInput[BaseModel.columns],
+        request_input: ListRequestInput[COLUMNS],
         lock: bool = True,
     ) -> QuerySet[MODEL]:
         """Returns a list of entries of the model, filtered, sorted and limied by the data provided

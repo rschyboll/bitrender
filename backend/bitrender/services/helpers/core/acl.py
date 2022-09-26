@@ -8,7 +8,7 @@ from bitrender.core.acl import AclAction, AclEntry, AclList, AclPermit, AclResou
 from bitrender.services.helpers.interfaces.acl import IACLHelper
 
 
-@implements(IACLHelper)
+@implements(IACLHelper)  # type: ignore
 class AclHelper(IACLHelper):
     """Class for validating access to a resource with a control list."""
 

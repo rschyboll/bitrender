@@ -33,7 +33,7 @@ class RolePermission(BaseModel):
 
     @classmethod
     def __sacl__(cls) -> list[AclEntry]:
-        return [StaticAclEntries.IS_AUTHENTICATED]
+        return [StaticAclEntries.IS_SUPERUSER, StaticAclEntries.IS_AUTHENTICATED]
 
     async def __dacl__(self) -> list[list[AclEntry]]:
         acl: list[list[AclEntry]] = [[(AclPermit.ALLOW, self.acl_id, AclAction.VIEW)]]
