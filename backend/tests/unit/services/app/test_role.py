@@ -17,9 +17,9 @@ class TestRoleService(TruncationTestCase):
         await super().asyncSetUp()
 
     async def test_get_list(self) -> None:
-        service = RoleService()
+        pass
 
-    async def __mock_get_list(self) -> None:
+    async def __mock_role_get_list(self) -> None:
         pass
 
     async def __mock_auth_query(self) -> None:

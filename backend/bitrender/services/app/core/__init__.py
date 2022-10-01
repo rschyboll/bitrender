@@ -1,7 +1,7 @@
 """Contains user service implementation."""
 
-from bitrender.services import Service
 from bitrender.services.app.context import WebContextProtocol
+from bitrender.services.base import Service
 
 
 class BaseAppService(Service[WebContextProtocol]):

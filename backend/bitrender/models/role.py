@@ -17,8 +17,18 @@ if TYPE_CHECKING:
 MODEL = TypeVar("MODEL", bound="Role")
 
 
-class Role(BaseModel[BaseModel.columns | Literal["name", "default"]]):
-    """TODO generate docstring"""
+class Role(BaseModel):
+    """Model that defines a user's role in the system. Each role has assigned a set of permissions.
+
+
+    Attributes:
+        name (str): The name of the role.
+        permissions (ReverseRelation[RolePermission]): A reverse relation, with the permission\
+             entries of the role.
+        users (ReverseRelation[User]): A reverse relation, with the users\
+             that have the role assigned.
+        default (bool | None): Defines, if this is the default role that is used when registering\
+             new users."""
 
     name: str = TextField()
 

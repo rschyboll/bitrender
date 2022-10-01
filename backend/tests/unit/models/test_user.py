@@ -1,4 +1,4 @@
-"""Contains tests for Role model from bitrender.models.role."""
+"""Contains tests for User model from bitrender.models.user."""
 from typing import Any
 
 import pytest
@@ -20,7 +20,7 @@ class TestUser(TruncationTestCase):
         self.custom_role_users: list[User]
 
     async def asyncSetUp(self) -> None:
-        """Creates database entries used in other tests"""
+        """Creates database entries used in other tests."""
         await super().asyncSetUp()
         default_role, custom_role = await self.__prepare_roles()
         self.default_role_users = await generate_users(10, default_role, True, True)

@@ -8,7 +8,7 @@ from bitrender.models import Role, RolePermission
 
 
 class TestRolePermission(TruncationTestCase):
-    """TestCase containing tests for Role model."""
+    """TestCase containing tests for RolePermission model."""
 
     def __init__(self, *args: Any, **kwargs: Any) -> None:
         super().__init__(*args, **kwargs)

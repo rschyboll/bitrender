@@ -22,17 +22,17 @@ class TestRole(TruncationTestCase):
         self.custom_roles: list[Role]
 
     async def asyncSetUp(self) -> None:
-        """Creates database entries used in other tests"""
+        """Creates database entries used in other tests."""
         await super().asyncSetUp()
         self.default_role = await Role.create(name="default", default=True)
         self.custom_roles = await generate_roles(10)
 
     async def test_get_default(self) -> None:
-        """Tests the get_default method with lock set to False."""
+        """Tests the get_default method with the lock parameter set to False."""
         assert await Role.get_default(False) == self.default_role
 
     async def test_get_default_lock(self) -> None:
-        """Tests the get_default method with lock set to True."""
+        """Tests the get_default method with the lock parameter set to True."""
         transaction_test = TransactionTest(Role.get_default, (True,), Role.get_all, (True, True))
         default_role, test_roles = await transaction_test()
         assert self.default_role == default_role

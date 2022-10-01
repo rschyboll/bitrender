@@ -2,7 +2,7 @@
 from __future__ import annotations
 
 from datetime import datetime
-from typing import TYPE_CHECKING, Any, Generic, Literal, Type, TypeVar
+from typing import TYPE_CHECKING, Literal, Type, TypeVar
 from uuid import UUID
 
 from tortoise.fields import (
@@ -22,10 +22,9 @@ if TYPE_CHECKING:
     from bitrender.schemas.list_request import ListRequestInput, ListRequestSearch
 
 MODEL = TypeVar("MODEL", bound="BaseModel")
-COLUMNS = TypeVar("COLUMNS", bound=str)
 
 
-class BaseModel(Model, Generic[COLUMNS]):
+class BaseModel(Model):
     """Class that serves as the base for all database models.
 
     Attributes:
@@ -123,7 +122,7 @@ class BaseModel(Model, Generic[COLUMNS]):
     @classmethod
     def get_list(
         cls: Type[MODEL],
-        request_input: ListRequestInput[COLUMNS],
+        request_input: ListRequestInput[str],
         lock: bool = True,
     ) -> QuerySet[MODEL]:
         """Returns a list of entries of the model, filtered, sorted and limied by the data provided
@@ -180,10 +179,24 @@ class BaseModel(Model, Generic[COLUMNS]):
 
     @staticmethod
     async def extend_dacl(
-        relation: ForeignKeyRelation[Any] | OneToOneNullableRelation[Any] | ReverseRelation[Any],
+        relation: ForeignKeyRelation[MODEL]
+        | OneToOneNullableRelation[MODEL]
+        | ReverseRelation[MODEL]
+        | MODEL,
         acl: list[list[AclEntry]],
     ) -> list[list[AclEntry]]:
-        """TODO generate docstring"""
+        """Extends the dacl of a resource, with dacl of other related resources.
+        It checks, if the related resource is already fetched, if it is, it gets it's dacl,\
+             and extends the provided dacl with it.
+
+        Args:
+            relation (ForeignKeyRelation[MODEL] | OneToOneNullableRelation[MODEL]\
+                 | ReverseRelation[MODEL] | MODEL):
+                The related resource, that should extends the current dacl.
+            acl (list[list[AclEntry]]): The current dacl, that should be extended.
+
+        Returns:
+            list[list[AclEntry]]: The extended dacl."""
         if isinstance(relation, BaseModel):
             relation_acl = await relation.__dacl__()
             acl.extend(relation_acl)

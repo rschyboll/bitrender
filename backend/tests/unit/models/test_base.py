@@ -1,10 +1,10 @@
 """Contains tests for BaseModel model from bitrender.models.base."""
 from __future__ import annotations
 
-from typing import Any, Callable, Coroutine
+from typing import Any, Callable, Coroutine, cast
 
 from tortoise.contrib.test import TruncationTestCase
-from tortoise.fields import ReverseRelation
+from tortoise.fields import ForeignKeyRelation, ReverseRelation
 
 from bitrender.core.acl import EVERYONE, AclAction, AclList, AclPermit
 from bitrender.enums.list_request import SearchRule, SortOrder
@@ -346,10 +346,8 @@ class TestBaseModel(TruncationTestCase):
 
         return __dacl__
 
-    def __create_foreign_relation(
-        self, model: ExampleModel
-    ) -> Callable[..., Coroutine[Any, Any, ExampleModel]]:
+    def __create_foreign_relation(self, model: ExampleModel) -> ForeignKeyRelation[ExampleModel]:
         async def __relation__() -> ExampleModel:
             return model
 
-        return __relation__
+        return cast(ForeignKeyRelation[ExampleModel], __relation__)
