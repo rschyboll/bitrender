@@ -1,4 +1,4 @@
-"""Contains tests for the TokenHelper class from bitrender.auth.jwt"""
+"""Contains tests for the TokenHelper class from bitrender.services.helpers.core.token"""
 
 from datetime import datetime, timedelta
 from unittest.mock import MagicMock
@@ -9,7 +9,8 @@ from pytest_mock import MockerFixture
 
 from bitrender.config import get_settings
 from bitrender.errors.token import TokenCorruptedError, TokenCreateError, TokenExpiredError
-from bitrender.services.helpers.core.token import TokenHelper, UserTokenData
+from bitrender.schemas import UserTokenData
+from bitrender.services.helpers.core.token import TokenHelper
 
 
 def test_expire(mocker: MockerFixture) -> None:
