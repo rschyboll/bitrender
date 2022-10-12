@@ -11,6 +11,8 @@ import {
 } from '@/types/service';
 import { IServiceValidators } from '@/validators/interfaces';
 
+import { ListRequestInput } from '../messages/list';
+
 @injectable()
 export class Service {
   protected api: typeof ky;
@@ -95,5 +97,32 @@ export class Service {
         type: ServiceErrorType.UnknownError,
       },
     };
+  }
+
+  protected listRequestToURL(input: ListRequestInput<string>): URLSearchParams {
+    const { page, search, sort } = input;
+
+    const searchParams = new URLSearchParams();
+
+    if (page != null) {
+      searchParams.append('page_nr', page.pageNr.toString());
+      searchParams.append('records_per_page', page.recordsPerPage.toString());
+    }
+
+    if (sort != null) {
+      searchParams.append('column', sort.column);
+      searchParams.append('order', sort.order.toString());
+    }
+
+    for (const searchItem of search) {
+      searchParams.append('search_column', searchItem.column);
+      searchParams.append('search_rule', searchItem.rule.toString());
+      searchParams.append(
+        'search_value',
+        searchItem.value != null ? searchItem.value.toString() : '',
+      );
+    }
+
+    return searchParams;
   }
 }

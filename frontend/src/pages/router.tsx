@@ -17,7 +17,7 @@ import LoadingBar, { LoadingBarRef } from 'react-top-loading-bar';
 
 import { Navigate } from '@/components/navigate';
 import { IAppLogic } from '@/logic/interfaces';
-import { Permission } from '@/schemas/user';
+import { Permission } from '@/schemas/role';
 
 import { LoadingPage } from './loading';
 

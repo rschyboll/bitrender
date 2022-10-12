@@ -1,4 +1,5 @@
-import { Permission, UserView } from '@/schemas/user';
+import { Permission } from '@/schemas/role';
+import { UserView } from '@/schemas/user';
 
 import { IUserValidators } from '../interfaces';
 import { JSONSchemaType, ValidateFunction, Validators } from './base';

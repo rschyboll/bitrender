@@ -1,7 +1,7 @@
-"""TODO create docstring"""
+"""Contains a database model describing a user."""
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Literal, Type, TypeVar
+from typing import TYPE_CHECKING, Literal, Type, TypeVar, Union
 
 from tortoise.expressions import Q
 from tortoise.fields import (
@@ -32,7 +32,17 @@ MODEL = TypeVar("MODEL", bound="User")
 
 
 class User(BaseModel):
-    """TODO create docstring"""
+    """Model that defines a registered user in the system.
+
+    Attributes:
+        email (str): Unique email.
+        username (str): Unique username.
+        hashed_password (bytes): Password hased with bcrypt.
+        verify_token (str | None): Token used to verify the user.
+        reset_password_token (str | None): Token used to reset the password o the user.
+        is_active (bool): If the user is active.
+        is_superuser (bool): If the user is a superuser.
+        is_verified (bool): If the user is verified."""
 
     email: str = CharField(255, unique=True)
     username: str = CharField(255, unique=True)
@@ -47,7 +57,7 @@ class User(BaseModel):
 
     role: ForeignKeyRelation[Role] = ForeignKeyField("bitrender.Role")
 
-    columns = Literal["id", "created_at", "modified_at", "test"]
+    columns = Union[BaseModel.columns, Literal["email", "username"]]
 
     @classmethod
     def get_by_username_or_email(

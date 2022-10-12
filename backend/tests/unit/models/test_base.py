@@ -103,7 +103,7 @@ class TestBaseModel(TruncationTestCase):
         """Tests the get_list method with the lock parameter set to False"""
         request_input = ListRequestInput[ExampleModel.columns](
             sort=ListRequestSort(column="created_at", order=SortOrder.ASC),
-            page=ListRequestPage(records_per_page=5, nr=0),
+            page=ListRequestPage(records_per_page=5, page_nr=0),
             search=[
                 ListRequestSearch(
                     column="id", rule=SearchRule.NOTEQUAL, value=self.test_models[0].id
@@ -117,7 +117,7 @@ class TestBaseModel(TruncationTestCase):
         """Tests the get_list method with the lock parameter set to True"""
         request_input = ListRequestInput[ExampleModel.columns](
             sort=ListRequestSort(column="created_at", order=SortOrder.ASC),
-            page=ListRequestPage(records_per_page=5, nr=0),
+            page=ListRequestPage(records_per_page=5, page_nr=0),
             search=[
                 ListRequestSearch(
                     column="id", rule=SearchRule.NOTEQUAL, value=self.test_models[0].id
@@ -237,10 +237,10 @@ class TestBaseModel(TruncationTestCase):
     async def test_get_list_page(self) -> None:
         """Tests the get_list method with only the search parameter"""
         request_input_page_1 = ListRequestInput[ExampleModel.columns](
-            page=ListRequestPage(records_per_page=5, nr=0)
+            page=ListRequestPage(records_per_page=5, page_nr=0)
         )
         request_input_page_2 = ListRequestInput[ExampleModel.columns](
-            page=ListRequestPage(records_per_page=5, nr=1)
+            page=ListRequestPage(records_per_page=5, page_nr=1)
         )
         db_models_page_1 = await ExampleModel.get_list(request_input_page_1)
         db_models_page_2 = await ExampleModel.get_list(request_input_page_2)

@@ -1,7 +1,7 @@
 import { IconType } from 'react-icons';
 import { RiGroupFill, RiServerFill, RiShieldUserFill } from 'react-icons/ri';
 
-import { Permission } from '@/schemas/user';
+import { Permission } from '@/schemas/role';
 
 export interface Group {
   icon: IconType;

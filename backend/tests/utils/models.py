@@ -1,13 +1,11 @@
 """Contains models used only in testing."""
 from __future__ import annotations
 
-from typing import Literal, Type, TypeVar, Union, cast
+from typing import Literal, TypeVar, Union
 
 from tortoise.fields import CharField, IntField
-from tortoise.queryset import QuerySet
 
 from bitrender.models.base import BaseModel
-from bitrender.schemas.list_request import ListRequestInput
 
 MODEL = TypeVar("MODEL", bound="ExampleModel")
 
@@ -19,13 +17,3 @@ class ExampleModel(BaseModel):
     int_field = IntField()
 
     columns = Union[BaseModel.columns, Literal["char_field", "int_field"]]
-
-    @classmethod
-    def get_list(
-        cls: Type[MODEL],
-        request_input: ListRequestInput[ExampleModel.columns],
-        lock: bool = True,
-    ) -> QuerySet[MODEL]:
-        return super(ExampleModel, cls).get_list(
-            cast(ListRequestInput[BaseModel.columns], request_input), lock
-        )

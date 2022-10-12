@@ -1,9 +1,6 @@
-import { BaseView } from '.';
+import { Permission } from '@/schemas/role';
 
-export enum Permission {
-  MANAGE_USERS = 'manage_users',
-  MANAGE_ROLES = 'manage_roles',
-}
+import { BaseView } from '.';
 
 export interface UserView extends BaseView {
   email: string;

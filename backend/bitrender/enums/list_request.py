@@ -1,9 +1,9 @@
 """Contains enums for list request schemas"""
-from enum import Enum, unique
+from enum import IntEnum, unique
 
 
 @unique
-class SortOrder(Enum):
+class SortOrder(IntEnum):
     """Enum describing the sort order in list requests"""
 
     ASC = 0
@@ -11,7 +11,7 @@ class SortOrder(Enum):
 
 
 @unique
-class SearchRule(Enum):
+class SearchRule(IntEnum):
     """Enum describing how to search for a provided value"""
 
     EQUAL = 0

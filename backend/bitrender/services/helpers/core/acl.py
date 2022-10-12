@@ -40,7 +40,7 @@ class AclHelper(IACLHelper):
     ) -> bool | None:
         if isinstance(actions, AclAction):
             actions = [actions]
-        if not isinstance(resources, list):
+        if not isinstance(resources, Sequence):
             resources = [resources]
         permits: list[AclPermit | None] = []
         for resource in resources:

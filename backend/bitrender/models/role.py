@@ -37,7 +37,7 @@ class Role(BaseModel):
 
     default: bool | None = BooleanField(default=None, null=True, unique=True)  # type: ignore
 
-    columns = Union[BaseModel.columns, Literal["name", "default"]]
+    columns = Literal["id", "created_at", "modified_at", "name", "default"]
 
     @classmethod
     def get_default(cls: Type[MODEL], lock: bool = True) -> QuerySetSingle[MODEL]:

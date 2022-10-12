@@ -138,7 +138,7 @@ class BaseModel(Model):
         if request_input.page is not None:
             query = (
                 cls.all()
-                .offset(request_input.page.nr * request_input.page.records_per_page)
+                .offset(request_input.page.page_nr * request_input.page.records_per_page)
                 .limit(request_input.page.records_per_page)
             )
         else:

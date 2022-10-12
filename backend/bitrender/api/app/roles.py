@@ -1,8 +1,9 @@
 """Contains users router definition and its routes."""
 
+
 from fastapi import APIRouter, Depends
 
-from bitrender.api.deps.user import UserContext
+from bitrender.api.deps.user import UserContext, get_current_user
 from bitrender.api.inject import InjectInRoute
 from bitrender.models import Role
 from bitrender.schemas import ListRequestInput, RoleView
@@ -13,9 +14,11 @@ from .responses.roles import roles_get_list
 roles_router = APIRouter(prefix="/roles")
 
 
-@roles_router.get("", responses=roles_get_list)
+@roles_router.get("", dependencies=[Depends(get_current_user)], responses=roles_get_list)
 async def get_list(
-    request_input: ListRequestInput[Role.columns],
+    request_input: ListRequestInput[Role.columns] = Depends(
+        ListRequestInput[Role.columns].create_dependency(Role.columns)
+    ),
     role_service: IRoleService = Depends(InjectInRoute(IRoleService, UserContext, "context")),
 ) -> list[RoleView]:
     """Returns a list of roles, that are present in the system.
