@@ -106,9 +106,13 @@ class ListRequestSearchInput(GenericModel, Generic[COLUMNS_co]):
 
         Returns:
             dict[str, Any]: Validated values."""
-        if values["column"] is None and values["rule"] is None and values["value"] is None:
+        if (
+            ("column" not in values or values["column"]) is None
+            or ("rule" not in values or values["rule"] is None)
+            or ("value" not in values or values["value"] is None)
+        ):
             return values
-        if len(values["column"]) != len(values["rule"]) or len(values["rule"]) != len(
+        if len(values["column"]) != len(values["rule"]) or len(values["value"]) != len(
             values["value"]
         ):
             raise ValueError(
