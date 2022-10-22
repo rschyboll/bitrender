@@ -42,6 +42,9 @@
       "email": "Email",
       "password": "Hasło"
     },
+    "role": {
+      "name": "Nazwa"
+    },
     "tryAgain": "Spróbuj ponownie",
     "loading": "Ładowanie",
     "search": "Wyszukaj...",

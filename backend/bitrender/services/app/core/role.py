@@ -1,7 +1,7 @@
 from antidote import implements
 
 from bitrender.models import Role, RolePermission
-from bitrender.schemas import ListRequestInput, RoleView
+from bitrender.schemas import ListRequestInput, ListRequestOutput, RoleView
 from bitrender.services.app import IAuthService, IRoleService
 from bitrender.services.app.core import BaseAppService
 
@@ -19,8 +19,12 @@ class RoleService(BaseAppService, IRoleService):
         auth_service: IAuthService = self.inject(IAuthService)
         return auth_service
 
-    async def get_list(self, request_input: ListRequestInput[Role.columns]) -> list[RoleView]:
-        query = Role.get_list(request_input, False).prefetch_related("permissions")
+    async def get_list(
+        self, request_input: ListRequestInput[Role.columns]
+    ) -> ListRequestOutput[RoleView]:
+        query, count_query = Role.get_list(request_input, False)
+        query.prefetch_related("permissions")
         roles = await self.auth.query(query, [RolePermission])
 
-        return [await role.to_view() for role in roles]
+        role_views = [await role.to_view() for role in roles]
+        return ListRequestOutput(items=role_views, row_count=await count_query)

@@ -8,7 +8,6 @@ interface IRolesTable extends Logic {
     setRowsPerPage: (rowsPerPage: number) => void;
   };
   readonly values: {
-    localSearchString: string | null;
     searchString: string | null;
     currentPage: number;
     rowsPerPage: number;

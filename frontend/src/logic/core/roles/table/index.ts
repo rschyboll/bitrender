@@ -1,5 +1,6 @@
 import {
   actions,
+  afterMount,
   kea,
   listeners,
   path,
@@ -13,6 +14,10 @@ import { subscriptions } from 'kea-subscriptions';
 import Dependencies from '@/deps';
 import { IRouteLogic } from '@/logic/interfaces';
 import { injectDepsToLogic } from '@/logic/utils';
+import { RoleColumns, RoleView } from '@/schemas/role';
+import { IRoleService } from '@/services/interfaces';
+import { ListRequestInput, SearchRule } from '@/services/messages/list';
+import { LoadState } from '@/types';
 
 import type { logicType } from './indexType';
 
@@ -22,6 +27,7 @@ const logic = kea<logicType>([
     {} as {
       deps: {
         routeLogic: IRouteLogic;
+        roleService: IRoleService;
       };
     },
   ),
@@ -30,36 +36,57 @@ const logic = kea<logicType>([
       null as string | null,
       {
         setSearchString: (_, { searchString }) => searchString,
-        setLocalSearchString: (_, { searchString }) => searchString,
+      },
+    ],
+    loadState: [
+      LoadState.Idle as LoadState,
+      {
+        load: () => LoadState.InProgress,
+        loadSuccess: () => LoadState.Idle,
+        loadFailure: () => LoadState.Failure,
+      },
+    ],
+    roles: [
+      [] as RoleView[],
+      {
+        loadSuccess: (_, { roles }) => roles,
       },
     ],
   }),
   actions({
     refresh: true,
-    loadRecords: () => ({}),
-    setLocalSearchString: (searchString: string) => ({ searchString }),
     setSearchString: (searchString: string) => ({ searchString }),
     setCurrentPage: (currentPage: number) => ({ currentPage }),
+    setLocalSearchString: (searchString: string) => ({ searchString }),
     setRowsPerPage: (rowsPerPage: number) => ({ rowsPerPage }),
+    load: true,
+    loadSuccess: (roles: RoleView[], row_count: number) => ({
+      roles,
+      row_count,
+    }),
+    loadFailure: true,
   }),
-  sharedListeners({
-    loadRecords: async () => {},
-  }),
-  subscriptions(({ actions }) => ({
-    searchString: (value, oldValue) => {
-      if (oldValue == null && value != null) {
+  subscriptions(({ actions, values }) => ({
+    listRequestInput: async () => {
+      actions.refresh();
+    },
+    urlSearchString: (value) => {
+      if (value != values.localSearchString) {
+        actions.setLocalSearchString(value);
       }
     },
-    rowsPerPage: (value, oldValue) => {
-      if (value != null && oldValue != null) {
-        console.log('ROWS PER PAGE CHANGED');
-        console.log(value, oldValue);
-      }
-    },
-    currentPage: (value, oldValue) => {},
   })),
   selectors(({ props }) => ({
     searchString: [
+      (selectors) => [selectors.urlSearchString, selectors.localSearchString],
+      (urlSearchString, localSearchString) => {
+        if (localSearchString == null) {
+          return urlSearchString;
+        }
+        return localSearchString;
+      },
+    ],
+    urlSearchString: [
       () => [props.deps.routeLogic.selectors.hashParams],
       (hashParams) => {
         const search = hashParams['search'];
@@ -89,11 +116,52 @@ const logic = kea<logicType>([
         return 0;
       },
     ],
+    listRequestInput: [
+      (selectors) => [
+        selectors.currentPage,
+        selectors.rowsPerPage,
+        selectors.urlSearchString,
+      ],
+      (currentPage, rowsPerPage, searchString) => {
+        const listRequestInput: ListRequestInput<RoleColumns> = {
+          search: [
+            {
+              column: 'name',
+              rule: SearchRule.CONTAINS,
+              value: searchString,
+            },
+          ],
+          page: {
+            pageNr: currentPage,
+            recordsPerPage: rowsPerPage,
+          },
+        };
+        return listRequestInput;
+      },
+    ],
   })),
   reducers({
-    amountOfRecords: [100 as number | null],
+    amountOfRecords: [
+      0 as number,
+      {
+        loadSuccess: (_, { row_count }) => row_count,
+      },
+    ],
   }),
-  listeners(({ props, values }) => ({
+  listeners(({ props, values, actions }) => ({
+    refresh: async () => {
+      actions.load();
+    },
+    load: async () => {
+      const response = await props.deps.roleService.getRoles(
+        values.listRequestInput,
+      );
+      if (response.success) {
+        actions.loadSuccess(response.data.items, response.data.rowCount);
+      } else {
+        actions.loadFailure();
+      }
+    },
     setSearchString: async ({ searchString }, breakpoint) => {
       await breakpoint(250);
       props.deps.routeLogic.actions.openRolesPage(
@@ -106,19 +174,23 @@ const logic = kea<logicType>([
       props.deps.routeLogic.actions.openRolesPage(
         currentPage,
         values.rowsPerPage,
-        values.searchString,
+        values.urlSearchString,
       );
     },
     setRowsPerPage: ({ rowsPerPage }) => {
       props.deps.routeLogic.actions.openRolesPage(
         values.currentPage,
         rowsPerPage,
-        values.searchString,
+        values.urlSearchString,
       );
     },
   })),
+  afterMount(({ actions }) => {
+    actions.refresh();
+  }),
 ]);
 
 export const rolesTableLogic = injectDepsToLogic(logic, () => ({
   routeLogic: Dependencies.get(IRouteLogic.$),
+  roleService: Dependencies.get(IRoleService.$),
 }));

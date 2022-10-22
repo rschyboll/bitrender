@@ -1,5 +1,10 @@
-import { DataTableModel } from '@/components/dataTable';
+import { ColumnType, DataTableModel } from '@/components/dataTable/model';
 
 export const rolesTableModel: DataTableModel = {
-  columns: {},
+  columns: {
+    name: {
+      title: 'role.name',
+      type: ColumnType.STRING,
+    },
+  },
 };

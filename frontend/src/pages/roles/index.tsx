@@ -48,13 +48,13 @@ const RolesPage: FC = () => {
 const TableSearchField = () => {
   const rolesTableLogic = useInjection(IRolesTableLogic.$);
 
-  const { localSearchString } = useValues(rolesTableLogic);
+  const { searchString } = useValues(rolesTableLogic);
   const { setSearchString } = useActions(rolesTableLogic);
 
   return (
     <div className="roles-table-header">
       <TextField
-        value={localSearchString != null ? localSearchString : ''}
+        value={searchString != null ? searchString : ''}
         onChange={setSearchString}
         className="search-field"
         leftIcon={RiSearchLine}

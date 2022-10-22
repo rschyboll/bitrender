@@ -17,18 +17,21 @@ import {
   IRouteLogic,
   ISettingsLogic,
 } from '@/logic/interfaces';
-import { UserService } from '@/services/api';
-import { IUserService } from '@/services/interfaces';
+import { RoleService, UserService } from '@/services/api';
+import { IRoleService, IUserService } from '@/services/interfaces';
 import {
   RouteValidators,
   ServiceValidators,
   UserValidators,
 } from '@/validators/core';
 import {
+  IRoleValidators,
   IRouteValidators,
   IServiceValidators,
   IUserValidators,
 } from '@/validators/interfaces';
+
+import { RoleValidators } from './validators/core/role';
 
 const Dependencies = new Container();
 
@@ -38,6 +41,7 @@ Dependencies.bind(IServiceValidators.$)
   .to(ServiceValidators)
   .inSingletonScope();
 Dependencies.bind(IRouteValidators.$).to(RouteValidators).inSingletonScope();
+Dependencies.bind(IRoleValidators.$).to(RoleValidators).inSingletonScope();
 
 //Converter dependencies
 Dependencies.bind(IUserConverters.$).to(UserConverters).inSingletonScope();
@@ -54,5 +58,6 @@ Dependencies.bind(IRolesTableLogic.$).toConstantValue(rolesTableLogic);
 
 //Service dependencies
 Dependencies.bind(IUserService.$).to(UserService).inSingletonScope();
+Dependencies.bind(IRoleService.$).to(RoleService).inSingletonScope();
 
 export default Dependencies;

@@ -1,12 +1,14 @@
 import { interfaces } from 'inversify';
 import { useInjection } from 'inversify-react';
 import { Logic, LogicWrapper, useActions, useValues } from 'kea';
+import { Column as PrimeColumn } from 'primereact/column';
 import {
   DataTableHeaderTemplateType,
   DataTablePFSEvent,
   DataTable as PrimeDataTable,
 } from 'primereact/datatable';
 import { memo, useCallback } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { PaginatorTemplate } from '@/components/paginator';
 
@@ -24,6 +26,7 @@ interface IDataTableLogicBase extends Logic {
     currentPage: number;
     rowsPerPage: number;
     amountOfRecords: number | null;
+    values: unknown[];
   };
 }
 
@@ -37,8 +40,9 @@ export interface DataTableProps {
 
 export const DataTable = memo(function DataTable(props: DataTableProps) {
   const dataTableLogic = useInjection(props.logicIdentifier);
+  const { t } = useTranslation();
 
-  const { currentPage, rowsPerPage, amountOfRecords } =
+  const { currentPage, rowsPerPage, amountOfRecords, values } =
     useValues(dataTableLogic);
   const { setCurrentPage, setRowsPerPage } = useActions(dataTableLogic);
 
@@ -65,6 +69,11 @@ export const DataTable = memo(function DataTable(props: DataTableProps) {
       className="datatable"
       paginator
       paginatorTemplate={PaginatorTemplate}
-    />
+      value={values}
+    >
+      {Object.entries(props.model.columns).map(([key, column]) => {
+        return <PrimeColumn key={key} header={t(column.title)} />;
+      })}
+    </PrimeDataTable>
   );
 });

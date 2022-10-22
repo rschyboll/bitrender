@@ -9,3 +9,9 @@ export interface BaseView {
   createdAt: Date;
   modifiedAt: Date;
 }
+
+export enum LoadState {
+  Idle,
+  InProgress,
+  Failure,
+}

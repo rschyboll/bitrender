@@ -11,6 +11,7 @@ export enum SearchRule {
   GREATEROREQUAL = 4,
   LESS = 5,
   LESSOREQUAL = 6,
+  CONTAINS = 7,
 }
 
 export interface ListRequestSort<Columns extends string> {
@@ -33,4 +34,9 @@ export interface ListRequestInput<Columns extends string> {
   sort?: ListRequestSort<Columns>;
   search: ListRequestSearch<Columns>[];
   page?: ListRequestPage;
+}
+
+export interface ListRequestOutput<Items> {
+  items: Items;
+  rowCount: number;
 }

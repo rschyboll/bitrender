@@ -11,6 +11,7 @@ from pydantic.generics import GenericModel
 from bitrender.enums.list_request import SearchRule, SortOrder
 
 COLUMNS_co = TypeVar("COLUMNS_co", bound=str, covariant=True)
+RETURNV_co = TypeVar("RETURNV_co", bound=BaseModel, covariant=True)
 
 
 class ListRequestSort(GenericModel, Generic[COLUMNS_co]):
@@ -178,3 +179,15 @@ class ListRequestInput(GenericModel, Generic[COLUMNS_co]):
 
         # pylint: enable=no-member
         return dependency
+
+
+class ListRequestOutput(GenericModel, Generic[RETURNV_co]):
+    """Schema that contains the output of a successful list request.
+
+    Attributes:
+        items (list[RETURNV_co]): The result of the ListRequestInput.
+        row_count (int): Search rules for the loaded records
+    """
+
+    items: list[RETURNV_co]
+    row_count: int

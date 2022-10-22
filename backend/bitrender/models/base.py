@@ -13,7 +13,7 @@ from tortoise.fields import (
     UUIDField,
 )
 from tortoise.models import Model
-from tortoise.queryset import QuerySet, QuerySetSingle
+from tortoise.queryset import CountQuery, QuerySet, QuerySetSingle
 
 from bitrender.core.acl import EVERYONE, AclAction, AclEntry, AclList, AclPermit
 from bitrender.enums.list_request import SearchRule, SortOrder
@@ -124,7 +124,7 @@ class BaseModel(Model):
         cls: Type[MODEL],
         request_input: ListRequestInput[str],
         lock: bool = True,
-    ) -> QuerySet[MODEL]:
+    ) -> tuple[QuerySet[MODEL], CountQuery]:
         """Returns a list of entries of the model, filtered, sorted and limied by the data provided
 
         Args:
@@ -133,8 +133,16 @@ class BaseModel(Model):
             lock (bool, optional): Specifies if the entry should be locked, \
                 adds FOR UPDATE to the query. Defaults to True
         Returns:
-            QuerySet[MODEL]: Queryset that returns the selected database entries"""
-        query: QuerySet[MODEL]
+            tuple[QuerySet[MODEL], CountQuery]: The first item is a \
+                Queryset that returns the selected database entries
+                The second one is CountQuery that returns the full row amount."""
+        query: QuerySet[MODEL] = cls.all()
+        count_query: CountQuery | None = None
+        if request_input.search is not None:
+            for search_data in request_input.search:
+                query = cls.__filter_query(query, search_data)
+        count_query = query.count()
+
         if request_input.page is not None:
             query = (
                 cls.all()
@@ -152,10 +160,7 @@ class BaseModel(Model):
                 query = query.order_by("-" + request_input.sort.column)
         else:
             query = query.order_by("-created_at")
-        if request_input.search is not None:
-            for search_data in request_input.search:
-                query = cls.__filter_query(query, search_data)
-        return query
+        return query, count_query
 
     @classmethod
     def __filter_query(
@@ -176,6 +181,8 @@ class BaseModel(Model):
                 return query.filter(**{f"{filter_data.column}__lt": filter_data.value})
             case SearchRule.LESSOREQUAL:
                 return query.filter(**{f"{filter_data.column}__lte": filter_data.value})
+            case SearchRule.CONTAINS:
+                return query.filter(**{f"{filter_data.column}__contains": filter_data.value})
 
     @staticmethod
     async def extend_dacl(

@@ -21,3 +21,4 @@ class SearchRule(IntEnum):
     GREATEROREQUAL = 4
     LESS = 5
     LESSOREQUAL = 6
+    CONTAINS = 7

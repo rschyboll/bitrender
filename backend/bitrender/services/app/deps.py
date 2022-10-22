@@ -2,6 +2,7 @@
 
 from .core.auth import AuthService
 from .core.email import EmailService
+from .core.role import RoleService
 from .core.user import UserService
 
-__all__ = ["AuthService", "UserService", "EmailService"]
+__all__ = ["AuthService", "UserService", "EmailService", "RoleService"]
