@@ -46,7 +46,7 @@ const logic = kea<logicType>([
         loadFailure: () => LoadState.Failure,
       },
     ],
-    roles: [
+    values: [
       [] as RoleView[],
       {
         loadSuccess: (_, { roles }) => roles,

@@ -12,7 +12,8 @@ import { useTranslation } from 'react-i18next';
 
 import { PaginatorTemplate } from '@/components/paginator';
 
-import { DataTableModel } from './model';
+import { StringColumn } from './columns';
+import { ColumnType, DataTableModel } from './model';
 import './style.scss';
 
 export { DataTableModel };
@@ -40,7 +41,6 @@ export interface DataTableProps {
 
 export const DataTable = memo(function DataTable(props: DataTableProps) {
   const dataTableLogic = useInjection(props.logicIdentifier);
-  const { t } = useTranslation();
 
   const { currentPage, rowsPerPage, amountOfRecords, values } =
     useValues(dataTableLogic);
@@ -72,8 +72,28 @@ export const DataTable = memo(function DataTable(props: DataTableProps) {
       value={values}
     >
       {Object.entries(props.model.columns).map(([key, column]) => {
-        return <PrimeColumn key={key} header={t(column.title)} />;
+        return (
+          <DataTableColumn key={key} title={column.title} type={column.type} />
+        );
       })}
     </PrimeDataTable>
   );
 });
+
+interface DataTableColumnProps {
+  key: string;
+  title: string;
+  type: ColumnType;
+}
+
+const DataTableColumn = (props: DataTableColumnProps) => {
+  const { t } = useTranslation();
+
+  switch (props.type) {
+    case ColumnType.STRING:
+      return <StringColumn key={props.key} title={props.title} />;
+
+    default:
+      return <PrimeColumn key={props.key} header={t(props.title)} />;
+  }
+};

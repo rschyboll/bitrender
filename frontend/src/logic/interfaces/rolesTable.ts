@@ -1,6 +1,8 @@
 import { interfaces } from 'inversify';
 import { Logic, LogicWrapper } from 'kea';
 
+import { RoleView } from '@/schemas/role';
+
 interface IRolesTable extends Logic {
   readonly actions: {
     setSearchString: (searchString: string) => void;
@@ -12,6 +14,7 @@ interface IRolesTable extends Logic {
     currentPage: number;
     rowsPerPage: number;
     amountOfRecords: number | null;
+    values: RoleView[];
   };
 }
 
