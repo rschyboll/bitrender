@@ -1,7 +1,7 @@
 import { interfaces } from 'inversify';
 import { Logic, LogicWrapper } from 'kea';
 
-import { RoleView } from '@/schemas/role';
+import { RoleTableView } from '@/schemas/role';
 
 interface IRolesTable extends Logic {
   readonly actions: {
@@ -14,7 +14,7 @@ interface IRolesTable extends Logic {
     currentPage: number;
     rowsPerPage: number;
     amountOfRecords: number | null;
-    values: RoleView[];
+    values: RoleTableView[];
   };
 }
 

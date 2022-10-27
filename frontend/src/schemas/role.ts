@@ -11,6 +11,11 @@ export interface RoleView extends BaseView {
   permissions: Permission[];
 }
 
+export type RoleTableView = {
+  name: string;
+  default: true | null;
+} & { [Key in Permission]: true | null };
+
 export type RoleColumns = BaseColumns | 'name' | 'default';
 
 export const RoleColumns: RoleColumns[] = [...BaseColumns, 'name', 'default'];

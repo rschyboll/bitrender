@@ -7,7 +7,7 @@ import isPlainObject from 'lodash/isPlainObject';
 import snakeCase from 'lodash/snakeCase';
 
 export { UserConverters } from './user';
-
+export { RoleConverters } from './role';
 @injectable()
 export class UtilityConverters {
   public uuidValidate(value: string) {

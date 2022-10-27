@@ -47,12 +47,18 @@
       "password": "Password"
     },
     "role": {
-      "name": "Name"
+      "name": "Name",
+      "default": "Is default"
+    },
+    "permission": {
+      "manage_users": "Managing users",
+      "manage_roles": "Managing roles"
     },
     "tryAgain": "Try again",
     "loading": "Loading",
     "search": "Search...",
     "itemsPerPage": "Rows per page:",
-    "currentPageReport": "{{first}} - {{last}} of {{all}}"
+    "currentPageReport": "{{first}} - {{last}} of {{all}}",
+    "new_female": "New"
   }
 }

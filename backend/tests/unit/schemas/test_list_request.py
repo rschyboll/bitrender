@@ -129,4 +129,15 @@ class TestListRequestInput:
         """Tests that the create_dependency method returns\
              a function that creates an instance of the schema."""
         list_request_page = ListRequestPage(records_per_page=1, page_nr=1)
+        list_request_search_input = ListRequestSearchInput[Literal["id", "id2"]](
+            column=[], value=[], rule=[]
+        )
+        list_request_sort = ListRequestSort[Literal["id", "id2"]](column="id", order=SortOrder.ASC)
         dependency = ListRequestInput[Literal["id", "id2"]].create_dependency(Literal["id", "id2"])
+        list_request_input = dependency(
+            list_request_search_input, list_request_sort, list_request_page
+        )
+        assert isinstance(list_request_input, ListRequestInput)
+        assert list_request_input.page == list_request_page
+        assert list_request_input.sort == list_request_sort
+        assert list_request_search_input.to_list() == list_request_input.search

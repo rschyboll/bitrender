@@ -11,6 +11,7 @@ import {
 } from 'kea';
 import { subscriptions } from 'kea-subscriptions';
 
+import { IRoleConverters } from '@/converters/interfaces';
 import Dependencies from '@/deps';
 import { IRouteLogic } from '@/logic/interfaces';
 import { injectDepsToLogic } from '@/logic/utils';
@@ -19,6 +20,7 @@ import { IRoleService } from '@/services/interfaces';
 import { ListRequestInput, SearchRule } from '@/services/messages/list';
 import { LoadState } from '@/types';
 
+import { RoleTableView } from './../../../../schemas/role';
 import type { logicType } from './indexType';
 
 const logic = kea<logicType>([
@@ -28,6 +30,7 @@ const logic = kea<logicType>([
       deps: {
         routeLogic: IRouteLogic;
         roleService: IRoleService;
+        roleConverters: IRoleConverters;
       };
     },
   ),
@@ -46,7 +49,7 @@ const logic = kea<logicType>([
         loadFailure: () => LoadState.Failure,
       },
     ],
-    values: [
+    roles: [
       [] as RoleView[],
       {
         loadSuccess: (_, { roles }) => roles,
@@ -77,6 +80,42 @@ const logic = kea<logicType>([
     },
   })),
   selectors(({ props }) => ({
+    values: [
+      (selectors) => [selectors.roles],
+      (roles) => {
+        const roleTableViews: RoleTableView[] = [];
+        for (const role of roles) {
+          roleTableViews.push(props.deps.roleConverters.viewToTableView(role));
+          roleTableViews.push(props.deps.roleConverters.viewToTableView(role));
+          roleTableViews.push(props.deps.roleConverters.viewToTableView(role));
+          roleTableViews.push(props.deps.roleConverters.viewToTableView(role));
+          roleTableViews.push(props.deps.roleConverters.viewToTableView(role));
+          roleTableViews.push(props.deps.roleConverters.viewToTableView(role));
+          roleTableViews.push(props.deps.roleConverters.viewToTableView(role));
+          roleTableViews.push(props.deps.roleConverters.viewToTableView(role));
+          roleTableViews.push(props.deps.roleConverters.viewToTableView(role));
+          roleTableViews.push(props.deps.roleConverters.viewToTableView(role));
+          roleTableViews.push(props.deps.roleConverters.viewToTableView(role));
+          roleTableViews.push(props.deps.roleConverters.viewToTableView(role));
+          roleTableViews.push(props.deps.roleConverters.viewToTableView(role));
+          roleTableViews.push(props.deps.roleConverters.viewToTableView(role));
+          roleTableViews.push(props.deps.roleConverters.viewToTableView(role));
+          roleTableViews.push(props.deps.roleConverters.viewToTableView(role));
+          roleTableViews.push(props.deps.roleConverters.viewToTableView(role));
+          roleTableViews.push(props.deps.roleConverters.viewToTableView(role));
+          roleTableViews.push(props.deps.roleConverters.viewToTableView(role));
+          roleTableViews.push(props.deps.roleConverters.viewToTableView(role));
+          roleTableViews.push(props.deps.roleConverters.viewToTableView(role));
+          roleTableViews.push(props.deps.roleConverters.viewToTableView(role));
+          roleTableViews.push(props.deps.roleConverters.viewToTableView(role));
+          roleTableViews.push(props.deps.roleConverters.viewToTableView(role));
+          roleTableViews.push(props.deps.roleConverters.viewToTableView(role));
+          roleTableViews.push(props.deps.roleConverters.viewToTableView(role));
+          roleTableViews.push(props.deps.roleConverters.viewToTableView(role));
+        }
+        return roleTableViews;
+      },
+    ],
     searchString: [
       (selectors) => [selectors.urlSearchString, selectors.localSearchString],
       (urlSearchString, localSearchString) => {
@@ -193,4 +232,5 @@ const logic = kea<logicType>([
 export const rolesTableLogic = injectDepsToLogic(logic, () => ({
   routeLogic: Dependencies.get(IRouteLogic.$),
   roleService: Dependencies.get(IRoleService.$),
+  roleConverters: Dependencies.get(IRoleConverters.$),
 }));

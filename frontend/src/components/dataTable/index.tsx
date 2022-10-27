@@ -1,46 +1,31 @@
 import { interfaces } from 'inversify';
 import { useInjection } from 'inversify-react';
-import { Logic, LogicWrapper, useActions, useValues } from 'kea';
+import { useActions, useValues } from 'kea';
 import { Column as PrimeColumn } from 'primereact/column';
 import {
-  DataTableHeaderTemplateType,
   DataTablePFSEvent,
   DataTable as PrimeDataTable,
 } from 'primereact/datatable';
-import { memo, useCallback } from 'react';
+import { useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { PaginatorTemplate } from '@/components/paginator';
+import { typedMemo } from '@/utils/react';
 
-import { StringColumn } from './columns';
-import { ColumnType, DataTableModel } from './model';
+import { Column } from './columns';
+import { ColumnType } from './enums';
 import './style.scss';
+import type { IDataTableLogic } from './types/logic';
+import type { DataTableProps } from './types/props';
 
-export { DataTableModel };
+export * from './types';
+export * from './enums';
 
-interface IDataTableLogicBase extends Logic {
-  readonly actions: {
-    setCurrentPage: (currentPage: number) => void;
-    setRowsPerPage: (rowsPerPage: number) => void;
-  };
-  readonly values: {
-    currentPage: number;
-    rowsPerPage: number;
-    amountOfRecords: number | null;
-    values: unknown[];
-  };
-}
-
-export type IDataTableLogic = LogicWrapper<IDataTableLogicBase>;
-
-export interface DataTableProps {
-  logicIdentifier: interfaces.ServiceIdentifier<IDataTableLogic>;
-  model: DataTableModel;
-  header?: DataTableHeaderTemplateType;
-}
-
-export const DataTable = memo(function DataTable(props: DataTableProps) {
+export const DataTable = typedMemo(function DataTable<
+  LogicIdentifier extends interfaces.ServiceIdentifier<IDataTableLogic>,
+>(props: DataTableProps<LogicIdentifier>) {
   const dataTableLogic = useInjection(props.logicIdentifier);
+  const { t } = useTranslation();
 
   const { currentPage, rowsPerPage, amountOfRecords, values } =
     useValues(dataTableLogic);
@@ -65,35 +50,40 @@ export const DataTable = memo(function DataTable(props: DataTableProps) {
       totalRecords={amountOfRecords != null ? amountOfRecords : undefined}
       first={currentPage * rowsPerPage}
       onPage={onPage}
-      lazy
+      loading={false}
       className="datatable"
       paginator
       paginatorTemplate={PaginatorTemplate}
       value={values}
     >
+      {props.customColumns != null && props.customColumns.before != null
+        ? Object.entries(props.customColumns.before).map(([key, column]) => {
+            return <PrimeColumn key={key} header={column.title} />;
+          })
+        : null}
       {Object.entries(props.model.columns).map(([key, column]) => {
         return (
-          <DataTableColumn key={key} title={column.title} type={column.type} />
+          <PrimeColumn
+            key={key}
+            field={key}
+            header={t(column.title)}
+            className={
+              column.type == ColumnType.TRUEORNULL ? 'text-center' : ''
+            }
+            headerClassName={
+              column.type == ColumnType.TRUEORNULL ? 'text-center' : ''
+            }
+            body={(rowData) => {
+              return <Column type={column.type} value={rowData[key]} />;
+            }}
+          />
         );
       })}
+      {props.customColumns != null && props.customColumns.after != null
+        ? Object.entries(props.customColumns.after).map(([key, column]) => {
+            return <PrimeColumn key={key} header={column.title} />;
+          })
+        : null}
     </PrimeDataTable>
   );
 });
-
-interface DataTableColumnProps {
-  key: string;
-  title: string;
-  type: ColumnType;
-}
-
-const DataTableColumn = (props: DataTableColumnProps) => {
-  const { t } = useTranslation();
-
-  switch (props.type) {
-    case ColumnType.STRING:
-      return <StringColumn key={props.key} title={props.title} />;
-
-    default:
-      return <PrimeColumn key={props.key} header={t(props.title)} />;
-  }
-};

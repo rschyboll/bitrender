@@ -2,6 +2,7 @@ import { interfaces } from 'inversify';
 import { Options } from 'ky';
 
 export { IUserConverters } from './user';
+export { IRoleConverters } from './role';
 
 export interface IUtilityConverters {
   requestToSnakeCase: (

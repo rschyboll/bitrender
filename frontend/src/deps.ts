@@ -1,8 +1,16 @@
 import { Container } from 'inversify';
 import 'reflect-metadata';
 
-import { UserConverters, UtilityConverters } from '@/converters/core';
-import { IUserConverters, IUtilityConverters } from '@/converters/interfaces';
+import {
+  RoleConverters,
+  UserConverters,
+  UtilityConverters,
+} from '@/converters/core';
+import {
+  IRoleConverters,
+  IUserConverters,
+  IUtilityConverters,
+} from '@/converters/interfaces';
 import {
   appLogic,
   authLogic,
@@ -48,6 +56,7 @@ Dependencies.bind(IUserConverters.$).to(UserConverters).inSingletonScope();
 Dependencies.bind(IUtilityConverters.$)
   .to(UtilityConverters)
   .inSingletonScope();
+Dependencies.bind(IRoleConverters.$).to(RoleConverters).inSingletonScope();
 
 //Logic dependencies
 Dependencies.bind(IAppLogic.$).toConstantValue(appLogic);

@@ -8,9 +8,12 @@ $staticWidth: 16rem;
 }
 
 .layout,
-.layout-content,
 .layout-sidebar {
   height: 100%;
+}
+
+.layout-content {
+  height: calc(100% - 4rem);
 }
 
 .layout-content {
@@ -50,7 +53,6 @@ $staticWidth: 16rem;
   }
   @include media('>desktop') {
     margin-left: $staticWidth;
-    border-right: 1px solid var(--sidebar-border);
   }
 }
 
@@ -113,6 +115,8 @@ $staticWidth: 16rem;
 }
 
 .layout-page {
+  overflow-y: auto;
+
   position: relative;
   height: 100%;
   padding: 1rem;

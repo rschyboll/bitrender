@@ -43,12 +43,18 @@
       "password": "Hasło"
     },
     "role": {
-      "name": "Nazwa"
+      "name": "Nazwa",
+      "default": "Jest domyślna"
+    },
+    "permission": {
+      "manage_users": "Zarządzanie użytkownikami",
+      "manage_roles": "Zarządzanie rolami"
     },
     "tryAgain": "Spróbuj ponownie",
     "loading": "Ładowanie",
     "search": "Wyszukaj...",
     "itemsPerPage": "Liczba wierszy na stronę:",
-    "currentPageReport": "{{first}} - {{last}} z {{all}}"
+    "currentPageReport": "{{first}} - {{last}} z {{all}}",
+    "new_female": "Nowa"
   }
 }
