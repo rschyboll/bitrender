@@ -3,6 +3,7 @@ from __future__ import annotations
 
 from typing import Any, Callable, Coroutine, cast
 
+from pyparsing import counted_array
 from tortoise.contrib.test import TruncationTestCase
 from tortoise.fields import ForeignKeyRelation, ReverseRelation
 
@@ -22,7 +23,7 @@ class TestBaseModel(TruncationTestCase):
         self.test_models: list[ExampleModel] = []
 
     async def asyncSetUp(self) -> None:
-        """Creates database entries used in other tests."""
+        """Creates database entries used in tests."""
         await super().asyncSetUp()
         self.test_models = await generate_example_models(10)
 
@@ -110,8 +111,9 @@ class TestBaseModel(TruncationTestCase):
                 )
             ],
         )
-        db_models = await ExampleModel.get_list(request_input, False)
-        assert db_models == self.test_models[1:6]
+        query, count_query = ExampleModel.get_list(request_input, False)
+        assert await query == self.test_models[0:5]
+        assert await count_query == len(self.test_models) - 1
 
     async def test_get_list_lock(self) -> None:
         """Tests the get_list method with the lock parameter set to True"""

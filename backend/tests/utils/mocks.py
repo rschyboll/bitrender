@@ -1,5 +1,5 @@
 """Contains utilities for mocking"""
-from typing import Any, Generic, TypeVar
+from typing import Any, Generator, Generic, TypeVar
 from unittest.mock import AsyncMock
 
 T = TypeVar("T")
@@ -17,5 +17,6 @@ class AwaitableMock(AsyncMock, Generic[T]):
         super().__init__(*args, **kwargs)
         self.return_value: T = return_value
 
-    def __await__(self) -> T:
+    def __await__(self) -> Generator[None, None, T]:
+        yield
         return self.return_value
