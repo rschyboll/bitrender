@@ -1,0 +1,62 @@
+@import '../../node_modules/primereact/resources/primereact.css';
+
+@import '../../node_modules/@fontsource/nunito/index.css';
+@import '../../node_modules/@fontsource/nunito/300.css';
+@import '../../node_modules/@fontsource/nunito/500.css';
+
+@import './global.scss';
+@import './grid.scss';
+
+html,
+body,
+#root {
+  height: 100%;
+  font-family: nunito !important;
+  width: 100%;
+}
+
+body {
+  height: 100%;
+  margin: 0;
+  background: linear-gradient(
+    180deg,
+    var(--surface-50) 0%,
+    var(--surface-b) 100%
+  );
+  font-family: nunito !important;
+}
+
+.p-component {
+  font-family: nunito !important;
+}
+
+a {
+  text-decoration: none;
+}
+
+#app {
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+}
+
+/* width */
+::-webkit-scrollbar {
+  width: 0.8rem;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: var(--sidebar-background);
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: var(--sidebar-border);
+  border-radius: 10px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}

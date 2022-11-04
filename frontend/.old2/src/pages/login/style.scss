@@ -1,0 +1,51 @@
+@use 'sass:math';
+
+$field-icon-size: 1.2rem;
+
+#login-page {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  #login-page-title {
+    font-size: 1.75rem;
+    font-weight: 500;
+    margin-top: 0.5rem;
+    margin-bottom: 1rem;
+  }
+
+  #login-no-account {
+    margin-bottom: 1rem;
+  }
+
+  #login-no-account-text {
+    color: var(--text-color-secondary);
+    margin-right: 0.25rem;
+  }
+
+  #login-no-account-link {
+    color: var(--blue-500);
+    margin-right: 0.25rem;
+  }
+
+  #login-page-form {
+    width: 100%;
+  }
+
+  #login-username-field {
+    margin-bottom: 0.25rem;
+  }
+
+  #login-password-field {
+    margin-bottom: 0.75rem;
+  }
+
+  #login-forgot-password {
+    color: var(--blue-500);
+  }
+
+  #login-submit {
+    width: 100%;
+  }
+}

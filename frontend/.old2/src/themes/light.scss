@@ -1,0 +1,22 @@
+@import '../../node_modules/primereact/resources/themes/saga-orange/theme.css';
+
+:root {
+  --sidebar-background: linear-gradient(180deg, #343a40 10%, #2e3439 100%);
+  --sidebar-border: transparent;
+  --sidebar-static-group-text-color: rgba(255, 255, 255, 0.4);
+  --sidebar-spacer-color: rgba(255, 255, 255, 0.2);
+  --sidebar-title-color: rgb(255, 255, 255);
+  --sidebar-item-color: rgba(255, 255, 255, 0.8);
+  --sidebar-item-hover: #4b545c;
+  --sidebar-item-toggle-shadow: 0 0 0 0.2rem rgb(255 255 255 / 10%);
+  --sidebar-topbar-button-shadow: 0 0 0 0.2rem #bbdefb;
+  --sidebar-dialog-border: 0 none;
+
+  --secondary-color: #607d8b;
+  --success-color: #689f38;
+  --info-color: #0288d1;
+  --warning-color: #fbc02d;
+  --help-color: #9c27b0;
+  --danger-color: #d32f2f;
+  --danger-text-color: #f44336;
+}

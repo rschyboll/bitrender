@@ -1,0 +1,55 @@
+.topbar-dialog-item {
+  color: var(--sidebar-item-color);
+  padding: 0.5rem;
+  font-size: 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s, box-shadow 0.2s;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  font-weight: normal;
+  height: 2.215rem;
+}
+
+.topbar-dialog-item:hover {
+  background-color: var(--sidebar-item-hover);
+}
+
+.theme-light .layout-slim .topbar-dialog-item,
+.theme-light .layout-static .topbar-dialog-item {
+  color: #495057;
+}
+
+.theme-light .layout-slim .topbar-dialog-item:hover,
+.theme-light .layout-static .topbar-dialog-item:hover {
+  background-color: #e9ecef;
+}
+
+.theme-light .layout-horizontal .topbar-dialog-item:hover {
+  background-color: var(--sidebar-item-hover);
+}
+
+.topbar-dialog-item:focus {
+  box-shadow: var(--sidebar-item-toggle-shadow);
+  outline: none;
+}
+
+.topbar-dialog-item-title {
+  line-height: 1rem;
+  font-size: 1rem;
+}
+
+.topbar-dialog-item-icon-container {
+  width: 1.2rem;
+  height: 1.2rem;
+  margin-right: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.topbar-dialog-item-icon {
+  position: absolute;
+}

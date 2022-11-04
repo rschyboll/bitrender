@@ -1,0 +1,32 @@
+@import '@/scss/variables.scss';
+
+.p-button.p-paginator-element {
+  width: 2.286em;
+  height: 2.286em;
+}
+
+.paginator-rows-per-page {
+  display: flex;
+  align-items: center;
+  margin-left: auto;
+  @include media('<=1200px') {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+.paginator-current-page-report {
+  width: 15rem;
+  margin-right: auto;
+  @include media('<=1200px') {
+    width: 100%;
+    text-align: center;
+  }
+}
+
+.p-datatable .p-paginator {
+  @include media('<=1200px') {
+    justify-content: center;
+    align-items: center;
+  }
+}

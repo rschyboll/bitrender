@@ -1,5 +1,3 @@
-import './wdyr';
-
 import { Provider as InversifyProvider } from 'inversify-react';
 import PrimeReact from 'primereact/api';
 import { createRoot } from 'react-dom/client';
@@ -30,4 +28,5 @@ function Init() {
   );
 }
 
-createRoot(document.getElementById('app') as HTMLElement).render(<Init />);
+createRoot(document.getElementById('root') as HTMLElement).render(<Init />);
+  

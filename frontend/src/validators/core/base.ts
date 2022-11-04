@@ -1,8 +1,8 @@
-import Ajv from 'ajv';
-import addFormats from 'ajv-formats';
-import { injectable } from 'inversify';
+import Ajv from "ajv";
+import addFormats from "ajv-formats";
+import { injectable } from "inversify";
 
-export { JSONSchemaType, ValidateFunction } from 'ajv';
+export type { JSONSchemaType, ValidateFunction } from "ajv";
 
 @injectable()
 export class Validators {

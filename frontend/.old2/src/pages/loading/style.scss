@@ -1,0 +1,130 @@
+@use 'sass:math';
+
+$blockSize: 2.5rem;
+
+$delay: 0.065s;
+$duration: 0.88s;
+$startingColor: var(--text-color);
+$endingColor: var(--primary-color);
+
+$blockMargin: math.div($blockSize, 3);
+$loaderSize: $blockSize * 3 + $blockMargin * 2;
+
+@mixin animation-delay($delay) {
+  animation-delay: $delay;
+}
+
+@mixin animation($ani1: null, $ani2: null) {
+  @if ($ani2 != null) {
+    animation: $ani1, $ani2;
+  } @else if ($ani1 != null) {
+    animation: $ani1;
+  }
+}
+
+.loader-text {
+  position: absolute;
+  top: calc(50% - 4rem + $loaderSize / 1.25);
+  left: 50%;
+  transform: translateY(-50%) translateX(-50%);
+  font-size: 2.5rem;
+  font-weight: 100;
+}
+
+.loader {
+  position: absolute;
+  top: calc(50% - 4rem);
+  left: 50%;
+  width: $loaderSize;
+  height: $loaderSize;
+  transform: translateY(-50%) translateX(-50%);
+}
+
+.loader-block {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: inline-block;
+  opacity: 0;
+  width: $blockSize;
+  height: $blockSize;
+  background: $startingColor;
+  @include animation(
+    show $duration step-end infinite alternate,
+    pulse $duration linear infinite alternate
+  );
+}
+
+.loader-block:nth-child(1) {
+  transform: translate(0, 0);
+  @include animation-delay(1 * $delay);
+}
+
+.loader-block:nth-child(2) {
+  transform: translate($blockSize + $blockMargin, 0);
+  @include animation-delay(2 * $delay);
+}
+
+.loader-block:nth-child(3) {
+  transform: translate(($blockSize * 2) + ($blockMargin * 2), 0);
+  @include animation-delay(3 * $delay);
+}
+
+.loader-block:nth-child(4) {
+  transform: translate(0, $blockSize + $blockMargin);
+  @include animation-delay(5 * $delay);
+}
+
+.loader-block:nth-child(5) {
+  transform: translate($blockSize + $blockMargin, $blockSize + $blockMargin);
+  @include animation-delay(2 * $delay);
+}
+
+.loader-block:nth-child(6) {
+  transform: translate(
+    ($blockSize * 2) + ($blockMargin * 2),
+    $blockSize + $blockMargin
+  );
+  @include animation-delay(7 * $delay);
+}
+
+.loader-block:nth-child(7) {
+  transform: translate(0, ($blockSize * 2) + ($blockMargin * 2));
+  @include animation-delay(6 * $delay);
+}
+
+.loader-block:nth-child(8) {
+  transform: translate(
+    $blockSize + $blockMargin,
+    ($blockSize * 2) + ($blockMargin * 2)
+  );
+  @include animation-delay(4 * $delay);
+}
+
+.loader-block:nth-child(9) {
+  transform: translate(
+    ($blockSize * 2) + ($blockMargin * 2),
+    ($blockSize * 2) + ($blockMargin * 2)
+  );
+}
+
+@keyframes pulse {
+  from,
+  40% {
+    background: $startingColor;
+  }
+  to {
+    background: $endingColor;
+  }
+}
+
+@keyframes show {
+  from,
+  40% {
+    opacity: 0;
+  }
+  41%,
+  to {
+    opacity: 1;
+  }
+}

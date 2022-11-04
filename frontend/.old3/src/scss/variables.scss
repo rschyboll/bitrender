@@ -1,0 +1,77 @@
+$breakpoints: (
+  phone: 320px,
+  tablet: 768px,
+  desktop: 1024px,
+);
+$transition_duration: 0.2s;
+
+$prefix: '' !default;
+$separator: '\\:' !default;
+
+@mixin style-class($prop, $map, $responsive: false, $states: false) {
+  @each $key, $val in $map {
+    .#{$prefix}#{$key} {
+      #{$prop}: #{$val} !important;
+    }
+  }
+
+  @if ($states) {
+    @each $key, $val in $map {
+      .focus#{$separator} {
+        &#{$prefix}#{$key}:focus {
+          #{$prop}: #{$val} !important;
+        }
+      }
+
+      .hover#{$separator} {
+        &#{$prefix}#{$key}:hover {
+          #{$prop}: #{$val} !important;
+        }
+      }
+
+      .active#{$separator} {
+        &#{$prefix}#{$key}:active {
+          #{$prop}: #{$val} !important;
+        }
+      }
+    }
+  }
+
+  @if ($responsive) {
+    @each $key, $val in $breakpoints {
+      @media screen and (min-width: #{$val}) {
+        .#{$key + $separator} {
+          @each $key, $val in $map {
+            &#{$prefix}#{$key} {
+              #{$prop}: #{$val} !important;
+            }
+          }
+
+          @if ($states) {
+            @each $key, $val in $map {
+              &focus#{$separator} {
+                &#{$prefix}#{$key}:focus {
+                  #{$prop}: #{$val} !important;
+                }
+              }
+
+              &hover#{$separator} {
+                &#{$prefix}#{$key}:hover {
+                  #{$prop}: #{$val} !important;
+                }
+              }
+
+              &active#{$separator} {
+                &#{$prefix}#{$key}:active {
+                  #{$prop}: #{$val} !important;
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+@import '~include-media/dist/include-media';

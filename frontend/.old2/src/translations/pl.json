@@ -1,0 +1,60 @@
+{
+  "translation": {
+    "nav": { "system": "System", "users": "Użytkownicy", "roles": "Role" },
+    "login": {
+      "welcomeBack": "Witaj spowrotem!",
+      "noAccount": "Nie posiadasz jeszcze konta?",
+      "createAccount": "Utwórz!",
+      "forgot": "Zapomniałeś hasła?",
+      "submit": "Zaloguj",
+      "loggingIn": "Loguję...",
+      "cannotBeEmpty": "Pole nie może być puste",
+      "badCredentials": "Incorrect username or password",
+      "unknownError": "Nie udało się zalogować"
+    },
+    "logout": "Wyloguj się",
+    "register": {
+      "createYourAccount": "Zarejestruj swoje konto!",
+      "haveAccount": "Posiadasz już konto?",
+      "login": "Zaloguj się!",
+      "submit": "Zarejestruj",
+      "weakPassword": "Hasło jest zbyt słabe",
+      "cannotBeEmpty": "Pole nie może być puste",
+      "wrongEmail": "Nieprawidłowy email",
+      "inProcess": "Rejestruję",
+      "unknownError": "Nie udało się zarejestrować",
+      "emailTaken": "Email jest już zajęty",
+      "usernameTaken": "Nazwa użytkownika jest już zajęta"
+    },
+    "settings": {
+      "title": "Ustawienia",
+      "theme": {
+        "light": "Jasny",
+        "dim": "Przyciemniony",
+        "dark": "Ciemny"
+      }
+    },
+    "verify": {
+      "account": "Zweryfikuj swoje konto"
+    },
+    "user": {
+      "username": "Nazwa użytkownika",
+      "email": "Email",
+      "password": "Hasło"
+    },
+    "role": {
+      "name": "Nazwa",
+      "default": "Jest domyślna"
+    },
+    "permission": {
+      "manage_users": "Zarządzanie użytkownikami",
+      "manage_roles": "Zarządzanie rolami"
+    },
+    "tryAgain": "Spróbuj ponownie",
+    "loading": "Ładowanie",
+    "search": "Wyszukaj...",
+    "itemsPerPage": "Liczba wierszy na stronę:",
+    "currentPageReport": "{{first}} - {{last}} z {{all}}",
+    "new_female": "Nowa"
+  }
+}

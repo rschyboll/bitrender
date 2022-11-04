@@ -1,0 +1,64 @@
+{
+  "translation": {
+    "nav": {
+      "system": "System",
+      "users": "Users",
+      "roles": "Roles"
+    },
+    "login": {
+      "welcomeBack": "Welcome back!",
+      "noAccount": "Don't have an account?",
+      "createAccont": "Create!",
+      "forgot": "Forgot password?",
+      "submit": "Sign in",
+      "loggingIn": "Signing in...",
+      "cannotBeEmpty": "Field cannot be empty",
+      "badCredentials": "Incorrect username or password",
+      "unknownError": "Unable to log in"
+    },
+    "logout": "Logout",
+    "register": {
+      "createYourAccount": "Register your account!",
+      "haveAccount": "Already have an account?",
+      "login": "Sign in!",
+      "submit": "Register",
+      "weakPassword": "Password is too weak",
+      "cannotBeEmpty": "Field cannot be empty",
+      "wrongEmail": "Not a valid email",
+      "inProcess": "Registering",
+      "unknownError": "Unable to register",
+      "emailTaken": "Email is already taken",
+      "usernameTaken": "Username is already taken"
+    },
+    "settings": {
+      "title": "Settings",
+      "theme": {
+        "light": "Light",
+        "dim": "Dim",
+        "dark": "Dark"
+      }
+    },
+    "verify": {
+      "account": "Verify your account"
+    },
+    "user": {
+      "username": "Username",
+      "email": "Email",
+      "password": "Password"
+    },
+    "role": {
+      "name": "Name",
+      "default": "Is default"
+    },
+    "permission": {
+      "manage_users": "Managing users",
+      "manage_roles": "Managing roles"
+    },
+    "tryAgain": "Try again",
+    "loading": "Loading",
+    "search": "Search...",
+    "itemsPerPage": "Rows per page:",
+    "currentPageReport": "{{first}} - {{last}} of {{all}}",
+    "new_female": "New"
+  }
+}

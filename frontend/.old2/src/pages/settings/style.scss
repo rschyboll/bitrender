@@ -1,0 +1,52 @@
+.settings-page > .card {
+  padding: 1rem;
+}
+
+.theme-selector {
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  gap: 1rem;
+}
+
+.theme-selector-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  .theme-selector-image {
+    width: 12rem;
+    height: 8rem;
+    border-radius: 1rem;
+    border: 2px solid transparent;
+  }
+
+  .theme-selector-label {
+    font-size: 1.5rem;
+    font-weight: 500;
+  }
+}
+
+.theme-selector-item.selected {
+  .theme-selector-image {
+    border: 2px solid var(--primary-color);
+  }
+
+  .theme-selector-label {
+    color: var(--primary-color);
+  }
+}
+
+.font-size-slider {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+
+  .p-slider {
+    flex: 1;
+    margin-left: 0.5rem;
+    margin-right: 0.5rem;
+  }
+}

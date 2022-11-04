@@ -1,0 +1,22 @@
+@import '../../node_modules/primereact/resources/themes/vela-orange/theme.css';
+
+:root {
+  --sidebar-background: linear-gradient(180deg, #1f2d40 10%, #1f2d40 100%);
+  --sidebar-border: #304562;
+  --sidebar-static-group-text-color: rgba(255, 255, 255, 0.6);
+  --sidebar-spacer-color: #304562;
+  --sidebar-title-color: rgba(255, 255, 255, 0.87);
+  --sidebar-item-color: rgba(255, 255, 255, 0.87);
+  --sidebar-item-hover: rgba(255, 255, 255, 0.06);
+  --sidebar-item-toggle-shadow: 0 0 0 1px #bbdefb;
+  --sidebar-topbar-button-shadow: 0 0 0 1px #bbdefb;
+  --sidebar-dialog-border: 1px solid #304562;
+
+  --secondary-color: #78909c;
+  --success-color: #c5e1a5;
+  --info-color: #81d4fa;
+  --warning-color: #ffe082;
+  --help-color: #ce93d8;
+  --danger-color: #f48fb1;
+  --danger-text-color: #ef9a9a;
+}

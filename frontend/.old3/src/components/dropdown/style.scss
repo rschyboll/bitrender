@@ -1,0 +1,12 @@
+.dropdown {
+  position: relative;
+}
+
+.dropdown-icon {
+  position: absolute;
+  margin-top: auto;
+  margin-bottom: auto;
+  right: 0.5rem;
+  top: calc(50% - 0.625rem);
+  pointer-events: none;
+}

@@ -1,0 +1,39 @@
+.roles-page {
+  .test {
+    padding: 1rem;
+  }
+
+  .roles-table-card {
+    padding: 1rem;
+  }
+
+  .roles-default-role-card {
+    padding: 1rem;
+  }
+
+  .roles-default-role-counter-card {
+    padding: 1rem;
+  }
+}
+
+.roles-table-title {
+  font-size: 1.25rem;
+  line-height: 1.2;
+  font-weight: 500;
+}
+
+.roles-table-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  .search-field {
+    height: 2.5rem;
+    width: 15rem;
+  }
+
+  .add-new-button {
+    height: 2.5rem;
+    margin-right: 2rem;
+  }
+}

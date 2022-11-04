@@ -1,0 +1,86 @@
+@use 'sass:math';
+
+$field-icon-size: 1.2rem;
+
+#register-page {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  #register-page-title {
+    font-size: 1.75rem;
+    font-weight: 500;
+    margin-top: 0.5rem;
+    margin-bottom: 1rem;
+  }
+
+  #register-form {
+    width: 100%;
+  }
+
+  #register-have-account {
+    margin-bottom: 1rem;
+  }
+
+  #register-have-account-text {
+    color: var(--text-color-secondary);
+    margin-right: 0.25rem;
+  }
+
+  #register-have-account-link {
+    color: var(--blue-500);
+    margin-right: 0.25rem;
+  }
+
+  .register-field-error-text {
+    height: 0.75rem;
+    display: block;
+    margin-bottom: 0.25rem;
+  }
+
+  label {
+    margin-bottom: 0.5rem;
+    width: 100%;
+    font-weight: 500;
+    display: block;
+  }
+  .field {
+    width: 100%;
+    margin-bottom: 0.25rem;
+
+    .p-input-icon-left,
+    .p-input-icon-right {
+      width: 100%;
+    }
+  }
+
+  .register-field-icon {
+    width: $field-icon-size;
+    height: $field-icon-size;
+    transform: translateY(math.div(-($field-icon-size - 1), 2));
+    z-index: 10;
+  }
+
+  .p-inputtext {
+    width: 100%;
+  }
+
+  #register-password input {
+    padding-left: 2rem;
+    padding-right: 2rem;
+  }
+
+  #register-password-view-button {
+    cursor: pointer;
+  }
+
+  #register-password {
+    width: 100%;
+  }
+
+  #register-submit {
+    margin-top: 1rem;
+    width: 100%;
+  }
+}

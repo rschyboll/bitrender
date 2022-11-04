@@ -1,8 +1,9 @@
-@import '../../node_modules/primereact/resources/primereact.css';
+@import 'primereact/resources/primereact.css';
 
-@import '../../node_modules/@fontsource/nunito/index.css';
-@import '../../node_modules/@fontsource/nunito/300.css';
-@import '../../node_modules/@fontsource/nunito/500.css';
+
+@import '@fontsource/nunito/index.css';
+@import '@fontsource/nunito/300.css';
+@import '@fontsource/nunito/500.css';
 
 @import './global.scss';
 @import './grid.scss';

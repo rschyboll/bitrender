@@ -1,0 +1,41 @@
+.avatar.p-button {
+  padding: 0rem;
+  padding-right: 0.5rem;
+  border: 0px !important;
+}
+
+.avatar .p-button-label {
+  color: var(--text-color);
+}
+
+.layout-horizontal .avatar .p-button-label {
+  color: var(--sidebar-item-color);
+}
+
+.avatar {
+  .avatar-image {
+    width: 2.5rem;
+    height: 2.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--surface-d);
+  }
+
+  .avatar-icon {
+    width: 1.5rem !important;
+    height: 1.5rem !important;
+  }
+
+  .p-button-label {
+    margin-left: 0.25rem;
+  }
+}
+
+.theme-light .avatar-image {
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
+.theme-light .layout-horizontal .avatar-image {
+  background-color: rgba(255, 255, 255, 0.1);
+}

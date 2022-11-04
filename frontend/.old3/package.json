@@ -1,0 +1,78 @@
+{
+  "dependencies": {
+    "@fontsource/nunito": "^4.5.11",
+    "@types/lodash": "^4.14.187",
+    "ajv": "^8.11.0",
+    "ajv-formats": "^2.1.1",
+    "fast-equals": "^4.0.3",
+    "history": "^5.3.0",
+    "i18next": "^22.0.4",
+    "i18next-browser-languagedetector": "^7.0.1",
+    "immer": "^9.0.16",
+    "include-media": "^1.4.10",
+    "inversify": "^6.0.1",
+    "inversify-react": "^1.0.2",
+    "kea": "^3.0.4",
+    "kea-localstorage": "^3.0.0",
+    "kea-router": "^3.1.1",
+    "kea-subscriptions": "^3.0.0",
+    "ky": "^0.32.2",
+    "lodash": "^4.17.21",
+    "primereact": "^8.7.1",
+    "process": "^0.11.10",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-i18next": "^12.0.0",
+    "react-icons": "^4.6.0",
+    "react-router": "^6.4.3",
+    "react-router-dom": "^6.4.3",
+    "react-top-loading-bar": "^2.3.1",
+    "reflect-metadata": "^0.1.13"
+  },
+  "devDependencies": {
+    "@parcel/config-default": "^2.7.0",
+    "@parcel/core": "^2.7.0",
+    "@parcel/transformer-sass": "2.7.0",
+    "@types/react": "^18.0.24",
+    "@types/react-dom": "^18.0.8",
+    "eslint": "^8.26.0",
+    "node-sass-package-importer": "^5.3.2",
+    "parcel": "^2.7.0",
+    "prettier": "^2.7.1",
+    "typescript": "^4.8.4"
+  },
+  "scripts": {
+    "watch": "parcel ./src/index.html ./src/themes/*",
+    "build": "parcel build --no-source-maps --config .parcelrc.build ./src/index.html ./src/themes/* "
+  },
+  "alias": {
+    "process": "process/browser.js",
+    "@/*": "./src/$1"
+  },
+  "prettier": {
+    "printWidth": 80,
+    "tabWidth": 2,
+    "trailingComma": "all",
+    "singleQuote": true,
+    "semi": true,
+    "importOrder": [
+      "./wdyr",
+      "<THIRD_PARTY_MODULES>",
+      "^@/(.*)$",
+      "^[./]"
+    ],
+    "importOrderSeparation": true,
+    "importOrderSortSpecifiers": true,
+    "importOrderParserPlugins": [
+      "typescript",
+      "jsx",
+      "decorators-legacy"
+    ]
+  },
+  "packageManager": "yarn@3.2.4",
+  "sass": {
+    "includePaths": [
+      "./yarn/cache"
+    ]
+  }
+}

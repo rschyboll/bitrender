@@ -45,7 +45,9 @@ const RolesPage: FC = () => {
           model={rolesTableModel}
           customColumns={{
             after: {
-              modify: ModifyColumn,
+              modify: {
+                content: ModifyColumn,
+              },
             },
           }}
         />
@@ -65,7 +67,7 @@ const TableSearchField = () => {
     <div className="roles-table-header">
       <Button
         className="add-new-button"
-        label={t('new_female')}
+        label={'Testt'}
         icon={<IoAdd size="1.75rem" />}
       />
 
