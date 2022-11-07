@@ -1,0 +1,49 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "$(debug-continue) Dev",
+      "type": "shell",
+      "command": "yarn dev",
+      "options": {
+        "cwd": "${workspaceFolder}",
+        "statusbar": {
+          "color": "#adffbb"
+        }
+      }
+    },
+    {
+      "label": "$(package) Build",
+      "type": "shell",
+      "command": "yarn build",
+      "options": {
+        "cwd": "${workspaceFolder}",
+        "statusbar": {
+          "color": "#adbaff"
+        }
+      }
+    },    
+    {
+      "label": "$(refactor-preview-view-icon) Preview",
+      "type": "shell",
+      "command": "yarn preview",
+      "options": {
+        "cwd": "${workspaceFolder}",
+        "statusbar": {
+          "color": "#adbaff"
+        }
+      }
+    },
+    {
+      "label": "$(extensions-info-message) ESLint",
+      "type": "shell",
+      "command": "yarn run eslint ./src --ext .ts,.tsx",
+      "options": {
+        "cwd": "${workspaceFolder}",
+        "statusbar": {
+          "color": "#fffaad"
+        }
+      }
+    }
+  ]
+}

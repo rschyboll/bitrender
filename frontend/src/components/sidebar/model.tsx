@@ -1,7 +1,7 @@
-import { IconType } from 'react-icons';
-import { RiGroupFill, RiServerFill, RiShieldUserFill } from 'react-icons/ri';
+import { IconType } from "react-icons";
+import { RiGroupFill, RiServerFill, RiShieldUserFill } from "react-icons/ri";
 
-import { Permission } from '@/schemas/role';
+import { MRole } from "@/types/models";
 
 export interface Group {
   icon: IconType;
@@ -15,26 +15,26 @@ export interface Item {
   iconSize?: string;
   title: string;
   path: string;
-  requiredPermissions?: Permission[];
+  requiredPermissions?: MRole.Permission[];
 }
 
 export const sidebarModel: Group[] = [
   {
     icon: RiServerFill,
-    title: 'nav.system',
+    title: "nav.system",
     items: [
       {
         icon: RiGroupFill,
-        title: 'nav.users',
-        path: '/app/admin/users',
-        requiredPermissions: [Permission.MANAGE_USERS],
+        title: "nav.users",
+        path: "/app/admin/users",
+        requiredPermissions: [MRole.Permission.MANAGE_USERS],
       },
       {
         icon: RiShieldUserFill,
-        iconSize: '1.5rem',
-        title: 'nav.roles',
-        path: '/app/admin/roles',
-        requiredPermissions: [Permission.MANAGE_ROLES],
+        iconSize: "1.5rem",
+        title: "nav.roles",
+        path: "/app/admin/roles",
+        requiredPermissions: [MRole.Permission.MANAGE_ROLES],
       },
     ],
     spacer: true,
@@ -43,7 +43,7 @@ export const sidebarModel: Group[] = [
 
 export const filterVisibleItems = (
   items: Item[],
-  permissions?: Permission[],
+  permissions?: MRole.Permission[]
 ) => {
   const visibleItems: Item[] = [];
 

@@ -1,8 +1,8 @@
-import { interfaces } from 'inversify';
-import { LogicWrapper } from 'kea';
+import { interfaces } from "inversify";
+import { LogicWrapper } from "kea";
 
-import { MakeOwnLogicType } from '@/logic/types/makeLogic';
-import { RoleTableView } from '@/schemas/role';
+import { MakeOwnLogicType } from "@/logic/types/makeLogic";
+import { RoleTableView } from "@/schemas/role";
 
 interface Actions {
   setSearchString: (searchString: string) => void;
@@ -27,5 +27,5 @@ export type IRolesTableLogic = LogicWrapper<
 
 export namespace IRolesTableLogic {
   export const $: interfaces.ServiceIdentifier<IRolesTableLogic> =
-    Symbol('IRolesTableLogic');
+    Symbol("IRolesTableLogic");
 }

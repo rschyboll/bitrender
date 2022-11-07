@@ -1,43 +1,43 @@
-import { Permission } from '@/schemas/role';
-import { GetRolesOutput } from '@/services/messages/role';
+import { MRole } from "@/types/models";
+import { GetRolesOutput } from "@/services/messages/role";
 
-import { IRoleValidators } from '../interfaces';
-import { JSONSchemaType, ValidateFunction, Validators } from './base';
+import { IRoleValidators } from "../interfaces";
+import { JSONSchemaType, ValidateFunction, Validators } from "./base";
 
 export class RoleValidators extends Validators implements IRoleValidators {
   getRolesOutputSchema: JSONSchemaType<GetRolesOutput> = {
-    type: 'object',
+    type: "object",
     properties: {
       items: {
-        type: 'array',
+        type: "array",
         items: {
-          type: 'object',
+          type: "object",
           properties: {
-            id: { type: 'string' },
-            createdAt: { type: 'string' },
-            modifiedAt: { type: 'string' },
-            name: { type: 'string' },
-            default: { type: 'boolean', nullable: true, enum: [true, null] },
+            id: { type: "string" },
+            createdAt: { type: "string" },
+            modifiedAt: { type: "string" },
+            name: { type: "string" },
+            default: { type: "boolean", nullable: true, enum: [true, null] },
             permissions: {
-              type: 'array',
-              items: { type: 'string', enum: Object.values(Permission) },
+              type: "array",
+              items: { type: "string", enum: Object.values(MRole.Permission) },
             },
           },
           required: [
-            'id',
-            'createdAt',
-            'modifiedAt',
-            'default',
-            'name',
-            'permissions',
+            "id",
+            "createdAt",
+            "modifiedAt",
+            "default",
+            "name",
+            "permissions",
           ],
         },
       },
       rowCount: {
-        type: 'integer',
+        type: "integer",
       },
     },
-    required: ['rowCount', 'items'],
+    required: ["rowCount", "items"],
   };
   getRolesOutputValidator: ValidateFunction<GetRolesOutput>;
 

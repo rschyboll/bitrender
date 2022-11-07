@@ -1,20 +1,4 @@
-export enum ApiErrorCodes {
-  ResourceNotFound = 'RESOURCE_NOT_FOUND',
-  NotAuthenticated = 'NOT_AUTHENTICATED',
-  NotAuthorized = 'NOT_AUTHORIZED',
-  UserNotVerified = 'USER_NOT_VERIFIED',
-  BadCredentials = 'BAD_CREDENTIALS',
-  EmailTaken = 'EMAIL_TAKEN',
-  UsernameTaken = 'USERNAME_TAKEN',
-  NoDefaultRole = 'NO_DEFAULT_ROLE',
-}
-
-export enum ServiceErrorType {
-  ApiError = 'API_ERROR',
-  HTTPError = 'HTTP_ERROR',
-  ValidationError = 'VALIDATION_ERROR',
-  UnknownError = 'UNKNOWN_ERROR',
-}
+import type { ApiErrorCodes, ServiceErrorType } from "../enums";
 
 export interface ApiError {
   detail: ApiErrorCodes;
@@ -57,10 +41,3 @@ export declare type Response<T> =
   | UnknownResponse<T>
   | SuccessResponse<T>
   | ErrorResponse;
-
-export enum RequestStatus {
-  Idle,
-  Loading,
-  Error,
-  Success,
-}

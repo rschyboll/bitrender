@@ -1,0 +1,1 @@
+export { IRolesTableLogic } from "./table";

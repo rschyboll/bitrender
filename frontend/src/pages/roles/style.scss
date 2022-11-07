@@ -22,18 +22,12 @@
   font-weight: 500;
 }
 
-.roles-table-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
 
-  .search-field {
-    height: 2.5rem;
-    width: 15rem;
-  }
+.search-field {
+  height: 2.5rem;
+  width: 15rem;
+}
 
-  .add-new-button {
-    height: 2.5rem;
-    margin-right: 2rem;
-  }
+.add-new-button {
+  height: calc(2.5rem - 2px);
 }

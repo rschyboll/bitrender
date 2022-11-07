@@ -1,21 +1,16 @@
-import { BaseColumns, BaseView } from '.';
+import { BaseColumns, BaseView } from ".";
 
-export enum Permission {
-  MANAGE_USERS = 'manage_users',
-  MANAGE_ROLES = 'manage_roles',
-}
-
-export interface RoleView extends BaseView {
+interface RoleView extends BaseView {
   name: string;
   default: true | null;
   permissions: Permission[];
 }
 
-export type RoleTableView = {
+type RoleTableView = {
   name: string;
   default: true | null;
 } & { [Key in Permission]: true | null };
 
-export type RoleColumns = BaseColumns | 'name' | 'default';
+type RoleColumns = BaseColumns | "name" | "default";
 
-export const RoleColumns: RoleColumns[] = [...BaseColumns, 'name', 'default'];
+const RoleColumns: RoleColumns[] = [...BaseColumns, "name", "default"];
