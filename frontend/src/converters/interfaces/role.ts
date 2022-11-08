@@ -1,12 +1,12 @@
-import { interfaces } from 'inversify';
+import type { interfaces } from "inversify";
 
-import { RoleTableView, RoleView } from '@/schemas/role';
+import type { MRole } from "@/types/models";
 
 export interface IRoleConverters {
-  viewToTableView: (view: RoleView) => RoleTableView;
+  viewToTableView: (view: MRole.View) => MRole.TableView;
 }
 
 export namespace IRoleConverters {
   export const $: interfaces.ServiceIdentifier<IRoleConverters> =
-    Symbol('IRoleConverters');
+    Symbol("IRoleConverters");
 }

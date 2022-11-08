@@ -1,18 +1,18 @@
-import { ApiError, ApiErrorCodes } from '@/types/service';
-import { IServiceValidators } from '@/validators/interfaces';
+import { ApiError, ApiErrorCodes } from "@/services";
+import { IServiceValidators } from "@/validators/interfaces";
 
-import { JSONSchemaType, ValidateFunction, Validators } from './base';
+import { JSONSchemaType, ValidateFunction, Validators } from "./base";
 
 export class ServiceValidators
   extends Validators
   implements IServiceValidators
 {
   apiErrorSchema: JSONSchemaType<ApiError> = {
-    type: 'object',
+    type: "object",
     properties: {
-      detail: { type: 'string', enum: Object.values(ApiErrorCodes) },
+      detail: { type: "string", enum: Object.values(ApiErrorCodes) },
     },
-    required: ['detail'],
+    required: ["detail"],
   };
   apiErrorValidator: ValidateFunction<ApiError>;
 

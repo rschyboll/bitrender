@@ -1,7 +1,7 @@
-import { interfaces } from 'inversify';
-import { Logic, LogicWrapper } from 'kea';
+import { interfaces } from "inversify";
+import { Logic, LogicWrapper } from "kea";
 
-import { RequestStatus } from '@/types/service';
+import { RequestStatus } from "@/services";
 
 interface IAuth extends Logic {
   readonly actions: {
@@ -11,7 +11,7 @@ interface IAuth extends Logic {
     readonly register: (
       email: string,
       username: string,
-      password: string,
+      password: string
     ) => void;
   };
   readonly values: {
@@ -29,5 +29,5 @@ export type IAuthLogic = LogicWrapper<IAuth>;
 
 export namespace IAuthLogic {
   export const $: interfaces.ServiceIdentifier<IAuthLogic> =
-    Symbol('IAuthLogic');
+    Symbol("IAuthLogic");
 }

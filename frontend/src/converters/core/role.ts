@@ -1,15 +1,15 @@
-import { injectable } from 'inversify';
-import { PartialRecord } from 'kea';
+import { injectable } from "inversify";
+import type { PartialRecord } from "kea";
 
-import { IRoleConverters } from '@/converters/interfaces';
-import { Permission, RoleTableView, RoleView } from '@/schemas/role';
+import type { IRoleConverters } from "@/converters/interfaces";
+import { MRole } from "@/types/models";
 
 @injectable()
 export class RoleConverters implements IRoleConverters {
-  public viewToTableView(view: RoleView): RoleTableView {
-    const permissions: PartialRecord<Permission, true | null> = {};
+  public viewToTableView(view: MRole.View): MRole.TableView {
+    const permissions: PartialRecord<MRole.Permission, true | null> = {};
 
-    Object.values(Permission).map((permission) => {
+    Object.values(MRole.Permission).map((permission) => {
       if (permission in view.permissions) {
         permissions[permission] = true;
       } else {
@@ -20,7 +20,7 @@ export class RoleConverters implements IRoleConverters {
     return {
       name: view.name,
       default: view.default,
-      ...(permissions as Record<Permission, true | null>),
+      ...(permissions as Record<MRole.Permission, true | null>),
     };
   }
 }

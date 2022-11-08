@@ -19,6 +19,6 @@ export enum ServiceErrorType {
 export enum RequestStatus {
   Idle,
   Loading,
-  Error,
+  Failure,
   Success,
 }

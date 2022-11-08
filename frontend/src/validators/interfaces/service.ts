@@ -1,6 +1,6 @@
-import { interfaces } from 'inversify';
+import { interfaces } from "inversify";
 
-import { ApiError } from '@/types/service';
+import { ApiError } from "@/services/types";
 
 export interface IServiceValidators {
   validateHttpError: (response: unknown) => response is ApiError;
@@ -8,5 +8,5 @@ export interface IServiceValidators {
 
 export namespace IServiceValidators {
   export const $: interfaces.ServiceIdentifier<IServiceValidators> =
-    Symbol('IServiceValidators');
+    Symbol("IServiceValidators");
 }

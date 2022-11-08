@@ -1,36 +1,29 @@
-import { actions, kea, listeners, path, props, reducers } from 'kea';
-import { urlToAction } from 'kea-router';
+import { actions, kea, listeners, path, reducers } from "kea";
+import { urlToAction } from "kea-router";
 
-import Dependencies from '@/deps';
-import { IRouteLogic } from '@/logic/interfaces/route';
-import { injectDepsToLogic } from '@/logic/utils';
-import { IUserService } from '@/services/interfaces';
-import { RequestStatus, ServiceErrorType } from '@/types/service';
-import { sleep } from '@/utils/async';
-import { IUserValidators } from '@/validators/interfaces';
+import {
+  RequestStatus,
+  ServiceErrorType,
+  ApiErrorCodes,
+} from "@/services/enums";
 
-import { ApiErrorCodes } from '../../../types/service';
-import type { logicType } from './indexType';
+import { sleep } from "@/utils/async";
 
-const logic = kea<logicType>([
-  path(['login']),
-  props(
-    {} as {
-      deps: {
-        routeLogic: IRouteLogic;
-        userService: IUserService;
-        userValidators: IUserValidators;
-      };
-    },
-  ),
+import type { AuthLogic } from "./type";
+
+const logic = kea<AuthLogic>([
+  path(["login"]),
   urlToAction(({ actions }) => ({
-    '/login': () => actions.checkLoggedIn(),
-    '/register': () => actions.checkLoggedIn(),
-    '/verify': () => actions.checkLoggedIn(),
+    "/login": () => actions.checkLoggedIn(),
+    "/register": () => actions.checkLoggedIn(),
+    "/verify": () => actions.checkLoggedIn(),
   })),
   actions({
     checkLoggedIn: true,
-    login: (username: string, password: string) => ({ username, password }),
+    login: (username: string, password: string) => ({
+      username: username,
+      password,
+    }),
     loginSuccess: true,
     loginFailure: (errorDetail?: unknown) => ({ errorDetail }),
     logout: true,
@@ -49,11 +42,11 @@ const logic = kea<logicType>([
   }),
   reducers({
     loginStatus: [
-      RequestStatus.Idle as RequestStatus,
+      RequestStatus.Idle,
       {
         login: () => RequestStatus.Loading,
         loginSuccess: () => RequestStatus.Success,
-        loginFailure: () => RequestStatus.Error,
+        loginFailure: () => RequestStatus.Failure,
       },
     ],
     loginErrorDetail: [
@@ -64,11 +57,11 @@ const logic = kea<logicType>([
       },
     ],
     logoutStatus: [
-      RequestStatus.Idle as RequestStatus,
+      RequestStatus.Idle,
       {
         logout: () => RequestStatus.Loading,
         logoutSuccess: () => RequestStatus.Success,
-        logoutFailure: () => RequestStatus.Error,
+        logoutFailure: () => RequestStatus.Failure,
       },
     ],
     registerStatus: [
@@ -76,7 +69,7 @@ const logic = kea<logicType>([
       {
         register: () => RequestStatus.Loading,
         registerSuccess: () => RequestStatus.Success,
-        registerFailure: () => RequestStatus.Error,
+        registerFailure: () => RequestStatus.Failure,
         registerResetStatus: () => RequestStatus.Idle,
       },
     ],
@@ -100,24 +93,24 @@ const logic = kea<logicType>([
       },
     ],
   }),
-  listeners(({ props, actions, values }) => ({
+  listeners(({ actions, values, deps }) => ({
     checkLoggedIn: async () => {
-      const response = await props.deps.userService.logged();
+      const response = await deps.userService.logged();
       if (response.success && response.data) {
-        props.deps.routeLogic.actions.openApp();
+        deps.routeLogic.actions.openApp();
       } else if (!response.success) {
         await sleep(1000);
         actions.checkLoggedIn();
       }
     },
     login: async ({ username, password }) => {
-      const response = await props.deps.userService.login(username, password);
+      const response = await deps.userService.login(username, password);
       if (response.success) {
         actions.loginSuccess();
       } else {
-        if ('detail' in response.error) {
+        if ("detail" in response.error) {
           if (response.error.detail == ApiErrorCodes.UserNotVerified) {
-            props.deps.routeLogic.actions.openVerifyPage(username);
+            deps.routeLogic.actions.openVerifyPage(username);
           }
           actions.loginFailure(response.error.detail);
         } else {
@@ -126,10 +119,10 @@ const logic = kea<logicType>([
       }
     },
     loginSuccess: () => {
-      props.deps.routeLogic.actions.returnToBeforeLogin();
+      deps.routeLogic.actions.returnToBeforeLogin();
     },
     register: async ({ email, username, password }) => {
-      if (!props.deps.userValidators.validateUserPasswordStrength(password)) {
+      if (!deps.userValidators.validateUserPasswordStrength(password)) {
         actions.setRegisterWeakPassword(true);
         actions.registerResetStatus();
         return;
@@ -137,7 +130,7 @@ const logic = kea<logicType>([
         actions.setRegisterWeakPassword(false);
       }
 
-      if (!props.deps.userValidators.validateUserEmail(email)) {
+      if (!deps.userValidators.validateUserEmail(email)) {
         actions.setRegisterWrongEmail(true);
         actions.registerResetStatus();
         return;
@@ -145,7 +138,7 @@ const logic = kea<logicType>([
         actions.setRegisterWrongEmail(false);
       }
 
-      const response = await props.deps.userService.register({
+      const response = await deps.userService.register({
         email,
         username,
         password,
@@ -153,7 +146,7 @@ const logic = kea<logicType>([
       if (response.success) {
         actions.registerSuccess();
       } else {
-        if ('detail' in response.error) {
+        if ("detail" in response.error) {
           actions.registerFailure(response.error.detail);
         } else {
           actions.registerFailure();
@@ -161,23 +154,19 @@ const logic = kea<logicType>([
       }
     },
     logout: async () => {
-      const response = await props.deps.userService.logout();
+      const response = await deps.userService.logout();
       if (response.success) {
-        props.deps.routeLogic.actions.openLoginPage();
+        deps.routeLogic.actions.openLoginPage();
       } else {
         if (
           response.error.type == ServiceErrorType.ApiError &&
           response.error.detail == ApiErrorCodes.NotAuthenticated
         ) {
-          props.deps.routeLogic.actions.openLoginPage();
+          deps.routeLogic.actions.openLoginPage();
         }
       }
     },
   })),
 ]);
 
-export const authLogic = injectDepsToLogic(logic, () => ({
-  routeLogic: Dependencies.get(IRouteLogic.$),
-  userService: Dependencies.get(IUserService.$),
-  userValidators: Dependencies.get(IUserValidators.$),
-}));
+export const authLogic = logic;

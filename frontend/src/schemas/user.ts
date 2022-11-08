@@ -1,12 +1,12 @@
-import { Permission } from '@/schemas/role';
+import { MRole } from "@/types/models";
 
-import { BaseView } from '.';
+import { BaseView } from ".";
 
 export interface UserView extends BaseView {
   email: string;
   username: string;
   role: string;
-  permissions: Permission[];
+  permissions: MRole.Permission[];
 }
 
 export interface UserCreate {

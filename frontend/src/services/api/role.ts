@@ -1,13 +1,12 @@
-import { inject, injectable } from 'inversify';
+import { inject, injectable } from "inversify";
 
-import { ApiEndpoints } from '@/services/endpoints';
-import type { GetRolesInput, GetRolesOutput } from '@/services/messages/role';
-import type { Response } from '@/types/service';
-import { ServiceErrorType } from '@/types/service';
-import { IRoleValidators } from '@/validators/interfaces';
+import { ApiEndpoints } from "@/services/endpoints";
+import { Response, ServiceErrorType } from "@/services";
+import { MRole } from "@/types/models";
+import { IRoleValidators } from "@/validators/interfaces";
 
-import { IRoleService } from '../interfaces';
-import { Service } from './base';
+import { IRoleService } from "../interfaces";
+import { Service } from "./base";
 
 @injectable()
 export class RoleService extends Service implements IRoleService {
@@ -19,11 +18,11 @@ export class RoleService extends Service implements IRoleService {
   }
 
   public async getRoles(
-    input: GetRolesInput,
-  ): Promise<Response<GetRolesOutput>> {
+    input: MRole.Messages.GetRolesInput
+  ): Promise<Response<MRole.Messages.GetRolesOutput>> {
     try {
       const response = await this.api
-        .get(ApiEndpoints.Roles + '?' + this.listRequestToURL(input))
+        .get(ApiEndpoints.Roles + "?" + this.listRequestToURL(input))
         .json();
       if (this.roleValidators.validateGetRolesOutput(response)) {
         return { success: true, data: response };

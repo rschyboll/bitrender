@@ -1,12 +1,14 @@
-import { interfaces } from 'inversify';
+import type { interfaces } from "inversify";
 
-import { GetRolesOutput } from '@/services/messages/role';
+import type { MRole } from "@/types/models";
 
 export interface IRoleValidators {
-  validateGetRolesOutput: (value: unknown) => value is GetRolesOutput;
+  validateGetRolesOutput: (
+    value: unknown
+  ) => value is MRole.Messages.GetRolesOutput;
 }
 
 export namespace IRoleValidators {
   export const $: interfaces.ServiceIdentifier<IRoleValidators> =
-    Symbol('IRoleValidators');
+    Symbol("IRoleValidators");
 }

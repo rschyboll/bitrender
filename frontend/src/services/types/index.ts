@@ -27,17 +27,4 @@ export declare type ErrorResponse = {
       };
 };
 
-export declare type UnknownResponse<T> = {
-  success: never;
-  data?: T;
-  error?: {
-    type: ServiceErrorType;
-    status?: number;
-    detail?: ApiErrorCodes;
-  };
-};
-
-export declare type Response<T> =
-  | UnknownResponse<T>
-  | SuccessResponse<T>
-  | ErrorResponse;
+export declare type Response<T> = SuccessResponse<T> | ErrorResponse;

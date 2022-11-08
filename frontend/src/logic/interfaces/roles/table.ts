@@ -1,8 +1,8 @@
-import { interfaces } from "inversify";
-import { LogicWrapper } from "kea";
+import type { interfaces } from "inversify";
+import type { LogicWrapper } from "kea";
 
-import { MakeOwnLogicType } from "@/logic/types/makeLogic";
-import { RoleTableView } from "@/schemas/role";
+import type { MakeOwnLogicType } from "@/logic/types/makeLogic";
+import type { MRole } from "@/types/models";
 
 interface Actions {
   setSearchString: (searchString: string) => void;
@@ -15,7 +15,7 @@ interface Values {
   currentPage: number;
   rowsPerPage: number;
   amountOfRecords: number | null;
-  values: RoleTableView[];
+  values: MRole.TableView[];
 }
 
 export type IRolesTableLogic = LogicWrapper<

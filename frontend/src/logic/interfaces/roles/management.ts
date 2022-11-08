@@ -2,7 +2,6 @@ import { interfaces } from "inversify";
 import { LogicWrapper } from "kea";
 
 import { MakeOwnLogicType } from "@/logic/types/makeLogic";
-import { RoleTableView } from "@/schemas/role";
 
 interface Actions {}
 

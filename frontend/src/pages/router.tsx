@@ -1,7 +1,7 @@
-import { BrowserHistory, Update } from 'history';
-import { createBrowserHistory } from 'history';
-import { useInjection } from 'inversify-react';
-import { useValues } from 'kea';
+import { BrowserHistory, Update } from "history";
+import { createBrowserHistory } from "history";
+import { useInjection } from "inversify-react";
+import { useValues } from "kea";
 import {
   memo,
   useCallback,
@@ -11,15 +11,15 @@ import {
   useRef,
   useState,
   useTransition,
-} from 'react';
-import { Router } from 'react-router-dom';
-import LoadingBar, { LoadingBarRef } from 'react-top-loading-bar';
+} from "react";
+import { Router } from "react-router-dom";
+import LoadingBar, { LoadingBarRef } from "react-top-loading-bar";
 
-import { Navigate } from '@/components/navigate';
-import { IAppLogic } from '@/logic/interfaces';
-import { Permission } from '@/schemas/role';
+import { Navigate } from "@/components/navigate";
+import { IAppLogic } from "@/logic/interfaces";
+import { MRole } from "@/types/models";
 
-import { LoadingPage } from './loading';
+import { LoadingPage } from "./loading";
 
 export interface BrowserRouterProps {
   children?: React.ReactNode;
@@ -48,7 +48,7 @@ export function SuspenseRouter({ children, history }: BrowserRouterProps) {
 
   useLayoutEffect(
     () => history.listen(setStateAsync),
-    [history, setStateAsync],
+    [history, setStateAsync]
   );
 
   useEffect(() => {
@@ -85,12 +85,12 @@ export function SuspenseRouter({ children, history }: BrowserRouterProps) {
 export default SuspenseRouter;
 
 export interface ProtectedRouteProps {
-  requiredPermissions?: Permission[];
+  requiredPermissions?: MRole.Permission[];
   children: JSX.Element;
 }
 
 export const ProtectedRoute = memo(function ProtectedRoute(
-  props: ProtectedRouteProps,
+  props: ProtectedRouteProps
 ) {
   const appLogic = useInjection(IAppLogic.$);
 
@@ -116,7 +116,7 @@ export const ProtectedRoute = memo(function ProtectedRoute(
   }
 
   if (!hasPermissions) {
-    return <Navigate to={'/unauthorized'} />;
+    return <Navigate to={"/unauthorized"} />;
   }
 
   return props.children;

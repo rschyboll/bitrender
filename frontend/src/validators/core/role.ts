@@ -1,11 +1,10 @@
 import { MRole } from "@/types/models";
-import { GetRolesOutput } from "@/services/messages/role";
 
 import { IRoleValidators } from "../interfaces";
 import { JSONSchemaType, ValidateFunction, Validators } from "./base";
 
 export class RoleValidators extends Validators implements IRoleValidators {
-  getRolesOutputSchema: JSONSchemaType<GetRolesOutput> = {
+  getRolesOutputSchema: JSONSchemaType<MRole.Messages.GetRolesOutput> = {
     type: "object",
     properties: {
       items: {
@@ -39,16 +38,16 @@ export class RoleValidators extends Validators implements IRoleValidators {
     },
     required: ["rowCount", "items"],
   };
-  getRolesOutputValidator: ValidateFunction<GetRolesOutput>;
+  getRolesOutputValidator: ValidateFunction<MRole.Messages.GetRolesOutput>;
 
   constructor() {
     super();
     this.getRolesOutputValidator = this.ajv.compile(this.getRolesOutputSchema);
   }
 
-  public validateGetRolesOutput(value: unknown): value is GetRolesOutput {
-    console.log(value);
-    console.log(this.getRolesOutputValidator.errors);
+  public validateGetRolesOutput(
+    value: unknown
+  ): value is MRole.Messages.GetRolesOutput {
     return this.getRolesOutputValidator(value);
   }
 }

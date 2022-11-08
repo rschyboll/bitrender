@@ -37,6 +37,7 @@
     "reselect": "^4.1.7"
   },
   "devDependencies": {
+    "@trivago/prettier-plugin-sort-imports": "^3.4.0",
     "@types/lodash": "^4.14.187",
     "@types/react": "^18.0.22",
     "@types/react-dom": "^18.0.7",
@@ -55,5 +56,30 @@
   "packageManager": "yarn@3.2.4",
   "alias": {
     "@/*": "./src/$1"
+  },
+  "resolutions": {
+    "kea@^3.0.4": "patch:kea@npm%3A3.0.4#./.yarn/patches/kea-npm-3.0.4-31c3e7a081.patch"
+  },
+  "prettier": {
+    "plugins": [
+      "@trivago/prettier-plugin-sort-imports"
+    ],
+    "printWidth": 80,
+    "tabWidth": 2,
+    "trailingComma": "all",
+    "singleQuote": true,
+    "semi": true,
+    "importOrder": [
+      "<THIRD_PARTY_MODULES>",
+      "^@/(.*)$",
+      "^[./]"
+    ],
+    "importOrderSeparation": true,
+    "importOrderSortSpecifiers": true,
+    "importOrderParserPlugins": [
+      "typescript",
+      "jsx",
+      "decorators-legacy"
+    ]
   }
 }

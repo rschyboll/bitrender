@@ -11,7 +11,7 @@
   "prettier.prettierPath": ".yarn/sdks/prettier/index.js",
   "files.exclude": {
     ".parcel-cache": true,
-    ".yarn": true,
+    //".yarn": true,
     "node_modules": true,
     "dist": true,
     ".pnp*": true,

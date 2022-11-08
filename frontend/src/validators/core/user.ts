@@ -1,45 +1,46 @@
-import { Permission } from '@/schemas/role';
-import { UserView } from '@/schemas/user';
+import { UserView } from "@/schemas/user";
 
-import { IUserValidators } from '../interfaces';
-import { JSONSchemaType, ValidateFunction, Validators } from './base';
+import { MRole } from "@/types/models";
+
+import { IUserValidators } from "../interfaces";
+import { JSONSchemaType, ValidateFunction, Validators } from "./base";
 
 export class UserValidators extends Validators implements IUserValidators {
   userViewSchema: JSONSchemaType<UserView> = {
-    type: 'object',
+    type: "object",
     properties: {
-      id: { type: 'string', format: 'uuid' },
-      createdAt: { type: 'string', format: 'date-time' },
-      modifiedAt: { type: 'string', format: 'date-time' },
-      email: { type: 'string', format: 'email' },
-      username: { type: 'string' },
-      role: { type: 'string' },
+      id: { type: "string", format: "uuid" },
+      createdAt: { type: "string", format: "date-time" },
+      modifiedAt: { type: "string", format: "date-time" },
+      email: { type: "string", format: "email" },
+      username: { type: "string" },
+      role: { type: "string" },
       permissions: {
-        type: 'array',
-        items: { type: 'string', enum: Object.values(Permission) },
+        type: "array",
+        items: { type: "string", enum: Object.values(MRole.Permission) },
       },
     },
     required: [
-      'id',
-      'createdAt',
-      'modifiedAt',
-      'email',
-      'username',
-      'role',
-      'permissions',
+      "id",
+      "createdAt",
+      "modifiedAt",
+      "email",
+      "username",
+      "role",
+      "permissions",
     ],
   };
   userViewValidator: ValidateFunction<UserView>;
 
   public mediumPasswordRegExp = new RegExp(
-    '^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.{8,})',
+    "^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.{8,})"
   );
   public strongPasswordRegExp = new RegExp(
-    '^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.{10,})',
+    "^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.{10,})"
   );
   userEmailSchema: JSONSchemaType<string> = {
-    type: 'string',
-    format: 'email',
+    type: "string",
+    format: "email",
   };
   userEmailValidator: ValidateFunction<string>;
 

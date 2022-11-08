@@ -1,0 +1,13 @@
+diff --git a/lib/index.d.ts b/lib/index.d.ts
+index 24c03f99a384578e030647207edc26a04b0908cd..6bae01dbd51a50636a6e2c619a1c3b1738657b92 100644
+--- a/lib/index.d.ts
++++ b/lib/index.d.ts
+@@ -69,7 +69,7 @@ declare type LogicWrapper<LogicType extends Logic = Logic> = LogicType & LogicWr
+ declare type LogicBuilder<L extends Logic = Logic> = (logic: BuiltLogic<L>) => void;
+ declare type PayloadCreatorDefinition = true | ((...args: any[]) => any);
+ declare type ActionDefinitions<LogicType extends Logic> = LogicType['actionCreators'] extends Record<string, any> ? Partial<{
+-    [K in keyof LogicType['actionCreators']]: LogicType['actionCreators'][K] extends Function ? ReturnType<LogicType['actionCreators'][K]>['payload']['value'] extends true ? true : (...args: Parameters<LogicType['actionCreators'][K]>) => LogicType['actionCreators'][K]['payload'] : never;
++    [K in keyof LogicType['actionCreators']]: LogicType['actionCreators'][K] extends Function ? ReturnType<LogicType['actionCreators'][K]>['payload']['value'] extends true ? true : (...args: Parameters<LogicType['actionCreators'][K]>) => ReturnType<LogicType['actionCreators'][K]>['payload'] : never;
+ }> : Record<string, PayloadCreatorDefinition>;
+ interface KeaReduxAction extends AnyAction {
+     type: string;

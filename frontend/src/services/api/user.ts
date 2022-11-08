@@ -1,15 +1,13 @@
-import { inject, injectable } from 'inversify';
-import { HTTPError } from 'ky';
+import { inject, injectable } from "inversify";
 
-import { UserView } from '@/schemas/user';
-import { UserCreate } from '@/schemas/user';
-import { ApiEndpoints } from '@/services/endpoints';
-import type { Response } from '@/types/service';
-import { ServiceErrorType } from '@/types/service';
-import { IUserValidators } from '@/validators/interfaces';
+import { UserView } from "@/schemas/user";
+import { UserCreate } from "@/schemas/user";
+import { ApiEndpoints } from "@/services/endpoints";
+import { ServiceErrorType, Response } from "@/services";
+import { IUserValidators } from "@/validators/interfaces";
 
-import { IUserService } from '../interfaces';
-import { Service } from './base';
+import { IUserService } from "../interfaces";
+import { Service } from "./base";
 
 @injectable()
 export class UserService extends Service implements IUserService {
@@ -42,11 +40,11 @@ export class UserService extends Service implements IUserService {
 
   public async login(
     username: string,
-    password: string,
+    password: string
   ): Promise<Response<undefined>> {
     const formData = new FormData();
-    formData.append('username', username);
-    formData.append('password', password);
+    formData.append("username", username);
+    formData.append("password", password);
     try {
       await this.api.post(ApiEndpoints.Login, {
         body: formData,
@@ -60,7 +58,7 @@ export class UserService extends Service implements IUserService {
   public async logged(): Promise<Response<boolean>> {
     try {
       const response = await this.api.get(ApiEndpoints.Logged).json();
-      if (typeof response == 'boolean') {
+      if (typeof response == "boolean") {
         return { success: true, data: response };
       } else {
         return {

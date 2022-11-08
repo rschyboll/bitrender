@@ -1,5 +1,5 @@
-import { RequestStatus } from "@/types/service";
-import { MakeOwnLogicType } from "@/logic/types/makeLogic";
+import type { RequestStatus } from "@/services";
+import type { MakeOwnLogicType } from "@/logic/types/makeLogic";
 
 interface Actions {
   addNewRole: true;
@@ -16,6 +16,6 @@ interface Reducers {
 
 interface Selectors {}
 
-export type RolesTableLogic = MakeOwnLogicType<{
+export type RolesManagementLogic = MakeOwnLogicType<{
   actions: Actions;
 }>;

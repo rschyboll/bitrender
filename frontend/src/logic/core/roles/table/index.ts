@@ -7,69 +7,43 @@ import {
   props,
   reducers,
   selectors,
-  sharedListeners,
 } from 'kea';
 import { subscriptions } from 'kea-subscriptions';
 
 import { IRoleConverters } from '@/converters/interfaces';
 import Dependencies from '@/deps';
+import { deps } from '@/logic/builders';
 import { IRouteLogic } from '@/logic/interfaces';
 import { injectDepsToLogic } from '@/logic/utils';
-import { RoleColumns, RoleView } from '@/schemas/role';
+import { RequestStatus } from '@/services';
 import { IRoleService } from '@/services/interfaces';
 import { ListRequestInput, SearchRule } from '@/services/messages/list';
 import { LoadState } from '@/types';
 
-import { RoleTableView } from './../../../../schemas/role';
+import { Reducers } from './reducers';
 import type { RolesTableLogic } from './type';
 
 const logic = kea<RolesTableLogic>([
   path(['roles', 'table']),
-  props(
-    {} as {
-      deps: {
-        routeLogic: IRouteLogic;
-        roleService: IRoleService;
-        roleConverters: IRoleConverters;
-      };
-    },
-  ),
+  deps({
+    roleConverters: IRoleConverters.$,
+    roleService: IRoleService.$,
+    routeLogic: IRouteLogic.$,
+  }),
   actions({
     refresh: true,
-    setSearchString: (searchString: string) => ({ searchString }),
-    setCurrentPage: (currentPage: number) => ({ currentPage }),
-    setLocalSearchString: (searchString: string) => ({ searchString }),
-    setRowsPerPage: (rowsPerPage: number) => ({ rowsPerPage }),
     load: true,
-    loadSuccess: (roles: RoleView[], row_count: number) => ({
+    loadSuccess: (roles, rowCount) => ({
       roles,
-      row_count,
+      rowCount,
     }),
     loadFailure: true,
+    setSearchString: (searchString) => ({ searchString }),
+    setCurrentPage: (currentPage) => ({ currentPage }),
+    setLocalSearchString: (searchString) => ({ searchString }),
+    setRowsPerPage: (rowsPerPage) => ({ rowsPerPage }),
   }),
-  reducers({
-    localSearchString: [
-      null as string | null,
-      {
-        setSearchString: (_, { searchString }) => searchString,
-      },
-    ],
-    loadState: [
-      LoadState.Idle as LoadState,
-      {
-        load: () => LoadState.InProgress,
-        loadSuccess: () => LoadState.Idle,
-        loadFailure: () => LoadState.Failure,
-      },
-    ],
-    roles: [
-      [] as RoleView[],
-      {
-        loadSuccess: (_, { roles }) => roles,
-      },
-    ],
-  }),
-
+  reducers(Reducers),
   subscriptions(({ actions, values }) => ({
     listRequestInput: async () => {
       actions.refresh();
@@ -80,106 +54,7 @@ const logic = kea<RolesTableLogic>([
       }
     },
   })),
-  selectors(({ props }) => ({
-    values: [
-      (selectors) => [selectors.roles],
-      (roles) => {
-        const roleTableViews: RoleTableView[] = [];
-        for (const role of roles) {
-          roleTableViews.push(props.deps.roleConverters.viewToTableView(role));
-          roleTableViews.push(props.deps.roleConverters.viewToTableView(role));
-          roleTableViews.push(props.deps.roleConverters.viewToTableView(role));
-          roleTableViews.push(props.deps.roleConverters.viewToTableView(role));
-          roleTableViews.push(props.deps.roleConverters.viewToTableView(role));
-          roleTableViews.push(props.deps.roleConverters.viewToTableView(role));
-          roleTableViews.push(props.deps.roleConverters.viewToTableView(role));
-          roleTableViews.push(props.deps.roleConverters.viewToTableView(role));
-          roleTableViews.push(props.deps.roleConverters.viewToTableView(role));
-          roleTableViews.push(props.deps.roleConverters.viewToTableView(role));
-          roleTableViews.push(props.deps.roleConverters.viewToTableView(role));
-          roleTableViews.push(props.deps.roleConverters.viewToTableView(role));
-          roleTableViews.push(props.deps.roleConverters.viewToTableView(role));
-          roleTableViews.push(props.deps.roleConverters.viewToTableView(role));
-          roleTableViews.push(props.deps.roleConverters.viewToTableView(role));
-          roleTableViews.push(props.deps.roleConverters.viewToTableView(role));
-          roleTableViews.push(props.deps.roleConverters.viewToTableView(role));
-          roleTableViews.push(props.deps.roleConverters.viewToTableView(role));
-          roleTableViews.push(props.deps.roleConverters.viewToTableView(role));
-          roleTableViews.push(props.deps.roleConverters.viewToTableView(role));
-          roleTableViews.push(props.deps.roleConverters.viewToTableView(role));
-          roleTableViews.push(props.deps.roleConverters.viewToTableView(role));
-          roleTableViews.push(props.deps.roleConverters.viewToTableView(role));
-          roleTableViews.push(props.deps.roleConverters.viewToTableView(role));
-          roleTableViews.push(props.deps.roleConverters.viewToTableView(role));
-          roleTableViews.push(props.deps.roleConverters.viewToTableView(role));
-          roleTableViews.push(props.deps.roleConverters.viewToTableView(role));
-        }
-        return roleTableViews;
-      },
-    ],
-    searchString: [
-      (selectors) => [selectors.urlSearchString, selectors.localSearchString],
-      (urlSearchString, localSearchString) => {
-        if (localSearchString == null) {
-          return urlSearchString;
-        }
-        return localSearchString;
-      },
-    ],
-    urlSearchString: [
-      () => [props.deps.routeLogic.selectors.hashParams],
-      (hashParams) => {
-        const search = hashParams['search'];
-        if (typeof search == 'string') {
-          return search;
-        }
-        return '';
-      },
-    ],
-    rowsPerPage: [
-      () => [props.deps.routeLogic.selectors.hashParams],
-      (hashParams) => {
-        const rows = hashParams['rows'];
-        if (typeof rows == 'number') {
-          return rows;
-        }
-        return 10;
-      },
-    ],
-    currentPage: [
-      () => [props.deps.routeLogic.selectors.hashParams],
-      (hashParams) => {
-        const page = hashParams['page'];
-        if (typeof page == 'number') {
-          return page;
-        }
-        return 0;
-      },
-    ],
-    listRequestInput: [
-      (selectors) => [
-        selectors.currentPage,
-        selectors.rowsPerPage,
-        selectors.urlSearchString,
-      ],
-      (currentPage, rowsPerPage, searchString) => {
-        const listRequestInput: ListRequestInput<RoleColumns> = {
-          search: [
-            {
-              column: 'name',
-              rule: SearchRule.CONTAINS,
-              value: searchString,
-            },
-          ],
-          page: {
-            pageNr: currentPage,
-            recordsPerPage: rowsPerPage,
-          },
-        };
-        return listRequestInput;
-      },
-    ],
-  })),
+  selectors(({ props }) => ({})),
   reducers({
     amountOfRecords: [
       0 as number,

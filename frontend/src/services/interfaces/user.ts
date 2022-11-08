@@ -1,7 +1,7 @@
-import { interfaces } from 'inversify';
+import { interfaces } from "inversify";
 
-import { UserCreate, UserView } from '@/schemas/user';
-import type { Response } from '@/types/service';
+import { UserCreate, UserView } from "@/schemas/user";
+import type { Response } from "@/services";
 
 export interface IUserService {
   getCurrentUser: () => Promise<Response<UserView>>;
@@ -13,5 +13,5 @@ export interface IUserService {
 
 export namespace IUserService {
   export const $: interfaces.ServiceIdentifier<IUserService> =
-    Symbol('IUserService');
+    Symbol("IUserService");
 }
