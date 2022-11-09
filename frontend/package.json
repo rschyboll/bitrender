@@ -20,7 +20,7 @@
     "include-media": "^1.4.10",
     "inversify": "^6.0.1",
     "inversify-react": "^1.0.2",
-    "kea": "^3.0.4",
+    "kea": "patch:kea@npm%3A3.0.4#~/.yarn/patches/kea-npm-3.0.4-31c3e7a081.patch",
     "kea-localstorage": "^3.0.0",
     "kea-router": "^3.1.1",
     "kea-subscriptions": "^3.0.0",
@@ -49,11 +49,12 @@
     "eslint-plugin-react": "^7.31.10",
     "eslint-plugin-react-hooks": "^4.6.0",
     "prettier": "^2.7.1",
+    "rollup-plugin-visualizer": "^5.8.3",
     "sass": "^1.56.0",
     "typescript": "^4.8.4",
     "vite": "^3.2.2"
   },
-  "packageManager": "yarn@3.2.4",
+  "packageManager": "yarn@4.0.0-rc.27",
   "alias": {
     "@/*": "./src/$1"
   },

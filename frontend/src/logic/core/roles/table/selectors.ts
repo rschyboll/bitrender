@@ -1,7 +1,8 @@
-import type { SelectorsDef } from "@/logic/types";
-import { MRole } from "@/types/models";
+import type { SelectorsDef } from '@/logic/types';
+import { ListRequestInput, SearchRule } from '@/services/messages/list';
+import { MRole } from '@/types/models';
 
-import type { RolesTableLogic } from "./type";
+import type { RolesTableLogic } from './type';
 
 export const Selectors: SelectorsDef<RolesTableLogic> = ({ deps }) => ({
   values: [
@@ -9,45 +10,42 @@ export const Selectors: SelectorsDef<RolesTableLogic> = ({ deps }) => ({
     (roles) => {
       const roleTableViews = [];
       for (const role of roles) {
-        roleTableViews.push(props.deps.roleConverters.viewToTableView(role));
+        roleTableViews.push(deps.roleConverters.viewToTableView(role));
       }
       return roleTableViews;
     },
   ],
   searchString: [
-    (selectors) => [selectors.urlSearchString, selectors.localSearchString],
-    (urlSearchString, localSearchString) => {
+    (selectors) => [
+      selectors.localSearchString,
+      deps.routeLogic.selectors.hashParams,
+    ],
+    (localSearchString, hashParams) => {
+      const search = hashParams['search'];
       if (localSearchString == null) {
-        return urlSearchString;
+        if (typeof search == 'string') {
+          return search;
+        }
+        return '';
       }
       return localSearchString;
     },
   ],
-  urlSearchString: [
-    () => [props.deps.routeLogic.selectors.hashParams],
-    (hashParams) => {
-      const search = hashParams["search"];
-      if (typeof search == "string") {
-        return search;
-      }
-      return "";
-    },
-  ],
   rowsPerPage: [
-    () => [props.deps.routeLogic.selectors.hashParams],
+    () => [deps.routeLogic.selectors.hashParams],
     (hashParams) => {
-      const rows = hashParams["rows"];
-      if (typeof rows == "number") {
+      const rows = hashParams['rows'];
+      if (typeof rows == 'number') {
         return rows;
       }
       return 10;
     },
   ],
   currentPage: [
-    () => [props.deps.routeLogic.selectors.hashParams],
+    () => [deps.routeLogic.selectors.hashParams],
     (hashParams) => {
-      const page = hashParams["page"];
-      if (typeof page == "number") {
+      const page = hashParams['page'];
+      if (typeof page == 'number') {
         return page;
       }
       return 0;
@@ -57,13 +55,13 @@ export const Selectors: SelectorsDef<RolesTableLogic> = ({ deps }) => ({
     (selectors) => [
       selectors.currentPage,
       selectors.rowsPerPage,
-      selectors.urlSearchString,
+      selectors.searchString,
     ],
     (currentPage, rowsPerPage, searchString) => {
-      const listRequestInput: ListRequestInput<RoleColumns> = {
+      const listRequestInput: ListRequestInput<MRole.Columns> = {
         search: [
           {
-            column: "name",
+            column: 'name',
             rule: SearchRule.CONTAINS,
             value: searchString,
           },

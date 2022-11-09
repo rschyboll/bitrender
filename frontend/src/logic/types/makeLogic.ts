@@ -7,9 +7,9 @@ import {
   Logic,
   PartialRecord,
   ReducerFunction,
-} from "kea";
+} from 'kea';
 
-import { RestrictedObject } from "@/types/utility";
+import { RestrictedObject } from '@/types/utility';
 
 type GetSelectorsValues<Selectors> = {
   [Key in keyof Selectors]: Selectors[Key] extends (
@@ -23,7 +23,7 @@ type MakeActions<
   Actions,
   GenericActions extends
     | PartialRecord<keyof Actions, (...args: any[]) => void>
-    | undefined
+    | undefined,
 > = {
   [ActionKey in keyof Actions]: ActionKey extends keyof GenericActions
     ? unknown extends GenericActions[ActionKey]
@@ -41,82 +41,87 @@ type MakeActions<
 export interface MakeOwnLogicType<
   LogicData extends {
     actions?: RestrictedObject<
-      LogicData["actions"],
+      LogicData['actions'],
       ((...args: any[]) => any) | true
     >;
-    reducers?: RestrictedObject<LogicData["reducers"], any>;
+    reducers?: RestrictedObject<LogicData['reducers'], any>;
     selectors?: RestrictedObject<
-      LogicData["selectors"],
+      LogicData['selectors'],
       (...args: any[]) => any
     >;
-    values?: RestrictedObject<LogicData["values"], any>;
-    props?: RestrictedObject<LogicData["props"], any>;
-    deps?: RestrictedObject<LogicData["deps"], any>;
+    values?: RestrictedObject<LogicData['values'], any>;
+    props?: RestrictedObject<LogicData['props'], any>;
+    deps?: RestrictedObject<LogicData['deps'], any>;
     genericActions?: {
-      [Key in keyof LogicData["actions"]]?: Key extends keyof LogicData["genericActions"]
-        ? LogicData["actions"][Key] extends (...args: infer ActionArgs) => any
-          ? LogicData["genericActions"][Key] extends (
+      [Key in keyof LogicData['actions']]?: Key extends keyof LogicData['genericActions']
+        ? LogicData['actions'][Key] extends (...args: infer ActionArgs) => any
+          ? LogicData['genericActions'][Key] extends (
               ...args: infer GenericArgs
             ) => void
             ? ActionArgs extends GenericArgs
-              ? LogicData["genericActions"][Key]
+              ? LogicData['genericActions'][Key]
               : never
             : never
           : never
         : never;
     };
     sharedListeners?: RestrictedObject<
-      LogicData["sharedListeners"],
+      LogicData['sharedListeners'],
       () => void | Promise<void>
     >;
-  } = any
+  } = any,
 > extends Logic {
   actions: LogicData extends {
     actions: RestrictedObject<
-      LogicData["actions"],
+      LogicData['actions'],
       ((...args: any[]) => any) | true
     >;
   }
-    ? MakeActions<LogicData["actions"], LogicData["genericActions"]>
+    ? MakeActions<LogicData['actions'], LogicData['genericActions']>
     : Record<never, never>;
   actionKeys: Record<string, string>;
-  actionTypes: { [ActionKey in keyof LogicData["actions"]]: string };
+  actionTypes: { [ActionKey in keyof LogicData['actions']]: string };
   actionCreators: {
-    [ActionKey in keyof LogicData["actions"]]: LogicData["actions"][ActionKey] extends AnyFunction
-      ? ActionCreatorForPayloadBuilder<LogicData["actions"][ActionKey]>
+    [ActionKey in keyof LogicData['actions']]: LogicData['actions'][ActionKey] extends AnyFunction
+      ? ActionCreatorForPayloadBuilder<LogicData['actions'][ActionKey]>
       : never;
   };
   reducers: {
-    [Key in keyof LogicData["reducers"]]: ReducerFunction<
-      LogicData["reducers"][Key]
+    [Key in keyof LogicData['reducers']]: ReducerFunction<
+      LogicData['reducers'][Key]
     >;
   };
-  reducer: unknown extends LogicData["reducers"]
+  reducer: unknown extends LogicData['reducers']
     ? ReducerFunction
-    : ReducerFunction<LogicData["reducers"]>;
+    : ReducerFunction<LogicData['reducers']>;
   selector: (
     state: any,
-    props: LogicData["props"]
-  ) => GetSelectorsValues<LogicData["selectors"]>;
+    props: LogicData['props'],
+  ) => GetSelectorsValues<LogicData['selectors']>;
   sharedListeners: {
-    [Key in keyof Logic["sharedListeners"]]: ListenerFunction;
+    [Key in keyof Logic['sharedListeners']]: ListenerFunction;
   };
   selectors: {
-    [Key in keyof LogicData["reducers"]]: (
-      ...args: any[]
-    ) => LogicData["reducers"][Key];
-  } & RestrictedObject<LogicData["selectors"], (...args: any[]) => any>;
+    [Key in keyof LogicData['reducers']]: (
+      state: any,
+      props: any,
+    ) => LogicData['reducers'][Key];
+  } & {
+    [Key in keyof LogicData['selectors']]: LogicData['selectors'][Key] extends () => void
+      ? (state: any, props: any) => ReturnType<LogicData['selectors'][Key]>
+      : never;
+  };
   defaults: {
-    [Key in keyof LogicData["reducers"]]: LogicData["reducers"][Key];
+    [Key in keyof LogicData['reducers']]: LogicData['reducers'][Key];
   };
   values: (LogicData extends {
-    values: RestrictedObject<LogicData["values"], any>;
+    values: RestrictedObject<LogicData['values'], any>;
   }
-    ? LogicData["values"]
+    ? LogicData['values']
     : {}) &
-    LogicData["reducers"] &
-    GetSelectorsValues<LogicData["selectors"]>;
-  props: LogicData["props"];
-  deps: LogicData["deps"];
-  __internal_selector_types: LogicData["selectors"];
+    LogicData['reducers'] &
+    GetSelectorsValues<LogicData['selectors']>;
+  props: LogicData['props'];
+  deps: LogicData['deps'];
+  __internal_selector_types: LogicData['selectors'];
 }

@@ -1,22 +1,30 @@
-import { actions, kea, listeners, path, reducers } from "kea";
-import { urlToAction } from "kea-router";
+import { actions, kea, listeners, path, reducers } from 'kea';
+import { urlToAction } from 'kea-router';
 
+import { deps } from '@/logic/builders';
+import { IRouteLogic } from '@/logic/interfaces';
 import {
+  ApiErrorCodes,
   RequestStatus,
   ServiceErrorType,
-  ApiErrorCodes,
-} from "@/services/enums";
+} from '@/services/enums';
+import { IUserService } from '@/services/interfaces';
+import { sleep } from '@/utils/async';
+import { IUserValidators } from '@/validators/interfaces';
 
-import { sleep } from "@/utils/async";
+import type { AuthLogic } from './type';
 
-import type { AuthLogic } from "./type";
-
-const logic = kea<AuthLogic>([
-  path(["login"]),
+export const authLogic = kea<AuthLogic>([
+  path(['auth']),
+  deps({
+    routeLogic: IRouteLogic.$,
+    userService: IUserService.$,
+    userValidators: IUserValidators.$,
+  }),
   urlToAction(({ actions }) => ({
-    "/login": () => actions.checkLoggedIn(),
-    "/register": () => actions.checkLoggedIn(),
-    "/verify": () => actions.checkLoggedIn(),
+    '/login': () => actions.checkLoggedIn(),
+    '/register': () => actions.checkLoggedIn(),
+    '/verify': () => actions.checkLoggedIn(),
   })),
   actions({
     checkLoggedIn: true,
@@ -44,7 +52,7 @@ const logic = kea<AuthLogic>([
     loginStatus: [
       RequestStatus.Idle,
       {
-        login: () => RequestStatus.Loading,
+        login: () => RequestStatus.Idle,
         loginSuccess: () => RequestStatus.Success,
         loginFailure: () => RequestStatus.Failure,
       },
@@ -59,7 +67,7 @@ const logic = kea<AuthLogic>([
     logoutStatus: [
       RequestStatus.Idle,
       {
-        logout: () => RequestStatus.Loading,
+        logout: () => RequestStatus.Idle,
         logoutSuccess: () => RequestStatus.Success,
         logoutFailure: () => RequestStatus.Failure,
       },
@@ -67,7 +75,7 @@ const logic = kea<AuthLogic>([
     registerStatus: [
       RequestStatus.Idle as RequestStatus,
       {
-        register: () => RequestStatus.Loading,
+        register: () => RequestStatus.Idle,
         registerSuccess: () => RequestStatus.Success,
         registerFailure: () => RequestStatus.Failure,
         registerResetStatus: () => RequestStatus.Idle,
@@ -108,7 +116,7 @@ const logic = kea<AuthLogic>([
       if (response.success) {
         actions.loginSuccess();
       } else {
-        if ("detail" in response.error) {
+        if ('detail' in response.error) {
           if (response.error.detail == ApiErrorCodes.UserNotVerified) {
             deps.routeLogic.actions.openVerifyPage(username);
           }
@@ -146,7 +154,7 @@ const logic = kea<AuthLogic>([
       if (response.success) {
         actions.registerSuccess();
       } else {
-        if ("detail" in response.error) {
+        if ('detail' in response.error) {
           actions.registerFailure(response.error.detail);
         } else {
           actions.registerFailure();
@@ -168,5 +176,3 @@ const logic = kea<AuthLogic>([
     },
   })),
 ]);
-
-export const authLogic = logic;

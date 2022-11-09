@@ -14,7 +14,7 @@ export const Reducers: ReducersDef<RolesTableLogic> = {
   loadState: [
     RequestStatus.Idle,
     {
-      load: () => RequestStatus.Loading,
+      load: () => RequestStatus.Running,
       loadSuccess: () => RequestStatus.Success,
       loadFailure: () => RequestStatus.Failure,
     },
@@ -23,6 +23,12 @@ export const Reducers: ReducersDef<RolesTableLogic> = {
     [],
     {
       loadSuccess: (_, { roles }) => roles,
+    },
+  ],
+  amountOfRecords: [
+    0,
+    {
+      loadSuccess: (_, { rowCount }) => rowCount,
     },
   ],
 };

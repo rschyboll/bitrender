@@ -1,6 +1,6 @@
-import { useInjection } from "inversify-react";
-import { useActions, useValues } from "kea";
-import { Button } from "primereact/button";
+import { useInjection } from 'inversify-react';
+import { useActions, useValues } from 'kea';
+import { Button } from 'primereact/button';
 import {
   FormEvent,
   memo,
@@ -8,21 +8,21 @@ import {
   useEffect,
   useRef,
   useState,
-} from "react";
-import { Trans, useTranslation } from "react-i18next";
+} from 'react';
+import { Trans, useTranslation } from 'react-i18next';
 import {
   RiEyeFill,
   RiEyeOffFill,
   RiLockFill,
   RiUserFill,
-} from "react-icons/ri";
+} from 'react-icons/ri';
 
-import { Link } from "@/components/link";
-import { TextField } from "@/components/textField";
-import { IAuthLogic } from "@/logic/interfaces";
-import { ApiErrorCodes, RequestStatus } from "@/services";
+import { Link } from '@/components/link';
+import { TextField } from '@/components/textField';
+import { IAuthLogic } from '@/logic/interfaces';
+import { ApiErrorCodes, RequestStatus } from '@/services';
 
-import "./style.scss";
+import './style.scss';
 
 const LoginPage = memo(function LoginPage() {
   const authLogic = useInjection(IAuthLogic.$);
@@ -32,8 +32,8 @@ const LoginPage = memo(function LoginPage() {
   const { loginStatus, loginErrorDetail } = useValues(authLogic);
   const { login } = useActions(authLogic);
 
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
   const [noUsernameError, setNoUsernameError] = useState(false);
   const [noPasswordError, setNoPasswordError] = useState(false);
   const [passwordVisible, setPasswordVisible] = useState(false);
@@ -44,21 +44,21 @@ const LoginPage = memo(function LoginPage() {
   const submit = useCallback(
     async (e: FormEvent) => {
       e.preventDefault();
-      if (username == "") {
+      if (username == '') {
         setNoUsernameError(true);
       } else {
         setNoUsernameError(false);
       }
-      if (password == "") {
+      if (password == '') {
         setNoPasswordError(true);
       } else {
         setNoPasswordError(false);
       }
-      if (username != "" && password != "") {
+      if (username != '' && password != '') {
         login(username, password);
       }
     },
-    [username, password, login]
+    [username, password, login],
   );
 
   useEffect(() => {
@@ -98,7 +98,7 @@ const LoginPage = memo(function LoginPage() {
           onChange={setUsername}
           label="user.username"
           leftIcon={RiUserFill}
-          errorMessage={noUsernameError ? "login.cannotBeEmpty" : undefined}
+          errorMessage={noUsernameError ? 'login.cannotBeEmpty' : undefined}
         />
 
         <TextField
@@ -107,11 +107,11 @@ const LoginPage = memo(function LoginPage() {
           value={password}
           onChange={setPassword}
           label="user.password"
-          type={passwordVisible ? "text" : "password"}
+          type={passwordVisible ? 'text' : 'password'}
           leftIcon={RiLockFill}
           rightIcon={passwordVisible ? RiEyeOffFill : RiEyeFill}
           onRightIconClick={togglePasswordVisibility}
-          errorMessage={noPasswordError ? "login.cannotBeEmpty" : undefined}
+          errorMessage={noPasswordError ? 'login.cannotBeEmpty' : undefined}
           floorRightContent={
             <Link to="/forgot-password" id="login-forgot-password">
               <Trans>login.forgot</Trans>
@@ -122,20 +122,20 @@ const LoginPage = memo(function LoginPage() {
         <Button
           className={
             loginStatus == RequestStatus.Failure && !tryAgainVisible
-              ? "p-button-danger"
-              : ""
+              ? 'p-button-danger'
+              : ''
           }
-          disabled={loginStatus == RequestStatus.Loading}
+          disabled={loginStatus == RequestStatus.Running}
           label={
-            loginStatus == RequestStatus.Loading
-              ? t("login.loggingIn")
+            loginStatus == RequestStatus.Running
+              ? t('login.loggingIn')
               : loginStatus == RequestStatus.Failure
               ? tryAgainVisible
-                ? t("tryAgain")
+                ? t('tryAgain')
                 : loginErrorDetail == ApiErrorCodes.BadCredentials
-                ? t("login.badCredentials")
-                : t("login.unknownError")
-              : t("login.submit")
+                ? t('login.badCredentials')
+                : t('login.unknownError')
+              : t('login.submit')
           }
           id="login-submit"
           type="submit"

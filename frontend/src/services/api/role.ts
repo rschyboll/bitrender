@@ -1,12 +1,12 @@
-import { inject, injectable } from "inversify";
+import { inject, injectable } from 'inversify';
 
-import { ApiEndpoints } from "@/services/endpoints";
-import { Response, ServiceErrorType } from "@/services";
-import { MRole } from "@/types/models";
-import { IRoleValidators } from "@/validators/interfaces";
+import { Response, ServiceErrorType } from '@/services';
+import { ApiEndpoints } from '@/services/endpoints';
+import { MRole } from '@/types/models';
+import { IRoleValidators } from '@/validators/interfaces';
 
-import { IRoleService } from "../interfaces";
-import { Service } from "./base";
+import { IRoleService } from '../interfaces';
+import { Service } from './base';
 
 @injectable()
 export class RoleService extends Service implements IRoleService {
@@ -17,12 +17,12 @@ export class RoleService extends Service implements IRoleService {
     this.roleValidators = roleValidators;
   }
 
-  public async getRoles(
-    input: MRole.Messages.GetRolesInput
-  ): Promise<Response<MRole.Messages.GetRolesOutput>> {
+  public getRoles = async (
+    input: MRole.Messages.GetRolesInput,
+  ): Promise<Response<MRole.Messages.GetRolesOutput>> => {
     try {
       const response = await this.api
-        .get(ApiEndpoints.Roles + "?" + this.listRequestToURL(input))
+        .get(ApiEndpoints.Roles + '?' + this.listRequestToURL(input))
         .json();
       if (this.roleValidators.validateGetRolesOutput(response)) {
         return { success: true, data: response };
@@ -36,5 +36,5 @@ export class RoleService extends Service implements IRoleService {
     } catch (error: unknown) {
       return this.parseAPIError(error);
     }
-  }
+  };
 }

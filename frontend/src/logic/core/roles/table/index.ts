@@ -4,26 +4,23 @@ import {
   kea,
   listeners,
   path,
-  props,
   reducers,
   selectors,
 } from 'kea';
 import { subscriptions } from 'kea-subscriptions';
 
 import { IRoleConverters } from '@/converters/interfaces';
-import Dependencies from '@/deps';
 import { deps } from '@/logic/builders';
 import { IRouteLogic } from '@/logic/interfaces';
-import { injectDepsToLogic } from '@/logic/utils';
-import { RequestStatus } from '@/services';
 import { IRoleService } from '@/services/interfaces';
-import { ListRequestInput, SearchRule } from '@/services/messages/list';
-import { LoadState } from '@/types';
 
+import { Listeners } from './listeners';
 import { Reducers } from './reducers';
+import { Selectors } from './selectors';
+import { Subscriptions } from './subscriptions';
 import type { RolesTableLogic } from './type';
 
-const logic = kea<RolesTableLogic>([
+export const rolesTableLogic = kea<RolesTableLogic>([
   path(['roles', 'table']),
   deps({
     roleConverters: IRoleConverters.$,
@@ -44,69 +41,10 @@ const logic = kea<RolesTableLogic>([
     setRowsPerPage: (rowsPerPage) => ({ rowsPerPage }),
   }),
   reducers(Reducers),
-  subscriptions(({ actions, values }) => ({
-    listRequestInput: async () => {
-      actions.refresh();
-    },
-    urlSearchString: (value) => {
-      if (value != values.localSearchString) {
-        actions.setLocalSearchString(value);
-      }
-    },
-  })),
-  selectors(({ props }) => ({})),
-  reducers({
-    amountOfRecords: [
-      0 as number,
-      {
-        loadSuccess: (_, { row_count }) => row_count,
-      },
-    ],
-  }),
-  listeners(({ props, values, actions }) => ({
-    refresh: async () => {
-      actions.load();
-    },
-    load: async () => {
-      const response = await props.deps.roleService.getRoles(
-        values.listRequestInput,
-      );
-      if (response.success) {
-        actions.loadSuccess(response.data.items, response.data.rowCount);
-      } else {
-        actions.loadFailure();
-      }
-    },
-    setSearchString: async ({ searchString }, breakpoint) => {
-      await breakpoint(250);
-      props.deps.routeLogic.actions.openRolesPage(
-        values.currentPage,
-        values.rowsPerPage,
-        searchString,
-      );
-    },
-    setCurrentPage: ({ currentPage }) => {
-      props.deps.routeLogic.actions.openRolesPage(
-        currentPage,
-        values.rowsPerPage,
-        values.urlSearchString,
-      );
-    },
-    setRowsPerPage: ({ rowsPerPage }) => {
-      props.deps.routeLogic.actions.openRolesPage(
-        values.currentPage,
-        rowsPerPage,
-        values.urlSearchString,
-      );
-    },
-  })),
+  selectors(Selectors),
+  listeners(Listeners),
+  subscriptions(Subscriptions),
   afterMount(({ actions }) => {
     actions.refresh();
   }),
 ]);
-
-export const rolesTableLogic = injectDepsToLogic(logic, () => ({
-  routeLogic: Dependencies.get(IRouteLogic.$),
-  roleService: Dependencies.get(IRoleService.$),
-  roleConverters: Dependencies.get(IRoleConverters.$),
-}));

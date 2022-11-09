@@ -1,13 +1,13 @@
-import { inject, injectable } from "inversify";
+import { inject, injectable } from 'inversify';
 
-import { UserView } from "@/schemas/user";
-import { UserCreate } from "@/schemas/user";
-import { ApiEndpoints } from "@/services/endpoints";
-import { ServiceErrorType, Response } from "@/services";
-import { IUserValidators } from "@/validators/interfaces";
+import { UserView } from '@/schemas/user';
+import { UserCreate } from '@/schemas/user';
+import { Response, ServiceErrorType } from '@/services';
+import { ApiEndpoints } from '@/services/endpoints';
+import { IUserValidators } from '@/validators/interfaces';
 
-import { IUserService } from "../interfaces";
-import { Service } from "./base";
+import { IUserService } from '../interfaces';
+import { Service } from './base';
 
 @injectable()
 export class UserService extends Service implements IUserService {
@@ -18,7 +18,7 @@ export class UserService extends Service implements IUserService {
     this.userValidators = userValidator;
   }
 
-  public async getCurrentUser(): Promise<Response<UserView>> {
+  public getCurrentUser = async (): Promise<Response<UserView>> => {
     try {
       const response = await this.api.get(ApiEndpoints.UserMe).json();
       if (this.userValidators.validateUserView(response)) {
@@ -36,15 +36,15 @@ export class UserService extends Service implements IUserService {
     } catch (error: unknown) {
       return this.parseAPIError(error);
     }
-  }
+  };
 
-  public async login(
+  public login = async (
     username: string,
-    password: string
-  ): Promise<Response<undefined>> {
+    password: string,
+  ): Promise<Response<undefined>> => {
     const formData = new FormData();
-    formData.append("username", username);
-    formData.append("password", password);
+    formData.append('username', username);
+    formData.append('password', password);
     try {
       await this.api.post(ApiEndpoints.Login, {
         body: formData,
@@ -53,12 +53,12 @@ export class UserService extends Service implements IUserService {
     } catch (error: unknown) {
       return this.parseAPIError(error);
     }
-  }
+  };
 
-  public async logged(): Promise<Response<boolean>> {
+  public logged = async (): Promise<Response<boolean>> => {
     try {
       const response = await this.api.get(ApiEndpoints.Logged).json();
-      if (typeof response == "boolean") {
+      if (typeof response == 'boolean') {
         return { success: true, data: response };
       } else {
         return {
@@ -69,9 +69,11 @@ export class UserService extends Service implements IUserService {
     } catch (error: unknown) {
       return this.parseAPIError(error);
     }
-  }
+  };
 
-  public async register(userCreate: UserCreate): Promise<Response<undefined>> {
+  public register = async (
+    userCreate: UserCreate,
+  ): Promise<Response<undefined>> => {
     try {
       await this.api.post(ApiEndpoints.Register, {
         json: userCreate,
@@ -80,14 +82,14 @@ export class UserService extends Service implements IUserService {
     } catch (error: unknown) {
       return this.parseAPIError(error);
     }
-  }
+  };
 
-  public async logout(): Promise<Response<undefined>> {
+  public logout = async (): Promise<Response<undefined>> => {
     try {
       await this.api.post(ApiEndpoints.Logout);
       return { success: true, data: undefined };
     } catch (error: unknown) {
       return this.parseAPIError(error);
     }
-  }
+  };
 }

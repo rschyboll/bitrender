@@ -1,18 +1,18 @@
-import { useInjection } from "inversify-react";
-import { useActions, useValues } from "kea";
-import { Button } from "primereact/button";
-import { memo, useCallback, useEffect, useRef, useState } from "react";
-import { Trans, useTranslation } from "react-i18next";
-import { RiMailFill, RiUserFill } from "react-icons/ri";
+import { useInjection } from 'inversify-react';
+import { useActions, useValues } from 'kea';
+import { Button } from 'primereact/button';
+import { memo, useCallback, useEffect, useRef, useState } from 'react';
+import { Trans, useTranslation } from 'react-i18next';
+import { RiMailFill, RiUserFill } from 'react-icons/ri';
 
-import { Link } from "@/components/link";
-import { PasswordField } from "@/components/passwordField";
-import { TextField } from "@/components/textField";
-import { IAuthLogic } from "@/logic/interfaces";
-import { ApiErrorCodes, RequestStatus } from "@/services";
-import { IUserValidators } from "@/validators/interfaces";
+import { Link } from '@/components/link';
+import { PasswordField } from '@/components/passwordField';
+import { TextField } from '@/components/textField';
+import { IAuthLogic } from '@/logic/interfaces';
+import { ApiErrorCodes, RequestStatus } from '@/services';
+import { IUserValidators } from '@/validators/interfaces';
 
-import "./style.scss";
+import './style.scss';
 
 const RegisterPage = memo(function RegisterPage() {
   const userValidators = useInjection(IUserValidators.$);
@@ -28,9 +28,9 @@ const RegisterPage = memo(function RegisterPage() {
 
   const { t } = useTranslation();
 
-  const [email, setEmail] = useState("");
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState('');
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
 
   const [noEmailError, setNoEmailError] = useState(false);
   const [noUsernameError, setNoUsernameError] = useState(false);
@@ -40,22 +40,22 @@ const RegisterPage = memo(function RegisterPage() {
   const registerStatusRef = useRef(registerStatus);
 
   const submit = useCallback(() => {
-    if (email == "") {
+    if (email == '') {
       setNoEmailError(true);
     } else {
       setNoEmailError(false);
     }
-    if (username == "") {
+    if (username == '') {
       setNoUsernameError(true);
     } else {
       setNoUsernameError(false);
     }
-    if (password == "") {
+    if (password == '') {
       setNoPasswordError(true);
     } else {
       setNoPasswordError(false);
     }
-    if (email != "" && username != "" && password != "") {
+    if (email != '' && username != '' && password != '') {
       register(email, username, password);
     }
   }, [email, password, register, username]);
@@ -99,7 +99,7 @@ const RegisterPage = memo(function RegisterPage() {
           onChange={setUsername}
           label="user.username"
           leftIcon={RiUserFill}
-          errorMessage={noUsernameError ? "login.cannotBeEmpty" : undefined}
+          errorMessage={noUsernameError ? 'login.cannotBeEmpty' : undefined}
         />
 
         <TextField
@@ -111,11 +111,11 @@ const RegisterPage = memo(function RegisterPage() {
           leftIcon={RiMailFill}
           errorMessage={
             noEmailError
-              ? "register.cannotBeEmpty"
+              ? 'register.cannotBeEmpty'
               : registerWrongEmail
-              ? "register.wrongEmail"
+              ? 'register.wrongEmail'
               : registerErrorDetail == ApiErrorCodes.EmailTaken
-              ? "register.emailTaken"
+              ? 'register.emailTaken'
               : undefined
           }
         />
@@ -130,9 +130,9 @@ const RegisterPage = memo(function RegisterPage() {
           strongRegex={userValidators.strongPasswordRegExp.source}
           errorMessage={
             noPasswordError
-              ? "register.cannotBeEmpty"
+              ? 'register.cannotBeEmpty'
               : registerWeakPassword
-              ? "register.weakPassword"
+              ? 'register.weakPassword'
               : undefined
           }
         />
@@ -140,18 +140,18 @@ const RegisterPage = memo(function RegisterPage() {
         <Button
           className={
             registerStatus == RequestStatus.Failure && !tryAgainVisible
-              ? "p-button-danger"
-              : ""
+              ? 'p-button-danger'
+              : ''
           }
-          disabled={registerStatus == RequestStatus.Loading}
+          disabled={registerStatus == RequestStatus.Running}
           label={
-            registerStatus == RequestStatus.Loading
-              ? t("register.inProcess")
+            registerStatus == RequestStatus.Running
+              ? t('register.inProcess')
               : registerStatus == RequestStatus.Failure
               ? tryAgainVisible
-                ? t("tryAgain")
-                : t("register.unknownError")
-              : t("register.submit")
+                ? t('tryAgain')
+                : t('register.unknownError')
+              : t('register.submit')
           }
           id="register-submit"
           type="submit"

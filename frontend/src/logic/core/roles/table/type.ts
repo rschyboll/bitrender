@@ -1,11 +1,10 @@
 import type { IRoleConverters } from '@/converters/interfaces';
-import type { IRouteLogic } from '@/logic/interfaces';
-
-import type { RequestStatus } from '@/services';
-
-import type { MRole } from '@/types/models';
-import type { IRoleService } from '@/services/interfaces';
 import type { MakeOwnLogicType } from '@/logic';
+import type { IRouteLogic } from '@/logic/interfaces';
+import type { RequestStatus } from '@/services';
+import type { IRoleService } from '@/services/interfaces';
+import { ListRequestInput } from '@/services/messages/list';
+import type { MRole } from '@/types/models';
 
 interface Actions {
   refresh: true;
@@ -25,10 +24,22 @@ interface Reducers {
   localSearchString: string | null;
   loadState: RequestStatus;
   roles: MRole.View[];
+  amountOfRecords: number;
 }
 
 interface Selectors {
   values: (roles: MRole.View[]) => MRole.TableView[];
+  searchString: (
+    localSearchString: string | null,
+    hashParams: Record<string, unknown>,
+  ) => string;
+  rowsPerPage: (hashParams: Record<string, unknown>) => number;
+  currentPage: (hashParams: Record<string, unknown>) => number;
+  listRequestInput: (
+    currentPage: number,
+    rowsPerPage: number,
+    searchString: string,
+  ) => ListRequestInput<MRole.Columns>;
 }
 
 interface Deps {

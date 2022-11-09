@@ -1,15 +1,14 @@
-import { actions, events, kea, listeners, path, reducers } from "kea";
+import { actions, events, kea, listeners, path, reducers } from 'kea';
 
-import { SidebarType, Theme, themeClasses } from "@/types/settings";
+import darkThemeText from '@/themes/dark.scss?inline';
+import dimThemeText from '@/themes/dim.scss?inline';
+import lightThemeText from '@/themes/light.scss?inline';
+import { SidebarType, Theme } from '@/types/settings';
 
-import type { logicType } from "./indexType";
-
-import lightThemeText from "../../../themes/light.scss?inline";
-import darkThemeText from "../../../themes/dark.scss?inline";
-import dimThemeText from "../../../themes/dim.scss?inline";
+import type { logicType } from './indexType';
 
 const logic = kea<logicType>([
-  path(["settings"]),
+  path(['settings']),
   actions({
     setFontSize: (fontSize: number) => ({ fontSize }),
     setSidebarType: (type: SidebarType) => ({ type }),
@@ -50,7 +49,7 @@ const logic = kea<logicType>([
   }),
   listeners({
     setTheme: async ({ theme }) => {
-      const themeLink = document.getElementById("theme-link");
+      const themeLink = document.getElementById('theme-link');
       if (themeLink instanceof HTMLStyleElement) {
         if (theme == Theme.Dark) {
           themeLink.textContent = darkThemeText;
@@ -63,9 +62,9 @@ const logic = kea<logicType>([
     },
     setFontSize: async ({ fontSize }, breakpoint) => {
       await breakpoint(200);
-      const htmlElement = document.getElementsByTagName("html")[0];
+      const htmlElement = document.getElementsByTagName('html')[0];
       if (htmlElement instanceof HTMLHtmlElement) {
-        htmlElement.style.fontSize = fontSize.toString() + "px";
+        htmlElement.style.fontSize = fontSize.toString() + 'px';
       }
     },
   }),

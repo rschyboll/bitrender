@@ -1,10 +1,11 @@
-import { TextField } from "@/components/textField";
-import { memo } from "react";
+import { memo } from 'react';
+
+import { TextField } from '@/components/textField';
 
 export const AddRoleDialog = memo(function ModifyColumn() {
   return (
     <form>
-      <TextField />
+      <TextField value="" onChange={() => {}} />
     </form>
   );
 });

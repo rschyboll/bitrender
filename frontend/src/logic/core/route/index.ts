@@ -7,84 +7,24 @@ import {
   kea,
   listeners,
   path,
-  props,
   reducers,
   selectors,
   sharedListeners,
 } from 'kea';
-import { decodeParams } from 'kea-router';
 
-import Dependencies from '@/deps';
-import { injectDepsToLogic } from '@/logic/utils';
+import { deps } from '@/logic/builders';
 import { history } from '@/pages/router';
 import { IRouteValidators } from '@/validators/interfaces';
 
-import type { logicType } from './indexType';
+import { Listeners, SharedListeners } from './listeners';
+import { Reducers } from './reducers';
+import { Selectors } from './selectors';
+import type { RouteLogicType } from './type';
 
-const logic = kea<logicType>([
+export const routeLogic = kea<RouteLogicType>([
   path(['route']),
-  props(
-    {} as {
-      deps: {
-        routeValidators: IRouteValidators;
-      };
-    },
-  ),
-  reducers(() => ({
-    currentLocation: [
-      { ...history.location },
-      {
-        updateLocationState: (_, { location }) => {
-          console.log('REDUCER');
-          console.log(location.hash);
-          return { ...location };
-        },
-      },
-    ],
-  })),
-  selectors({
-    pathname: [
-      (selectors) => [selectors.currentLocation],
-      (currentLocation) => {
-        return currentLocation.pathname;
-      },
-    ],
-    search: [
-      (selectors) => [selectors.currentLocation],
-      (currentLocation) => {
-        return currentLocation.search;
-      },
-    ],
-    hash: [
-      (selectors) => [selectors.currentLocation],
-      (currentLocation) => {
-        return currentLocation.hash;
-      },
-    ],
-    state: [
-      (selectors) => [selectors.currentLocation],
-      (currentLocation) => {
-        return currentLocation.state;
-      },
-    ],
-    key: [
-      (selectors) => [selectors.currentLocation],
-      (currentLocation) => {
-        return currentLocation.key;
-      },
-    ],
-    searchParams: [
-      (selectors) => [selectors.search],
-      (search) => {
-        return decodeParams(search, '?') as Record<string, unknown>;
-      },
-    ],
-    hashParams: [
-      (selectors) => [selectors.hash],
-      (hash) => {
-        return decodeParams(hash, '#') as Record<string, unknown>;
-      },
-    ],
+  deps({
+    routeValidators: IRouteValidators.$,
   }),
   actions({
     updateLocationState: (location: Location) => ({ location }),
@@ -129,6 +69,10 @@ const logic = kea<logicType>([
     }),
     returnToBeforeLogin: true,
   }),
+  reducers(Reducers),
+  selectors(Selectors),
+  listeners(Listeners),
+  sharedListeners(SharedListeners),
   sharedListeners(({ props }) => ({
     pushRoute: (payload: { to: string | Partial<Path>; state?: object }) => {
       history.push(payload.to, {
@@ -183,7 +127,3 @@ const logic = kea<logicType>([
     });
   }),
 ]);
-
-export const routeLogic = injectDepsToLogic(logic, () => ({
-  routeValidators: Dependencies.get(IRouteValidators.$),
-}));
