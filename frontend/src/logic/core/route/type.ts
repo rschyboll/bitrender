@@ -26,10 +26,12 @@ interface Actions {
   };
   openUsersPage: () => { to: string };
   openRolesPage: (
-    page: number,
-    rows: number,
-    search: null | string,
-  ) => { to: string };
+    page?: number,
+    rows?: number,
+    search?: null | string,
+  ) => { to: Partial<Path> };
+  openErrorPage: () => { to: string };
+  returnToBeforeLogin: true;
 }
 
 interface Selectors {
@@ -43,7 +45,12 @@ interface Selectors {
 }
 
 interface SharedListeners {
-  pushRoute: () => Promise<void>;
+  pushRoute: (payload: { to: string | Partial<Path>; state?: object }) => void;
+  replaceRoute: (payload: {
+    to: string | Partial<Path>;
+    state?: object;
+  }) => void;
+  replaceWithPrevious: () => void;
 }
 
 interface Deps {
@@ -53,6 +60,7 @@ interface Deps {
 export type RouteLogicType = MakeOwnLogicType<{
   reducers: Reducers;
   selectors: Selectors;
+  actions: Actions;
   sharedListeners: SharedListeners;
   deps: Deps;
 }>;

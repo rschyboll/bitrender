@@ -13,9 +13,6 @@ export const appLogic = kea<AppLogicType>([
   deps({
     userService: IUserService.$,
   }),
-  requests(({ deps }) => ({
-    loadCurrentUser: deps.userService.getCurrentUser,
-  })),
   reducers({
     appReady: [
       false,
@@ -26,10 +23,13 @@ export const appLogic = kea<AppLogicType>([
     currentUser: [
       null as UserView | null,
       {
-        loadCurrentUserSuccess: (_, currentUser) => currentUser,
+        loadCurrentUserSuccess: (_, { value }) => value,
       },
     ],
   }),
+  requests(({ deps }) => ({
+    loadCurrentUser: deps.userService.getCurrentUser,
+  })),
   listeners(({ actions }) => ({
     loadCurrentUserFailure: async () => {
       await sleep(2000);

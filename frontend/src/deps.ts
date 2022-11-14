@@ -14,6 +14,7 @@ import {
 import {
   appLogic,
   authLogic,
+  createRoleLogic,
   rolesTableLogic,
   routeLogic,
   settingsLogic,
@@ -21,6 +22,7 @@ import {
 import {
   IAppLogic,
   IAuthLogic,
+  ICreateRoleLogic,
   IRolesTableLogic,
   IRouteLogic,
   ISettingsLogic,
@@ -28,6 +30,7 @@ import {
 import { RoleService, UserService } from '@/services/api';
 import { IRoleService, IUserService } from '@/services/interfaces';
 import {
+  RoleValidators,
   RouteValidators,
   ServiceValidators,
   UserValidators,
@@ -38,8 +41,6 @@ import {
   IServiceValidators,
   IUserValidators,
 } from '@/validators/interfaces';
-
-import { RoleValidators } from './validators/core/role';
 
 const Dependencies = new Container();
 
@@ -63,7 +64,9 @@ Dependencies.bind(IAppLogic.$).toConstantValue(appLogic);
 Dependencies.bind(ISettingsLogic.$).toConstantValue(settingsLogic);
 Dependencies.bind(IAuthLogic.$).toConstantValue(authLogic);
 Dependencies.bind(IRouteLogic.$).toConstantValue(routeLogic);
+
 Dependencies.bind(IRolesTableLogic.$).toConstantValue(rolesTableLogic);
+Dependencies.bind(ICreateRoleLogic.$).toConstantValue(createRoleLogic);
 
 //Service dependencies
 Dependencies.bind(IUserService.$).to(UserService).inSingletonScope();

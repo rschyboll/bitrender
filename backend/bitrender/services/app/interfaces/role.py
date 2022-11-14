@@ -1,10 +1,11 @@
 """Contains the interface for the role service"""
 from abc import abstractmethod
+from uuid import UUID
 
 from antidote import interface
 
 from bitrender.models import Role
-from bitrender.schemas import ListRequestInput, ListRequestOutput, RoleView
+from bitrender.schemas import ListRequestInput, ListRequestOutput, RoleCreate, RoleView
 
 
 @interface
@@ -28,3 +29,30 @@ class IRoleService:
         Returns:
             ListRequestOutput[RoleView]: Schema with a list of RoleView schemas, \
                 containing the requested roles"""
+
+    @abstractmethod
+    async def get_by_id(self, role_id: UUID) -> RoleView:
+        """Returns a role with the provided id.
+
+        Args:
+            role_id (UUID): Id of the requested role
+
+        Raises:
+            UnauthorizedError: The user has no access to view this role.
+
+        Returns:
+            RoleView: The requested role."""
+
+    @abstractmethod
+    async def create(self, role_data: RoleCreate) -> RoleView:
+        """Creates a new role.
+
+        Args:
+            role_data (RoleCreate): Data required to create the role.
+
+        Raises:
+            UnauthorizedError: The user has no access to create new roles.
+            RoleNameTaken: A role with the name already exists.
+
+        Returns:
+            RoleView: The created role."""

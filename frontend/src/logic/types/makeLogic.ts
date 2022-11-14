@@ -67,7 +67,7 @@ export interface MakeOwnLogicType<
     };
     sharedListeners?: RestrictedObject<
       LogicData['sharedListeners'],
-      () => void | Promise<void>
+      (payload: any) => void | Promise<void>
     >;
   } = any,
 > extends Logic {
@@ -99,7 +99,14 @@ export interface MakeOwnLogicType<
     props: LogicData['props'],
   ) => GetSelectorsValues<LogicData['selectors']>;
   sharedListeners: {
-    [Key in keyof Logic['sharedListeners']]: ListenerFunction;
+    [Key in keyof LogicData['sharedListeners']]: LogicData['sharedListeners'][Key] extends (
+      ...args: any
+    ) => any
+      ? ListenerFunction<{
+          type: any;
+          payload: Parameters<LogicData['sharedListeners'][Key]>[0];
+        }>
+      : never;
   };
   selectors: {
     [Key in keyof LogicData['reducers']]: (

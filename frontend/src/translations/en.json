@@ -48,17 +48,19 @@
     },
     "role": {
       "name": "Name",
-      "default": "Is default"
+      "default": "Is default",
+      "create": "New role data",
+      "setDefault": "Set as default"
     },
     "permission": {
       "manage_users": "Managing users",
-      "manage_roles": "Managing roles"
+      "manage_roles": "Managing user roles"
     },
     "tryAgain": "Try again",
     "loading": "Loading",
     "search": "Search...",
     "itemsPerPage": "Rows per page:",
     "currentPageReport": "{{first}} - {{last}} of {{all}}",
-    "new_female": "New"
+    "newFemale": "New"
   }
 }

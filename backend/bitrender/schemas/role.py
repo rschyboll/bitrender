@@ -16,10 +16,11 @@ class RoleView(BaseSchema):
 class RoleCreate(PydanticBase):
     name: str
     default: Literal[True] | None
+    permissions: list[Permission]
 
 
 class RoleUpdate(PydanticBase):
     id: UUID
     name: str | None
     default: Literal[True] | None
-    permissions: list[Permission]
+    permissions: list[Permission] | None

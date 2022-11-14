@@ -1,7 +1,13 @@
-from antidote import implements
+from uuid import UUID
 
+from antidote import implements
+from tortoise.exceptions import DoesNotExist
+from tortoise.transactions import atomic
+
+from bitrender.core.acl import AclAction
+from bitrender.errors.role import RoleNameTaken
 from bitrender.models import Role, RolePermission
-from bitrender.schemas import ListRequestInput, ListRequestOutput, RoleView
+from bitrender.schemas import ListRequestInput, ListRequestOutput, RoleCreate, RoleView
 from bitrender.services.app import IAuthService, IRoleService
 from bitrender.services.app.core import BaseAppService
 
@@ -28,3 +34,45 @@ class RoleService(BaseAppService, IRoleService):
 
         role_views = [await role.to_view() for role in roles]
         return ListRequestOutput(items=role_views, row_count=await count_query)
+
+    async def get_by_id(self, role_id: UUID) -> RoleView:
+        role = await self.auth.query(Role.get_by_id(role_id, False), [RolePermission])
+        return await role.to_view()
+
+    @atomic()
+    async def create(self, role_data: RoleCreate) -> RoleView:
+        if await Role.exists(name=role_data.name):
+            raise RoleNameTaken()
+
+        if role_data.default:
+            await self.__unset_default_role()
+
+        role = await self.auth.action(self.__create_role, AclAction.CREATE, [role_data])
+        await self.__create_role_permissions(role_data, role)
+        return await role.to_view()
+
+    async def __unset_default_role(self) -> None:
+        default_role = await self.__get_default_role()
+        if default_role is not None:
+            await self.auth.action(self.__set_role_to_not_default, AclAction.EDIT, [default_role])
+
+    async def __get_default_role(self) -> Role | None:
+        try:
+            return await Role.get_default()
+        except DoesNotExist:
+            return None
+
+    async def __set_role_to_not_default(self, role: Role) -> Role:
+        pass
+
+    async def __create_role(self, role_data: RoleCreate) -> Role:
+        return await Role.create(name=role_data.name)
+
+    async def __create_role_permissions(
+        self, role_data: RoleCreate, role: Role
+    ) -> list[RolePermission]:
+        role_permissions: list[RolePermission] = []
+        for permission in role_data.permissions:
+            role_permission = await RolePermission.create(permission=permission, role=role)
+            role_permissions.append(role_permission)
+        return role_permissions

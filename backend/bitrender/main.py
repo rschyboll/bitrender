@@ -13,7 +13,7 @@ def run() -> None:
     # pylint: disable=import-outside-toplevel
     from bitrender.app import app
 
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    uvicorn.run(app, host="0.0.0.0", port=8123)
 
 
 parser = argparse.ArgumentParser()

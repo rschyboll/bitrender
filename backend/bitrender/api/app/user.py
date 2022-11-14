@@ -1,4 +1,5 @@
 """Contains user router definition and its routes."""
+import asyncio
 from uuid import UUID
 
 from fastapi import APIRouter, Depends, Response
@@ -6,6 +7,7 @@ from fastapi.security import OAuth2PasswordRequestForm
 
 from bitrender.api.deps.user import UserContext, get_current_user
 from bitrender.api.inject import InjectInRoute
+from bitrender.models import User
 from bitrender.schemas import UserView
 from bitrender.schemas.user import UserCreate
 from bitrender.services.app import IUserService
@@ -20,6 +22,14 @@ from .responses.user import (
 )
 
 user_router = APIRouter(prefix="/user")
+
+
+@user_router.post("/test", responses=user_login_responses)
+async def test() -> int:
+    await asyncio.sleep(1)
+    query = User.get_all()
+    await query
+    return 1
 
 
 @user_router.post("/login", responses=user_login_responses)

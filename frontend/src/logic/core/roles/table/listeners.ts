@@ -11,7 +11,7 @@ export const Listeners: ListenersDef<RolesTableLogic> = ({
     actions.load();
   },
   load: async () => {
-    const response = await deps.roleService.getRoles(values.listRequestInput);
+    const response = await deps.roleService.getList(values.listRequestInput);
     if (response.success) {
       actions.loadSuccess(response.data.items, response.data.rowCount);
     } else {

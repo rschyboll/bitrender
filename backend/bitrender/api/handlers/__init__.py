@@ -4,6 +4,7 @@ from fastapi import FastAPI, Response, status
 from fastapi.responses import JSONResponse
 from tortoise.exceptions import DoesNotExist
 
+from bitrender.errors.role import RoleNameTaken
 from bitrender.errors.user import (
     BadCredentials,
     EmailTaken,
@@ -25,6 +26,8 @@ error_codes = {
     EmailTaken: "EMAIL_TAKEN",
     UsernameTaken: "USERNAME_TAKEN",
     NoDefaultRole: "NO_DEFAULT_ROLE",
+    # Role errrors
+    RoleNameTaken: "ROLE_NAME_TAKEN",
 }
 
 

@@ -5,4 +5,5 @@ export enum ApiEndpoints {
   Logout = 'user/logout',
   UserMe = 'user/me',
   Roles = 'roles',
+  RoleNew = 'roles/new',
 }

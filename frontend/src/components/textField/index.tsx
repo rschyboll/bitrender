@@ -67,7 +67,11 @@ export const TextField = memo(function TextField(props: TextFieldProps) {
       ) : null}
 
       {/*   TextField body   */}
-      <span className="text-field-body p-input-icon-left p-input-icon-right">
+      <span
+        className={`text-field-body ${
+          props.leftIcon ? 'p-input-icon-left' : ''
+        } ${props.leftIcon ? 'p-input-icon-right' : ''}`}
+      >
         {/*   TextField left icon   */}
         {props.leftIcon != null ? (
           <props.leftIcon

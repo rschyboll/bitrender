@@ -1,0 +1,33 @@
+diff --git a/lib/index.d.ts b/lib/index.d.ts
+index cbf05603e411e61890f3b87b0c8ad8205ee9fdd5..c99594af1265fb32a9e9d5a9f8f2fb4766808176 100644
+--- a/lib/index.d.ts
++++ b/lib/index.d.ts
+@@ -123,7 +123,9 @@ declare type EventDefinitions<LogicType extends Logic> = {
+ };
+ declare type ListenerFunction<A extends AnyAction = any> = (payload: A['payload'], breakpoint: BreakPointFunction, action: A, previousState: any) => void | Promise<void>;
+ declare type ListenerFunctionWrapper = (action: any, previousState: any) => void;
+-declare type SharedListenerDefinitions = Record<string, ListenerFunction>;
++declare type SharedListenerDefinitions<LogicType extends Logic> = {
++    [Key in keyof LogicType["sharedListeners"]]: LogicType['sharedListeners'][Key]
++};
+ declare type WindowValuesDefinitions<LogicType extends Logic> = Record<string, (window: Window) => any>;
+ declare type LoaderFunctions<LogicType extends Logic, ReducerReturnType> = {
+     [K in keyof LogicType['actionCreators']]?: (payload: ReturnType<LogicType['actionCreators'][K]>['payload'], breakpoint: BreakPointFunction, action: ReturnType<LogicType['actionCreators'][K]>) => ReducerReturnType | Promise<ReducerReturnType>;
+@@ -148,7 +150,7 @@ declare type LogicInput<LogicType extends Logic = Logic> = {
+     reducers?: ReducerDefinitions<LogicType> | ((logic: LogicType) => ReducerDefinitions<LogicType>);
+     selectors?: SelectorDefinitions<LogicType> | ((logic: LogicType) => SelectorDefinitions<LogicType>);
+     listeners?: ListenerDefinitions<LogicType> | ((logic: LogicType) => ListenerDefinitions<LogicType>);
+-    sharedListeners?: SharedListenerDefinitions | ((logic: LogicType) => SharedListenerDefinitions);
++    sharedListeners?: SharedListenerDefinitions<LogicType> | ((logic: LogicType) => SharedListenerDefinitions<LogicType>);
+     events?: EventDefinitions<LogicType> | ((logic: LogicType) => EventDefinitions<LogicType>);
+     defaults?: ((logic: LogicType) => (state: any, props: LogicType['props']) => Record<string, any>) | ((logic: LogicType) => Record<string, any>) | Record<string, any>;
+     loaders?: LoaderDefinitions<LogicType> | ((logic: LogicType) => LoaderDefinitions<LogicType>);
+@@ -183,7 +185,7 @@ declare type LogicInput<LogicType extends Logic = Logic> = {
+     };
+     [key: string]: unknown;
+ } & LogicType['__keaTypeGenInternalExtraInput'];
+-interface MakeLogicType<Values = Record<string, unknown>, Actions = Record<string, AnyFunction>, LogicProps = Props> extends Logic {
++interface MakeLogicType<Values extends Record<string, any> = Record<string, unknown>, Actions = Record<string, AnyFunction>, LogicProps = Props> extends Logic {
+     actionCreators: {
+         [ActionKey in keyof Actions]: Actions[ActionKey] extends AnyFunction ? ActionCreatorForPayloadBuilder<Actions[ActionKey]> : never;
+     };

@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-dynamic-delete */
 import type { ReducersDef } from '@/logic';
 import { history } from '@/pages/router';
 

@@ -44,17 +44,21 @@
     },
     "role": {
       "name": "Nazwa",
-      "default": "Jest domyślna"
+      "default": "Jest domyślna",
+      "create": "Dane nowej roli",
+      "setDefault": "Ustaw jako domyślną"
     },
     "permission": {
       "manage_users": "Zarządzanie użytkownikami",
-      "manage_roles": "Zarządzanie rolami"
+      "manage_roles": "Zarządzanie rolami użytkowników"
     },
     "tryAgain": "Spróbuj ponownie",
     "loading": "Ładowanie",
     "search": "Wyszukaj...",
     "itemsPerPage": "Liczba wierszy na stronę:",
     "currentPageReport": "{{first}} - {{last}} z {{all}}",
-    "new_female": "Nowa"
+    "newFemale": "Nowa",
+    "create": "Utwórz",
+    "cancel": "Anuluj"
   }
 }

@@ -1,13 +1,13 @@
-import { injectable } from "inversify";
-import ky, { HTTPError } from "ky";
+import { injectable } from 'inversify';
+import ky, { HTTPError } from 'ky';
 
-import { IUtilityConverters } from "@/converters/interfaces";
-import Dependencies from "@/deps";
-import { IRouteLogic } from "@/logic/interfaces/route";
-import { ApiErrorCodes, ErrorResponse, ServiceErrorType } from "@/services";
-import { IServiceValidators } from "@/validators/interfaces";
+import { IUtilityConverters } from '@/converters/interfaces';
+import Dependencies from '@/deps';
+import { IRouteLogic } from '@/logic/interfaces/route';
+import { ApiErrorCodes, ErrorResponse, ServiceErrorType } from '@/services';
+import { IServiceValidators } from '@/validators/interfaces';
 
-import { ListRequestInput } from "../messages/list";
+import { ListRequestInput } from '../messages/list';
 
 @injectable()
 export class Service {
@@ -22,7 +22,7 @@ export class Service {
     this.routeLogic = Dependencies.get(IRouteLogic.$);
 
     this.api = ky.create({
-      prefixUrl: "http://127.0.0.1:8000/api/app/",
+      prefixUrl: 'http://127.0.0.1:8123/api/app/',
       hooks: {
         beforeError: [(error) => this.onError(error)],
         beforeRequest: [
@@ -34,12 +34,12 @@ export class Service {
             this.utilityConverters.responseToCamelCase(
               request,
               options,
-              response
+              response,
             ),
         ],
       },
-      mode: "cors",
-      credentials: "include",
+      mode: 'cors',
+      credentials: 'include',
       keepalive: true,
     });
   }
@@ -101,21 +101,21 @@ export class Service {
     const searchParams = new URLSearchParams();
 
     if (page != null) {
-      searchParams.append("page_nr", page.pageNr.toString());
-      searchParams.append("records_per_page", page.recordsPerPage.toString());
+      searchParams.append('page_nr', page.pageNr.toString());
+      searchParams.append('records_per_page', page.recordsPerPage.toString());
     }
 
     if (sort != null) {
-      searchParams.append("column", sort.column);
-      searchParams.append("order", sort.order.toString());
+      searchParams.append('column', sort.column);
+      searchParams.append('order', sort.order.toString());
     }
 
     for (const searchItem of search) {
-      searchParams.append("search_column", searchItem.column);
-      searchParams.append("search_rule", searchItem.rule.toString());
+      searchParams.append('search_column', searchItem.column);
+      searchParams.append('search_rule', searchItem.rule.toString());
       searchParams.append(
-        "search_value",
-        searchItem.value != null ? searchItem.value.toString() : ""
+        'search_value',
+        searchItem.value != null ? searchItem.value.toString() : '',
       );
     }
 

@@ -14,8 +14,8 @@ from bitrender.errors.user import (
 )
 
 
-def register_auth_error_handlers(app: FastAPI) -> None:
-    """Registers all auth error handlers"""
+def register_user_error_handlers(app: FastAPI) -> None:
+    """Registers all user error handlers"""
     app.add_exception_handler(UnauthenticatedError, unauthenticated_error_handler)
     app.add_exception_handler(UnauthorizedError, unauthorized_error_handler)
     app.add_exception_handler(UserNotVerified, user_not_verified_handler)

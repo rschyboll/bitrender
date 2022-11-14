@@ -7,11 +7,12 @@ from bitrender.schemas.list_request import (
     ListRequestSearch,
     ListRequestSort,
 )
-from bitrender.schemas.role import RoleView
+from bitrender.schemas.role import RoleCreate, RoleView
 from bitrender.schemas.user import UserCreate, UserTokenData, UserView
 
 __all__ = [
     "RoleView",
+    "RoleCreate",
     "UserCreate",
     "UserTokenData",
     "UserView",

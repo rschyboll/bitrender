@@ -1,14 +1,18 @@
-import type { interfaces } from "inversify";
+import type { interfaces } from 'inversify';
 
-import type { MRole } from "@/types/models";
+import type { MRole } from '@/types/models';
 
 export interface IRoleValidators {
-  validateGetRolesOutput: (
-    value: unknown
-  ) => value is MRole.Messages.GetRolesOutput;
+  validateGetListOutput: (
+    value: unknown,
+  ) => value is MRole.Messages.GetListOutput;
+  validateCreateOutput: (
+    value: unknown,
+  ) => value is MRole.Messages.CreateOutput;
+  isPermission: (value: unknown) => value is MRole.Permission;
 }
 
 export namespace IRoleValidators {
   export const $: interfaces.ServiceIdentifier<IRoleValidators> =
-    Symbol("IRoleValidators");
+    Symbol('IRoleValidators');
 }

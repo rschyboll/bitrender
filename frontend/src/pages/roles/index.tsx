@@ -1,21 +1,26 @@
-import { useInjection } from "inversify-react";
-import { useActions, useValues } from "kea";
-import { Button } from "primereact/button";
-import { FC, useCallback, useState } from "react";
-import { RiCloseFill } from "react-icons/ri";
-import { IoAdd } from "react-icons/io5";
-import { RiSearchLine } from "react-icons/ri";
+import { useInjection } from 'inversify-react';
+import { useActions, useValues } from 'kea';
+import { Button } from 'primereact/button';
+import { Dialog } from 'primereact/dialog';
+import { FC, useCallback, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { IoAdd } from 'react-icons/io5';
+import { RiSearchLine } from 'react-icons/ri';
 
-import { Card, IconCard } from "@/components/card";
-import { DataTable } from "@/components/dataTable";
-import { TextField } from "@/components/textField";
-import { IRolesTableLogic } from "@/logic/interfaces";
-import { Dialog } from "primereact/dialog";
+import { Card, IconCard } from '@/components/card';
+import { DataTable } from '@/components/dataTable';
+import { TextField } from '@/components/textField';
+import { ICreateRoleLogic, IRolesTableLogic } from '@/logic/interfaces';
+import { RequestStatus } from '@/services';
 
-import { ModifyColumn } from "./columns/modify";
-import "./style.scss";
-import { rolesTableModel } from "./tableModel";
-import { AddRoleDialog } from "./dialogs/add";
+import { ModifyColumn } from './columns/modify';
+import {
+  CreateDialogFooter,
+  CreateDialogIcons,
+  CreateRoleDialog,
+} from './dialogs';
+import './style.scss';
+import { rolesTableModel } from './tableModel';
 
 const RolesPage: FC = () => {
   return (
@@ -70,54 +75,58 @@ const TableSearchField = () => {
 
   return (
     <TextField
-      value={searchString != null ? searchString : ""}
+      value={searchString != null ? searchString : ''}
       onChange={setSearchString}
       className="search-field"
       leftIcon={RiSearchLine}
       hasFloor={false}
-      placeholder={"search"}
+      placeholder={'search'}
     />
   );
 };
 
 const TableAddButton = () => {
+  const { t } = useTranslation();
+  const addRoleLogic = useInjection(ICreateRoleLogic.$);
+
   const [dialogVisible, setDialogVisible] = useState(false);
 
   const onAddNewButtonClick = useCallback(
     () => setDialogVisible(!dialogVisible),
-    [dialogVisible]
+    [dialogVisible],
   );
 
-  const onDialogDismiss = useCallback(() => setDialogVisible(false), []);
+  const onDialogDismiss = useCallback(() => {
+    if (
+      addRoleLogic.isMounted() &&
+      addRoleLogic.values.saveStatus == RequestStatus.Running
+    ) {
+      return;
+    }
+    return setDialogVisible(false);
+  }, [addRoleLogic]);
 
   const onDialogClose = useCallback(() => setDialogVisible(false), []);
-
-  const icons = useCallback(() => {
-    return (
-      <Button
-        className="p-button-text p-button-rounded p-button-plain"
-        icon={<RiCloseFill />}
-        onClick={onDialogClose}
-      />
-    );
-  }, [onDialogClose]);
 
   return (
     <>
       <Button
         className="add-new-button"
-        label={"Testt"}
+        label={t('newFemale')}
         icon={<IoAdd size="1.75rem" />}
         onClick={onAddNewButtonClick}
       />
       <Dialog
         visible={dialogVisible}
         onHide={onDialogDismiss}
-        icons={icons}
+        icons={<CreateDialogIcons closeDialog={onDialogClose} />}
         dismissableMask
         closable={false}
+        header={t('role.create')}
+        footer={<CreateDialogFooter closeDialog={onDialogClose} />}
+        style={{ minWidth: '35rem' }}
       >
-        <AddRoleDialog />
+        <CreateRoleDialog />
       </Dialog>
     </>
   );

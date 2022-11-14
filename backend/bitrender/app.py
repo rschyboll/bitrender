@@ -5,7 +5,8 @@ from tortoise.contrib.fastapi import register_tortoise
 
 from bitrender.api import api_router
 from bitrender.api.handlers import register_library_error_handlers
-from bitrender.api.handlers.user import register_auth_error_handlers
+from bitrender.api.handlers.role import register_role_error_handlers
+from bitrender.api.handlers.user import register_user_error_handlers
 from bitrender.config import tortoise_config
 
 
@@ -39,5 +40,6 @@ app.add_middleware(
 )
 app.include_router(api_router)
 register_tortoise(app, config=tortoise_config)
-register_auth_error_handlers(app)
+register_user_error_handlers(app)
 register_library_error_handlers(app)
+register_role_error_handlers(app)

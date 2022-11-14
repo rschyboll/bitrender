@@ -71,54 +71,8 @@ export const routeLogic = kea<RouteLogicType>([
   }),
   reducers(Reducers),
   selectors(Selectors),
-  listeners(Listeners),
   sharedListeners(SharedListeners),
-  sharedListeners(({ props }) => ({
-    pushRoute: (payload: { to: string | Partial<Path>; state?: object }) => {
-      history.push(payload.to, {
-        ...payload.state,
-        lastLocation: { ...history.location },
-      });
-    },
-    replaceRoute: (payload: { to: string | Partial<Path>; state?: object }) => {
-      if (
-        props.deps.routeValidators.stateHasLastLocation(history.location.state)
-      ) {
-        history.replace(payload.to, {
-          ...payload.state,
-          lastLocation: { ...history.location.state.lastLocation },
-        });
-      } else {
-        history.replace(payload.to, {
-          ...payload.state,
-        });
-      }
-    },
-    replaceWithPrevious: () => {
-      if (
-        props.deps.routeValidators.stateHasLastLocation(history.location.state)
-      ) {
-        history.replace(
-          history.location.state.lastLocation.pathname,
-          history.location.state.lastLocation.state,
-        );
-      } else {
-        history.replace('/app');
-      }
-    },
-  })),
-  listeners(({ sharedListeners }) => ({
-    openRoute: sharedListeners.pushRoute,
-    replaceRoute: sharedListeners.replaceRoute,
-    openApp: sharedListeners.pushRoute,
-    openRegisterPage: sharedListeners.pushRoute,
-    openLoginPage: sharedListeners.pushRoute,
-    openVerifyPage: sharedListeners.pushRoute,
-    openUsersPage: sharedListeners.pushRoute,
-    openRolesPage: sharedListeners.pushRoute,
-    openErrorPage: sharedListeners.pushRoute,
-    returnToBeforeLogin: sharedListeners.replaceWithPrevious,
-  })),
+  listeners(Listeners),
   afterMount(({ actions, values }) => {
     history.listen((update) => {
       if (!deepEqual(update.location, values.currentLocation)) {
