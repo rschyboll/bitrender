@@ -46,7 +46,14 @@
       "name": "Nazwa",
       "default": "Jest domyślna",
       "create": "Dane nowej roli",
-      "setDefault": "Ustaw jako domyślną"
+      "edit": "Edycja roli:",
+      "setDefault": "Ustaw jako domyślną",
+      "nameTooShort": "Nazwa roli powinna mieć co najmniej 4 znaki",
+      "nameTaken": "Istnieje już rola o takiej nazwie",
+      "permissions": "Uprawnienia",
+      "addButtonTooltip": "Dodaj nową rolę",
+      "deleteButtonTooltip": "Usuń wybraną rolę",
+      "modifyButtonTooltip": "Modyfikuj wybraną rolę"
     },
     "permission": {
       "manage_users": "Zarządzanie użytkownikami",
@@ -59,6 +66,8 @@
     "currentPageReport": "{{first}} - {{last}} z {{all}}",
     "newFemale": "Nowa",
     "create": "Utwórz",
-    "cancel": "Anuluj"
+    "cancel": "Anuluj",
+    "modify": "Modyfikuj",
+    "delete": "Usuń"
   }
 }

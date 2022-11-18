@@ -1,5 +1,5 @@
-import { ColumnType, DataTableModel } from "@/components/dataTable";
-import { MRole } from "@/types/models";
+import { ColumnType, DataTableModel } from '@/components/dataTable';
+import { MRole } from '@/types/models';
 
 const createPermissionModelColumns = () => {
   return Object.fromEntries(
@@ -7,25 +7,25 @@ const createPermissionModelColumns = () => {
       permission,
       {
         title: `permission.${permission}`,
-        type: ColumnType.TRUEORNULL,
+        type: ColumnType.BOOL,
       },
-    ])
+    ]),
   ) as {
     [Key in MRole.Permission]: {
       title: string;
-      type: ColumnType.TRUEORNULL;
+      type: ColumnType.BOOL;
     };
   };
 };
 
-export const rolesTableModel: DataTableModel<MRole.TableView> = {
+export const rolesTableModel: DataTableModel<MRole.TableView, 'id'> = {
   columns: {
     name: {
-      title: "role.name",
+      title: 'role.name',
       type: ColumnType.STRING,
     },
     default: {
-      title: "role.default",
+      title: 'role.default',
       type: ColumnType.TRUEORNULL,
     },
     ...createPermissionModelColumns(),

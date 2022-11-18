@@ -1,8 +1,8 @@
 import type { MakeOwnLogicType } from '@/logic';
-import { MakeRequestsBuilderLogicType } from '@/logic/builders/requests';
-import { RequestStatus } from '@/services';
-import { IRoleService } from '@/services/interfaces';
-import { MRole } from '@/types/models';
+import type { MakeRequestsBuilderLogicType } from '@/logic/builders/requests';
+import type { ErrorResponse, RequestStatus } from '@/services';
+import type { IRoleService } from '@/services/interfaces';
+import type { MRole } from '@/types/models';
 
 interface Actions {
   setPermissionSelected: (
@@ -18,10 +18,21 @@ interface Reducers {
   selectedPermissions: Set<MRole.Permission>;
   name: string;
   isDefault: true | null;
+  saveClicked: boolean;
 }
 
 interface Selectors {
   saveStatus: (createStatus: RequestStatus) => RequestStatus;
+  inputReady: (
+    selectedPermissions: Reducers['selectedPermissions'],
+    name: Reducers['name'],
+    isDefault: Reducers['isDefault'],
+  ) => boolean;
+  nameTooShort: (name: string, saveClicked: boolean) => boolean;
+  nameTaken: (
+    createStatus: RequestStatus,
+    createError: ErrorResponse['error'] | null,
+  ) => boolean;
 }
 
 interface Deps {

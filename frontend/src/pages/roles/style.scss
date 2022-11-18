@@ -1,8 +1,6 @@
-.roles-page {
-  .test {
-    padding: 1rem;
-  }
+@import '@/scss/variables.scss';
 
+.roles-page {
   .roles-table-card {
     padding: 1rem;
   }
@@ -22,7 +20,6 @@
   font-weight: 500;
 }
 
-
 .search-field {
   height: 2.5rem;
   width: 15rem;
@@ -30,4 +27,33 @@
 
 .add-new-button {
   height: calc(2.5rem - 2px);
+}
+
+.modify-button,
+.delete-button {
+  svg {
+    margin-right: 0.25rem;
+  }
+}
+
+.add-new-button,
+.modify-button,
+.delete-button {
+  height: calc(2.5rem - 2px);
+
+  @include media('<=desktop') {
+    width: calc(2.5rem - 2px);
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    svg {
+      margin-right: 0;
+    }
+
+    .p-button-label {
+      display: none;
+    }
+  }
 }

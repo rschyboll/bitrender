@@ -19,8 +19,6 @@ export const Topbar: FC = () => {
 
   const { currentUser } = useValues(appLogic);
 
-  console.log(currentUser);
-
   const { toggleSidebar } = useActions(settingsLogic);
 
   const [topbarDialogsRef, setTopbarDialogsRef] =

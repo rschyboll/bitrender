@@ -7,6 +7,7 @@ export enum ApiErrorCodes {
   EmailTaken = 'EMAIL_TAKEN',
   UsernameTaken = 'USERNAME_TAKEN',
   NoDefaultRole = 'NO_DEFAULT_ROLE',
+  RoleNameTaken = 'ROLE_NAME_TAKEN',
 }
 
 export enum ServiceErrorType {

@@ -10,7 +10,6 @@ export const Reducers: ReducersDef<CreateRoleLogic> = {
     {
       setPermissionSelected: (immutableState, { permission, checked }) =>
         produce(immutableState, (state) => {
-          console.log(checked);
           if (checked) {
             state.add(permission);
           } else {
@@ -26,4 +25,5 @@ export const Reducers: ReducersDef<CreateRoleLogic> = {
     },
   ],
   isDefault: [null, { setDefault: (_, { isDefault }) => isDefault }],
+  saveClicked: [false, { save: () => true }],
 };

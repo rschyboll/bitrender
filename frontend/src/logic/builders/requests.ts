@@ -29,7 +29,7 @@ export type RequestsBuilderInput<
       ? Key
       : never
     : never]?: (
-    ...args: Parameters<Logic['actions'][Key]>
+    input: Parameters<Logic['actions'][Key]>[0],
   ) => Key extends string
     ? Promise<
         Response<
@@ -60,8 +60,8 @@ export type MakeRequestsBuilderLogicType<
     any
   >;
   actions: {
-    [Key in keyof Requests]: (...args: RequestInput<Requests[Key]>) => {
-      payload: RequestInput<Requests[Key]>;
+    [Key in keyof Requests]: (input: RequestInput<Requests[Key]>[0]) => {
+      payload: RequestInput<Requests[Key]>[0];
     };
   } & {
     [Key in keyof Requests as Key extends string ? `${Key}Success` : never]: (
@@ -87,7 +87,7 @@ export function requests<Logic extends MakeOwnLogicType>(
         break;
       }
       actions({
-        [requestKey]: true,
+        [`${requestKey}`]: (input: any) => ({ input: input }),
         [`${requestKey}Success`]: (value: unknown) => ({ value }),
         [`${requestKey}Failure`]: (error?: unknown) => ({
           error,
@@ -98,10 +98,10 @@ export function requests<Logic extends MakeOwnLogicType>(
         ({
           actions,
         }: MakeOwnLogicType<{
-          actions: Record<string, (...args: any) => void>;
+          actions: Record<string, (...args: any) => any>;
         }>) => ({
-          [requestKey]: async (...args: any) => {
-            const response = await request(...args);
+          [requestKey]: async (payload: { input: any }) => {
+            const response = await request(payload.input);
             if (response.success) {
               actions[`${requestKey}Success`](response.data);
             } else {
@@ -131,7 +131,7 @@ export function requests<Logic extends MakeOwnLogicType>(
             ) => (error == null ? null : error),
           },
         ],
-      });
+      })(logic);
     }
     return logic;
   };

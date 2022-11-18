@@ -7,6 +7,9 @@ export const Listeners: ListenersDef<CreateRoleLogic> = ({
   values,
 }) => ({
   save: () => {
+    if (values.name.length < 4) {
+      return;
+    }
     actions.create({
       name: values.name,
       default: values.isDefault,

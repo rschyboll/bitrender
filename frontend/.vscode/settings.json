@@ -16,5 +16,6 @@
     "dist": true,
     ".pnp*": true,
     "yarn.lock": true
-  }
+  },
+  
 }

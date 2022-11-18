@@ -97,8 +97,6 @@ const FontSizeSelector = memo(function FontSizeSelector() {
     [setFontSize],
   );
 
-  console.log(fontSize);
-
   return (
     <div className="font-size-selector">
       <div className="font-size-slider">

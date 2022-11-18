@@ -24,8 +24,9 @@ export interface Update {
 }
 
 export type TableView = {
+  id: string;
   name: string;
   default: true | null;
-} & { [Key in Permission]: true | null };
+} & { [Key in Permission]: boolean };
 
 export type Columns = MBase.Columns | 'name' | 'default';

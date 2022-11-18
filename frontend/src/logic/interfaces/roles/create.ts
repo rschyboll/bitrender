@@ -2,7 +2,7 @@ import type { interfaces } from 'inversify';
 import type { LogicWrapper } from 'kea';
 
 import type { MakeOwnLogicType } from '@/logic/types/makeLogic';
-import { RequestStatus } from '@/services';
+import type { RequestStatus } from '@/services';
 import type { MRole } from '@/types/models';
 
 interface Actions {
@@ -20,6 +20,8 @@ interface Values {
   name: string;
   isDefault: true | null;
   saveStatus: RequestStatus;
+  nameTooShort: boolean;
+  nameTaken: boolean;
 }
 
 export type ICreateRoleLogic = LogicWrapper<

@@ -9,7 +9,7 @@
   display: flex;
   align-items: center;
   margin-left: auto;
-  @include media('<=1200px') {
+  @include media('<=tablet') {
     width: 100%;
     justify-content: center;
   }
@@ -18,14 +18,14 @@
 .paginator-current-page-report {
   width: 15rem;
   margin-right: auto;
-  @include media('<=1200px') {
+  @include media('<=tablet') {
     width: 100%;
     text-align: center;
   }
 }
 
 .p-datatable .p-paginator {
-  @include media('<=1200px') {
+  @include media('<=tablet') {
     justify-content: center;
     align-items: center;
   }

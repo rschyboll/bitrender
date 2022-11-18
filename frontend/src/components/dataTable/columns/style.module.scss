@@ -1,0 +1,47 @@
+@import '@/scss/variables.scss';
+
+.iconHeader {
+  :global(.p-column-header-content) {
+    justify-content: center;
+    text-align: center;
+  }
+}
+
+.header {
+  :global(.p-column-header-content) {
+    justify-content: left;
+    text-align: left;
+  }
+}
+
+.cell {
+  @include media('<=phone') {
+    :global(.p-column-title) {
+      flex: 0;
+    }
+    justify-content: space-between;
+  }
+}
+
+.iconSize {
+  width: 1.5rem !important;
+  height: 1.5rem !important;
+}
+
+.iconColumn {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  @include media('>phone') {
+    width: 100%;
+  }
+}
+
+.colorSuccess {
+  color: var(--success-color) !important;
+}
+
+.colorDanger {
+  color: var(--danger-color) !important;
+}

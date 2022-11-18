@@ -5,17 +5,19 @@ import { Column as PrimeColumn } from 'primereact/column';
 import {
   DataTablePFSEvent,
   DataTable as PrimeDataTable,
+  DataTableSelectionChangeParams as PrimeDataTableSelectionChangeParams,
 } from 'primereact/datatable';
 import { useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { PaginatorTemplate } from '@/components/paginator';
-import { IRolesTableLogic } from '@/logic/interfaces';
+import config from '@/config';
 import { typedMemo } from '@/utils/react';
 
 import { Column } from './columns';
 import { ColumnType } from './enums';
 import './style.scss';
+import { ColumnDefinition } from './types';
 import type { IDataTableLogic } from './types/logic';
 import type { DataTableProps } from './types/props';
 
@@ -25,8 +27,8 @@ export * from './enums';
 export const DataTable = typedMemo(function DataTable<
   LogicIdentifier extends interfaces.ServiceIdentifier<IDataTableLogic>,
 >(props: DataTableProps<LogicIdentifier>) {
+  const { onRowSelectionChange } = props;
   const dataTableLogic = useInjection(props.logicIdentifier);
-  const { t } = useTranslation();
 
   const { currentPage, rowsPerPage, amountOfRecords, values } =
     useValues(dataTableLogic);
@@ -44,6 +46,15 @@ export const DataTable = typedMemo(function DataTable<
     [setCurrentPage, currentPage, setRowsPerPage, rowsPerPage],
   );
 
+  const onSelectionChange = useCallback(
+    (e: PrimeDataTableSelectionChangeParams) => {
+      if (e.type == 'row' && onRowSelectionChange != null) {
+        onRowSelectionChange(e.value);
+      }
+    },
+    [onRowSelectionChange],
+  );
+
   return (
     <PrimeDataTable
       header={props.header}
@@ -56,30 +67,32 @@ export const DataTable = typedMemo(function DataTable<
       paginator
       paginatorTemplate={PaginatorTemplate}
       value={values}
+      selection={props.selection}
+      selectionMode={props.selectionMode}
+      onSelectionChange={onSelectionChange}
+      breakpoint={config.breakpoints.mobile}
     >
       {props.customColumns != null && props.customColumns.before != null
         ? Object.entries(props.customColumns.before).map(([key, column]) => {
             return <PrimeColumn key={key} header={column.title} />;
           })
         : null}
-      {Object.entries(props.model.columns).map(([key, column]) => {
-        return (
-          <PrimeColumn
-            key={key}
-            field={key}
-            header={t(column.title)}
-            className={
-              column.type == ColumnType.TRUEORNULL ? 'text-center' : ''
-            }
-            headerClassName={
-              column.type == ColumnType.TRUEORNULL ? 'text-center' : ''
-            }
-            body={(rowData) => {
-              return <Column type={column.type} value={rowData[key]} />;
-            }}
-          />
-        );
-      })}
+      {Object.entries(props.model.columns).map(
+        ([key, column]: [string, ColumnDefinition]) => {
+          return (
+            <PrimeColumn
+              key={key}
+              field={key}
+              className={Column.getCellClassName(column.type)}
+              header={<Column.Header type={column.type} title={column.title} />}
+              headerClassName={Column.getHeaderClassName(column.type)}
+              body={(rowData) => {
+                return <Column.Body type={column.type} value={rowData[key]} />;
+              }}
+            />
+          );
+        },
+      )}
       {props.customColumns != null && props.customColumns.after != null
         ? Object.entries(props.customColumns.after).map(([key, column]) => {
             return <PrimeColumn key={key} header={column.title} />;

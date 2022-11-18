@@ -1,28 +1,35 @@
 import { useInjection } from 'inversify-react';
 import { useActions, useValues } from 'kea';
 import { Button } from 'primereact/button';
-import { Dialog } from 'primereact/dialog';
 import { FC, useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { IoAdd } from 'react-icons/io5';
-import { RiSearchLine } from 'react-icons/ri';
+import { RiDeleteBin6Line, RiEdit2Fill, RiSearchLine } from 'react-icons/ri';
 
 import { Card, IconCard } from '@/components/card';
 import { DataTable } from '@/components/dataTable';
 import { TextField } from '@/components/textField';
 import { ICreateRoleLogic, IRolesTableLogic } from '@/logic/interfaces';
-import { RequestStatus } from '@/services';
+import { MRole } from '@/types/models';
 
-import { ModifyColumn } from './columns/modify';
-import {
-  CreateDialogFooter,
-  CreateDialogIcons,
-  CreateRoleDialog,
-} from './dialogs';
+import { EditRoleDialog } from './dialogs/edit2';
 import './style.scss';
 import { rolesTableModel } from './tableModel';
 
 const RolesPage: FC = () => {
+  const [selectedRole, setSelectedRole] = useState<MRole.TableView | null>(
+    null,
+  );
+
+  const onRoleSelect = useCallback(
+    (value: MRole.TableView | MRole.TableView[]) => {
+      if (!Array.isArray(value)) {
+        setSelectedRole(value);
+      }
+    },
+    [],
+  );
+
   return (
     <div className="roles-page grid">
       <IconCard
@@ -47,6 +54,8 @@ const RolesPage: FC = () => {
           <>
             <TableSearchField />
             <TableAddButton />
+            <TableModifyButton selectedRole={selectedRole} />
+            <TableDeleteButton selectedRole={selectedRole} />
           </>
         }
         className="roles-table-card col-12"
@@ -54,13 +63,9 @@ const RolesPage: FC = () => {
         <DataTable
           logicIdentifier={IRolesTableLogic.$}
           model={rolesTableModel}
-          customColumns={{
-            after: {
-              modify: {
-                content: ModifyColumn,
-              },
-            },
-          }}
+          onRowSelectionChange={onRoleSelect}
+          selectionMode="single"
+          selection={selectedRole}
         />
       </Card>
     </div>
@@ -87,47 +92,105 @@ const TableSearchField = () => {
 
 const TableAddButton = () => {
   const { t } = useTranslation();
-  const addRoleLogic = useInjection(ICreateRoleLogic.$);
 
   const [dialogVisible, setDialogVisible] = useState(false);
 
-  const onAddNewButtonClick = useCallback(
+  const onClick = useCallback(
     () => setDialogVisible(!dialogVisible),
     [dialogVisible],
   );
 
-  const onDialogDismiss = useCallback(() => {
-    if (
-      addRoleLogic.isMounted() &&
-      addRoleLogic.values.saveStatus == RequestStatus.Running
-    ) {
-      return;
-    }
-    return setDialogVisible(false);
-  }, [addRoleLogic]);
+  return (
+    <>
+      <Button
+        className="add-new-button p-button-success"
+        label={t('newFemale')}
+        icon={<IoAdd size="1.75rem" />}
+        onClick={onClick}
+        tooltip={t('role.addButtonTooltip')}
+        tooltipOptions={{ showDelay: 1000, position: 'top' }}
+      />
+      <EditRoleDialog
+        logicIdentifier={ICreateRoleLogic.$}
+        visible={dialogVisible}
+        setVisible={setDialogVisible}
+        title="role.create"
+        acceptLabel={'create'}
+      />
+    </>
+  );
+};
 
-  const onDialogClose = useCallback(() => setDialogVisible(false), []);
+interface TableModifyButtonProps {
+  selectedRole: null | MRole.TableView;
+}
+
+const TableModifyButton = (props: TableModifyButtonProps) => {
+  const { t } = useTranslation();
+
+  const [dialogVisible, setDialogVisible] = useState(false);
+
+  const onClick = useCallback(() => {
+    setDialogVisible(true);
+  }, []);
 
   return (
     <>
       <Button
-        className="add-new-button"
-        label={t('newFemale')}
-        icon={<IoAdd size="1.75rem" />}
-        onClick={onAddNewButtonClick}
+        disabled={props.selectedRole == null}
+        className="modify-button"
+        label={t('modify')}
+        icon={<RiEdit2Fill size="1.5rem" />}
+        onClick={onClick}
+        tooltip={t('role.modifyButtonTooltip')}
+        tooltipOptions={{ showDelay: 1000, position: 'top' }}
       />
-      <Dialog
-        visible={dialogVisible}
-        onHide={onDialogDismiss}
-        icons={<CreateDialogIcons closeDialog={onDialogClose} />}
-        dismissableMask
-        closable={false}
-        header={t('role.create')}
-        footer={<CreateDialogFooter closeDialog={onDialogClose} />}
-        style={{ minWidth: '35rem' }}
-      >
-        <CreateRoleDialog />
-      </Dialog>
+      {props.selectedRole != null ? (
+        <EditRoleDialog
+          logicIdentifier={ICreateRoleLogic.$}
+          visible={dialogVisible}
+          setVisible={setDialogVisible}
+          title={`${t('role.edit')} ${props.selectedRole.name}`}
+          acceptLabel={'modify'}
+        />
+      ) : null}
+    </>
+  );
+};
+
+interface TableDeleteButtonProps {
+  selectedRole: null | MRole.TableView;
+}
+
+const TableDeleteButton = (props: TableDeleteButtonProps) => {
+  const { t } = useTranslation();
+
+  const [dialogVisible, setDialogVisible] = useState(false);
+
+  const onClick = useCallback(() => {
+    setDialogVisible(true);
+  }, []);
+
+  return (
+    <>
+      <Button
+        disabled={props.selectedRole == null}
+        className="delete-button p-button-danger"
+        label={t('delete')}
+        icon={<RiDeleteBin6Line size="1.4rem" />}
+        onClick={onClick}
+        tooltip={t('role.deleteButtonTooltip')}
+        tooltipOptions={{ showDelay: 1000, position: 'top' }}
+      />
+      {props.selectedRole != null ? (
+        <EditRoleDialog
+          logicIdentifier={ICreateRoleLogic.$}
+          visible={dialogVisible}
+          setVisible={setDialogVisible}
+          title={`${t('role.edit')} ${props.selectedRole.name}`}
+          acceptLabel={'modify'}
+        />
+      ) : null}
     </>
   );
 };

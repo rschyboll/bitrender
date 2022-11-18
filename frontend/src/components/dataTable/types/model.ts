@@ -14,17 +14,20 @@ export interface ColumnTypeValues {
   [ColumnType.DATE]: Date;
 }
 
-export interface ColumnDefinition<Type extends ColumnType> {
+export interface ColumnDefinition<Type extends ColumnType = ColumnType> {
   title: string;
   type: Type;
   sortable?: boolean;
   filterable?: boolean;
 }
 
-export interface DataTableModel<Values extends Record<string, unknown>> {
+export interface DataTableModel<
+  Values extends Record<string, unknown>,
+  ExcludedColumns extends keyof Values = 'id',
+> {
   columns: {
-    [Key in keyof Values]: ColumnDefinition<
-      KeysMatching<ColumnTypeValues, Values[Key]>
-    >;
+    [Key in keyof Values as Key extends ExcludedColumns
+      ? never
+      : Key]: ColumnDefinition<KeysMatching<ColumnTypeValues, Values[Key]>>;
   };
 }

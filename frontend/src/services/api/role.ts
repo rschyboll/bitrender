@@ -42,7 +42,7 @@ export class RoleService extends Service implements IRoleService {
   public create = async (
     input: MRole.Messages.CreateInput,
   ): Promise<Response<MRole.Messages.CreateOutput>> => {
-    await sleep(2500);
+    await sleep(50000);
     try {
       const response = await this.api
         .post(ApiEndpoints.RoleNew, { json: input })

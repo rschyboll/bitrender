@@ -1,0 +1,15 @@
+diff --git a/lib/helpers/getClasses.js b/lib/helpers/getClasses.js
+index 4002e7066d341759996aebc5bf88532ca54231e2..48dba5760a3e6436c431cd7c99b52cacf11d65e1 100644
+--- a/lib/helpers/getClasses.js
++++ b/lib/helpers/getClasses.js
+@@ -79,7 +79,9 @@ var getClasses = function (_a) {
+             var baseUrl = compilerOptions.baseUrl, paths = compilerOptions.paths;
+             var matchPath_1 = baseUrl && paths ? tsconfig_paths_1.createMatchPath(path_1.default.resolve(baseUrl), paths) : null;
+             var aliasImporter = function (url) {
+-                var newUrl = matchPath_1 !== null ? matchPath_1(url) : undefined;
++                const newUrl = matchPath !== null
++                  ? matchPath(url, undefined, undefined, ['.scss'])
++                  : undefined;                
+                 return newUrl ? { file: newUrl } : null;
+             };
+             var importers = [aliasImporter, sassTildeImporter_1.sassTildeImporter];

@@ -18,6 +18,8 @@ import {
   rolesTableLogic,
   routeLogic,
   settingsLogic,
+  testMultiLogic,
+  testSingleLogic,
 } from '@/logic/core';
 import {
   IAppLogic,
@@ -26,6 +28,8 @@ import {
   IRolesTableLogic,
   IRouteLogic,
   ISettingsLogic,
+  ITestMultiLogicType,
+  ITestSingleLogicType,
 } from '@/logic/interfaces';
 import { RoleService, UserService } from '@/services/api';
 import { IRoleService, IUserService } from '@/services/interfaces';
@@ -71,5 +75,8 @@ Dependencies.bind(ICreateRoleLogic.$).toConstantValue(createRoleLogic);
 //Service dependencies
 Dependencies.bind(IUserService.$).to(UserService).inSingletonScope();
 Dependencies.bind(IRoleService.$).to(RoleService).inSingletonScope();
+
+Dependencies.bind(ITestMultiLogicType.$).toConstantValue(testMultiLogic);
+Dependencies.bind(ITestSingleLogicType.$).toConstantValue(testSingleLogic);
 
 export default Dependencies;

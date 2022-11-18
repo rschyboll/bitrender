@@ -1,13 +1,27 @@
 import { RiCheckboxCircleFill, RiCloseCircleFill } from 'react-icons/ri';
 
+import styles from './style.module.scss';
+
 export interface TrueOrNullColumnProps {
   value: true | null;
 }
 
 export const TrueOrNullColumn = (props: TrueOrNullColumnProps) => {
   if (props.value != null) {
-    return <RiCheckboxCircleFill size="1.5rem" color="var(--success-color)" />;
+    return (
+      <div className={styles.iconColumn}>
+        <RiCheckboxCircleFill
+          className={`${styles.iconSize} ${styles.colorSuccess}`}
+        />
+      </div>
+    );
   } else {
-    return <RiCloseCircleFill size="1.5rem" color="var(--danger-color)" />;
+    return (
+      <div className={styles.iconColumn}>
+        <RiCloseCircleFill
+          className={`${styles.iconSize} ${styles.colorDanger}`}
+        />
+      </div>
+    );
   }
 };

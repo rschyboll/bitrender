@@ -50,7 +50,14 @@
       "name": "Name",
       "default": "Is default",
       "create": "New role data",
-      "setDefault": "Set as default"
+      "edit": "Role edit:",
+      "setDefault": "Set as default",
+      "nameTooShort": "Name of a role should contain at least 4 characters",
+      "nameTaken": "A role with that name already exists",
+      "permissions": "Permissions",
+      "addButtonTooltip": "Add new role",
+      "deleteButtonTooltip": "Remove the selected role",
+      "modifyButtonTooltip": "Modify the selected role"
     },
     "permission": {
       "manage_users": "Managing users",
@@ -61,6 +68,8 @@
     "search": "Search...",
     "itemsPerPage": "Rows per page:",
     "currentPageReport": "{{first}} - {{last}} of {{all}}",
-    "newFemale": "New"
+    "newFemale": "New",
+    "modify": "Modify",
+    "delete": "Delete"
   }
 }

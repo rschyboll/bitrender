@@ -15,6 +15,12 @@ export default defineConfig({
       },
     },
   },
+  css: {
+    modules: {
+      generateScopedName: '[local]-[hash:base64:5]',
+      localsConvention: 'camelCaseOnly',
+    },
+  },
   server: {
     fs: {
       allow: ['..'],

@@ -12,9 +12,7 @@ services:
     init: true
     command: sleep infinity
     user: node
-    expose:
-      - '1234'
-      - '1235'
-
+    ports:
+      - '4173'
 volumes:
   bitrender-frontend-DEV-fish:

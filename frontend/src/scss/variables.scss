@@ -1,5 +1,5 @@
 $breakpoints: (
-  phone: 320px,
+  phone: 480px,
   tablet: 768px,
   desktop: 1024px,
 );
@@ -74,4 +74,4 @@ $separator: '\\:' !default;
   }
 }
 
-@import 'include-media/dist/include-media';
+@import '@/scss/lib/include-media.scss';

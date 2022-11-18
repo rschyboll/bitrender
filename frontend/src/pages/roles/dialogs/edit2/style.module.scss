@@ -1,0 +1,16 @@
+.dialog {
+  min-width: 30rem;
+}
+
+.permissionsTitle {
+  font-weight: bold;
+  font-size: 1.15rem;
+}
+
+.isDefaultCheckbox {
+  margin-top: 0.25rem;
+}
+
+.permissionsList .permissionCheckbox:last-child {
+  margin-bottom: 0;
+}

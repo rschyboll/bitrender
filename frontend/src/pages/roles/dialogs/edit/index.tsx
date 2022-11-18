@@ -1,5 +1,6 @@
+import { interfaces } from 'inversify';
 import { useInjection } from 'inversify-react';
-import { useActions, useValues } from 'kea';
+import { LogicWrapper, useActions, useValues } from 'kea';
 import { Button } from 'primereact/button';
 import { memo, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -7,6 +8,7 @@ import { RiCloseFill } from 'react-icons/ri';
 
 import { Checkbox } from '@/components/checkbox';
 import { TextField } from '@/components/textField';
+import { MakeOwnLogicType } from '@/logic';
 import { ICreateRoleLogic } from '@/logic/interfaces';
 import { RequestStatus } from '@/services';
 import { MRole } from '@/types/models';
@@ -14,13 +16,42 @@ import { IRoleValidators } from '@/validators/interfaces';
 
 import './style.scss';
 
-export const CreateRoleDialog = memo(function ModifyColumn() {
-  const createRoleLogic = useInjection(ICreateRoleLogic.$);
+type EditRoleLogic = LogicWrapper<
+  MakeOwnLogicType<{
+    values: {
+      name: string;
+      selectedPermissions: Set<MRole.Permission>;
+      isDefault: boolean | null;
+      saveStatus: RequestStatus;
+      nameTooShort: boolean;
+      nameTaken: boolean;
+    };
+    actions: {
+      setPermissionSelected: (
+        permission: MRole.Permission,
+        selected: boolean,
+      ) => { permission: MRole.Permission; checked: boolean };
+      setName: (name: string) => { name: string };
+      setDefault: (isDefault: true | null) => { isDefault: true | null };
+      save: true;
+    };
+  }>
+>;
+
+export interface EditRoleDialogProps {
+  logicIdentifier: interfaces.ServiceIdentifier<EditRoleLogic>;
+}
+
+export const EditRoleDialogOld = memo(function ModifyColumn(
+  props: EditRoleDialogProps,
+) {
+  const editRoleLogic = useInjection(props.logicIdentifier);
   const roleValidators = useInjection(IRoleValidators.$);
 
   const { setName, setPermissionSelected, setDefault } =
-    useActions(createRoleLogic);
-  const { name, selectedPermissions, isDefault } = useValues(createRoleLogic);
+    useActions(editRoleLogic);
+  const { name, selectedPermissions, isDefault, nameTaken, nameTooShort } =
+    useValues(editRoleLogic);
 
   const onIsDefaultChange = useCallback(
     ({ checked }: { checked: boolean }) => {
@@ -35,9 +66,7 @@ export const CreateRoleDialog = memo(function ModifyColumn() {
 
   const onPermissionChange = useCallback(
     ({ value, checked }: { value?: unknown; checked: boolean }) => {
-      console.log(value);
       if (roleValidators.isPermission(value)) {
-        console.log(value);
         setPermissionSelected(value, checked);
       }
     },
@@ -46,11 +75,23 @@ export const CreateRoleDialog = memo(function ModifyColumn() {
 
   return (
     <form className="create-role-dialog">
-      <TextField label="Nazwa" value={name} onChange={setName} />
+      <TextField
+        errorMessage={
+          nameTaken
+            ? 'role.nameTaken'
+            : nameTooShort
+            ? 'role.nameTooShort'
+            : undefined
+        }
+        label="Nazwa"
+        value={name}
+        onChange={setName}
+      />
 
       <Checkbox
         inputId="default"
         title="role.setDefault"
+        className="isDefaultCheckbox"
         checked={isDefault == null ? false : isDefault}
         onChange={onIsDefaultChange}
       />
@@ -89,9 +130,6 @@ export const CreateDialogFooter = memo(function CreateDialogFooter(
 
   const { save } = useActions(createRoleLogic);
   const { saveStatus } = useValues(createRoleLogic);
-
-  console.log(saveStatus);
-
   return (
     <>
       <Button
