@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@fontsource/nunito": "^4.5.11",
+    "@taskworld.com/rereselect": "^0.3.0",
     "ajv": "^8.11.0",
     "ajv-formats": "^2.1.1",
     "fast-equals": "^4.0.3",

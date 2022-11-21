@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any, @typescript-eslint/ban-types*/
 import { makeSelector } from '@taskworld.com/rereselect';
 import {
   Logic,
@@ -8,7 +9,108 @@ import {
   SelectorDefinitions,
   getContext,
 } from 'kea';
-import { ParametricSelector, createSelector } from 'reselect';
+import {
+  DefaultMemoizeOptions,
+  ParametricSelector,
+  createSelector,
+} from 'reselect';
+
+import { MakeOwnLogicType } from '@/logic/types';
+import { ArrayElementType, RestrictedObject } from '@/types/utility';
+
+export type ReselectorsDefinitions<
+  Logic extends MakeOwnLogicType & MakeReselectorsBuilderLogicType,
+> = {
+  [Key in keyof Logic['__internal_reselector_types']]:
+    | [
+        (
+          selectors: Logic['selectors'],
+        ) => (
+          state: any,
+          props: any,
+        ) => Parameters<Logic['__internal_reselector_types'][Key]>[0][],
+        (
+          value: Parameters<Logic['__internal_reselector_types'][Key]>[0],
+        ) => (
+          state: any,
+          props: any,
+        ) => ArrayElementType<
+          ReturnType<Logic['__internal_reselector_types'][Key]>
+        >,
+        DefaultMemoizeOptions,
+      ]
+    | [
+        (
+          selectors: Logic['selectors'],
+        ) => (
+          state: any,
+          props: any,
+        ) => Parameters<Logic['__internal_reselector_types'][Key]>[0][],
+        (
+          value: Parameters<Logic['__internal_reselector_types'][Key]>[0],
+        ) => (
+          state: any,
+          props: any,
+        ) => ArrayElementType<
+          ReturnType<Logic['__internal_reselector_types'][Key]>
+        >,
+      ];
+};
+
+export type MakeReselectorsBuilderLogicType<
+  Reselectors extends RestrictedObject<
+    Reselectors,
+    (value: any) => any[]
+  > = RestrictedObject<any, (...args: any[]) => any[]>,
+> = {
+  selectors: {
+    [Key in keyof Reselectors]: Reselectors[Key] extends (...args: any[]) => any
+      ? (state: any, props: any) => ReturnType<Reselectors[Key]>
+      : never;
+  };
+  values: {
+    [Key in keyof Reselectors]: Reselectors[Key] extends (...args: any[]) => any
+      ? ReturnType<Reselectors[Key]>
+      : never;
+  };
+  __internal_reselector_types: Reselectors;
+};
+
+function checkLogicForExistingSelectors(
+  logic: MakeOwnLogicType,
+  selectorKeys: string[],
+) {
+  for (const key in selectorKeys) {
+    if (typeof logic.selectors[key] !== undefined) {
+      throw new Error(
+        `[KEA] Logic "${logic.pathString}" selector "${key}" already exists`,
+      );
+    }
+  }
+}
+
+export function reselectors<
+  Logic extends MakeOwnLogicType & MakeReselectorsBuilderLogicType,
+>(
+  input:
+    | ReselectorsDefinitions<Logic>
+    | ((logic: Logic) => ReselectorsDefinitions<Logic>),
+): LogicBuilder<Logic> {
+  return (logic) => {
+    const reselectorInputs = typeof input === 'function' ? input(logic) : input;
+    checkLogicForExistingSelectors(logic, Object.keys(reselectorInputs));
+
+    for (const key in reselectorInputs) {
+      const reselector = reselectorInputs[key];
+      const [input, outputSelectorFactory] = reselector;
+
+      const inputSelectors = input(logic.selectors);
+      const selector = (state = getContext().store.getState()) => {
+        console.log('TEST');
+      };
+    }
+  };
+}
 
 export function selectors<L extends Logic = Logic>(
   input: SelectorDefinitions<L> | ((logic: L) => SelectorDefinitions<L>),

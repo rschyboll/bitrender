@@ -9,6 +9,7 @@ import { IAppLogic, ISettingsLogic } from '@/logic/interfaces';
 import { SidebarType, layoutTypesClasses } from '@/types/settings';
 
 import './style.scss';
+import { TestComponent } from './test';
 
 const verticalTypes = [SidebarType.Static, SidebarType.Slim];
 
@@ -34,6 +35,7 @@ export const AppPage = () => {
       </div>
       <div onClick={() => toggleSidebar(false)} className="layout-content">
         <div className="layout-page">
+          <TestComponent />
           <Outlet />
         </div>
       </div>

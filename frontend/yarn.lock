@@ -571,6 +571,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@taskworld.com/rereselect@npm:^0.3.0":
+  version: 0.3.0
+  resolution: "@taskworld.com/rereselect@npm:0.3.0"
+  checksum: b4be3971d44a7a0dc1b57c9a7e75b984d2b2da29f57ce4eba1e72cf72499f6a7cee8e91ae2f88216313d464f56223418a7e4d9a10e20cde132d4a54ea0e1a7aa
+  languageName: node
+  linkType: hard
+
 "@tootallnate/once@npm:2":
   version: 2.0.0
   resolution: "@tootallnate/once@npm:2.0.0"
@@ -3499,6 +3506,7 @@ __metadata:
   resolution: "ocs-frontend@workspace:."
   dependencies:
     "@fontsource/nunito": "npm:^4.5.11"
+    "@taskworld.com/rereselect": "npm:^0.3.0"
     "@trivago/prettier-plugin-sort-imports": "npm:^3.4.0"
     "@types/lodash": "npm:^4.14.187"
     "@types/react": "npm:^18.0.22"
