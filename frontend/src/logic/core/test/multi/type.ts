@@ -10,10 +10,12 @@ interface Reselectors {
   values: (test: string) => number[];
 }
 
-interface Props {}
+interface Props {
+  keys: string[];
+}
 
 interface Selectors {
-  keys: () => string[];
+  keys: (keys: string[]) => string[];
 }
 
 export type TestMultiLogicType = MakeOwnLogicType<{

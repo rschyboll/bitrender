@@ -9,6 +9,6 @@ const getDefaultValue = () => {
   return counter;
 };
 
-export const Reducers: ReducersDef<SettingsLogicType> = {
-  value: [getDefaultValue()],
-};
+export const Reducers: ReducersDef<SettingsLogicType> = () => ({
+  value: [getDefaultValue(), { updateValue: (state) => state + 1 }],
+});

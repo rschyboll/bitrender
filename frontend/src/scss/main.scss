@@ -1,11 +1,11 @@
 @import 'primereact/resources/primereact.css';
-
 @import '@fontsource/nunito/index.css';
 @import '@fontsource/nunito/300.css';
 @import '@fontsource/nunito/500.css';
 
 @import './global.scss';
 @import './grid.scss';
+@import './elevation.scss';
 
 html,
 body,
@@ -18,11 +18,7 @@ body,
 body {
   height: 100%;
   margin: 0;
-  background: linear-gradient(
-    180deg,
-    var(--surface-50) 0%,
-    var(--surface-b) 100%
-  );
+  background-color: var(--surface-b);
   font-family: nunito !important;
 }
 

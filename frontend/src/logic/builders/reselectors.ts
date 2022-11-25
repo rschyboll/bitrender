@@ -1,19 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any, @typescript-eslint/ban-types*/
 import { makeSelector } from '@taskworld.com/rereselect';
-import {
-  Logic,
-  LogicBuilder,
-  LogicPropSelectors,
-  Selector,
-  SelectorDefinition,
-  SelectorDefinitions,
-  getContext,
-} from 'kea';
-import {
-  DefaultMemoizeOptions,
-  ParametricSelector,
-  createSelector,
-} from 'reselect';
+import { LogicBuilder, getContext } from 'kea';
+import { DefaultMemoizeOptions, createSelector } from 'reselect';
 
 import { MakeOwnLogicType } from '@/logic/types';
 import { ArrayElementType, RestrictedObject } from '@/types/utility';
@@ -27,13 +15,13 @@ export type ReselectorsDefinitions<
           selectors: Logic['selectors'],
         ) => (
           state: any,
-          props: any,
+          props?: any,
         ) => Parameters<Logic['__internal_reselector_types'][Key]>[0][],
         (
           value: Parameters<Logic['__internal_reselector_types'][Key]>[0],
         ) => (
           state: any,
-          props: any,
+          props?: any,
         ) => ArrayElementType<
           ReturnType<Logic['__internal_reselector_types'][Key]>
         >,
@@ -44,13 +32,13 @@ export type ReselectorsDefinitions<
           selectors: Logic['selectors'],
         ) => (
           state: any,
-          props: any,
+          props?: any,
         ) => Parameters<Logic['__internal_reselector_types'][Key]>[0][],
         (
           value: Parameters<Logic['__internal_reselector_types'][Key]>[0],
         ) => (
           state: any,
-          props: any,
+          props?: any,
         ) => ArrayElementType<
           ReturnType<Logic['__internal_reselector_types'][Key]>
         >,
@@ -80,8 +68,9 @@ function checkLogicForExistingSelectors(
   logic: MakeOwnLogicType,
   selectorKeys: string[],
 ) {
-  for (const key in selectorKeys) {
-    if (typeof logic.selectors[key] !== undefined) {
+  for (const key of selectorKeys) {
+    console.log(logic.selectors[key]);
+    if (typeof logic.selectors[key] !== 'undefined') {
       throw new Error(
         `[KEA] Logic "${logic.pathString}" selector "${key}" already exists`,
       );
@@ -102,108 +91,35 @@ export function reselectors<
 
     for (const key in reselectorInputs) {
       const reselector = reselectorInputs[key];
-      const [input, outputSelectorFactory] = reselector;
+      const [input, outputSelectorFactory, memoizeOptions] = reselector;
+      const inputSelector = input(logic.selectors);
+      const selector = createSelector(
+        [
+          makeSelector((query) => {
+            const inputData = query(inputSelector);
+            const outputData = [];
 
-      const inputSelectors = input(logic.selectors);
-      const selector = (state = getContext().store.getState()) => {
-        console.log('TEST');
-      };
+            for (const value of inputData) {
+              const outputValue = query(outputSelectorFactory(value));
+              outputData.push(outputValue);
+            }
+            return outputData;
+          }),
+        ],
+        (arg: any) => {
+          return arg;
+        },
+        { memoizeOptions },
+      );
+      logic.selectors[key] = selector;
+      Object.defineProperty(logic.values, key, {
+        get: function () {
+          return logic.selectors[key](
+            getContext().store.getState(),
+            logic.props,
+          );
+        },
+      });
     }
   };
-}
-
-export function selectors<L extends Logic = Logic>(
-  input: SelectorDefinitions<L> | ((logic: L) => SelectorDefinitions<L>),
-): LogicBuilder<L> {
-  return (logic) => {
-    const selectorInputs = typeof input === 'function' ? input(logic) : input;
-
-    const builtSelectors: Record<string, Selector> = {};
-    for (const key of Object.keys(selectorInputs)) {
-      if (typeof logic.selectors[key] !== 'undefined') {
-        throw new Error(
-          `[KEA] Logic "${logic.pathString}" selector "${key}" already exists`,
-        );
-      }
-      addSelectorAndValue(logic, key, (...args) =>
-        builtSelectors[key](...args),
-      );
-    }
-
-    const propSelectors =
-      typeof Proxy !== 'undefined'
-        ? new Proxy(logic.props, {
-            get(target, prop) {
-              if (!(prop in target)) {
-                throw new Error(
-                  `[KEA] Prop "${String(prop)}" not found for logic "${
-                    logic.pathString
-                  }". Attempted to use in a selector. Please specify a default via props({ ${String(
-                    prop,
-                  )}: '' }) to resolve.`,
-                );
-              }
-              return () => target[prop];
-            },
-          })
-        : (Object.fromEntries(
-            Object.keys(logic.props).map((key) => [
-              key,
-              () => logic.props[key],
-            ]),
-          ) as LogicPropSelectors<L>);
-
-    for (const entry of Object.entries(selectorInputs)) {
-      const [key, [input, func, memoizeOptions]]: [
-        string,
-        SelectorDefinition<L['selectors'], LogicPropSelectors<L>, any>,
-      ] = entry as any;
-      const args: ParametricSelector<any, any, any>[] = input(
-        logic.selectors,
-        propSelectors,
-      );
-
-      if (args.filter((a) => typeof a !== 'function').length > 0) {
-        const argTypes = args.map((a) => typeof a).join(', ');
-        const msg = `[KEA] Logic "${logic.pathString}", selector "${key}" has incorrect input: [${argTypes}].`;
-        throw new Error(msg);
-      }
-      builtSelectors[key] = createSelector(args, func, { memoizeOptions });
-
-      addSelectorAndValue(
-        logic,
-        key,
-        (state = getContext().store.getState(), props = logic.props) =>
-          builtSelectors[key](state, props),
-      );
-
-      if (!logic.values.hasOwnProperty(key)) {
-        Object.defineProperty(logic.values, key, {
-          get: function () {
-            return logic.selectors[key](
-              getContext().store.getState(),
-              logic.props,
-            );
-          },
-          enumerable: true,
-        });
-      }
-    }
-  };
-}
-
-export function addSelectorAndValue<L extends Logic = Logic>(
-  logic: L,
-  key: string,
-  selector: Selector,
-): void {
-  logic.selectors[key] = selector;
-  if (!logic.values.hasOwnProperty(key)) {
-    Object.defineProperty(logic.values, key, {
-      get: function () {
-        return logic.selectors[key](getContext().store.getState(), logic.props);
-      },
-      enumerable: true,
-    });
-  }
 }

@@ -1,5 +1,5 @@
 import { useInjection } from 'inversify-react';
-import { useMountedLogic } from 'kea';
+import { useMountedLogic, useValues } from 'kea';
 
 import { ITestMultiLogicType, ITestSingleLogicType } from '@/logic/interfaces';
 
@@ -34,6 +34,8 @@ interface TestMultiComponentProps {
 const TestMultiComponent = (props: TestMultiComponentProps) => {
   const testMultiLogic = useInjection(ITestMultiLogicType.$);
   useMountedLogic(testMultiLogic({ keys: props.logicKeys }));
+
+  const { values } = useValues(testMultiLogic);
 
   return <div></div>;
 };

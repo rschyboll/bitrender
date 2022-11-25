@@ -7,15 +7,14 @@ import {
   DataTable as PrimeDataTable,
   DataTableSelectionChangeParams as PrimeDataTableSelectionChangeParams,
 } from 'primereact/datatable';
-import { useCallback } from 'react';
-import { useTranslation } from 'react-i18next';
+import { useCallback, useLayoutEffect, useState } from 'react';
 
 import { PaginatorTemplate } from '@/components/paginator';
 import config from '@/config';
+import { useWindowSize } from '@/hooks';
 import { typedMemo } from '@/utils/react';
 
 import { Column } from './columns';
-import { ColumnType } from './enums';
 import './style.scss';
 import { ColumnDefinition } from './types';
 import type { IDataTableLogic } from './types/logic';
@@ -33,6 +32,9 @@ export const DataTable = typedMemo(function DataTable<
   const { currentPage, rowsPerPage, amountOfRecords, values } =
     useValues(dataTableLogic);
   const { setCurrentPage, setRowsPerPage } = useActions(dataTableLogic);
+  const [componentRendered, setComponentRendered] = useState(false);
+
+  const windowSize = useWindowSize();
 
   const onPage = useCallback(
     (e: DataTablePFSEvent) => {
@@ -55,6 +57,12 @@ export const DataTable = typedMemo(function DataTable<
     [onRowSelectionChange],
   );
 
+  useLayoutEffect(() => {
+    setTimeout(() => {
+      setComponentRendered(true);
+    }, 0);
+  }, []);
+
   return (
     <PrimeDataTable
       header={props.header}
@@ -70,7 +78,15 @@ export const DataTable = typedMemo(function DataTable<
       selection={props.selection}
       selectionMode={props.selectionMode}
       onSelectionChange={onSelectionChange}
-      breakpoint={config.breakpoints.mobile}
+      breakpoint={config.cssBreakpoints.mobile}
+      responsiveLayout="stack"
+      scrollable={
+        windowSize.width != null &&
+        windowSize.width > config.breakpoints.mobile &&
+        componentRendered
+          ? true
+          : false
+      }
     >
       {props.customColumns != null && props.customColumns.before != null
         ? Object.entries(props.customColumns.before).map(([key, column]) => {
@@ -83,6 +99,7 @@ export const DataTable = typedMemo(function DataTable<
             <PrimeColumn
               key={key}
               field={key}
+              frozen={column.frozen}
               className={Column.getCellClassName(column.type)}
               header={<Column.Header type={column.type} title={column.title} />}
               headerClassName={Column.getHeaderClassName(column.type)}

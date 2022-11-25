@@ -22,7 +22,7 @@
 
 .search-field {
   height: 2.5rem;
-  width: 15rem;
+  min-width: 15rem;
 }
 
 .add-new-button {
@@ -55,5 +55,37 @@
     .p-button-label {
       display: none;
     }
+  }
+}
+
+.roles-table-card {
+  .card-title {
+    flex-grow: 99999999999999;
+  }
+
+  .card-actions {
+    flex-wrap: wrap;
+    flex-grow: 1;
+  }
+
+  .role-table-search {
+    display: flex;
+    flex-direction: row-reverse;
+    flex-grow: 9999;
+
+    .search-field {
+      width: 100%;
+    }
+  }
+
+  .role-table-actions {
+    justify-content: space-between;
+    flex-grow: 1;
+  }
+
+  .role-table-actions {
+    display: flex;
+    flex-shrink: 0;
+    gap: 0.5rem;
   }
 }

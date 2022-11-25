@@ -12,6 +12,9 @@ $card-width-mobile: 90%;
   height: fit-content;
   margin: auto;
   transition: width 0.5s, height 0.5s;
+  box-shadow: 0 2px 5px -1px rgb(0 0 0 / 40%), 0 1px 1px 0 rgb(0 0 0 / 40%),
+    0 1px 3px 0 rgb(0 0 0 / 12%);
+  border: 1px solid #222222;
 
   @include media('<=desktop') {
     width: $card-width-mobile;

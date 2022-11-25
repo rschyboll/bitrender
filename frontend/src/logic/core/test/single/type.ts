@@ -8,7 +8,12 @@ interface Props {
   key: string;
 }
 
+interface Actions {
+  updateValue: true;
+}
+
 export type SettingsLogicType = MakeOwnLogicType<{
   reducers: Reducers;
   props: Props;
+  actions: Actions;
 }>;

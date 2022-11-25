@@ -23,10 +23,12 @@ export const rolesTableModel: DataTableModel<MRole.TableView, 'id'> = {
     name: {
       title: 'role.name',
       type: ColumnType.STRING,
+      frozen: true,
     },
     default: {
       title: 'role.default',
       type: ColumnType.TRUEORNULL,
+      frozen: true,
     },
     ...createPermissionModelColumns(),
   },

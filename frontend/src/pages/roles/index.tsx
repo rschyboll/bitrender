@@ -52,10 +52,14 @@ const RolesPage: FC = () => {
         title="Lista roli użytkowników"
         titleActions={
           <>
-            <TableSearchField />
-            <TableAddButton />
-            <TableModifyButton selectedRole={selectedRole} />
-            <TableDeleteButton selectedRole={selectedRole} />
+            <div className="role-table-search">
+              <TableSearchField />
+            </div>
+            <div className="role-table-actions">
+              <TableAddButton />
+              <TableModifyButton selectedRole={selectedRole} />
+              <TableDeleteButton selectedRole={selectedRole} />
+            </div>
           </>
         }
         className="roles-table-card col-12"

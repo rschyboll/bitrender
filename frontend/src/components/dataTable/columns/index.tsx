@@ -24,7 +24,6 @@ const ColumnBody = memo(function ColumnBody(props: ColumnBodyProps) {
       return <BooleanColumn value={props.value} />;
     case ColumnType.TRUEORNULL:
       return <TrueOrNullColumn value={props.value} />;
-
     default:
       return <span>{props.value?.toString()}</span>;
   }

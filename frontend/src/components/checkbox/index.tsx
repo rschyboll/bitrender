@@ -3,6 +3,7 @@ import { memo } from 'react';
 import { Trans } from 'react-i18next';
 import { FiCheck } from 'react-icons/fi';
 
+import styles from './style.module.scss';
 import './style.scss';
 
 export interface CheckboxProps {
@@ -31,6 +32,9 @@ export const Checkbox = memo(function Checkbox(props: CheckboxProps) {
       <label htmlFor={props.inputId} className="p-checkbox-label">
         <Trans>{props.title}</Trans>
       </label>
+      <div className={`${styles.card}`}>
+        <div className={` ${styles.darkMode}`}></div>
+      </div>
     </div>
   );
 });

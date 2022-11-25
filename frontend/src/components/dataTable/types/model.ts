@@ -19,6 +19,7 @@ export interface ColumnDefinition<Type extends ColumnType = ColumnType> {
   type: Type;
   sortable?: boolean;
   filterable?: boolean;
+  frozen?: boolean;
 }
 
 export interface DataTableModel<
