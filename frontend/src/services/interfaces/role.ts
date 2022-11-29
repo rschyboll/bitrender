@@ -4,7 +4,7 @@ import type { Response } from '@/services';
 import type { MRole } from '@/types/models';
 
 export interface IRoleService {
-  getList: (
+  getTable: (
     input: MRole.Messages.GetListInput,
   ) => Promise<Response<MRole.Messages.GetListOutput>>;
   create: (

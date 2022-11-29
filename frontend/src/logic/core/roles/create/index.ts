@@ -9,7 +9,7 @@ import { Reducers } from './reducers';
 import { Selectors } from './selectors';
 import type { CreateRoleLogic } from './type';
 
-export const createRoleLogic = kea<CreateRoleLogic>([
+export const roleCreateLogic = kea<CreateRoleLogic>([
   path(['roles', 'create']),
   deps({ roleService: IRoleService.$ }),
   actions({

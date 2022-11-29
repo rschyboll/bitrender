@@ -9,10 +9,8 @@ import {
 } from 'kea';
 import { subscriptions } from 'kea-subscriptions';
 
-import { IRoleConverters } from '@/converters/interfaces';
 import { deps } from '@/logic/builders';
-import { IRouteLogic } from '@/logic/interfaces';
-import { IRoleService } from '@/services/interfaces';
+import { IRoleTableLoaderLogic, IRouteLogic } from '@/logic/interfaces';
 
 import { Listeners } from './listeners';
 import { Reducers } from './reducers';
@@ -23,18 +21,11 @@ import type { RolesTableLogic } from './type';
 export const rolesTableLogic = kea<RolesTableLogic>([
   path(['roles', 'table']),
   deps({
-    roleConverters: IRoleConverters.$,
-    roleService: IRoleService.$,
     routeLogic: IRouteLogic.$,
+    roleTableLoaderLogic: IRoleTableLoaderLogic.$,
   }),
   actions({
     refresh: true,
-    load: true,
-    loadSuccess: (roles, rowCount) => ({
-      roles,
-      rowCount,
-    }),
-    loadFailure: true,
     setSearchString: (searchString) => ({ searchString }),
     setCurrentPage: (currentPage) => ({ currentPage }),
     setLocalSearchString: (searchString) => ({ searchString }),

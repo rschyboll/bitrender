@@ -2981,7 +2981,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"kea@patch:kea@patch%3Akea@npm%253A3.0.4%23~/.yarn/patches/kea-npm-3.0.4-31c3e7a081.patch%3A%3Aversion=3.0.4&hash=a34223#~/.yarn/patches/kea-patch-83b76bedfe.patch":
+"kea@patch:kea@patch%3Akea@npm%253A3.0.4%23~/.yarn/patches/kea-npm-3.0.4-31c3e7a081.patch%3A%3Aversion=3.0.4&hash=a34223#~/.yarn/patches/kea-patch-83b76bedfe.patch::version=3.0.4&hash=8c368c":
   version: 3.0.4
   resolution: "kea@patch:kea@patch%3Akea@npm%253A3.0.4%23~/.yarn/patches/kea-npm-3.0.4-31c3e7a081.patch%3A%3Aversion=3.0.4&hash=a34223#~/.yarn/patches/kea-patch-83b76bedfe.patch::version=3.0.4&hash=8c368c"
   dependencies:
@@ -2991,6 +2991,19 @@ __metadata:
   peerDependencies:
     react: ">= 16.8"
   checksum: e49277bc5b4dcaad088c2b5ca1e0689379fc5f1383124955af3a08d490012796bc6507a3290fcd909e23b63952ff40e2540908e3aba710dba2c5758cfdcaeab4
+  languageName: node
+  linkType: hard
+
+"kea@patch:kea@patch%3Akea@patch%253Akea@npm%25253A3.0.4%2523~/.yarn/patches/kea-npm-3.0.4-31c3e7a081.patch%253A%253Aversion=3.0.4&hash=a34223%23~/.yarn/patches/kea-patch-83b76bedfe.patch%3A%3Aversion=3.0.4&hash=8c368c#~/.yarn/patches/kea-patch-e67573f920.patch":
+  version: 3.0.4
+  resolution: "kea@patch:kea@patch%3Akea@patch%253Akea@npm%25253A3.0.4%2523~/.yarn/patches/kea-npm-3.0.4-31c3e7a081.patch%253A%253Aversion=3.0.4&hash=a34223%23~/.yarn/patches/kea-patch-83b76bedfe.patch%3A%3Aversion=3.0.4&hash=8c368c#~/.yarn/patches/kea-patch-e67573f920.patch::version=3.0.4&hash=a72475"
+  dependencies:
+    redux: "npm:^4.2.0"
+    reselect: "npm:^4.1.5"
+    use-sync-external-store: "npm:^1.0.0"
+  peerDependencies:
+    react: ">= 16.8"
+  checksum: 7140d00ca83fcc0b1730b7c120d12f436ddf5a3bbbd1c6bd5de5e5f50c00e2dff4522894c668fd90453c6d20464487810256f8a1dc387dd39130c36091cd1d92
   languageName: node
   linkType: hard
 
@@ -3528,7 +3541,7 @@ __metadata:
     include-media: "npm:^1.4.10"
     inversify: "npm:^6.0.1"
     inversify-react: "npm:^1.0.2"
-    kea: "patch:kea@patch%3Akea@npm%253A3.0.4%23~/.yarn/patches/kea-npm-3.0.4-31c3e7a081.patch%3A%3Aversion=3.0.4&hash=a34223#~/.yarn/patches/kea-patch-83b76bedfe.patch"
+    kea: "patch:kea@patch%3Akea@patch%253Akea@npm%25253A3.0.4%2523~/.yarn/patches/kea-npm-3.0.4-31c3e7a081.patch%253A%253Aversion=3.0.4&hash=a34223%23~/.yarn/patches/kea-patch-83b76bedfe.patch%3A%3Aversion=3.0.4&hash=8c368c#~/.yarn/patches/kea-patch-e67573f920.patch"
     kea-localstorage: "npm:^3.0.0"
     kea-router: "npm:^3.1.1"
     kea-subscriptions: "npm:^3.0.0"

@@ -24,14 +24,14 @@ interface Values {
   nameTaken: boolean;
 }
 
-export type ICreateRoleLogic = LogicWrapper<
+export type IRoleCreateLogic = LogicWrapper<
   MakeOwnLogicType<{
     actions: Actions;
     values: Values;
   }>
 >;
 
-export namespace ICreateRoleLogic {
-  export const $: interfaces.ServiceIdentifier<ICreateRoleLogic> =
-    Symbol('ICreateRoleLogic');
+export namespace IRoleCreateLogic {
+  export const $: interfaces.ServiceIdentifier<IRoleCreateLogic> =
+    Symbol('IRoleCreateLogic');
 }

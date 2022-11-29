@@ -11,26 +11,7 @@ import {
   IUserConverters,
   IUtilityConverters,
 } from '@/converters/interfaces';
-import {
-  appLogic,
-  authLogic,
-  createRoleLogic,
-  rolesTableLogic,
-  routeLogic,
-  settingsLogic,
-  testMultiLogic,
-  testSingleLogic,
-} from '@/logic/core';
-import {
-  IAppLogic,
-  IAuthLogic,
-  ICreateRoleLogic,
-  IRolesTableLogic,
-  IRouteLogic,
-  ISettingsLogic,
-  ITestMultiLogicType,
-  ITestSingleLogicType,
-} from '@/logic/interfaces';
+import { bindLogicDependencies } from '@/logic/deps';
 import { RoleService, UserService } from '@/services/api';
 import { IRoleService, IUserService } from '@/services/interfaces';
 import {
@@ -48,6 +29,8 @@ import {
 
 const Dependencies = new Container();
 
+bindLogicDependencies(Dependencies);
+
 //Validator dependencies
 Dependencies.bind(IUserValidators.$).to(UserValidators).inSingletonScope();
 Dependencies.bind(IServiceValidators.$)
@@ -63,20 +46,8 @@ Dependencies.bind(IUtilityConverters.$)
   .inSingletonScope();
 Dependencies.bind(IRoleConverters.$).to(RoleConverters).inSingletonScope();
 
-//Logic dependencies
-Dependencies.bind(IAppLogic.$).toConstantValue(appLogic);
-Dependencies.bind(ISettingsLogic.$).toConstantValue(settingsLogic);
-Dependencies.bind(IAuthLogic.$).toConstantValue(authLogic);
-Dependencies.bind(IRouteLogic.$).toConstantValue(routeLogic);
-
-Dependencies.bind(IRolesTableLogic.$).toConstantValue(rolesTableLogic);
-Dependencies.bind(ICreateRoleLogic.$).toConstantValue(createRoleLogic);
-
 //Service dependencies
 Dependencies.bind(IUserService.$).to(UserService).inSingletonScope();
 Dependencies.bind(IRoleService.$).to(RoleService).inSingletonScope();
-
-Dependencies.bind(ITestMultiLogicType.$).toConstantValue(testMultiLogic);
-Dependencies.bind(ITestSingleLogicType.$).toConstantValue(testSingleLogic);
 
 export default Dependencies;

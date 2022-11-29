@@ -1,8 +1,8 @@
-import type { interfaces } from "inversify";
-import type { LogicWrapper } from "kea";
+import type { interfaces } from 'inversify';
+import type { LogicWrapper } from 'kea';
 
-import type { MakeOwnLogicType } from "@/logic/types/makeLogic";
-import type { MRole } from "@/types/models";
+import type { MakeOwnLogicType } from '@/logic/types/makeLogic';
+import type { MRole } from '@/types/models';
 
 interface Actions {
   setSearchString: (searchString: string) => void;
@@ -18,14 +18,14 @@ interface Values {
   values: MRole.TableView[];
 }
 
-export type IRolesTableLogic = LogicWrapper<
+export type IRoleTableLogic = LogicWrapper<
   MakeOwnLogicType<{
     actions: Actions;
     values: Values;
   }>
 >;
 
-export namespace IRolesTableLogic {
-  export const $: interfaces.ServiceIdentifier<IRolesTableLogic> =
-    Symbol("IRolesTableLogic");
+export namespace IRoleTableLogic {
+  export const $: interfaces.ServiceIdentifier<IRoleTableLogic> =
+    Symbol('IRoleTableLogic');
 }

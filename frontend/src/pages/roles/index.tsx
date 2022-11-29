@@ -9,10 +9,10 @@ import { RiDeleteBin6Line, RiEdit2Fill, RiSearchLine } from 'react-icons/ri';
 import { Card, IconCard } from '@/components/card';
 import { DataTable } from '@/components/dataTable';
 import { TextField } from '@/components/textField';
-import { ICreateRoleLogic, IRolesTableLogic } from '@/logic/interfaces';
+import { IRoleCreateLogic, IRoleTableLogic } from '@/logic/interfaces';
 import { MRole } from '@/types/models';
 
-import { EditRoleDialog } from './dialogs/edit2';
+import { EditRoleDialog } from './dialogs/edit';
 import './style.scss';
 import { rolesTableModel } from './tableModel';
 
@@ -65,7 +65,7 @@ const RolesPage: FC = () => {
         className="roles-table-card col-12"
       >
         <DataTable
-          logicIdentifier={IRolesTableLogic.$}
+          logicIdentifier={IRoleTableLogic.$}
           model={rolesTableModel}
           onRowSelectionChange={onRoleSelect}
           selectionMode="single"
@@ -77,7 +77,7 @@ const RolesPage: FC = () => {
 };
 
 const TableSearchField = () => {
-  const rolesTableLogic = useInjection(IRolesTableLogic.$);
+  const rolesTableLogic = useInjection(IRoleTableLogic.$);
 
   const { searchString } = useValues(rolesTableLogic);
   const { setSearchString } = useActions(rolesTableLogic);
@@ -115,7 +115,7 @@ const TableAddButton = () => {
         tooltipOptions={{ showDelay: 1000, position: 'top' }}
       />
       <EditRoleDialog
-        logicIdentifier={ICreateRoleLogic.$}
+        logicIdentifier={IRoleCreateLogic.$}
         visible={dialogVisible}
         setVisible={setDialogVisible}
         title="role.create"
@@ -151,7 +151,7 @@ const TableModifyButton = (props: TableModifyButtonProps) => {
       />
       {props.selectedRole != null ? (
         <EditRoleDialog
-          logicIdentifier={ICreateRoleLogic.$}
+          logicIdentifier={IRoleCreateLogic.$}
           visible={dialogVisible}
           setVisible={setDialogVisible}
           title={`${t('role.edit')} ${props.selectedRole.name}`}
@@ -188,7 +188,7 @@ const TableDeleteButton = (props: TableDeleteButtonProps) => {
       />
       {props.selectedRole != null ? (
         <EditRoleDialog
-          logicIdentifier={ICreateRoleLogic.$}
+          logicIdentifier={IRoleCreateLogic.$}
           visible={dialogVisible}
           setVisible={setDialogVisible}
           title={`${t('role.edit')} ${props.selectedRole.name}`}

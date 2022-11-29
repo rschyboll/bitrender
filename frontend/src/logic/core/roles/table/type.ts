@@ -1,19 +1,11 @@
-import type { IRoleConverters } from '@/converters/interfaces';
 import type { MakeOwnLogicType } from '@/logic';
-import type { IRouteLogic } from '@/logic/interfaces';
+import type { IRoleTableLoaderLogic, IRouteLogic } from '@/logic/interfaces';
 import type { RequestStatus } from '@/services';
-import type { IRoleService } from '@/services/interfaces';
-import { ListRequestInput } from '@/services/messages/list';
+import type { ListRequestInput } from '@/services/messages/list';
 import type { MRole } from '@/types/models';
 
 interface Actions {
   refresh: true;
-  load: true;
-  loadSuccess: (
-    roles: MRole.View[],
-    rowCount: number,
-  ) => { roles: MRole.View[]; rowCount: number };
-  loadFailure: true;
   setSearchString: (searchString: string) => { searchString: string };
   setCurrentPage: (currentPage: number) => { currentPage: number };
   setLocalSearchString: (searchString: string) => { searchString: string };
@@ -28,7 +20,7 @@ interface Reducers {
 }
 
 interface Selectors {
-  values: (roles: MRole.View[]) => MRole.TableView[];
+  values: (roles: MRole.TableView[]) => MRole.TableView[];
   searchString: (
     localSearchString: string | null,
     hashParams: Record<string, unknown>,
@@ -44,8 +36,7 @@ interface Selectors {
 
 interface Deps {
   routeLogic: IRouteLogic;
-  roleService: IRoleService;
-  roleConverters: IRoleConverters;
+  roleTableLoaderLogic: IRoleTableLoaderLogic;
 }
 
 export type RolesTableLogic = MakeOwnLogicType<{

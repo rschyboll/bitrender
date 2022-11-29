@@ -117,6 +117,11 @@ export interface MakeOwnLogicType<
     [Key in keyof LogicData['selectors']]: LogicData['selectors'][Key] extends () => void
       ? (state: any, props: any) => ReturnType<LogicData['selectors'][Key]>
       : never;
+  } & {
+    [Key in keyof LogicData['values']]: (
+      state: any,
+      props: any,
+    ) => LogicData['values'][Key];
   };
   defaults: {
     [Key in keyof LogicData['reducers']]: LogicData['reducers'][Key];

@@ -6,14 +6,8 @@ import type { RolesTableLogic } from './type';
 
 export const Selectors: SelectorsDef<RolesTableLogic> = ({ deps }) => ({
   values: [
-    (selectors) => [selectors.roles],
-    (roles) => {
-      const roleTableViews = [];
-      for (const role of roles) {
-        roleTableViews.push(deps.roleConverters.viewToTableView(role));
-      }
-      return roleTableViews;
-    },
+    () => [deps.roleTableLoaderLogic.selectors.entries],
+    (roles) => roles,
   ],
   searchString: [
     (selectors) => [

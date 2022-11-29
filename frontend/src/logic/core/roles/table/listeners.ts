@@ -2,21 +2,9 @@ import type { ListenersDef } from '@/logic/types';
 
 import type { RolesTableLogic } from './type';
 
-export const Listeners: ListenersDef<RolesTableLogic> = ({
-  actions,
-  values,
-  deps,
-}) => ({
+export const Listeners: ListenersDef<RolesTableLogic> = ({ values, deps }) => ({
   refresh: async () => {
-    actions.load();
-  },
-  load: async () => {
-    const response = await deps.roleService.getList(values.listRequestInput);
-    if (response.success) {
-      actions.loadSuccess(response.data.items, response.data.rowCount);
-    } else {
-      actions.loadFailure();
-    }
+    deps.roleTableLoaderLogic.actions.load(values.listRequestInput);
   },
   setSearchString: async ({ searchString }, breakpoint) => {
     await breakpoint(250);

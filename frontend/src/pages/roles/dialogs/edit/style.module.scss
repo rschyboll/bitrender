@@ -1,5 +1,9 @@
+@import '@/scss/variables.scss';
+
 .dialog {
-  min-width: 30rem;
+  @include media('>phone') {
+    min-width: 30rem;
+  }
 }
 
 .permissionsTitle {

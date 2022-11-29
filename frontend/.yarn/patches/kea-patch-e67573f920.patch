@@ -1,0 +1,13 @@
+diff --git a/lib/index.d.ts b/lib/index.d.ts
+index c99594af1265fb32a9e9d5a9f8f2fb4766808176..e30a3964a167a12c6622ab2a1e229d4066aa71fd 100644
+--- a/lib/index.d.ts
++++ b/lib/index.d.ts
+@@ -121,7 +121,7 @@ declare type EventDefinitions<LogicType extends Logic> = {
+     afterUnmount?: (() => void) | (() => void)[];
+     propsChanged?: ((props: Logic['props'], oldProps: Logic['props']) => void) | ((props: Logic['props'], oldProps: Logic['props']) => void)[];
+ };
+-declare type ListenerFunction<A extends AnyAction = any> = (payload: A['payload'], breakpoint: BreakPointFunction, action: A, previousState: any) => void | Promise<void>;
++declare type ListenerFunction<A extends AnyAction = any> = (payload: A['payload'] extends never ? unknown : A['payload'], breakpoint: BreakPointFunction, action: A, previousState: any) => void | Promise<void>;
+ declare type ListenerFunctionWrapper = (action: any, previousState: any) => void;
+ declare type SharedListenerDefinitions<LogicType extends Logic> = {
+     [Key in keyof LogicType["sharedListeners"]]: LogicType['sharedListeners'][Key]
