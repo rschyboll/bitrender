@@ -39,9 +39,24 @@ class IRoleService:
 
         Raises:
             UnauthorizedError: The user has no access to view this role.
+            DoesNotExist: The role does not exist.
 
         Returns:
             RoleView: The requested role."""
+
+    @abstractmethod
+    async def get_role_users_count(self, role_id: UUID) -> int:
+        """Returns how many users have the role assigned.
+
+        Args:
+            role_id (UUID): Id of the role.
+
+        Raises:
+            UnauthorizedError: The user has no access to view this role.
+            DoesNotExist: The role does not exist.
+
+        Returns:
+            int: How many users have this role assigned."""
 
     @abstractmethod
     async def create(self, role_data: RoleCreate) -> RoleView:
@@ -56,3 +71,19 @@ class IRoleService:
 
         Returns:
             RoleView: The created role."""
+
+    @abstractmethod
+    async def delete(
+        self,
+        role_id: UUID,
+        replacement_role_id: UUID | None,
+    ) -> None:
+        """Deletes the role with the provided id.
+
+        Args:
+            role_id (UUID): Id of the role that should be deleted.
+
+        Raises:
+            UnauthorizedError: The user has no access to delete this role.
+            DoesNotExist: The role does not exist.
+            RoleIsDefault: The role is the current default one, and cannot be removed."""

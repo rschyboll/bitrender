@@ -1,0 +1,27 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Attach (9222)",
+      "type": "chrome",
+      "request": "attach",
+      "port": 9222,
+      "timeout": 100000
+    },
+    {
+      "name": "Start Dev",
+      "type": "node",
+      "request": "launch",
+      "runtimeExecutable": "yarn",
+      "cwd": "${workspaceFolder}",
+      "runtimeArgs": ["dev"],
+      "sourceMaps": true
+    }
+  ],
+  "compounds": [
+    {
+      "name": "Start Dev & Attach",
+      "configurations": ["Attach (9222)", "Start Dev"]
+    }
+  ]
+}

@@ -40,13 +40,15 @@ export class RoleValidators extends Validators implements IRoleValidators {
     },
     required: ['rowCount', 'items'],
   };
-  createValidator: ValidateFunction<MRole.Messages.CreateOutput>;
+  createOutputValidator: ValidateFunction<MRole.Messages.CreateOutput>;
   getRolesOutputValidator: ValidateFunction<MRole.Messages.GetListOutput>;
+  getByIdOutputValidator: ValidateFunction<MRole.Messages.GetByIdOutput>;
 
   constructor() {
     super();
-    this.createValidator = this.ajv.compile(this.createSchema);
+    this.createOutputValidator = this.ajv.compile(this.createSchema);
     this.getRolesOutputValidator = this.ajv.compile(this.getRolesOutputSchema);
+    this.getByIdOutputValidator = this.ajv.compile(this.viewSchema);
   }
 
   public validateGetListOutput(
@@ -58,7 +60,11 @@ export class RoleValidators extends Validators implements IRoleValidators {
   public validateCreateOutput(
     value: unknown,
   ): value is MRole.Messages.CreateOutput {
-    return this.createValidator(value);
+    return this.createOutputValidator(value);
+  }
+
+  public validateGetByIdOutput(value: unknown): value is MRole.View {
+    return this.getByIdOutputValidator(value);
   }
 
   public isPermission(value: unknown): value is MRole.Permission {

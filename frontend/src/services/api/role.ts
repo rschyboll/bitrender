@@ -3,7 +3,6 @@ import { inject, injectable } from 'inversify';
 import { Response, ServiceErrorType } from '@/services';
 import { ApiEndpoints } from '@/services/endpoints';
 import { MRole } from '@/types/models';
-import { sleep } from '@/utils/async';
 import { IRoleValidators } from '@/validators/interfaces';
 
 import { IRoleService } from '../interfaces';
@@ -18,7 +17,7 @@ export class RoleService extends Service implements IRoleService {
     this.roleValidators = roleValidators;
   }
 
-  public getList = async (
+  public getTable = async (
     input: MRole.Messages.GetListInput,
   ): Promise<Response<MRole.Messages.GetListOutput>> => {
     try {
@@ -42,7 +41,6 @@ export class RoleService extends Service implements IRoleService {
   public create = async (
     input: MRole.Messages.CreateInput,
   ): Promise<Response<MRole.Messages.CreateOutput>> => {
-    await sleep(50000);
     try {
       const response = await this.api
         .post(ApiEndpoints.RoleNew, { json: input })
@@ -59,6 +57,28 @@ export class RoleService extends Service implements IRoleService {
           type: ServiceErrorType.ValidationError,
         },
       };
+    } catch (error: unknown) {
+      return this.parseAPIError(error);
+    }
+  };
+
+  public getById = async (
+    input: MRole.Messages.GetByIdInput,
+  ): Promise<Response<MRole.Messages.GetByIdOutput>> => {
+    try {
+      const response = await this.api
+        .get(ApiEndpoints.RoleGetById(input.id))
+        .json();
+      if (this.roleValidators.validateGetByIdOutput(response)) {
+        return { success: true, data: response };
+      } else {
+        return {
+          success: false,
+          error: {
+            type: ServiceErrorType.ValidationError,
+          },
+        };
+      }
     } catch (error: unknown) {
       return this.parseAPIError(error);
     }

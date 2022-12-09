@@ -15,6 +15,8 @@ function getCssBreakpoints(): {
 }
 
 const config = {
+  loadDelay: 100,
+  dataCleanTimeout: 5000,
   breakpoints: {
     mobile: 480,
     tablet: 768,
@@ -24,7 +26,5 @@ const config = {
     return getCssBreakpoints();
   },
 };
-
-console.log(config.cssBreakpoints);
 
 export default config;

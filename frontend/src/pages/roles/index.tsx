@@ -1,3 +1,4 @@
+import { Localized } from '@fluent/react';
 import { useInjection } from 'inversify-react';
 import { useActions, useValues } from 'kea';
 import { Button } from 'primereact/button';
@@ -9,7 +10,11 @@ import { RiDeleteBin6Line, RiEdit2Fill, RiSearchLine } from 'react-icons/ri';
 import { Card, IconCard } from '@/components/card';
 import { DataTable } from '@/components/dataTable';
 import { TextField } from '@/components/textField';
-import { IRoleCreateLogic, IRoleTableLogic } from '@/logic/interfaces';
+import {
+  IRoleCreateLogic,
+  IRoleTableLogic,
+  IRoleUpdateLogic,
+} from '@/logic/interfaces';
 import { MRole } from '@/types/models';
 
 import { EditRoleDialog } from './dialogs/edit';
@@ -48,6 +53,10 @@ const RolesPage: FC = () => {
       >
         Test
       </IconCard>
+      <Localized id="hello-world">
+        <p>Hello, world!</p>
+      </Localized>
+
       <Card
         title="Lista roli użytkowników"
         titleActions={
@@ -79,7 +88,7 @@ const RolesPage: FC = () => {
 const TableSearchField = () => {
   const rolesTableLogic = useInjection(IRoleTableLogic.$);
 
-  const { searchString } = useValues(rolesTableLogic);
+  const { searchString } = useValues(rolesTableLogic({ test: 1 }));
   const { setSearchString } = useActions(rolesTableLogic);
 
   return (
@@ -95,6 +104,8 @@ const TableSearchField = () => {
 };
 
 const TableAddButton = () => {
+  const roleCreateLogic = useInjection(IRoleCreateLogic.$);
+
   const { t } = useTranslation();
 
   const [dialogVisible, setDialogVisible] = useState(false);
@@ -115,7 +126,7 @@ const TableAddButton = () => {
         tooltipOptions={{ showDelay: 1000, position: 'top' }}
       />
       <EditRoleDialog
-        logicIdentifier={IRoleCreateLogic.$}
+        logic={roleCreateLogic}
         visible={dialogVisible}
         setVisible={setDialogVisible}
         title="role.create"
@@ -130,6 +141,8 @@ interface TableModifyButtonProps {
 }
 
 const TableModifyButton = (props: TableModifyButtonProps) => {
+  const roleUpdateLogic = useInjection(IRoleUpdateLogic.$);
+
   const { t } = useTranslation();
 
   const [dialogVisible, setDialogVisible] = useState(false);
@@ -151,7 +164,7 @@ const TableModifyButton = (props: TableModifyButtonProps) => {
       />
       {props.selectedRole != null ? (
         <EditRoleDialog
-          logicIdentifier={IRoleCreateLogic.$}
+          logic={roleUpdateLogic({ id: props.selectedRole.id })}
           visible={dialogVisible}
           setVisible={setDialogVisible}
           title={`${t('role.edit')} ${props.selectedRole.name}`}
@@ -167,6 +180,8 @@ interface TableDeleteButtonProps {
 }
 
 const TableDeleteButton = (props: TableDeleteButtonProps) => {
+  const roleCreateLogic = useInjection(IRoleCreateLogic.$);
+
   const { t } = useTranslation();
 
   const [dialogVisible, setDialogVisible] = useState(false);
@@ -188,7 +203,7 @@ const TableDeleteButton = (props: TableDeleteButtonProps) => {
       />
       {props.selectedRole != null ? (
         <EditRoleDialog
-          logicIdentifier={IRoleCreateLogic.$}
+          logic={roleCreateLogic}
           visible={dialogVisible}
           setVisible={setDialogVisible}
           title={`${t('role.edit')} ${props.selectedRole.name}`}

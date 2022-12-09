@@ -69,6 +69,7 @@ export interface MakeOwnLogicType<
       LogicData['sharedListeners'],
       (payload: any) => void | Promise<void>
     >;
+    cache?: RestrictedObject<LogicData['cache'], any>;
   } = any,
 > extends Logic {
   actions: LogicData extends {
@@ -135,5 +136,6 @@ export interface MakeOwnLogicType<
     GetSelectorsValues<LogicData['selectors']>;
   props: LogicData['props'];
   deps: LogicData['deps'];
+  cache: Partial<LogicData['cache']>;
   __internal_selector_types: LogicData['selectors'];
 }

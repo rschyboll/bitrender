@@ -5,8 +5,8 @@ from tortoise.exceptions import DoesNotExist
 from tortoise.transactions import atomic
 
 from bitrender.core.acl import AclAction
-from bitrender.errors.role import RoleNameTaken
-from bitrender.models import Role, RolePermission
+from bitrender.errors.role import ReplacementRoleNeeded, RoleIsDefault, RoleNameTaken
+from bitrender.models import Role, RolePermission, User
 from bitrender.schemas import ListRequestInput, ListRequestOutput, RoleCreate, RoleView
 from bitrender.services.app import IAuthService, IRoleService
 from bitrender.services.app.core import BaseAppService
@@ -39,6 +39,10 @@ class RoleService(BaseAppService, IRoleService):
         role = await self.auth.query(Role.get_by_id(role_id, False), [RolePermission])
         return await role.to_view()
 
+    async def get_role_users_count(self, role_id: UUID) -> int:
+        role = await self.auth.query(Role.get_by_id(role_id, False))
+        return await role.users.all().count()
+
     @atomic()
     async def create(self, role_data: RoleCreate) -> RoleView:
         if await Role.exists(name=role_data.name):
@@ -50,6 +54,28 @@ class RoleService(BaseAppService, IRoleService):
         role = await self.auth.action(self.__create_role, AclAction.CREATE, [role_data])
         await self.__create_role_permissions(role_data, role)
         return await role.to_view()
+
+    @atomic()
+    async def delete(
+        self,
+        role_id: UUID,
+        replacement_role_id: UUID | None,
+    ) -> None:
+        role = await Role.get_by_id(role_id)
+        if role.default:
+            raise RoleIsDefault()
+        users = await role.users
+        if len(users) != 0 and replacement_role_id is None:
+            if replacement_role_id is None or not Role.exists(replacement_role_id):
+                raise ReplacementRoleNeeded()
+            replacement_role = Role.get_by_id(replacement_role_id)
+            await self.__replace_user_roles(users, replacement_role)
+        await role.delete()
+
+    async def __replace_user_roles(self, users: list[User], role: Role) -> None:
+        for user in users:
+            user.role = role
+            await user.save()
 
     async def __unset_default_role(self) -> None:
         default_role = await self.__get_default_role()

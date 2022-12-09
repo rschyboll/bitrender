@@ -12,7 +12,6 @@ services:
     init: true
     command: sleep infinity
     user: node
-    ports:
-      - '4173'
+
 volumes:
   bitrender-frontend-DEV-fish:

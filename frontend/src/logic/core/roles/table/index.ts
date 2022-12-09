@@ -1,15 +1,7 @@
-import {
-  actions,
-  afterMount,
-  kea,
-  listeners,
-  path,
-  reducers,
-  selectors,
-} from 'kea';
+import { actions, kea, listeners, path, reducers, selectors } from 'kea';
 import { subscriptions } from 'kea-subscriptions';
 
-import { deps } from '@/logic/builders';
+import { connect, deps } from '@/logic/builders';
 import { IRoleTableLoaderLogic, IRouteLogic } from '@/logic/interfaces';
 
 import { Listeners } from './listeners';
@@ -24,6 +16,7 @@ export const rolesTableLogic = kea<RolesTableLogic>([
     routeLogic: IRouteLogic.$,
     roleTableLoaderLogic: IRoleTableLoaderLogic.$,
   }),
+  connect(({ deps }) => [deps.roleTableLoaderLogic]),
   actions({
     refresh: true,
     setSearchString: (searchString) => ({ searchString }),
@@ -35,7 +28,4 @@ export const rolesTableLogic = kea<RolesTableLogic>([
   selectors(Selectors),
   listeners(Listeners),
   subscriptions(Subscriptions),
-  afterMount(({ actions }) => {
-    actions.refresh();
-  }),
 ]);

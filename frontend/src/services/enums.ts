@@ -23,3 +23,10 @@ export enum RequestStatus {
   Success = 'success',
   Failure = 'failure',
 }
+
+export enum StreamStatus {
+  Connecting = 'Connecting',
+  Open = 'Open',
+  Closing = 'Closing',
+  Closed = 'Closed',
+}

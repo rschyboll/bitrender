@@ -1,3 +1,4 @@
+import { Localized } from '@fluent/react';
 import { Card as PrimeCard } from 'primereact/card';
 import { ReactNode, memo } from 'react';
 import { Trans } from 'react-i18next';
@@ -23,6 +24,7 @@ export const Card = memo(function IconCard(props: CardProps) {
         </div>
         {props.children}
       </PrimeCard>
+      <Localized id="hello-world" />
     </div>
   );
 });

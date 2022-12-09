@@ -1,6 +1,5 @@
 import { useInjection } from 'inversify-react';
 import { useActions, useMountedLogic, useValues } from 'kea';
-import { useEffect } from 'react';
 import { Outlet } from 'react-router-dom';
 
 import { Sidebar } from '@/components/sidebar';
@@ -9,7 +8,6 @@ import { IAppLogic, ISettingsLogic } from '@/logic/interfaces';
 import { SidebarType, layoutTypesClasses } from '@/types/settings';
 
 import './style.scss';
-import { TestComponent } from './test';
 
 const verticalTypes = [SidebarType.Static, SidebarType.Slim];
 
@@ -35,7 +33,6 @@ export const AppPage = () => {
       </div>
       <div onClick={() => toggleSidebar(false)} className="layout-content">
         <div className="layout-page">
-          <TestComponent />
           <Outlet />
         </div>
       </div>

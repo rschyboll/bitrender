@@ -1,7 +1,17 @@
-.card {
-  color: red;
+.fieldCheckbox {
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
 
-  .darkMode {
-    color: yellow;
+  .icon {
+    position: absolute;
+    pointer-events: none;
+    color: black !important;
   }
+}
+
+.fieldCheckbox > label {
+  margin-left: 0.5rem;
+  line-height: 1;
+  margin-top: 1px;
 }

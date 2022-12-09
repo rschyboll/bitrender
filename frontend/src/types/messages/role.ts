@@ -8,3 +8,9 @@ export type GetListOutput = ListRequestOutput<MRole.View[]>;
 export type CreateInput = MRole.Create;
 
 export type CreateOutput = MRole.View;
+
+export interface GetByIdInput {
+  id: string;
+}
+
+export type GetByIdOutput = MRole.View;

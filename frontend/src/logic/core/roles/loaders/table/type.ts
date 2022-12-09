@@ -6,19 +6,21 @@ import type { IRoleService } from '@/services/interfaces';
 import type { MRole } from '@/types/models';
 
 interface Actions {
-  setLoadedEntryIds: (entryIds: string[]) => { entryIds: string[] };
+  setLoadedEntryIds: (entryIds: string[] | Set<string>) => {
+    entryIds: string[] | Set<string>;
+  };
   setEntryRowCount: (rowCount: number) => { rowCount: number };
 }
 
 interface Reducers {
-  loadedEntryIds: string[];
+  loadedEntryIds: Set<string>;
   entryCount: number;
 }
 
 interface Selectors {
   entries: (
     views: Map<string, MRole.View>,
-    loadedEntryIds: string[],
+    loadedEntryIds: Set<string>,
   ) => MRole.TableView[];
 }
 

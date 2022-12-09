@@ -74,3 +74,23 @@ async def get_by_id(
     When the user has no access to the role or it's permissions, \
         the server responds with a 401 status code and a NOT_AUTHORIZED error code."""
     return await role_service.get_by_id(role_id)
+
+
+@roles_router.delete(
+    "/{role_id}",
+    dependencies=[Depends(get_current_user)],
+)
+async def delete(
+    role_id: UUID,
+    replacement_role_id: UUID | None,
+    role_service: IRoleService = Depends(InjectInRoute(IRoleService, UserContext, "context")),
+) -> None:
+    await role_service.delete(role_id, replacement_role_id)
+
+
+@roles_router.get("/{role_id}/user_count", dependencies=[Depends(get_current_user)])
+async def get_user_count(
+    role_id: UUID,
+    role_service: IRoleService = Depends(InjectInRoute(IRoleService, UserContext, "context")),
+) -> int:
+    pass

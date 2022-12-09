@@ -1,9 +1,9 @@
 import type { SelectorsDef } from '@/logic/types';
 import { ApiErrorCodes, RequestStatus, ServiceErrorType } from '@/services';
 
-import type { CreateRoleLogic } from './type';
+import type { RoleCreateLogic } from './type';
 
-export const Selectors: SelectorsDef<CreateRoleLogic> = () => ({
+export const Selectors: SelectorsDef<RoleCreateLogic> = () => ({
   saveStatus: [
     (selectors) => [selectors.createStatus],
     (createStatus) => createStatus,

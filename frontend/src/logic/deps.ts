@@ -15,10 +15,22 @@ export function bindLogicDependencies(Dependencies: Container) {
   Dependencies.bind(Interfaces.IRoleTableLoaderLogic.$).toConstantValue(
     Core.rolesTableLoaderLogic,
   );
+  Dependencies.bind(Interfaces.IRoleViewLoaderLogic.$).toConstantValue(
+    Core.roleViewLoaderLogic,
+  );
   Dependencies.bind(Interfaces.IRoleTableLogic.$).toConstantValue(
     Core.rolesTableLogic,
   );
   Dependencies.bind(Interfaces.IRoleCreateLogic.$).toConstantValue(
     Core.roleCreateLogic,
+  );
+  Dependencies.bind(Interfaces.IRoleUpdateLogic.$).toConstantValue(
+    Core.roleUpdateLogic,
+  );
+  Dependencies.bind(Interfaces.IRoleViewContainerLogic.$).toConstantValue(
+    Core.roleViewContainerLogic,
+  );
+  Dependencies.bind(Interfaces.IRoleUserCountContainerLogic.$).toConstantValue(
+    Core.roleUserCountContainerLogic,
   );
 }

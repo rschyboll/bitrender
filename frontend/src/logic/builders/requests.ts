@@ -60,9 +60,11 @@ export type MakeRequestsBuilderLogicType<
     any
   >;
   actions: {
-    [Key in keyof Requests]: (input: RequestInput<Requests[Key]>[0]) => {
-      payload: RequestInput<Requests[Key]>[0];
-    };
+    [Key in keyof Requests]: RequestInput<Requests[Key]>[0] extends undefined
+      ? () => void
+      : (input: RequestInput<Requests[Key]>[0]) => {
+          input: RequestInput<Requests[Key]>[0];
+        };
   } & {
     [Key in keyof Requests as Key extends string ? `${Key}Success` : never]: (
       result: RequestOutput<Requests[Key]>,

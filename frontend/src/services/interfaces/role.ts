@@ -10,6 +10,9 @@ export interface IRoleService {
   create: (
     input: MRole.Messages.CreateInput,
   ) => Promise<Response<MRole.Messages.CreateOutput>>;
+  getById: (
+    input: MRole.Messages.GetByIdInput,
+  ) => Promise<Response<MRole.Messages.GetByIdOutput>>;
 }
 
 export namespace IRoleService {

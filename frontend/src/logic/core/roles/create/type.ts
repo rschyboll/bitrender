@@ -43,7 +43,7 @@ interface Requests {
   create: IRoleService['create'];
 }
 
-export type CreateRoleLogic = MakeOwnLogicType<{
+export type RoleCreateLogic = MakeOwnLogicType<{
   actions: Actions;
   reducers: Reducers;
   selectors: Selectors;

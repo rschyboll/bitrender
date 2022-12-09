@@ -17,7 +17,8 @@
     "forwardPorts": [
         8000,
         5433,
-        5432
+        5432,
+        8123
     ],
     "extensions": [
         "ms-python.python",

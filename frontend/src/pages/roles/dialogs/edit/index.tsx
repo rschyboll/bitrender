@@ -1,6 +1,5 @@
-import { interfaces } from 'inversify';
 import { useInjection } from 'inversify-react';
-import { LogicWrapper, useActions, useValues } from 'kea';
+import { BuiltLogic, LogicWrapper, useActions, useValues } from 'kea';
 import { memo, useCallback } from 'react';
 import { Trans } from 'react-i18next';
 
@@ -15,44 +14,45 @@ import { IRoleValidators } from '@/validators/interfaces';
 
 import styles from './style.module.scss';
 
-type EditRoleLogic = LogicWrapper<
-  MakeOwnLogicType<{
-    values: {
-      name: string;
-      selectedPermissions: Set<MRole.Permission>;
-      isDefault: boolean | null;
-      saveStatus: RequestStatus;
-      nameTooShort: boolean;
-      nameTaken: boolean;
-    };
-    actions: {
-      setPermissionSelected: (
-        permission: MRole.Permission,
-        selected: boolean,
-      ) => { permission: MRole.Permission; checked: boolean };
-      setName: (name: string) => { name: string };
-      setDefault: (isDefault: true | null) => { isDefault: true | null };
-      save: true;
-    };
-  }>
->;
+type EditRoleLogic = MakeOwnLogicType<{
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  props: any;
+  values: {
+    name: string;
+    selectedPermissions: Set<MRole.Permission>;
+    isDefault: boolean | null;
+    saveStatus: RequestStatus;
+    nameTooShort: boolean;
+    nameTaken: boolean;
+    isDefaultLocked?: boolean;
+  };
+  actions: {
+    setPermissionSelected: (
+      permission: MRole.Permission,
+      selected: boolean,
+    ) => { permission: MRole.Permission; checked: boolean };
+    setName: (name: string) => { name: string };
+    setDefault: (isDefault: true | null) => { isDefault: true | null };
+    save: true;
+  };
+}>;
 
-export interface EditRoleDialogProps {
-  logicIdentifier: interfaces.ServiceIdentifier<EditRoleLogic>;
+export type EditRoleDialogProps = {
+  logic: LogicWrapper<EditRoleLogic> | BuiltLogic<EditRoleLogic>;
   visible: boolean;
   setVisible: (visible: boolean) => void;
   title: string;
   acceptLabel: string;
-}
+};
 
 export const EditRoleDialog = ({
-  logicIdentifier,
+  logic,
   visible,
   setVisible,
   title,
   acceptLabel,
 }: EditRoleDialogProps) => {
-  const editRoleLogic = useInjection(logicIdentifier);
+  const editRoleLogic = logic;
 
   const { saveStatus } = useOptionalValues(editRoleLogic);
   const { save } = useOptionalActions(editRoleLogic);
@@ -73,23 +73,24 @@ export const EditRoleDialog = ({
         title={title}
         visible={visible}
       >
-        <EditRoleDialogBody logicIdentifier={logicIdentifier} />
+        <EditRoleDialogBody logic={logic} />
       </Dialog>
     </>
   );
 };
 
 interface EditRoleDialogBodyProps {
-  logicIdentifier: interfaces.ServiceIdentifier<EditRoleLogic>;
+  logic: LogicWrapper<EditRoleLogic> | BuiltLogic<EditRoleLogic>;
 }
 
 const EditRoleDialogBody = memo(function EditRoleDialogBody({
-  logicIdentifier,
+  logic,
 }: EditRoleDialogBodyProps) {
-  const editRoleLogic = useInjection(logicIdentifier);
+  const editRoleLogic = logic;
 
   const { setName, setDefault } = useActions(editRoleLogic);
-  const { name, isDefault, nameTaken, nameTooShort } = useValues(editRoleLogic);
+  const { name, isDefault, nameTaken, nameTooShort, isDefaultLocked } =
+    useValues(editRoleLogic);
 
   const onIsDefaultChange = useCallback(
     ({ checked }: { checked: boolean }) => {
@@ -120,7 +121,7 @@ const EditRoleDialogBody = memo(function EditRoleDialogBody({
       <Checkbox
         inputId="default"
         title="role.setDefault"
-        className="isDefaultCheckbox"
+        classNames={{ field: 'isDefaultCheckbox' }}
         checked={isDefault == null ? false : isDefault}
         onChange={onIsDefaultChange}
       />
@@ -128,19 +129,19 @@ const EditRoleDialogBody = memo(function EditRoleDialogBody({
       <p>
         <Trans>role.permissions</Trans>
       </p>
-      <PermissionsList logicIdentifier={logicIdentifier} />
+      <PermissionsList logic={logic} />
     </form>
   );
 });
 
 interface PermissionsListProps {
-  logicIdentifier: interfaces.ServiceIdentifier<EditRoleLogic>;
+  logic: LogicWrapper<EditRoleLogic> | BuiltLogic<EditRoleLogic>;
 }
 
 const PermissionsList = memo(function PermissionsList({
-  logicIdentifier,
+  logic,
 }: PermissionsListProps) {
-  const editRoleLogic = useInjection(logicIdentifier);
+  const editRoleLogic = logic;
   const roleValidators = useInjection(IRoleValidators.$);
 
   const { setPermissionSelected } = useActions(editRoleLogic);
@@ -162,7 +163,7 @@ const PermissionsList = memo(function PermissionsList({
           <Checkbox
             key={permission}
             inputId={permission}
-            className={styles.permissionCheckbox}
+            classNames={{ field: styles.permissionCheckbox }}
             title={`permission.${permission}`}
             value={permission}
             onChange={onPermissionChange}

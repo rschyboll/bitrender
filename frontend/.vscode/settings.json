@@ -17,5 +17,8 @@
     ".pnp*": true,
     "yarn.lock": true
   },
-  
+  "editor.tokenColorCustomizations": {
+    "comments": "",
+    "textMateRules": []
+  }
 }

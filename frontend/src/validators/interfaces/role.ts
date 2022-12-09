@@ -9,6 +9,9 @@ export interface IRoleValidators {
   validateCreateOutput: (
     value: unknown,
   ) => value is MRole.Messages.CreateOutput;
+  validateGetByIdOutput: (
+    value: unknown,
+  ) => value is MRole.Messages.GetByIdOutput;
   isPermission: (value: unknown) => value is MRole.Permission;
 }
 

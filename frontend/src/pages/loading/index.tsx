@@ -9,16 +9,5 @@ import './style.scss';
 export const LoadingPage = memo(function LoadingPage() {
   const [visible, setVisible] = useState(false);
 
-  return (
-    <>
-      <Button
-        className="delete-button p-button-danger"
-        tooltip={'role.deleteButtonTooltip'}
-        label="TEST"
-        tooltipOptions={{ showDelay: 1000, position: 'top' }}
-        onClick={() => setVisible(!visible)}
-      />
-      <Dialog visible={visible}>Test</Dialog>
-    </>
-  );
+  return <></>;
 });

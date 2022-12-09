@@ -2,9 +2,9 @@ import produce from 'immer';
 
 import type { ReducersDef } from '@/logic';
 
-import type { CreateRoleLogic } from './type';
+import type { RoleCreateLogic } from './type';
 
-export const Reducers: ReducersDef<CreateRoleLogic> = {
+export const Reducers: ReducersDef<RoleCreateLogic> = {
   selectedPermissions: [
     new Set(),
     {

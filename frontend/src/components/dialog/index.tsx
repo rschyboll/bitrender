@@ -1,10 +1,10 @@
 import { Button } from 'primereact/button';
 import { Dialog as PrimeDialog } from 'primereact/dialog';
-import { ReactNode, memo, useCallback, useEffect, useRef } from 'react';
+import { ReactNode, memo, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { RiCloseFill, RiLoader4Fill } from 'react-icons/ri';
 
-import style, { dialog } from './style.module.scss';
+import style from './style.module.scss';
 
 export interface DialogProps {
   visible: boolean;
@@ -74,16 +74,6 @@ export const Dialog = memo(function Dialog({
       </div>
     </PrimeDialog>
   );
-});
-
-interface DialogBodyProps {
-  children: ReactNode;
-}
-
-const DialogBody = memo(function DialogBody({ children }: DialogBodyProps) {
-  const bodyRef = useRef(null);
-
-  return <div></div>;
 });
 
 interface DialogFooterButtonsProps {

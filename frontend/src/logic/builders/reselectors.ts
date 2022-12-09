@@ -69,7 +69,6 @@ function checkLogicForExistingSelectors(
   selectorKeys: string[],
 ) {
   for (const key of selectorKeys) {
-    console.log(logic.selectors[key]);
     if (typeof logic.selectors[key] !== 'undefined') {
       throw new Error(
         `[KEA] Logic "${logic.pathString}" selector "${key}" already exists`,

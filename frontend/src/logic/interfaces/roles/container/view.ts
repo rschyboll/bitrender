@@ -5,11 +5,19 @@ import type { MakeOwnLogicType } from '@/logic/types/makeLogic';
 import type { MRole } from '@/types/models';
 
 interface Actions {
-  addEntries: (entries: MRole.View[]) => {
-    entries: MRole.View[];
+  addEntries: (
+    entries:
+      | Map<string, MRole.View>
+      | Record<string, MRole.View>
+      | MRole.View[],
+  ) => {
+    entries:
+      | Map<string, MRole.View>
+      | Record<string, MRole.View>
+      | MRole.View[];
   };
-  useEntries: (entryIds: string[]) => { entryIds: string[] };
-  releaseEntries: (entryIds: string[]) => { entryIds: string[] };
+  useEntries: (entryIds: string[] | Set<string>) => { entryIds: string[] };
+  releaseEntries: (entryIds: string[] | Set<string>) => { entryIds: string[] };
   forceCleanup: true;
 }
 
