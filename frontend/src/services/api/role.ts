@@ -83,4 +83,26 @@ export class RoleService extends Service implements IRoleService {
       return this.parseAPIError(error);
     }
   };
+
+  public getUserCount = async (
+    input: MRole.Messages.GetUserCountInput,
+  ): Promise<Response<MRole.Messages.GetUserCountOutput>> => {
+    try {
+      const response = await this.api
+        .get(ApiEndpoints.RoleGetById(input.id))
+        .json();
+      if (this.roleValidators.validateGetUserCountOutput(response)) {
+        return { success: true, data: response };
+      } else {
+        return {
+          success: false,
+          error: {
+            type: ServiceErrorType.ValidationError,
+          },
+        };
+      }
+    } catch (error: unknown) {
+      return this.parseAPIError(error);
+    }
+  };
 }

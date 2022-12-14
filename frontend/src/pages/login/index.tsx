@@ -23,6 +23,7 @@ import { IAuthLogic } from '@/logic/interfaces';
 import { ApiErrorCodes, RequestStatus } from '@/services';
 
 import './style.scss';
+import './translations';
 
 const LoginPage = memo(function LoginPage() {
   const authLogic = useInjection(IAuthLogic.$);

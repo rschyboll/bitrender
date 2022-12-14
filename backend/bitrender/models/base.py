@@ -120,6 +120,20 @@ class BaseModel(Model):
         )
 
     @classmethod
+    def get_multiple(cls: Type[MODEL], ids: list[UUID], lock: bool = True) -> QuerySet[MODEL]:
+        """Returns a list of entries, based on the provided list of ids.
+
+        Args:
+            ids (list[UUID]): List of ids to select from the database.
+            lock (bool, optional): Specifies if the entries should be locked, \
+                adds FOR UPDATE to the query. Defaults to True
+        Returns:
+            list[MODEL]: Selected database entries"""
+        if lock:
+            return cls.filter(id__contains=ids).select_for_update()
+        return cls.filter(id__contains=ids)
+
+    @classmethod
     def get_list(
         cls: Type[MODEL],
         request_input: ListRequestInput[str],

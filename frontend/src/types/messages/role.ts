@@ -14,3 +14,9 @@ export interface GetByIdInput {
 }
 
 export type GetByIdOutput = MRole.View;
+
+export interface GetUserCountInput {
+  id: string;
+}
+
+export type GetUserCountOutput = number;

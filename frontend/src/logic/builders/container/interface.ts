@@ -1,6 +1,16 @@
+import { LogicWrapper, ReducerFunction } from 'kea';
+
 import { MakeOwnLogicType } from '@/logic/types';
 
 import { MakeContainerBuilderLogicType } from './type';
+
+type ReducersType<Reducers> = {
+  [Key in keyof Reducers]: Reducers[Key] extends ReducerFunction<
+    infer ReducerType
+  >
+    ? ReducerType
+    : never;
+};
 
 /**
  * This interface defines a type that specifies a subset of the actions and reducers
@@ -25,10 +35,12 @@ export type MakeContainerBuilderLogicInterface<
     | 'updateEntries'
     | 'forceCleanup',
   Reducers extends keyof MakeContainerBuilderLogicType<EntryType>['reducers'] = 'entries',
-> = MakeOwnLogicType<{
-  actions: Pick<MakeContainerBuilderLogicType<EntryType>['actions'], Actions>;
-  reducers: Pick<
-    MakeContainerBuilderLogicType<EntryType>['reducers'],
-    Reducers
-  >;
-}>;
+> = LogicWrapper<
+  MakeOwnLogicType<{
+    actions: Pick<MakeContainerBuilderLogicType<EntryType>['actions'], Actions>;
+    values: Pick<
+      ReducersType<MakeContainerBuilderLogicType<EntryType>['reducers']>,
+      Reducers
+    >;
+  }>
+>;

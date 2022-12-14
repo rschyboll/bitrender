@@ -12,6 +12,9 @@ export interface IRoleValidators {
   validateGetByIdOutput: (
     value: unknown,
   ) => value is MRole.Messages.GetByIdOutput;
+  validateGetUserCountOutput: (
+    value: unknown,
+  ) => value is MRole.Messages.GetUserCountOutput;
   isPermission: (value: unknown) => value is MRole.Permission;
 }
 

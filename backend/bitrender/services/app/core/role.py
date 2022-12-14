@@ -39,6 +39,10 @@ class RoleService(BaseAppService, IRoleService):
         role = await self.auth.query(Role.get_by_id(role_id, False), [RolePermission])
         return await role.to_view()
 
+    async def get_multiple(self, role_ids: list[UUID]) -> list[RoleView]:
+        roles = await self.auth.query(Role.get_multiple(role_ids, False), [RolePermission])
+        return [await role.to_view() for role in roles]
+
     async def get_role_users_count(self, role_id: UUID) -> int:
         role = await self.auth.query(Role.get_by_id(role_id, False))
         return await role.users.all().count()
@@ -89,7 +93,9 @@ class RoleService(BaseAppService, IRoleService):
             return None
 
     async def __set_role_to_not_default(self, role: Role) -> Role:
-        pass
+        role.default = None
+        await role.save()
+        return role
 
     async def __create_role(self, role_data: RoleCreate) -> Role:
         return await Role.create(name=role_data.name)

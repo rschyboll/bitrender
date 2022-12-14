@@ -18,6 +18,9 @@ export function bindLogicDependencies(Dependencies: Container) {
   Dependencies.bind(Interfaces.IRoleViewLoaderLogic.$).toConstantValue(
     Core.roleViewLoaderLogic,
   );
+  Dependencies.bind(Interfaces.IRoleUserCountLoaderLogic.$).toConstantValue(
+    Core.roleUserCountLoaderLogic,
+  );
   Dependencies.bind(Interfaces.IRoleTableLogic.$).toConstantValue(
     Core.rolesTableLogic,
   );

@@ -4,15 +4,15 @@ import { Dialog } from '@/components/dialog';
 
 import styles from './style.module.scss';
 
-export type EditRoleDialogProps = {
+export type DeleteRoleDialogProps = {
   visible: boolean;
   setVisible: (visible: boolean) => void;
 };
 
-export const EditRoleDialog = ({
+export const DeleteRoleDialog = ({
   visible,
   setVisible,
-}: EditRoleDialogProps) => {
+}: DeleteRoleDialogProps) => {
   const onDialogClose = useCallback(() => {
     setVisible(false);
   }, [setVisible]);

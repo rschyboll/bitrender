@@ -1,6 +1,6 @@
-const ftl: Record<string, URL> = {
-  en: new URL('./en.ftl', import.meta.url),
-  pl: new URL('./pl.ftl', import.meta.url),
-};
+import { FluentBundle } from '@fluent/bundle';
 
-export default ftl;
+export const Bundles = {
+  en: new FluentBundle([]),
+  pl: new FluentBundle([]),
+};

@@ -17,9 +17,11 @@ import {
 } from '@/logic/interfaces';
 import { MRole } from '@/types/models';
 
+import { DeleteRoleDialog } from './dialogs/delete';
 import { EditRoleDialog } from './dialogs/edit';
 import './style.scss';
 import { rolesTableModel } from './tableModel';
+import './translations';
 
 const RolesPage: FC = () => {
   const [selectedRole, setSelectedRole] = useState<MRole.TableView | null>(
@@ -180,8 +182,6 @@ interface TableDeleteButtonProps {
 }
 
 const TableDeleteButton = (props: TableDeleteButtonProps) => {
-  const roleCreateLogic = useInjection(IRoleCreateLogic.$);
-
   const { t } = useTranslation();
 
   const [dialogVisible, setDialogVisible] = useState(false);
@@ -202,12 +202,9 @@ const TableDeleteButton = (props: TableDeleteButtonProps) => {
         tooltipOptions={{ showDelay: 1000, position: 'top' }}
       />
       {props.selectedRole != null ? (
-        <EditRoleDialog
-          logic={roleCreateLogic}
+        <DeleteRoleDialog
           visible={dialogVisible}
           setVisible={setDialogVisible}
-          title={`${t('role.edit')} ${props.selectedRole.name}`}
-          acceptLabel={'modify'}
         />
       ) : null}
     </>

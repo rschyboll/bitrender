@@ -1,7 +1,7 @@
 """Contains a database model describing user roles."""
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Literal, Type, TypeVar, Union
+from typing import TYPE_CHECKING, Literal, Type, TypeVar
 
 from tortoise.fields import BooleanField, ReverseRelation, TextField
 from tortoise.queryset import QuerySetSingle

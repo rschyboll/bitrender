@@ -7,4 +7,6 @@ export class ApiEndpoints {
   static Roles = 'roles';
   static RoleNew = 'roles/new';
   static RoleGetById = (id: string) => `roles/${id}`;
+  static RoleGetMultiple = (ids: string[]) => `roles/${ids}`;
+  static RoleGetUserCount = (id: string) => `roles/${id}`;
 }

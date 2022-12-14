@@ -13,6 +13,9 @@ export interface IRoleService {
   getById: (
     input: MRole.Messages.GetByIdInput,
   ) => Promise<Response<MRole.Messages.GetByIdOutput>>;
+  getUserCount: (
+    input: MRole.Messages.GetUserCountInput,
+  ) => Promise<Response<MRole.Messages.GetUserCountOutput>>;
 }
 
 export namespace IRoleService {
