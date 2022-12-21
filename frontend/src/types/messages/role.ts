@@ -20,3 +20,8 @@ export interface GetUserCountInput {
 }
 
 export type GetUserCountOutput = number;
+
+export type DeleteInput = {
+  id: string;
+  replacementRoleId?: string;
+};

@@ -1,21 +1,39 @@
+import config from '@/config';
 import type { ListenersDef } from '@/logic/types';
+import { ServiceErrorType } from '@/services';
+import { sleep } from '@/utils/async';
 
-import type { RoleTableLoaderLogic } from './type';
+import type { RoleUserCountLoaderLogic } from './type';
 
-export const Listeners: ListenersDef<RoleTableLoaderLogic> = ({
+export const Listeners: ListenersDef<RoleUserCountLoaderLogic> = ({
+  deps,
   actions,
   values,
-  deps,
 }) => ({
-  loadSuccess: async ({ value }) => {
-    deps.roleViewContainerLogic.actions.releaseEntries(values.loadedEntryIds);
-    const entryIds = value.items.map((roleView) => {
-      return roleView.id;
-    });
+  refresh: async () => {
+    actions.load({ id: values.id });
+  },
 
-    actions.setEntryRowCount(value.rowCount);
-    actions.setLoadedEntryIds(entryIds);
-    deps.roleViewContainerLogic.actions.addEntries(value.items);
-    deps.roleViewContainerLogic.actions.useEntries(entryIds);
+  loadSuccess: async ({ value }) => {
+    if (values.entry != null) {
+      deps.roleUserCountContainerLogic.actions.updateEntries({
+        [values.id]: value,
+      });
+    } else {
+      deps.roleUserCountContainerLogic.actions.addEntries({
+        [values.id]: value,
+      });
+      deps.roleUserCountContainerLogic.actions.useEntries([values.id]);
+    }
+  },
+  loadFailure: async ({ error }) => {
+    if (
+      error?.type == ServiceErrorType.ApiError ||
+      (error?.type == ServiceErrorType.HTTPError && error.status == 404)
+    ) {
+      return;
+    }
+    await sleep(config.loadDelay);
+    actions.load({ id: values.id });
   },
 });

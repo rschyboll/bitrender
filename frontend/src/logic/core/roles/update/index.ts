@@ -1,4 +1,4 @@
-import { kea, key, listeners, path, reducers } from 'kea';
+import { actions, kea, key, listeners, path, reducers } from 'kea';
 
 import { connect, deps } from '@/logic/builders';
 import { IRoleViewLoaderLogic } from '@/logic/interfaces';
@@ -11,7 +11,7 @@ import type { RoleUpdateLogic } from './type';
 export const roleUpdateLogic = kea<RoleUpdateLogic>([
   path(['roles', 'update']),
   key((props) => props.id),
-  deps(({ props }) => ({
+  deps((props) => ({
     roleService: IRoleService.$,
     roleViewLoaderLogic: {
       identifier: IRoleViewLoaderLogic.$,
@@ -22,6 +22,12 @@ export const roleUpdateLogic = kea<RoleUpdateLogic>([
       props: () => props,
     },
   })),
+  actions({
+    setPermissionSelected: (permission, checked) => ({ permission, checked }),
+    setName: (name) => ({ name }),
+    setDefault: (isDefault) => ({ isDefault }),
+    save: true,
+  }),
   connect(({ deps }) => [deps.roleViewLoaderLogic]),
   reducers(Reducers),
   listeners(Listeners),

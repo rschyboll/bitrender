@@ -29,6 +29,7 @@
     "usernamehw.errorlens",
     "adpyke.codesnap",
     "wix.glean",
-    "arcanis.vscode-zipfs"
+    "arcanis.vscode-zipfs",
+    "macabeus.vscode-fluent"
   ]
 }

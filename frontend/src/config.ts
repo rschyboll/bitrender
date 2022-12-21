@@ -17,6 +17,7 @@ function getCssBreakpoints(): {
 const config = {
   loadDelay: 100,
   dataCleanTimeout: 5000,
+  containerUnmountDelay: 1000,
   breakpoints: {
     mobile: 480,
     tablet: 768,

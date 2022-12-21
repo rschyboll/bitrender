@@ -25,7 +25,12 @@
       "version": "detect"
     }
   },
-  "plugins": ["react", "@typescript-eslint", "eslint-plugin-tsdoc"],
+  "plugins": [
+    "react",
+    "@seiyab/eslint-plugin-react-hooks",
+    "@typescript-eslint",
+    "eslint-plugin-tsdoc"
+  ],
   "rules": {
     "react/react-in-jsx-scope": "off",
     "@typescript-eslint/no-namespace": "off"

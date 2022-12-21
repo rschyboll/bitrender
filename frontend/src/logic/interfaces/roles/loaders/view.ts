@@ -2,7 +2,7 @@ import type { interfaces } from 'inversify';
 import type { LogicWrapper } from 'kea';
 
 import type { MakeOwnLogicType } from '@/logic/types/makeLogic';
-import type { RequestStatus } from '@/services';
+import type { ErrorResponse, RequestStatus } from '@/services';
 import type { MRole } from '@/types/models';
 
 interface Actions {
@@ -14,6 +14,7 @@ interface Actions {
 interface Values {
   entry: MRole.View | null;
   loadStatus: RequestStatus;
+  loadError: ErrorResponse['error'] | null;
 }
 
 interface Props {

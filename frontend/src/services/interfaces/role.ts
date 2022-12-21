@@ -16,6 +16,7 @@ export interface IRoleService {
   getUserCount: (
     input: MRole.Messages.GetUserCountInput,
   ) => Promise<Response<MRole.Messages.GetUserCountOutput>>;
+  delete: (input: MRole.Messages.DeleteInput) => Promise<Response<void>>;
 }
 
 export namespace IRoleService {

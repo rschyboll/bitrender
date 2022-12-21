@@ -4,6 +4,10 @@ import type { IRoleViewContainerLogic } from '@/logic/interfaces';
 import type { IRoleService } from '@/services/interfaces';
 import type { MRole } from '@/types/models';
 
+interface Actions {
+  refresh: true;
+}
+
 interface Selectors {
   id: (id: string) => string;
   entry: (views: Map<string, MRole.View>, uuid: string) => MRole.View | null;
@@ -23,6 +27,7 @@ interface Requests {
 }
 
 export type RoleViewLoaderLogic = MakeOwnLogicType<{
+  actions: Actions;
   selectors: Selectors;
   props: Props;
   deps: Deps;

@@ -8,7 +8,11 @@ export function connect<Logic extends MakeOwnLogicType>(
   return (logic) => {
     const connectInput = typeof input === 'function' ? input(logic) : input;
 
-    keaConnect(connectInput)(logic);
+    if (logic.path.includes('userCount')) {
+      keaConnect(connectInput)(logic);
+    } else {
+      keaConnect(connectInput)(logic);
+    }
     return logic;
   };
 }

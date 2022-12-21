@@ -21,6 +21,9 @@ export function bindLogicDependencies(Dependencies: Container) {
   Dependencies.bind(Interfaces.IRoleUserCountLoaderLogic.$).toConstantValue(
     Core.roleUserCountLoaderLogic,
   );
+  Dependencies.bind(Interfaces.IRoleVirtualLoaderLogic.$).toConstantValue(
+    Core.roleVirtualLoaderLogic,
+  );
   Dependencies.bind(Interfaces.IRoleTableLogic.$).toConstantValue(
     Core.rolesTableLogic,
   );
@@ -29,6 +32,9 @@ export function bindLogicDependencies(Dependencies: Container) {
   );
   Dependencies.bind(Interfaces.IRoleUpdateLogic.$).toConstantValue(
     Core.roleUpdateLogic,
+  );
+  Dependencies.bind(Interfaces.IRoleDeleteLogic.$).toConstantValue(
+    Core.roleDeleteLogic,
   );
   Dependencies.bind(Interfaces.IRoleViewContainerLogic.$).toConstantValue(
     Core.roleViewContainerLogic,

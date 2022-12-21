@@ -2,7 +2,7 @@ import { Localized } from '@fluent/react';
 import { useInjection } from 'inversify-react';
 import { useActions, useValues } from 'kea';
 import { Button } from 'primereact/button';
-import { FC, useCallback, useState } from 'react';
+import { FC, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { IoAdd } from 'react-icons/io5';
 import { RiDeleteBin6Line, RiEdit2Fill, RiSearchLine } from 'react-icons/ri';
@@ -34,31 +34,11 @@ const RolesPage: FC = () => {
         setSelectedRole(value);
       }
     },
-    [],
+    [setSelectedRole],
   );
 
   return (
     <div className="roles-page grid">
-      <IconCard
-        className="roles-default-role-card col-12 desktop:col-6"
-        title="Orders"
-        color="#64B5F6"
-        icon={RiSearchLine}
-      >
-        Test
-      </IconCard>
-      <IconCard
-        className="roles-default-role-counter-card col-12 desktop:col-6"
-        title="Orders"
-        color="#64B5F6"
-        icon={RiSearchLine}
-      >
-        Test
-      </IconCard>
-      <Localized id="hello-world">
-        <p>Hello, world!</p>
-      </Localized>
-
       <Card
         title="Lista roli użytkowników"
         titleActions={
@@ -90,7 +70,7 @@ const RolesPage: FC = () => {
 const TableSearchField = () => {
   const rolesTableLogic = useInjection(IRoleTableLogic.$);
 
-  const { searchString } = useValues(rolesTableLogic({ test: 1 }));
+  const { searchString } = useValues(rolesTableLogic);
   const { setSearchString } = useActions(rolesTableLogic);
 
   return (
@@ -203,6 +183,7 @@ const TableDeleteButton = (props: TableDeleteButtonProps) => {
       />
       {props.selectedRole != null ? (
         <DeleteRoleDialog
+          id={props.selectedRole.id}
           visible={dialogVisible}
           setVisible={setDialogVisible}
         />

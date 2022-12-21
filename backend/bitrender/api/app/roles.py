@@ -107,5 +107,4 @@ async def get_user_count(
 
     When the user has no access to the role or it's permissions, \
         the server responds with a 401 status code and a NOT_AUTHORIZED error code."""
-    raise HTTPException(status_code=404)
     return await role_service.get_role_users_count(role_id)

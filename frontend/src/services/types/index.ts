@@ -1,4 +1,4 @@
-import type { ApiErrorCodes, ServiceErrorType } from "../enums";
+import type { ApiErrorCodes, ServiceErrorType } from '../enums';
 
 export interface ApiError {
   detail: ApiErrorCodes;

@@ -30,10 +30,15 @@ export interface ListRequestPage {
   pageNr: number;
 }
 
+export interface ListRequestRange {
+  beginning: number;
+  end: number;
+}
+
 export interface ListRequestInput<Columns extends string> {
   sort?: ListRequestSort<Columns>;
   search: ListRequestSearch<Columns>[];
-  page?: ListRequestPage;
+  page_or_range?: ListRequestPage | ListRequestRange;
 }
 
 export interface ListRequestOutput<Items> {

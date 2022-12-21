@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { interfaces } from 'inversify';
-import { LogicBuilder, LogicWrapper } from 'kea';
+import { LogicBuilder, LogicWrapper, isLogicWrapper } from 'kea';
 
 import Dependencies from '@/deps';
 import type { MakeOwnLogicType } from '@/logic/types/';
@@ -30,26 +30,30 @@ type DepsBuilderInput<Deps extends MakeOwnLogicType['deps']> = {
 export function deps<L extends MakeOwnLogicType>(
   input:
     | DepsBuilderInput<L['deps']>
-    | ((props: L) => DepsBuilderInput<L['deps']>),
+    | ((props: L['props']) => DepsBuilderInput<L['deps']>),
 ): LogicBuilder<L> {
   return (logic) => {
     const dependencies: PartialRecord<
       keyof L['deps'],
       unknown | ((key: string) => unknown)
     > = {};
-    const deps = typeof input === 'function' ? input(logic) : input;
+    const deps = typeof input === 'function' ? input(logic['props']) : input;
 
     for (const inputKey in deps) {
-      const dependency = deps[inputKey];
-      if (typeof dependency == 'symbol') {
-        const dependencyKey = dependency as interfaces.ServiceIdentifier;
+      let dependencyID = deps[inputKey];
+      if (typeof dependencyID == 'symbol') {
+        const dependencyKey = dependencyID as interfaces.ServiceIdentifier;
         Object.defineProperty(dependencies, inputKey, {
           get: function () {
-            return Dependencies.get(dependencyKey);
+            const dependency = Dependencies.get(dependencyKey);
+            if (isLogicWrapper(dependency)) {
+              return dependency();
+            }
+            return dependency;
           },
         });
-      } else if ('props' in dependency) {
-        const dependencyObject = dependency as {
+      } else if ('props' in dependencyID) {
+        const dependencyObject = dependencyID as {
           identifier: interfaces.ServiceIdentifier<
             LogicWrapper<MakeOwnLogicType>
           >;
@@ -62,8 +66,8 @@ export function deps<L extends MakeOwnLogicType>(
             );
           },
         });
-      } else if ('name' in dependency) {
-        const dependencyObject = dependency as {
+      } else if ('name' in dependencyID) {
+        const dependencyObject = dependencyID as {
           identifier: interfaces.ServiceIdentifier<
             LogicWrapper<MakeOwnLogicType>
           >;
@@ -71,10 +75,14 @@ export function deps<L extends MakeOwnLogicType>(
         };
         Object.defineProperty(dependencies, inputKey, {
           get: function () {
-            return Dependencies.getNamed(
+            const dependency = Dependencies.getNamed(
               dependencyObject.identifier,
               dependencyObject.name(),
             );
+            if (isLogicWrapper(dependency)) {
+              return dependency();
+            }
+            return dependency;
           },
         });
       }

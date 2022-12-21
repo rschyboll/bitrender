@@ -58,5 +58,9 @@
     "todo-tree.regex.enableMultiLine": true,
     "todo-tree.regex.regex": "( (//|#|\"\"\"|;|/\\*|^|^[ \\t]*(-|\\d+.))\\s*($TAGS))",
     "todo-tree.tree.showBadges": true,
-    "todo-tree.tree.showCountsInTree": false
+    "todo-tree.tree.showCountsInTree": false,
+    "editor.tokenColorCustomizations": {
+        "comments": "",
+        "textMateRules": []
+    }
 }

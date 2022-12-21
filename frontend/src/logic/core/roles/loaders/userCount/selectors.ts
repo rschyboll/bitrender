@@ -1,25 +1,22 @@
 import type { SelectorsDef } from '@/logic/types';
-import type { MRole } from '@/types/models';
 
-import type { RoleTableLoaderLogic } from './type';
+import type { RoleUserCountLoaderLogic } from './type';
 
-export const Selectors: SelectorsDef<RoleTableLoaderLogic> = ({ deps }) => ({
-  entries: [
+export const Selectors: SelectorsDef<RoleUserCountLoaderLogic> = ({
+  deps,
+}) => ({
+  id: [(_, props) => [props.id], (id) => id],
+  entry: [
     (selectors) => [
-      deps.roleViewContainerLogic.selectors.entries,
-      selectors.loadedEntryIds,
+      deps.roleUserCountContainerLogic.selectors.entries,
+      selectors.id,
     ],
-    (entries, loadedEntryIds) => {
-      const tableViews: MRole.TableView[] = [];
-
-      loadedEntryIds.forEach((id) => {
-        const roleView = entries.get(id);
-        if (roleView != null) {
-          tableViews.push(deps.roleConverters.viewToTableView(roleView));
-        }
-      });
-
-      return tableViews;
+    (entries, id) => {
+      const entry = entries.get(id);
+      if (entry != null) {
+        return entry;
+      }
+      return null;
     },
   ],
 });

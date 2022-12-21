@@ -1,0 +1,36 @@
+diff --git a/lib/index.d.ts b/lib/index.d.ts
+index f93cb87afbec1f3d119b211afc990ea9e5ee6a03..f781c8a122045fcd2fce1c2625fe00d971d4cf5b 100644
+--- a/lib/index.d.ts
++++ b/lib/index.d.ts
+@@ -71,7 +71,7 @@ type LogicWrapper<LogicType extends Logic = Logic> = LogicType & LogicWrapperAdd
+ type LogicBuilder<L extends Logic = Logic> = (logic: BuiltLogic<L>) => void;
+ type PayloadCreatorDefinition = true | ((...args: any[]) => any);
+ type ActionDefinitions<LogicType extends Logic> = LogicType['actionCreators'] extends Record<string, any> ? Partial<{
+-    [K in keyof LogicType['actionCreators']]: LogicType['actionCreators'][K] extends Function ? ReturnType<LogicType['actionCreators'][K]>['payload']['value'] extends true ? true : (...args: Parameters<LogicType['actionCreators'][K]>) => LogicType['actionCreators'][K]['payload'] : never;
++        [K in keyof LogicType['actionCreators']]: LogicType['actionCreators'][K] extends Function ? ReturnType<LogicType['actionCreators'][K]>['payload']['value'] extends true ? true : (...args: Parameters<LogicType['actionCreators'][K]>) => ReturnType<LogicType['actionCreators'][K]>['payload'] : never;
+ }> : Record<string, PayloadCreatorDefinition>;
+ interface KeaReduxAction extends AnyAction {
+     type: string;
+@@ -123,9 +123,11 @@ type EventDefinitions<LogicType extends Logic> = {
+     afterUnmount?: (() => void) | (() => void)[];
+     propsChanged?: ((props: Logic['props'], oldProps: Logic['props']) => void) | ((props: Logic['props'], oldProps: Logic['props']) => void)[];
+ };
+-type ListenerFunction<A extends AnyAction = any> = (payload: A['payload'], breakpoint: BreakPointFunction, action: A, previousState: any) => void | Promise<void>;
++declare type ListenerFunction<A extends AnyAction = any> = (payload: A['payload'] extends never ? unknown : A['payload'], breakpoint: BreakPointFunction, action: A, previousState: any) => void | Promise<void>;
+ type ListenerFunctionWrapper = (action: any, previousState: any) => void;
+-type SharedListenerDefinitions = Record<string, ListenerFunction>;
++declare type SharedListenerDefinitions<LogicType extends Logic> = {
++        [Key in keyof LogicType["sharedListeners"]]: LogicType['sharedListeners'][Key]
++    };
+ type WindowValuesDefinitions<LogicType extends Logic> = Record<string, (window: Window) => any>;
+ type LoaderFunctions<LogicType extends Logic, ReducerReturnType> = {
+     [K in keyof LogicType['actionCreators']]?: (payload: ReturnType<LogicType['actionCreators'][K]>['payload'], breakpoint: BreakPointFunction, action: ReturnType<LogicType['actionCreators'][K]>) => ReducerReturnType | Promise<ReducerReturnType>;
+@@ -150,7 +152,7 @@ type LogicInput<LogicType extends Logic = Logic> = {
+     reducers?: ReducerDefinitions<LogicType> | ((logic: LogicType) => ReducerDefinitions<LogicType>);
+     selectors?: SelectorDefinitions<LogicType> | ((logic: LogicType) => SelectorDefinitions<LogicType>);
+     listeners?: ListenerDefinitions<LogicType> | ((logic: LogicType) => ListenerDefinitions<LogicType>);
+-    sharedListeners?: SharedListenerDefinitions | ((logic: LogicType) => SharedListenerDefinitions);
++    sharedListeners?: SharedListenerDefinitions<LogicType> | ((logic: LogicType) => SharedListenerDefinitions<LogicType>);
+     events?: EventDefinitions<LogicType> | ((logic: LogicType) => EventDefinitions<LogicType>);
+     defaults?: ((logic: LogicType) => (state: any, props: LogicType['props']) => Record<string, any>) | ((logic: LogicType) => Record<string, any>) | Record<string, any>;
+     loaders?: LoaderDefinitions<LogicType> | ((logic: LogicType) => LoaderDefinitions<LogicType>);

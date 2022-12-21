@@ -24,7 +24,7 @@
     "include-media": "^1.4.10",
     "inversify": "^6.0.1",
     "inversify-react": "^1.0.2",
-    "kea": "patch:kea@patch%3Akea@patch%253Akea@npm%25253A3.0.4%2523~/.yarn/patches/kea-npm-3.0.4-31c3e7a081.patch%253A%253Aversion=3.0.4&hash=a34223%23~/.yarn/patches/kea-patch-83b76bedfe.patch%3A%3Aversion=3.0.4&hash=8c368c#~/.yarn/patches/kea-patch-e67573f920.patch",
+    "kea": "patch:kea@npm%3A3.1.2#~/.yarn/patches/kea-npm-3.1.2-51071b240a.patch",
     "kea-localstorage": "^3.0.0",
     "kea-router": "^3.1.1",
     "kea-subscriptions": "^3.0.0",
@@ -66,9 +66,6 @@
   "packageManager": "yarn@4.0.0-rc.27",
   "alias": {
     "@/*": "./src/$1"
-  },
-  "resolutions": {
-    "kea@^3.0.4": "patch:kea@npm%3A3.0.4#./.yarn/patches/kea-npm-3.0.4-31c3e7a081.patch"
   },
   "prettier": {
     "plugins": [

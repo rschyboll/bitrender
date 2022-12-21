@@ -1,4 +1,5 @@
 import {
+  actions,
   afterMount,
   beforeUnmount,
   kea,
@@ -26,6 +27,9 @@ export const roleViewLoaderLogic = kea<RoleViewLoaderLogic>([
     roleViewContainerLogic: IRoleViewContainerLogic.$,
   }),
   connect(({ deps }) => [deps.roleViewContainerLogic]),
+  actions({
+    refresh: true,
+  }),
   requests(({ deps }) => ({
     load: deps.roleService.getById,
   })),

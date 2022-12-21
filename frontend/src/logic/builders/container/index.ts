@@ -242,6 +242,7 @@ with some entries still present in it.`,
         startMountWatcher: async (_, breakpoint) => {
           let unmountDate: null | Date = null;
           mount();
+
           while (values.mountWatcherRunning) {
             const { mount } = getContext();
             const counters = mount.counter;
@@ -261,7 +262,7 @@ with some entries still present in it.`,
               unmount();
               break;
             }
-            await breakpoint(config.dataCleanTimeout / 5);
+            await breakpoint(config.unmountDelay / 5);
           }
         },
         forceCleanup: async () => {
@@ -284,8 +285,8 @@ with some entries still present in it.`,
     );
 
     afterMount<MakeContainerBuilderLogicType>(({ actions }) => {
-      actions.startGarbageCollection();
       actions.startMountWatcher();
+      actions.startGarbageCollection();
     })(logic);
 
     beforeUnmount<MakeContainerBuilderLogicType>(({ actions }) => {

@@ -65,10 +65,10 @@ export const EditRoleDialog = ({
     <>
       <Dialog
         className={styles.dialog}
-        loading={saveStatus == RequestStatus.Running}
-        onClose={onDialogClose}
+        closeDisabled={saveStatus == RequestStatus.Running}
+        acceptDisabled={saveStatus == RequestStatus.Running}
+        onHide={onDialogClose}
         onAccept={save}
-        onReject={onDialogClose}
         acceptLabel={acceptLabel}
         title={title}
         visible={visible}
@@ -124,6 +124,7 @@ const EditRoleDialogBody = memo(function EditRoleDialogBody({
         classNames={{ field: 'isDefaultCheckbox' }}
         checked={isDefault == null ? false : isDefault}
         onChange={onIsDefaultChange}
+        disabled={isDefaultLocked}
       />
 
       <p>

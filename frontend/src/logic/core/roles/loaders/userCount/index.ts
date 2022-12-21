@@ -1,40 +1,36 @@
 import {
-  actions,
   beforeUnmount,
+  events,
   kea,
+  key,
   listeners,
   path,
-  reducers,
   selectors,
 } from 'kea';
+import { subscriptions } from 'kea-subscriptions';
 
-import { IRoleConverters } from '@/converters/interfaces';
 import { connect, deps, requests } from '@/logic/builders';
-import { IRoleViewContainerLogic } from '@/logic/interfaces';
+import { IRoleUserCountContainerLogic } from '@/logic/interfaces';
 import { IRoleService } from '@/services/interfaces';
 
 import { Listeners } from './listeners';
-import { Reducers } from './reducers';
 import { Selectors } from './selectors';
+import { Subscriptions } from './subscriptions';
 import type { RoleUserCountLoaderLogic } from './type';
 
 export const roleUserCountLoaderLogic = kea<RoleUserCountLoaderLogic>([
-  path(['roles', 'loader', 'table']),
+  path(['roles', 'loader', 'userCount']),
+  key((props) => props.id),
   deps({
-    roleViewContainerLogic: IRoleViewContainerLogic.$,
-    roleConverters: IRoleConverters.$,
+    roleUserCountContainerLogic: IRoleUserCountContainerLogic.$,
     roleService: IRoleService.$,
   }),
-  connect(({ deps }) => [deps.roleViewContainerLogic]),
-  actions({
-    setLoadedEntryIds: (entryIds) => ({ entryIds }),
-    setEntryRowCount: (rowCount) => ({ rowCount }),
-  }),
-  requests(({ deps }) => ({ load: deps.roleService.getTable })),
-  reducers(Reducers),
+  connect(({ deps }) => [deps.roleUserCountContainerLogic]),
+  requests(({ deps }) => ({ load: deps.roleService.getUserCount })),
   selectors(Selectors),
   listeners(Listeners),
+  subscriptions(Subscriptions),
   beforeUnmount(({ deps, values }) => {
-    deps.roleViewContainerLogic.actions.releaseEntries(values.loadedEntryIds);
+    deps.roleUserCountContainerLogic.actions.releaseEntries([values.id]);
   }),
 ]);

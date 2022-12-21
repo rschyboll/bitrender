@@ -8,5 +8,6 @@ export class ApiEndpoints {
   static RoleNew = 'roles/new';
   static RoleGetById = (id: string) => `roles/${id}`;
   static RoleGetMultiple = (ids: string[]) => `roles/${ids}`;
-  static RoleGetUserCount = (id: string) => `roles/${id}`;
+  static RoleGetUserCount = (id: string) => `roles/${id}/user_count`;
+  static RoleDelete = (id: string) => `roles/${id}`;
 }

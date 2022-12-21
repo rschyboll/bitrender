@@ -5,6 +5,7 @@ import { IUtilityConverters } from '@/converters/interfaces';
 import Dependencies from '@/deps';
 import { IRouteLogic } from '@/logic/interfaces/route';
 import { ApiErrorCodes, ErrorResponse, ServiceErrorType } from '@/services';
+import { sleep } from '@/utils/async';
 import { IServiceValidators } from '@/validators/interfaces';
 
 import { ListRequestInput } from '../messages/list';
@@ -26,6 +27,9 @@ export class Service {
       hooks: {
         beforeError: [(error) => this.onError(error)],
         beforeRequest: [
+          async () => {
+            await sleep(500);
+          },
           (request, options) =>
             this.utilityConverters.requestToSnakeCase(request, options),
         ],
@@ -96,13 +100,21 @@ export class Service {
   }
 
   protected listRequestToURL(input: ListRequestInput<string>): URLSearchParams {
-    const { page, search, sort } = input;
+    const { page_or_range, search, sort } = input;
 
     const searchParams = new URLSearchParams();
 
-    if (page != null) {
-      searchParams.append('page_nr', page.pageNr.toString());
-      searchParams.append('records_per_page', page.recordsPerPage.toString());
+    if (page_or_range != null && 'pageNr' in page_or_range) {
+      searchParams.append('page_nr', page_or_range.pageNr.toString());
+      searchParams.append(
+        'records_per_page',
+        page_or_range.recordsPerPage.toString(),
+      );
+    }
+
+    if (page_or_range != null && 'beginning' in page_or_range) {
+      searchParams.append('beginning', page_or_range.beginning.toString());
+      searchParams.append('end', page_or_range.end.toString());
     }
 
     if (sort != null) {

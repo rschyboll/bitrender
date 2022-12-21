@@ -1,8 +1,8 @@
 import type { ListenersDef } from '@/logic/types';
 
-import type { RoleCreateLogic } from './type';
+import type { RoleDeleteLogic } from './type';
 
-export const Listeners: ListenersDef<RoleCreateLogic> = ({
+export const Listeners: ListenersDef<RoleDeleteLogic> = ({
   actions,
   values,
 }) => ({});

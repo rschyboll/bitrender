@@ -17,6 +17,7 @@ from tortoise.queryset import CountQuery, QuerySet, QuerySetSingle
 
 from bitrender.core.acl import EVERYONE, AclAction, AclEntry, AclList, AclPermit
 from bitrender.enums.list_request import SearchRule, SortOrder
+from bitrender.schemas import ListRequestPage, ListRequestRange
 
 if TYPE_CHECKING:
     from bitrender.schemas.list_request import ListRequestInput, ListRequestSearch
@@ -156,13 +157,22 @@ class BaseModel(Model):
             for search_data in request_input.search:
                 query = cls.__filter_query(query, search_data)
         count_query = query.count()
-
-        if request_input.page is not None:
-            query = (
-                cls.all()
-                .offset(request_input.page.page_nr * request_input.page.records_per_page)
-                .limit(request_input.page.records_per_page)
-            )
+        if request_input.page_or_range is not None:
+            if isinstance(request_input.page_or_range, ListRequestPage):
+                query = (
+                    cls.all()
+                    .offset(
+                        request_input.page_or_range.page_nr
+                        * request_input.page_or_range.records_per_page
+                    )
+                    .limit(request_input.page_or_range.records_per_page)
+                )
+            elif isinstance(request_input.page_or_range, ListRequestRange):
+                query = (
+                    cls.all()
+                    .offset(request_input.page_or_range.beginning)
+                    .limit(request_input.page_or_range.end - request_input.page_or_range.beginning)
+                )
         else:
             query = cls.all()
         if lock:

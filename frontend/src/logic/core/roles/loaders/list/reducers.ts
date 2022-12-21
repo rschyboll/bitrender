@@ -1,8 +1,8 @@
 import type { ReducersDef } from '@/logic';
 
-import type { RoleTableLoaderLogic } from './type';
+import type { RoleListLoaderLogic } from './type';
 
-export const Reducers: ReducersDef<RoleTableLoaderLogic> = {
+export const Reducers: ReducersDef<RoleListLoaderLogic> = {
   loadedEntryIds: [
     new Set(),
     {

@@ -4,6 +4,7 @@ from bitrender.schemas.list_request import (
     ListRequestInput,
     ListRequestOutput,
     ListRequestPage,
+    ListRequestRange,
     ListRequestSearch,
     ListRequestSort,
 )
@@ -21,4 +22,5 @@ __all__ = [
     "ListRequestSearch",
     "ListRequestSort",
     "ListRequestOutput",
+    "ListRequestRange",
 ]

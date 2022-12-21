@@ -9,6 +9,6 @@ export const roleViewContainerLogic = kea<RoleViewContainerLogic>([
   path(['roles', 'container', 'view']),
   container({
     dataCleanTimeout: config.dataCleanTimeout,
-    unmountDelay: config.dataCleanTimeout * 2,
+    unmountDelay: config.containerUnmountDelay,
   }),
 ]);

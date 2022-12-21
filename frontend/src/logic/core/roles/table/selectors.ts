@@ -60,7 +60,7 @@ export const Selectors: SelectorsDef<RolesTableLogic> = ({ deps }) => ({
             value: searchString,
           },
         ],
-        page: {
+        page_or_range: {
           pageNr: currentPage,
           recordsPerPage: rowsPerPage,
         },

@@ -1,77 +1,69 @@
 import { Button } from 'primereact/button';
-import { Dialog as PrimeDialog } from 'primereact/dialog';
-import { ReactNode, memo, useCallback } from 'react';
-import { useTranslation } from 'react-i18next';
-import { RiCloseFill, RiLoader4Fill } from 'react-icons/ri';
+import {
+  Dialog as PrimeDialog,
+  DialogProps as PrimeDialogProps,
+} from 'primereact/dialog';
+import { memo } from 'react';
+import { RiCloseFill } from 'react-icons/ri';
 
 import style from './style.module.scss';
 
-export interface DialogProps {
-  visible: boolean;
-  loading?: boolean;
+export interface DialogProps extends PrimeDialogProps {
+  acceptDisabled?: boolean;
+  closeDisabled?: boolean;
+  hideHeader?: boolean;
+  hideFooter?: boolean;
   onAccept?: () => void;
   onReject?: () => void;
   acceptLabel?: string;
   rejectLabel?: string;
-  onClose?: () => void;
   title?: string;
-  className?: string;
-  children: ReactNode;
+  closeIconClassName?: string;
 }
 
-export const Dialog = memo(function Dialog({
-  visible,
-  loading,
-  onAccept,
-  onReject,
-  acceptLabel,
-  rejectLabel,
-  onClose,
-  title,
-  children,
-  className,
-}: DialogProps) {
-  const { t } = useTranslation();
-
-  const onHideCallback = useCallback(() => {
-    if (onClose != null) {
-      onClose();
-    }
-  }, [onClose]);
+export const Dialog = memo(function Dialog(props: DialogProps) {
+  const {
+    acceptDisabled,
+    closeDisabled,
+    hideHeader,
+    hideFooter,
+    onAccept,
+    onReject,
+    acceptLabel,
+    rejectLabel,
+    title,
+    closeIconClassName,
+    ...primeProps
+  } = props;
 
   return (
     <PrimeDialog
-      className={`${style.dialog} ${className}`}
-      onHide={onHideCallback}
-      visible={visible}
+      {...primeProps}
       closable={false}
-      dismissableMask={!loading}
+      dismissableMask={!closeDisabled}
       icons={
-        onClose != null ? (
-          <DialogCloseIcon onClose={onClose} loading={loading} />
-        ) : null
+        !hideHeader ? (
+          <DialogCloseIcon
+            className={closeIconClassName}
+            onClose={props.onHide}
+          />
+        ) : undefined
       }
-      header={title != null ? t(title) : undefined}
+      header={!hideHeader ? title : undefined}
       footer={
-        <DialogFooterButtons
-          onAccept={onAccept}
-          onReject={onReject}
-          acceptLabel={acceptLabel}
-          rejectLabel={rejectLabel}
-          loading={loading}
-        />
+        !hideFooter ? (
+          <DialogFooterButtons
+            onAccept={onAccept}
+            onReject={onReject}
+            acceptLabel={acceptLabel}
+            rejectLabel={rejectLabel}
+            acceptDisabled={acceptDisabled}
+            rejectDisabled={closeDisabled}
+          />
+        ) : undefined
       }
     >
-      <div className={loading == true ? style.loading : undefined}>
-        {children}
-      </div>
-      <div
-        className={`${style.loadingOverlay} ${
-          loading == true ? style.visible : undefined
-        }`}
-      >
-        <RiLoader4Fill className={style.loadingIcon} />
-      </div>
+      {props.children}
     </PrimeDialog>
   );
 });
@@ -81,34 +73,29 @@ interface DialogFooterButtonsProps {
   onReject?: () => void;
   acceptLabel?: string;
   rejectLabel?: string;
-  loading?: boolean;
+  acceptDisabled?: boolean;
+  rejectDisabled?: boolean;
 }
 
-const DialogFooterButtons = memo(function DialogFooterButtons({
-  onAccept,
-  onReject,
-  acceptLabel,
-  rejectLabel,
-  loading,
-}: DialogFooterButtonsProps) {
-  const { t } = useTranslation();
-
+const DialogFooterButtons = memo(function DialogFooterButtons(
+  props: DialogFooterButtonsProps,
+) {
   return (
     <div className={style.footerButtonsContainer}>
-      {onReject != null ? (
+      {props.onReject != null ? (
         <Button
           className="p-button-text"
-          label={t(rejectLabel != null ? rejectLabel : 'cancel')}
-          onClick={onReject}
-          disabled={loading == true}
+          label={props.rejectLabel}
+          onClick={props.onReject}
+          disabled={props.rejectDisabled}
         />
       ) : null}
-      {onAccept != null ? (
+      {props.onAccept != null ? (
         <Button
           className="p-button-text"
-          label={t(acceptLabel != null ? acceptLabel : 'accept')}
-          onClick={onAccept}
-          disabled={loading == true}
+          label={props.acceptLabel}
+          onClick={props.onAccept}
+          disabled={props.acceptDisabled}
         />
       ) : null}
     </div>
@@ -117,19 +104,21 @@ const DialogFooterButtons = memo(function DialogFooterButtons({
 
 interface DialogCloseIconProps {
   onClose: () => void;
-  loading?: boolean;
+  disabled?: boolean;
+  className?: string;
 }
 
-const DialogCloseIcon = memo(function DialogCloseIcon({
-  onClose,
-  loading,
-}: DialogCloseIconProps) {
+const DialogCloseIcon = memo(function DialogCloseIcon(
+  props: DialogCloseIconProps,
+) {
   return (
     <Button
-      className="p-button-text p-button-rounded p-button-plain"
+      className={`${
+        props.className || ''
+      } p-button-text p-button-rounded p-button-plain`}
       icon={<RiCloseFill />}
-      onClick={onClose}
-      disabled={loading == true}
+      onClick={props.onClose}
+      disabled={props.disabled}
     />
   );
 });

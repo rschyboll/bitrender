@@ -8,7 +8,9 @@ export default function CustomHotReload() {
     handleHotUpdate({ file }) {
       if (file.endsWith('.ftl')) {
         const data = fs.readFileSync('/workspace/src/translations/ftl.ts');
-        fs.writeFileSync('/workspace/src/translations/ftl.ts', data);
+        if (data.toString() != '') {
+          fs.writeFileSync('/workspace/src/translations/ftl.ts', data);
+        }
       }
     },
   };

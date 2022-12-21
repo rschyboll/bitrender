@@ -1,52 +1,7 @@
 @import '@/scss/variables.scss';
 
-.dialog {
-  @include media('<=phone') {
-    width: calc(100% - 2rem);
-  }
-}
-
 .footerButtonsContainer {
   display: flex;
   justify-content: end;
   gap: 0.5rem;
-}
-
-.loading {
-  opacity: 0.4;
-}
-
-.loadingOverlay {
-  display: none;
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  height: fit-content;
-  margin: auto;
-}
-
-.loadingOverlay.visible {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.loadingIcon {
-  width: 4rem;
-  height: 4rem;
-  animation-name: spin;
-  animation-duration: 1500ms;
-  animation-iteration-count: infinite;
-  animation-timing-function: linear;
-}
-
-@keyframes spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
 }

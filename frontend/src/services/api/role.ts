@@ -89,7 +89,7 @@ export class RoleService extends Service implements IRoleService {
   ): Promise<Response<MRole.Messages.GetUserCountOutput>> => {
     try {
       const response = await this.api
-        .get(ApiEndpoints.RoleGetById(input.id))
+        .get(ApiEndpoints.RoleGetUserCount(input.id))
         .json();
       if (this.roleValidators.validateGetUserCountOutput(response)) {
         return { success: true, data: response };
@@ -101,6 +101,17 @@ export class RoleService extends Service implements IRoleService {
           },
         };
       }
+    } catch (error: unknown) {
+      return this.parseAPIError(error);
+    }
+  };
+
+  public delete = async (
+    input: MRole.Messages.DeleteInput,
+  ): Promise<Response<void>> => {
+    try {
+      await this.api.delete(ApiEndpoints.RoleDelete(input.id));
+      return { success: true, data: undefined };
     } catch (error: unknown) {
       return this.parseAPIError(error);
     }
